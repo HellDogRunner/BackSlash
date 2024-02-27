@@ -1,21 +1,26 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CharacterControl : MonoBehaviour
 {
     CharacterController _controlPLayer;
+    [SerializeField] private Transform _firstCamera;
     [Header("Movement")]
     [SerializeField] private float _speed;
     [SerializeField] private float _sprintSpeed;
-    [SerializeField] private float _rotate;
     [SerializeField] private float _jumpSpeed;
+    [Header("Rotate")]
+    [SerializeField] private float _turnTime;
     [Header("Gravity")]
     [SerializeField] private float _gravityForce;
 
+    private Vector3 _rotationVector;
     private int _vectorCount;
-    private float jSpeed, _verticalMove, _horizontalMove, _vectorsMult;
+    private float jSpeed, _verticalMove, _horizontalMove, _vectorsMult, _turnSpeed;
 
     private void Start()
     {
@@ -29,9 +34,15 @@ public class CharacterControl : MonoBehaviour
 
     public void PlayerMove()
     {
-            if (_controlPLayer.isGrounded)
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+
+        }
+
+        if (_controlPLayer.isGrounded)
         {
             PlayerInputWASD();
+            _rotationVector = _vectorCount == 0 ? Vector3.zero : RotatePlayer();
             jSpeed = 0;
             if (Input.GetKeyDown(KeyCode.Space))
                 jSpeed = _jumpSpeed;
@@ -42,7 +53,16 @@ public class CharacterControl : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl))
             _vectorsMult *= _sprintSpeed;
 
-        _controlPLayer.Move(new Vector3(_horizontalMove * _vectorsMult, jSpeed, _verticalMove * _vectorsMult) * Time.deltaTime);
+        _controlPLayer.Move((_rotationVector * _vectorsMult * _speed + new Vector3(0f, jSpeed, 0f)) * Time.deltaTime);
+    }
+
+    private Vector3 RotatePlayer()
+    {
+        float _rotationAngle = Mathf.Atan2(_horizontalMove, _verticalMove) * Mathf.Rad2Deg + _firstCamera.eulerAngles.y;
+        float _turnAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, _rotationAngle, ref _turnSpeed, _turnTime);
+        transform.rotation = Quaternion.Euler(0f, _turnAngle, 0f);
+        Vector3 _move = Quaternion.Euler(0f, _rotationAngle, 0f) * Vector3.forward;
+        return _move.normalized;
     }
 
     public void PlayerInputWASD()
@@ -53,7 +73,7 @@ public class CharacterControl : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         {
-            _verticalMove += 1 * _speed;
+            _verticalMove += 1;
             _vectorCount++;
         }
             
@@ -65,13 +85,13 @@ public class CharacterControl : MonoBehaviour
 
         if (Input.GetKey(KeyCode.A))
         {
-            _horizontalMove += -1 * _speed;
+            _horizontalMove += -1;
             _vectorCount++;
         }
 
         if (Input.GetKey(KeyCode.D))
         {
-            _horizontalMove += 1 * _speed;
+            _horizontalMove += 1;
             _vectorCount++;
         }
     }
