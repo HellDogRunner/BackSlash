@@ -19,7 +19,7 @@ public class CharacterControl : MonoBehaviour
     [SerializeField] private float _gravityForce;
 
     private Vector3 _rotationVector;
-    private int _vectorCount;
+    protected int _vectorCount;
     private float jSpeed, _verticalMove, _horizontalMove, _vectorsMult, _turnSpeed;
 
     private void Start()
@@ -94,5 +94,10 @@ public class CharacterControl : MonoBehaviour
             _horizontalMove += 1;
             _vectorCount++;
         }
+    }
+
+    public int GetVectorCount()
+    {
+        return _vectorCount;
     }
 }
