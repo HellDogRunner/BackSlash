@@ -12,10 +12,10 @@ namespace Scripts.Player
         [SerializeField] private float GroundDrag;
         [SerializeField] private float JumpForce;
         [Header("Ground Check")]
-        [SerializeField] private float PlayerHeight;
         [SerializeField] private LayerMask IsGround;
 
-        private bool _grounded;
+        public bool Grounded;
+
         private Vector3 _moveDirection;
 
         private InputService _inputService;
@@ -29,6 +29,7 @@ namespace Scripts.Player
 
             _thirdPersonCam = thirdPersonCam;
         }
+
         private void OnDestroy()
         {
             _inputService.OnDirectionChanged -= Direction;
@@ -36,9 +37,9 @@ namespace Scripts.Player
 
         private void Update()
         {
-            _grounded = Physics.Raycast(Rigidbody.transform.position, Vector3.down, PlayerHeight * 0.5f + 0.05f, IsGround);
+            Grounded = Physics.Raycast(Rigidbody.transform.position, Vector3.down, 0.05f, IsGround);
 
-            if (_grounded)
+            if (Grounded)
             {
                 Rigidbody.drag = GroundDrag;
             }
@@ -48,7 +49,7 @@ namespace Scripts.Player
 
         private void FixedUpdate()
         {
-            if (_grounded)
+            if (Grounded)
             {
                 if (_moveDirection.y > 0)
                 {
@@ -68,6 +69,6 @@ namespace Scripts.Player
         {
             Vector3 Jumpdir = new Vector3(0, 1, 0);
             Rigidbody.AddForce(Jumpdir * JumpForce, ForceMode.Impulse);
-        }      
+        }  
     }
 }

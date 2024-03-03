@@ -22,6 +22,7 @@ namespace Scripts.Player.Camera
         private InputService _inputService;
 
         public Vector3 ForwardDirection;
+
         private enum ECameraStyle
         {
             Basic,
@@ -68,7 +69,6 @@ namespace Scripts.Player.Camera
             Vector3 rightRealtiveVerticalInput = direction.x * right;
 
             ForwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
-            Camera.transform.Translate(ForwardDirection, Space.World);
         }
 
         private void DisableCursor()

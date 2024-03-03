@@ -27,12 +27,12 @@ namespace Scripts.Animations
 
         private void RunAnimation(Vector3 direction) 
         {
-            if (direction != new Vector3(0,0,0))
+            if (direction != Vector3.zero)
             {
                 Animator.SetBool("IsWalk", true);
             }
             else
-            if (direction == new Vector3(0, 0, 0))
+            if (direction == Vector3.zero)
             {
                 Animator.SetBool("IsWalk", false);
             }
