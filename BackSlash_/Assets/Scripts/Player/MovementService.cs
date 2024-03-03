@@ -54,14 +54,16 @@ namespace Scripts.Player
                 {
                     Jump();
                 }
-                Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x * MoveSpeed * 10f, 0, _thirdPersonCam.ForwardDirection.z * MoveSpeed * 10f);
-                Rigidbody.AddForce(movingDirection, ForceMode.Force);
+                Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+                Rigidbody.AddForce(movingDirection * MoveSpeed * 10f, ForceMode.Force);
             }    
         }
+
         private void Direction(Vector3 direction)
         {  
             _moveDirection = direction;
         }
+
         private void Jump()
         {
             Vector3 Jumpdir = new Vector3(0, 1, 0);

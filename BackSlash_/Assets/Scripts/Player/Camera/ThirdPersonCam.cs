@@ -70,6 +70,7 @@ namespace Scripts.Player.Camera
             ForwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
             Camera.transform.Translate(ForwardDirection, Space.World);
         }
+
         private void DisableCursor()
         {
             Cursor.lockState = CursorLockMode.Locked;
