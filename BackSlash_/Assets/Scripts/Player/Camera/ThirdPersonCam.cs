@@ -69,6 +69,7 @@ namespace Scripts.Player.Camera
             Vector3 rightRealtiveVerticalInput = direction.x * right;
 
             ForwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
+            Camera.transform.Translate(ForwardDirection, Space.World);
         }
 
         private void DisableCursor()
