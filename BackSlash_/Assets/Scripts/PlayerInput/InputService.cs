@@ -7,36 +7,54 @@ namespace Scripts.Player
 {
     public class InputService : MonoBehaviour
     {
-        private InputAction Movement;
-        [SerializeField] private InputActionAsset PlayerControls;
+        private GameControls PlayerControls;
+        private bool RunState;
 
         public Action<Vector3> OnDirectionChanged;
+        public Action<bool> OnSprintKeyPressed;
         public Vector3 MoveDirection;
+
 
         [Inject]
         private void Construct()
         {
-            var gamePlyayActionMap = PlayerControls.FindActionMap("Gameplay");
-            Movement = gamePlyayActionMap.FindAction("WASD");
-            Movement.performed += ChangeDirection;
-            Movement.canceled += ChangeDirection;
+            PlayerControls = new GameControls();
+
+            PlayerControls.Gameplay.WASD.performed += ChangeDirection;
+            PlayerControls.Gameplay.Sprint.performed += WalkAndSprint;
+
+
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
         {
-            var direction = context.ReadValue<Vector3>();
+            var direction = PlayerControls.Gameplay.WASD.ReadValue<Vector3>();
             MoveDirection = new Vector3(direction.x, direction.z, direction.y);
             OnDirectionChanged?.Invoke(MoveDirection);
         }
 
+        private void WalkAndSprint(InputAction.CallbackContext context) 
+        {
+            if (PlayerControls.Gameplay.Sprint.triggered && RunState == false)
+            {
+                OnSprintKeyPressed?.Invoke(true);
+                RunState = true;
+            }
+            else if (PlayerControls.Gameplay.Sprint.triggered && RunState == true )
+            {
+                OnSprintKeyPressed?.Invoke(false);
+                RunState = false;
+            }
+        }
+
         private void OnEnable()
         {
-            Movement.Enable();
+            PlayerControls.Enable();
         }
 
         private void OnDisable()
         {
-            Movement.Disable();
+            PlayerControls.Disable();
         }
     }
 }

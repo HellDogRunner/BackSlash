@@ -9,12 +9,15 @@ namespace Scripts.Player
         [SerializeField] private Rigidbody Rigidbody;
         [Header("Movement")]
         [SerializeField] private float MoveSpeed;
+        [SerializeField] private float SprintSpeed;
         [SerializeField] private float GroundDrag;
         [SerializeField] private float JumpForce;
         [Header("Ground Check")]
         [SerializeField] private LayerMask IsGround;
 
         public bool Grounded;
+
+        private float _sprintSpeed = 1;
 
         private Vector3 _moveDirection;
 
@@ -26,6 +29,7 @@ namespace Scripts.Player
         {
             _inputService = inputService;
             _inputService.OnDirectionChanged += Direction;
+            _inputService.OnSprintKeyPressed += Sprint;
 
             _thirdPersonCam = thirdPersonCam;
         }
@@ -33,6 +37,7 @@ namespace Scripts.Player
         private void OnDestroy()
         {
             _inputService.OnDirectionChanged -= Direction;
+            _inputService.OnSprintKeyPressed += Sprint;
         }
 
         private void Update()
@@ -56,13 +61,22 @@ namespace Scripts.Player
                     Jump();
                 }
                 Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-                Rigidbody.AddForce(movingDirection * MoveSpeed * 10f, ForceMode.Force);
+                Rigidbody.AddForce(movingDirection * MoveSpeed* _sprintSpeed * 10f, ForceMode.Force);
             }    
         }
 
         private void Direction(Vector3 direction)
         {  
             _moveDirection = direction;
+        }
+
+        private void Sprint(bool runstate)
+        {
+            if (runstate == true)
+            {
+                _sprintSpeed = SprintSpeed;
+            }
+            else _sprintSpeed = 1;
         }
 
         private void Jump()

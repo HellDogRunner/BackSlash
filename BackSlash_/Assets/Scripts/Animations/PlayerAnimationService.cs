@@ -11,30 +11,41 @@ namespace Scripts.Animations
 
         private InputService _inputService;
 
+        private bool _runState;
+
         public Action OnStateChanged;
 
         [Inject]
         private void Construct(InputService inputService)
         {
             _inputService = inputService;
-            _inputService.OnDirectionChanged += RunAnimation;
+            _inputService.OnDirectionChanged += WalkAnimation;
+            _inputService.OnSprintKeyPressed += RunAnimation;
         }
 
         private void OnDestroy()
         {
-            _inputService.OnDirectionChanged -= RunAnimation;
+            _inputService.OnDirectionChanged -= WalkAnimation;
+            _inputService.OnSprintKeyPressed -= RunAnimation;
         }
 
-        private void RunAnimation(Vector3 direction) 
+        private void WalkAnimation(Vector3 direction) 
         {
+  
             if (direction != Vector3.zero)
-            {
-                Animator.SetBool("IsWalk", true);
+            {       
+                if (_runState)
+                {
+                    Animator.SetBool("IsRun", true);
+                }
+                else
+                Animator.SetBool("IsWalk", true);       
             }
-            else
+            else 
             if (direction == Vector3.zero)
             {
                 Animator.SetBool("IsWalk", false);
+                Animator.SetBool("IsRun", false);
             }
             if (direction == new Vector3(-1f, 0f, 1f) || direction == new Vector3(1f, 0f, 1f))
             {
@@ -46,6 +57,17 @@ namespace Scripts.Animations
                 else Animator.SetFloat("Blend", 0.9f);
             }
             else { Animator.SetBool("Sideways", false); }
+        }
+
+        private void RunAnimation(bool runState) 
+        {
+            _runState = runState;
+            if (runState)
+            {
+                Animator.SetBool("IsRun", true);
+            }
+            else Animator.SetBool("IsRun", false);
+
         }
     }
 }
