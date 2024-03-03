@@ -12,6 +12,8 @@ namespace Scripts.Player
 
         public Action<Vector3> OnDirectionChanged;
         public Action<bool> OnSprintKeyPressed;
+        public Action OnLightAttackPressed;
+        public Action OnHardAttackPressed;
         public Vector3 MoveDirection;
 
 
@@ -22,6 +24,7 @@ namespace Scripts.Player
 
             PlayerControls.Gameplay.WASD.performed += ChangeDirection;
             PlayerControls.Gameplay.Sprint.performed += WalkAndSprint;
+            PlayerControls.Gameplay.Attack.performed += Attack;
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
@@ -42,6 +45,19 @@ namespace Scripts.Player
             {
                 OnSprintKeyPressed?.Invoke(false);
                 RunState = false;
+            }
+        }
+
+        private void Attack(InputAction.CallbackContext contex) 
+        {
+            var attackType = PlayerControls.Gameplay.Attack.ReadValue<float>();
+            if (attackType == -1)
+            {
+                OnLightAttackPressed?.Invoke();
+            }
+            if (attackType == 1)
+            {
+                OnHardAttackPressed?.Invoke();
             }
         }
 

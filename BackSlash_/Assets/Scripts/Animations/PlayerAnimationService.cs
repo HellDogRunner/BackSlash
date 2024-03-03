@@ -13,7 +13,7 @@ namespace Scripts.Animations
 
         private bool _runState;
 
-        public Action OnStateChanged;
+        public Action OnAttack;
 
         [Inject]
         private void Construct(InputService inputService)
@@ -21,12 +21,14 @@ namespace Scripts.Animations
             _inputService = inputService;
             _inputService.OnDirectionChanged += WalkAnimation;
             _inputService.OnSprintKeyPressed += RunAnimation;
+            _inputService.OnLightAttackPressed += AttackAnimation;
         }
 
         private void OnDestroy()
         {
             _inputService.OnDirectionChanged -= WalkAnimation;
             _inputService.OnSprintKeyPressed -= RunAnimation;
+            _inputService.OnLightAttackPressed -= AttackAnimation;
         }
 
         private void WalkAnimation(Vector3 direction) 
@@ -67,7 +69,11 @@ namespace Scripts.Animations
                 Animator.SetBool("IsRun", true);
             }
             else Animator.SetBool("IsRun", false);
+        }
 
+        private void AttackAnimation()
+        {
+            Animator.Play("LightAttack");
         }
     }
 }
