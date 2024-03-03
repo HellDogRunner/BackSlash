@@ -33,13 +33,13 @@ namespace Scripts.Animations
         {
   
             if (direction != Vector3.zero)
-            {       
+            {
                 if (_runState)
                 {
                     Animator.SetBool("IsRun", true);
                 }
                 else
-                Animator.SetBool("IsWalk", true);       
+                Animator.SetBool("IsWalk", true);
             }
             else 
             if (direction == Vector3.zero)

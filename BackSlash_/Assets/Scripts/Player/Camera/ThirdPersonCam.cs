@@ -40,7 +40,7 @@ namespace Scripts.Player.Camera
             DisableCursor();
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             RotatePlayer();
             RotateCameraAroundPlayer();

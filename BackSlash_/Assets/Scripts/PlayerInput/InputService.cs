@@ -22,8 +22,6 @@ namespace Scripts.Player
 
             PlayerControls.Gameplay.WASD.performed += ChangeDirection;
             PlayerControls.Gameplay.Sprint.performed += WalkAndSprint;
-
-
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
