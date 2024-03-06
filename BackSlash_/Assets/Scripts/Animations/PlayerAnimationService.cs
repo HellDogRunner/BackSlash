@@ -10,45 +10,68 @@ namespace Scripts.Animations
         [SerializeField] private Animator Animator;
 
         private InputService _inputService;
-
-        private bool _runState;
+        private PlayerState _playerState;
 
         public Action OnAttack;
 
         [Inject]
-        private void Construct(InputService inputService)
+        private void Construct(InputService inputService, PlayerState playerState)
         {
+            _playerState = playerState;
             _inputService = inputService;
-            _inputService.OnDirectionChanged += WalkAnimation;
-            _inputService.OnSprintKeyPressed += RunAnimation;
+            _inputService.OnPlayerIdle += IdleAnimation;
+            _inputService.OnPlayerWalking += WalkingAnimation;
+            _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnLightAttackPressed += AttackAnimation;
         }
 
         private void OnDestroy()
         {
-            _inputService.OnDirectionChanged -= WalkAnimation;
-            _inputService.OnSprintKeyPressed -= RunAnimation;
+            _inputService.OnPlayerIdle -= IdleAnimation;
+            _inputService.OnPlayerWalking -= WalkingAnimation;
+            _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
             _inputService.OnLightAttackPressed -= AttackAnimation;
         }
 
-        private void WalkAnimation(Vector3 direction) 
+        private void IdleAnimation()
         {
-  
-            if (direction != Vector3.zero)
+            if (_playerState._state == PlayerState.EPlayerState.Idle)
             {
-                if (_runState)
-                {
-                    Animator.SetBool("IsRun", true);
-                }
-                else
+                Animator.SetBool("IsRun", false);
+                Animator.SetBool("IsSprint", false);
+            }
+            else if (_playerState._state == PlayerState.EPlayerState.Run)
+            {
+                Animator.SetBool("IsRun", true);
+            }
+        }
+
+        private void WalkingAnimation() 
+        {
+            if (_playerState._state == PlayerState.EPlayerState.Walk)
+            { 
                 Animator.SetBool("IsWalk", true);
             }
-            else 
-            if (direction == Vector3.zero)
+            else if (_playerState._state != PlayerState.EPlayerState.Walk)
             {
                 Animator.SetBool("IsWalk", false);
-                Animator.SetBool("IsRun", false);
             }
+        }
+
+        private void SprintAndRunAnimation()
+        {
+            if (_playerState._state == PlayerState.EPlayerState.Sprint)
+            {
+                Animator.SetBool("IsSprint", true);
+            }
+            else if (_playerState._state == PlayerState.EPlayerState.Run)
+            {
+                Animator.SetBool("IsSprint", false);
+            }
+        }
+
+        private void SiddewayWalking(Vector3 direction)
+        {
             if (direction == new Vector3(-1f, 0f, 1f) || direction == new Vector3(1f, 0f, 1f))
             {
                 Animator.SetBool("Sideways", true);
@@ -61,17 +84,7 @@ namespace Scripts.Animations
             else { Animator.SetBool("Sideways", false); }
         }
 
-        private void RunAnimation(bool runState) 
-        {
-            _runState = runState;
-            if (runState)
-            {
-                Animator.SetBool("IsRun", true);
-            }
-            else Animator.SetBool("IsRun", false);
-        }
-
-        private void AttackAnimation()
+            private void AttackAnimation()
         {
             Animator.Play("LightAttack");
         }

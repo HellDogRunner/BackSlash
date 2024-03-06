@@ -432,8 +432,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 650114270}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12218327, y: -0.000000017077465, z: -0.0000000021023319,
-    w: 0.9925076}
+  m_LocalRotation: {x: -0.12218325, y: 0.000000017077465, z: 0.0000000021023316, w: 0.9925076}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -472,7 +471,7 @@ MonoBehaviour:
     FieldOfView: 50
     OrthographicSize: 10
     NearClipPlane: 0.1
-    FarClipPlane: 200
+    FarClipPlane: 100
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -758,8 +757,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 976517492}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.14527199, y: -0.000000008511929, z: -0.0000000012498028,
-    w: 0.9893918}
+  m_LocalRotation: {x: -0.14527199, y: 0.000000008511924, z: 0.000000001249802, w: 0.9893918}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -798,7 +796,7 @@ MonoBehaviour:
     FieldOfView: 50
     OrthographicSize: 10
     NearClipPlane: 0.1
-    FarClipPlane: 200
+    FarClipPlane: 100
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -965,7 +963,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 200
+  far clip plane: 100
   field of view: 50
   orthographic: 0
   orthographic size: 10
@@ -1082,7 +1080,7 @@ MonoBehaviour:
     FieldOfView: 50
     OrthographicSize: 10
     NearClipPlane: 0.1
-    FarClipPlane: 200
+    FarClipPlane: 100
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -1149,12 +1147,12 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_BindingMode: 4
-  m_SplineCurvature: 0.5
+  m_SplineCurvature: 0.2
   m_Orbits:
   - m_Height: 3.5
     m_Radius: 4
   - m_Height: 2
-    m_Radius: 6
+    m_Radius: 5
   - m_Height: 0.5
     m_Radius: 4
   m_LegacyHeadingBias: 3.4028235e+38
@@ -1449,7 +1447,7 @@ MonoBehaviour:
     FieldOfView: 50
     OrthographicSize: 10
     NearClipPlane: 0.1
-    FarClipPlane: 200
+    FarClipPlane: 100
     Dutch: 0
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
@@ -1715,6 +1713,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Health: 100
+--- !u!114 &1980577202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1980577190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ac181961d9418e4daf21e7eccbfd56c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _state: 0
 --- !u!43 &2129349780
 Mesh:
   m_ObjectHideFlags: 0
@@ -3925,13 +3936,18 @@ PrefabInstance:
     - target: {fileID: 3965411260762418955, guid: 8c1b023a682022b45b70a66d83afc091,
         type: 3}
       propertyPath: _components.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3965411260762418955, guid: 8c1b023a682022b45b70a66d83afc091,
         type: 3}
       propertyPath: _components.Array.data[2]
       value: 
       objectReference: {fileID: 1980577196}
+    - target: {fileID: 3965411260762418955, guid: 8c1b023a682022b45b70a66d83afc091,
+        type: 3}
+      propertyPath: _components.Array.data[3]
+      value: 
+      objectReference: {fileID: 1980577202}
     - target: {fileID: 3999635330847837269, guid: 8c1b023a682022b45b70a66d83afc091,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4052,6 +4068,17 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 5530389045621876256, guid: 8c1b023a682022b45b70a66d83afc091,
+        type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
+        'mixamorig:RightHandRing2'\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform
+        'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform 'mixamorig:LeftShoulder'\n\tTransform
+        'mixamorig:RightHandRing1'\n\tTransform 'mixamorig:RightHandIndex3'\n\tand
+        more ...\n\tFrom animation clip 'Dodge Forward'"
+      objectReference: {fileID: 0}
     - target: {fileID: 5541044936964560838, guid: 8c1b023a682022b45b70a66d83afc091,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -4070,6 +4097,11 @@ PrefabInstance:
     - target: {fileID: 5634245292243648258, guid: 8c1b023a682022b45b70a66d83afc091,
         type: 3}
       propertyPath: MoveSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5634245292243648258, guid: 8c1b023a682022b45b70a66d83afc091,
+        type: 3}
+      propertyPath: WalkSpeed
       value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 5634245292243648258, guid: 8c1b023a682022b45b70a66d83afc091,
@@ -4080,7 +4112,7 @@ PrefabInstance:
     - target: {fileID: 5634245292243648258, guid: 8c1b023a682022b45b70a66d83afc091,
         type: 3}
       propertyPath: SprintSpeed
-      value: 3
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5634245292243648258, guid: 8c1b023a682022b45b70a66d83afc091,
         type: 3}
@@ -4204,6 +4236,10 @@ PrefabInstance:
         type: 3}
       insertIndex: 4
       addedObject: {fileID: 1980577196}
+    - targetCorrespondingSourceObject: {fileID: 4174264127830630481, guid: 8c1b023a682022b45b70a66d83afc091,
+        type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 1980577202}
   m_SourcePrefab: {fileID: 100100000, guid: 8c1b023a682022b45b70a66d83afc091, type: 3}
 --- !u!1 &6238670398618171669
 GameObject:

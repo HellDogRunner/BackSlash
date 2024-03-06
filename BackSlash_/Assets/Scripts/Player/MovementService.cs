@@ -1,6 +1,7 @@
 using UnityEngine;
 using Zenject;
 using Scripts.Player.Camera;
+using static Scripts.Player.PlayerState;
 
 namespace Scripts.Player
 {
@@ -8,6 +9,7 @@ namespace Scripts.Player
     {
         [SerializeField] private Rigidbody Rigidbody;
         [Header("Movement")]
+        [SerializeField] private float WalkSpeed;
         [SerializeField] private float MoveSpeed;
         [SerializeField] private float SprintSpeed;
         [SerializeField] private float GroundDrag;
@@ -23,11 +25,14 @@ namespace Scripts.Player
 
         private InputService _inputService;
         private ThirdPersonCam _thirdPersonCam;
+        private PlayerState _playerState;
 
         [Inject]
-        private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam)
+        private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam, PlayerState playerState)
         {
             _inputService = inputService;
+            _playerState = playerState;
+
             _inputService.OnDirectionChanged += Direction;
             _inputService.OnSprintKeyPressed += Sprint;
 
@@ -70,9 +75,9 @@ namespace Scripts.Player
             _moveDirection = direction;
         }
 
-        private void Sprint(bool runstate)
+        private void Sprint()
         {
-            if (runstate == true)
+            if (_playerState._state == PlayerState.EPlayerState.Sprint)
             {
                 _sprintSpeed = SprintSpeed;
             }
