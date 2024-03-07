@@ -20,13 +20,11 @@ namespace Scripts.Player
 
         private InputService _inputService;
         private ThirdPersonCam _thirdPersonCam;
-        private PlayerState _playerState;
 
         [Inject]
-        private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam, PlayerState playerState)
+        private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam)
         {
             _inputService = inputService;
-            _playerState = playerState;
             _thirdPersonCam = thirdPersonCam;
 
             _inputService.OnSprintKeyPressed += Sprint;
@@ -51,16 +49,16 @@ namespace Scripts.Player
 
         private void FixedUpdate()
         {
-            if (_playerState._state == PlayerState.EPlayerState.Jump)
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Jump)
             {
                 Jump();
-                _playerState._state = PlayerState.EPlayerState.InAir;
+                _inputService.StateContainer.State = PlayerState.EPlayerState.InAir;
             } 
             else if (IsGrounded())
             {
-                if (_playerState._state == PlayerState.EPlayerState.InAir)
+                if (_inputService.StateContainer.State == PlayerState.EPlayerState.InAir)
                 {
-                    _playerState._state = PlayerState.EPlayerState.Run;
+                    _inputService.StateContainer.State = PlayerState.EPlayerState.Run;
                 }
 
                 Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
@@ -71,7 +69,7 @@ namespace Scripts.Player
 
         private void Sprint()
         {
-            if (_playerState._state == PlayerState.EPlayerState.Sprint)
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Sprint)
             {
                 _sprintSpeed = SprintSpeed;
             }

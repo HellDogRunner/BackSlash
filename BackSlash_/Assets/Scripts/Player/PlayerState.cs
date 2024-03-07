@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Scripts.Player
 {
-    public class PlayerState : MonoBehaviour
+    public class PlayerState
     {
-        public EPlayerState _state;
+        public EPlayerState State;
 
         public enum EPlayerState
         {

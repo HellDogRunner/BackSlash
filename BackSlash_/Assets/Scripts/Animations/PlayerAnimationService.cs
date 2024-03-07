@@ -10,14 +10,12 @@ namespace Scripts.Animations
         [SerializeField] private Animator Animator;
 
         private InputService _inputService;
-        private PlayerState _playerState;
 
-        public Action OnAttack;
+        public event Action OnAttack;
 
         [Inject]
-        private void Construct(InputService inputService, PlayerState playerState)
+        private void Construct(InputService inputService)
         {
-            _playerState = playerState;
             _inputService = inputService;
             _inputService.OnPlayerIdle += IdleAnimation;
             _inputService.OnPlayerWalking += WalkingAnimation;
@@ -39,12 +37,12 @@ namespace Scripts.Animations
 
         private void IdleAnimation()
         {
-            if (_playerState._state == PlayerState.EPlayerState.Idle)
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Idle)
             {
                 Animator.SetBool("IsRun", false);
                 Animator.SetBool("IsSprint", false);
             }
-            else if (_playerState._state == PlayerState.EPlayerState.Run)
+            else if (_inputService.StateContainer.State == PlayerState.EPlayerState.Run)
             {
                 Animator.SetBool("IsRun", true);
             }
@@ -57,11 +55,11 @@ namespace Scripts.Animations
 
         private void WalkingAnimation()
         {
-            if (_playerState._state == PlayerState.EPlayerState.Walk)
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Walk)
             {
                 Animator.SetBool("IsWalk", true);
             }
-            else if (_playerState._state != PlayerState.EPlayerState.Walk)
+            else if (_inputService.StateContainer.State != PlayerState.EPlayerState.Walk)
             {
                 Animator.SetBool("IsWalk", false);
             }
@@ -69,11 +67,11 @@ namespace Scripts.Animations
 
         private void SprintAndRunAnimation()
         {
-            if (_playerState._state == PlayerState.EPlayerState.Sprint)
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Sprint)
             {
                 Animator.SetBool("IsSprint", true);
             }
-            else if (_playerState._state == PlayerState.EPlayerState.Run)
+            else if (_inputService.StateContainer.State == PlayerState.EPlayerState.Run)
             {
                 Animator.SetBool("IsSprint", false);
             }
@@ -95,11 +93,11 @@ namespace Scripts.Animations
 
         private void JumpAnimation()
         {
-            if (_playerState._state == PlayerState.EPlayerState.Jump)
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Jump)
             {
                 Animator.SetBool("InAir", true);
             }
-            else if (_playerState._state != PlayerState.EPlayerState.InAir)
+            else if (_inputService.StateContainer.State != PlayerState.EPlayerState.InAir)
             {
                 Animator.SetBool("InAir", false);
             }

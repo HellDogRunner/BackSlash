@@ -11,22 +11,24 @@ namespace Scripts.Player
         private PlayerState _playerState;
         private MovementService _movementService;
 
-        public Action<Vector3> OnDirectionChanged;
-        public Action OnPlayerIdle;
-        public Action OnPlayerWalking;
-        public Action OnSprintKeyPressed;
-        public Action OnJumpKeyPressed;
-        public Action OnAirEnding;
-        public Action OnLightAttackPressed;
-        public Action OnHardAttackPressed;
-        public Vector3 MoveDirection;
+        private Vector3 _moveDirection;
 
+        public event Action<Vector3> OnDirectionChanged;
+        public event Action OnPlayerIdle;
+        public event Action OnPlayerWalking;
+        public event Action OnSprintKeyPressed;
+        public event Action OnJumpKeyPressed;
+        public event Action OnAirEnding;
+        public event Action OnLightAttackPressed;
+        public event Action OnHardAttackPressed;
+        public Vector3 MoveDirection => _moveDirection;
+        public PlayerState StateContainer => _playerState;
 
         [Inject]
-        private void Construct(PlayerState playerState, MovementService movementService)
+        private void Construct(MovementService movementService)
         {
             PlayerControls = new GameControls();
-            _playerState = playerState;
+            _playerState = new PlayerState();
             _movementService = movementService;
 
             PlayerControls.Gameplay.WASD.performed += ChangeDirection;
@@ -39,17 +41,17 @@ namespace Scripts.Player
         private void ChangeDirection(InputAction.CallbackContext context)
         {
             var direction = PlayerControls.Gameplay.WASD.ReadValue<Vector3>();
-            MoveDirection = new Vector3(direction.x, direction.z, direction.y);
+            _moveDirection = new Vector3(direction.x, direction.z, direction.y);
             if (MoveDirection == Vector3.zero)
             {
                 OnAirDisabler();
-                _playerState._state = PlayerState.EPlayerState.Idle;
+                _playerState.State = PlayerState.EPlayerState.Idle;
                 OnPlayerIdle?.Invoke();
             }
             else
             {
                 OnAirDisabler();
-                _playerState._state = PlayerState.EPlayerState.Run;
+                _playerState.State = PlayerState.EPlayerState.Run;
                 OnPlayerIdle?.Invoke();
             }
         }
@@ -57,14 +59,14 @@ namespace Scripts.Player
         private void RunAndSprint(InputAction.CallbackContext context)
         {
             OnAirDisabler();
-            if (PlayerControls.Gameplay.Sprint.triggered && _playerState._state == PlayerState.EPlayerState.Run)
+            if (PlayerControls.Gameplay.Sprint.triggered && _playerState.State == PlayerState.EPlayerState.Run)
             {
-                _playerState._state = PlayerState.EPlayerState.Sprint;
+                _playerState.State = PlayerState.EPlayerState.Sprint;
                 OnSprintKeyPressed?.Invoke();
             }
-            else if (PlayerControls.Gameplay.Sprint.triggered && _playerState._state == PlayerState.EPlayerState.Sprint)
+            else if (PlayerControls.Gameplay.Sprint.triggered && _playerState.State == PlayerState.EPlayerState.Sprint)
             {
-                _playerState._state = PlayerState.EPlayerState.Run;
+                _playerState.State = PlayerState.EPlayerState.Run;
                 OnSprintKeyPressed?.Invoke();
             }
         }
@@ -79,7 +81,7 @@ namespace Scripts.Player
         {
             if (PlayerControls.Gameplay.Jump.triggered && _movementService.IsGrounded())
             {
-                _playerState._state = PlayerState.EPlayerState.Jump;
+                _playerState.State = PlayerState.EPlayerState.Jump;
                 OnJumpKeyPressed?.Invoke();
             }
         }
@@ -87,7 +89,7 @@ namespace Scripts.Player
         private void Walking(InputAction.CallbackContext context)
         {
             OnAirDisabler();
-            if (_playerState._state != PlayerState.EPlayerState.Walk)
+            if (_playerState.State != PlayerState.EPlayerState.Walk)
             {
 
             }

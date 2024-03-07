@@ -1736,7 +1736,6 @@ GameObject:
   - component: {fileID: 596467859238033507}
   - component: {fileID: 2792797996114432485}
   - component: {fileID: 3452451985032402981}
-  - component: {fileID: 6027753243067614990}
   - component: {fileID: 3965411260762418955}
   m_Layer: 0
   m_Name: Player Services
@@ -1793,7 +1792,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b205013aa73fa5c47b1b7b2591478dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &2792797996114432485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1820,19 +1818,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Health: 100
---- !u!114 &6027753243067614990
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4174264127830630481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ac181961d9418e4daf21e7eccbfd56c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _state: 0
 --- !u!114 &3965411260762418955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1849,7 +1834,6 @@ MonoBehaviour:
   - {fileID: 596467859238033507}
   - {fileID: 2792797996114432485}
   - {fileID: 3452451985032402981}
-  - {fileID: 6027753243067614990}
   - {fileID: 5634245292243648258}
   _identifier: 
   _useSceneContext: 0
