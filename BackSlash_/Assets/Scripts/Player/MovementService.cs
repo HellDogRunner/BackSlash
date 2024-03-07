@@ -21,17 +21,20 @@ namespace Scripts.Player
         private InputService _inputService;
         private ThirdPersonCam _thirdPersonCam;
 
+        private Vector3 _moveDirection;
+
         [Inject]
         private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam)
         {
             _inputService = inputService;
             _thirdPersonCam = thirdPersonCam;
-
+            _inputService.OnDirectionChanged += Direction;
             _inputService.OnSprintKeyPressed += Sprint;
         }
 
         private void OnDestroy()
         {
+            _inputService.OnDirectionChanged -= Direction;
             _inputService.OnSprintKeyPressed -= Sprint;
         }
 
@@ -49,20 +52,17 @@ namespace Scripts.Player
 
         private void FixedUpdate()
         {
-            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Jump)
+            if (IsGrounded())
             {
-                Jump();
-                _inputService.StateContainer.State = PlayerState.EPlayerState.InAir;
-            } 
-            else if (IsGrounded())
-            {
-                if (_inputService.StateContainer.State == PlayerState.EPlayerState.InAir)
+                if(_moveDirection.y > 0)
                 {
-                    _inputService.StateContainer.State = PlayerState.EPlayerState.Run;
+                    Jump();
                 }
-
-                Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-                Rigidbody.AddForce(movingDirection * MoveSpeed * _sprintSpeed * 10f, ForceMode.Force);
+                else if (_inputService.StateContainer.State != PlayerState.EPlayerState.Jumping)
+                {
+                    Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+                    Rigidbody.AddForce(movingDirection * MoveSpeed * _sprintSpeed * 10f, ForceMode.Force);
+                }
             }
         }
 
@@ -74,6 +74,11 @@ namespace Scripts.Player
                 _sprintSpeed = SprintSpeed;
             }
             else _sprintSpeed = 1;
+        }
+
+        private void Direction(Vector3 direction)
+        {
+            _moveDirection = direction;
         }
 
         private void Jump()

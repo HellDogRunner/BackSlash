@@ -21,7 +21,6 @@ namespace Scripts.Animations
             _inputService.OnPlayerWalking += WalkingAnimation;
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
-            _inputService.OnAirEnding += InAirDisabler;
             _inputService.OnLightAttackPressed += AttackAnimation;
         }
 
@@ -31,7 +30,6 @@ namespace Scripts.Animations
             _inputService.OnPlayerWalking -= WalkingAnimation;
             _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed -= JumpAnimation;
-            _inputService.OnAirEnding -= InAirDisabler;
             _inputService.OnLightAttackPressed -= AttackAnimation;
         }
 
@@ -46,11 +44,6 @@ namespace Scripts.Animations
             {
                 Animator.SetBool("IsRun", true);
             }
-        }
-
-        private void InAirDisabler()
-        {
-            Animator.SetBool("InAir", false);
         }
 
         private void WalkingAnimation()
@@ -93,13 +86,9 @@ namespace Scripts.Animations
 
         private void JumpAnimation()
         {
-            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Jump)
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Jumping)
             {
-                Animator.SetBool("InAir", true);
-            }
-            else if (_inputService.StateContainer.State != PlayerState.EPlayerState.InAir)
-            {
-                Animator.SetBool("InAir", false);
+                Animator.Play("Jump forward");
             }
         }
 

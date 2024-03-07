@@ -9,7 +9,7 @@
                     "name": "WASD",
                     "type": "Value",
                     "id": "b45ec9ac-511e-4c78-8f5f-c5b0f6a4a6f0",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -27,7 +27,7 @@
                     "name": "Sprint",
                     "type": "Value",
                     "id": "648f3bfc-c011-4d8b-941f-01b855caa686",
-                    "expectedControlType": "",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -74,7 +74,7 @@
                 },
                 {
                     "name": "3D Vector",
-                    "id": "26cce29b-a3af-47cd-ae89-4cb8e3c6eb84",
+                    "id": "367c6c66-1885-47e3-b0f2-37aa0c6c5e43",
                     "path": "3DVector",
                     "interactions": "",
                     "processors": "",
@@ -85,7 +85,7 @@
                 },
                 {
                     "name": "up",
-                    "id": "253a7fb1-6bad-490b-a03f-0754f3dcf9d7",
+                    "id": "7d8ad8f2-609f-4b26-8f85-a6582485214e",
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
@@ -96,7 +96,7 @@
                 },
                 {
                     "name": "down",
-                    "id": "2394af68-9f0f-4b2c-87e1-47e36f66bac8",
+                    "id": "ac24fa98-4db4-41b4-8a91-3650eff44808",
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
@@ -107,7 +107,7 @@
                 },
                 {
                     "name": "left",
-                    "id": "8213a08e-c6d8-4767-969c-cdb881b95350",
+                    "id": "65fb41b1-5170-4af0-adf9-6f6bd5c61dd5",
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
@@ -118,8 +118,30 @@
                 },
                 {
                     "name": "right",
-                    "id": "a6d11bce-0dae-438b-92c7-f5acc5563abf",
+                    "id": "8073fe80-0309-45b8-8d56-abaee07aedfc",
                     "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WASD",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "forward",
+                    "id": "b6bfced4-29f8-4e1e-855e-fd03110c1da0",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WASD",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "backward",
+                    "id": "8e7ab06c-2bf9-4e58-8e5a-90c8cc556fc1",
+                    "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -131,7 +153,7 @@
                     "name": "",
                     "id": "fcaf5830-c5bb-4704-83cb-8450a35f93e0",
                     "path": "<Keyboard>/leftShift",
-                    "interactions": "",
+                    "interactions": "Hold(duration=9999,pressPoint=0.2)",
                     "processors": "",
                     "groups": "",
                     "action": "Sprint",

@@ -21,6 +21,7 @@ namespace Scripts.Player
         public event Action OnAirEnding;
         public event Action OnLightAttackPressed;
         public event Action OnHardAttackPressed;
+        public event Action OnPlayerRunning;
         public Vector3 MoveDirection => _moveDirection;
         public PlayerState StateContainer => _playerState;
 
@@ -32,63 +33,55 @@ namespace Scripts.Player
             _movementService = movementService;
 
             PlayerControls.Gameplay.WASD.performed += ChangeDirection;
-            PlayerControls.Gameplay.Sprint.performed += RunAndSprint;
+            PlayerControls.Gameplay.Sprint.performed += Run;
+            PlayerControls.Gameplay.Sprint.started += Sprint;
+            PlayerControls.Gameplay.Sprint.canceled += Run;
             PlayerControls.Gameplay.Attack.performed += Attack;
             PlayerControls.Gameplay.Dodge.performed += Dodge;
-            PlayerControls.Gameplay.Jump.performed += Jump;
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
         {
             var direction = PlayerControls.Gameplay.WASD.ReadValue<Vector3>();
             _moveDirection = new Vector3(direction.x, direction.z, direction.y);
-            if (MoveDirection == Vector3.zero)
+            if (_moveDirection == Vector3.zero)
             {
-                OnAirDisabler();
                 _playerState.State = PlayerState.EPlayerState.Idle;
                 OnPlayerIdle?.Invoke();
+                OnDirectionChanged?.Invoke(_moveDirection);
             }
-            else
+            if (_moveDirection.y > 0)
             {
-                OnAirDisabler();
+                _playerState.State = PlayerState.EPlayerState.Jumping;
+                OnJumpKeyPressed?.Invoke();
+                OnDirectionChanged?.Invoke(_moveDirection);
+            }
+            if (_moveDirection != Vector3.zero && _moveDirection.y < 1) 
+            {
                 _playerState.State = PlayerState.EPlayerState.Run;
                 OnPlayerIdle?.Invoke();
+                OnDirectionChanged?.Invoke(_moveDirection);
             }
         }
 
-        private void RunAndSprint(InputAction.CallbackContext context)
+        private void Run(InputAction.CallbackContext context)
         {
-            OnAirDisabler();
-            if (PlayerControls.Gameplay.Sprint.triggered && _playerState.State == PlayerState.EPlayerState.Run)
-            {
-                _playerState.State = PlayerState.EPlayerState.Sprint;
-                OnSprintKeyPressed?.Invoke();
-            }
-            else if (PlayerControls.Gameplay.Sprint.triggered && _playerState.State == PlayerState.EPlayerState.Sprint)
-            {
-                _playerState.State = PlayerState.EPlayerState.Run;
-                OnSprintKeyPressed?.Invoke();
-            }
+            _playerState.State = PlayerState.EPlayerState.Run;
+            OnSprintKeyPressed?.Invoke();
+        }
+
+        private void Sprint(InputAction.CallbackContext context)
+        {
+            _playerState.State = PlayerState.EPlayerState.Sprint;
+            OnSprintKeyPressed?.Invoke();
         }
 
         private void Dodge(InputAction.CallbackContext context)
         {
-            OnAirDisabler();
             Debug.Log("Dodge");
         }
-
-        private void Jump(InputAction.CallbackContext context)
-        {
-            if (PlayerControls.Gameplay.Jump.triggered && _movementService.IsGrounded())
-            {
-                _playerState.State = PlayerState.EPlayerState.Jump;
-                OnJumpKeyPressed?.Invoke();
-            }
-        }
-
         private void Walking(InputAction.CallbackContext context)
         {
-            OnAirDisabler();
             if (_playerState.State != PlayerState.EPlayerState.Walk)
             {
 
@@ -97,7 +90,6 @@ namespace Scripts.Player
 
         private void Attack(InputAction.CallbackContext contex)
         {
-            OnAirDisabler();
             var attackType = PlayerControls.Gameplay.Attack.ReadValue<float>();
             if (attackType == -1)
             {
@@ -111,9 +103,9 @@ namespace Scripts.Player
 
         private void OnAirDisabler()
         {
+
             if (_movementService.IsGrounded())
             {
-                Debug.Log("OnAirDisabler");
                 OnAirEnding?.Invoke();
             }
         }
