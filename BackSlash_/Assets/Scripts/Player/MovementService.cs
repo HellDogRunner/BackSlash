@@ -1,7 +1,6 @@
+using Scripts.Player.Camera;
 using UnityEngine;
 using Zenject;
-using Scripts.Player.Camera;
-using static Scripts.Player.PlayerState;
 
 namespace Scripts.Player
 {
@@ -17,11 +16,7 @@ namespace Scripts.Player
         [Header("Ground Check")]
         [SerializeField] private LayerMask IsGround;
 
-        public bool Grounded;
-
         private float _sprintSpeed = 1;
-
-        private Vector3 _moveDirection;
 
         private InputService _inputService;
         private ThirdPersonCam _thirdPersonCam;
@@ -32,48 +27,47 @@ namespace Scripts.Player
         {
             _inputService = inputService;
             _playerState = playerState;
-
-            _inputService.OnDirectionChanged += Direction;
-            _inputService.OnSprintKeyPressed += Sprint;
-
             _thirdPersonCam = thirdPersonCam;
+
+            _inputService.OnSprintKeyPressed += Sprint;
         }
 
         private void OnDestroy()
         {
-            _inputService.OnDirectionChanged -= Direction;
-            _inputService.OnSprintKeyPressed += Sprint;
+            _inputService.OnSprintKeyPressed -= Sprint;
         }
 
-        private void Update()
+        public bool IsGrounded()
         {
-            Grounded = Physics.Raycast(Rigidbody.transform.position, Vector3.down, 0.05f, IsGround);
-
-            if (Grounded)
+            bool _isGround = Physics.Raycast(Rigidbody.transform.position, Vector3.down, 0.05f, IsGround);
+            if (_isGround)
             {
                 Rigidbody.drag = GroundDrag;
             }
-            else
-                Rigidbody.drag = 0;
+            else Rigidbody.drag = 0;
+
+            return _isGround;
         }
 
         private void FixedUpdate()
         {
-            if (Grounded)
+            if (_playerState._state == PlayerState.EPlayerState.Jump)
             {
-                if (_moveDirection.y > 0)
+                Jump();
+                _playerState._state = PlayerState.EPlayerState.InAir;
+            } 
+            else if (IsGrounded())
+            {
+                if (_playerState._state == PlayerState.EPlayerState.InAir)
                 {
-                    Jump();
+                    _playerState._state = PlayerState.EPlayerState.Run;
                 }
+
                 Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-                Rigidbody.AddForce(movingDirection * MoveSpeed* _sprintSpeed * 10f, ForceMode.Force);
-            }    
+                Rigidbody.AddForce(movingDirection * MoveSpeed * _sprintSpeed * 10f, ForceMode.Force);
+            }
         }
 
-        private void Direction(Vector3 direction)
-        {  
-            _moveDirection = direction;
-        }
 
         private void Sprint()
         {
@@ -86,8 +80,7 @@ namespace Scripts.Player
 
         private void Jump()
         {
-            Vector3 Jumpdir = new Vector3(0, 1, 0);
-            Rigidbody.AddForce(Jumpdir * JumpForce, ForceMode.Impulse);
-        }  
+            Rigidbody.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+        }
     }
 }

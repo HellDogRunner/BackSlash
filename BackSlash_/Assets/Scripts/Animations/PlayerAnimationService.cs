@@ -22,6 +22,8 @@ namespace Scripts.Animations
             _inputService.OnPlayerIdle += IdleAnimation;
             _inputService.OnPlayerWalking += WalkingAnimation;
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
+            _inputService.OnJumpKeyPressed += JumpAnimation;
+            _inputService.OnAirEnding += InAirDisabler;
             _inputService.OnLightAttackPressed += AttackAnimation;
         }
 
@@ -30,6 +32,8 @@ namespace Scripts.Animations
             _inputService.OnPlayerIdle -= IdleAnimation;
             _inputService.OnPlayerWalking -= WalkingAnimation;
             _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
+            _inputService.OnJumpKeyPressed -= JumpAnimation;
+            _inputService.OnAirEnding -= InAirDisabler;
             _inputService.OnLightAttackPressed -= AttackAnimation;
         }
 
@@ -46,10 +50,15 @@ namespace Scripts.Animations
             }
         }
 
-        private void WalkingAnimation() 
+        private void InAirDisabler()
+        {
+            Animator.SetBool("InAir", false);
+        }
+
+        private void WalkingAnimation()
         {
             if (_playerState._state == PlayerState.EPlayerState.Walk)
-            { 
+            {
                 Animator.SetBool("IsWalk", true);
             }
             else if (_playerState._state != PlayerState.EPlayerState.Walk)
@@ -84,7 +93,19 @@ namespace Scripts.Animations
             else { Animator.SetBool("Sideways", false); }
         }
 
-            private void AttackAnimation()
+        private void JumpAnimation()
+        {
+            if (_playerState._state == PlayerState.EPlayerState.Jump)
+            {
+                Animator.SetBool("InAir", true);
+            }
+            else if (_playerState._state != PlayerState.EPlayerState.InAir)
+            {
+                Animator.SetBool("InAir", false);
+            }
+        }
+
+        private void AttackAnimation()
         {
             Animator.Play("LightAttack");
         }

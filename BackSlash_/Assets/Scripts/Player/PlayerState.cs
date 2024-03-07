@@ -15,6 +15,7 @@ namespace Scripts.Player
             Dodge,
             Target,
             Jump,
+            InAir,
             Fall,
         }
     }
