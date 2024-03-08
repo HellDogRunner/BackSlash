@@ -14,7 +14,8 @@ namespace Scripts.Player
             Sprint,
             Dodge,
             Target,
-            Jumping
+            Jumping,
+            Fall
         }
     }
 }

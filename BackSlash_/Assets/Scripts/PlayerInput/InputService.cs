@@ -26,11 +26,10 @@ namespace Scripts.Player
         public PlayerState StateContainer => _playerState;
 
         [Inject]
-        private void Construct(MovementService movementService)
+        private void Construct()
         {
             PlayerControls = new GameControls();
             _playerState = new PlayerState();
-            _movementService = movementService;
 
             PlayerControls.Gameplay.WASD.performed += ChangeDirection;
             PlayerControls.Gameplay.Sprint.performed += Run;
@@ -98,15 +97,6 @@ namespace Scripts.Player
             if (attackType == 1)
             {
                 OnHardAttackPressed?.Invoke();
-            }
-        }
-
-        private void OnAirDisabler()
-        {
-
-            if (_movementService.IsGrounded())
-            {
-                OnAirEnding?.Invoke();
             }
         }
 

@@ -7,6 +7,7 @@ namespace Scripts.Player
     public class MovementService : MonoBehaviour
     {
         [SerializeField] private Rigidbody Rigidbody;
+        [SerializeField] private PlayerCollision PlayerCollision;
         [Header("Movement")]
         [SerializeField] private float WalkSpeed;
         [SerializeField] private float MoveSpeed;
@@ -14,7 +15,6 @@ namespace Scripts.Player
         [SerializeField] private float GroundDrag;
         [SerializeField] private float JumpForce;
         [Header("Ground Check")]
-        [SerializeField] private LayerMask IsGround;
 
         private float _sprintSpeed = 1;
 
@@ -28,6 +28,7 @@ namespace Scripts.Player
         {
             _inputService = inputService;
             _thirdPersonCam = thirdPersonCam;
+
             _inputService.OnDirectionChanged += Direction;
             _inputService.OnSprintKeyPressed += Sprint;
         }
@@ -38,23 +39,11 @@ namespace Scripts.Player
             _inputService.OnSprintKeyPressed -= Sprint;
         }
 
-        public bool IsGrounded()
-        {
-            bool _isGround = Physics.Raycast(Rigidbody.transform.position, Vector3.down, 0.05f, IsGround);
-            if (_isGround)
-            {
-                Rigidbody.drag = GroundDrag;
-            }
-            else Rigidbody.drag = 0;
-
-            return _isGround;
-        }
-
         private void FixedUpdate()
         {
-            if (IsGrounded())
+            if (PlayerCollision.IsGrounded)
             {
-                if(_moveDirection.y > 0)
+                if (_moveDirection.y > 0)
                 {
                     Jump();
                 }
@@ -65,7 +54,6 @@ namespace Scripts.Player
                 }
             }
         }
-
 
         private void Sprint()
         {
