@@ -27,7 +27,6 @@ namespace Scripts.Player
                     IsGrounded = true;
                 }
                 else IsGrounded = false;
-
             }
         }
     }

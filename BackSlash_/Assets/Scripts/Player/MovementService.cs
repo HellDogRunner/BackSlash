@@ -6,17 +6,17 @@ namespace Scripts.Player
 {
     public class MovementService : MonoBehaviour
     {
-        [SerializeField] private Rigidbody Rigidbody;
-        [SerializeField] private PlayerCollision PlayerCollision;
+        [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private PlayerCollision playerCollision;
+        [Header("Monitoring")]
+        [SerializeField] private float currentSpeed;
         [Header("Movement")]
-        [SerializeField] private float WalkSpeed;
-        [SerializeField] private float MoveSpeed;
-        [SerializeField] private float SprintSpeed;
-        [SerializeField] private float GroundDrag;
-        [SerializeField] private float JumpForce;
-        [Header("Ground Check")]
-
-        private float _sprintSpeed = 1;
+        [SerializeField] private float walkSpeed;
+        [SerializeField] private float runSpeed;
+        [SerializeField] private float sprintSpeed;
+        [SerializeField] private float groundDrag;
+        [SerializeField] private float jumpForce;
+        
 
         private InputService _inputService;
         private ThirdPersonCam _thirdPersonCam;
@@ -31,37 +31,62 @@ namespace Scripts.Player
 
             _inputService.OnDirectionChanged += Direction;
             _inputService.OnSprintKeyPressed += Sprint;
+            _inputService.OnPlayerWalking += Walking;
         }
 
         private void OnDestroy()
         {
             _inputService.OnDirectionChanged -= Direction;
             _inputService.OnSprintKeyPressed -= Sprint;
+            _inputService.OnPlayerWalking -= Walking;
+        }
+
+        private void Awake()
+        {
+            SetRunSpeed();
         }
 
         private void FixedUpdate()
         {
-            if (PlayerCollision.IsGrounded)
+            if (playerCollision.IsGrounded)
             {
                 if (_moveDirection.y > 0)
                 {
                     Jump();
+                    _rigidbody.drag = 0;
                 }
-                else if (_inputService.StateContainer.State != PlayerState.EPlayerState.Jumping)
-                {
-                    Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-                    Rigidbody.AddForce(movingDirection * MoveSpeed * _sprintSpeed * 10f, ForceMode.Force);
-                }
+                else _rigidbody.drag = groundDrag;
+
+                Moving(10f);
             }
+            else
+            {
+                Moving(0.1f);
+            }
+        }
+
+        private void SetRunSpeed()
+        {
+            currentSpeed = runSpeed;
+        }
+
+        private void Moving(float acceleration)
+        {
+            Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+            _rigidbody.AddForce(movingDirection * currentSpeed * acceleration, ForceMode.Force);
+            SpeedControl();
         }
 
         private void Sprint()
         {
             if (_inputService.StateContainer.State == PlayerState.EPlayerState.Sprint)
             {
-                _sprintSpeed = SprintSpeed;
+                currentSpeed = sprintSpeed;
             }
-            else _sprintSpeed = 1;
+            else if (_inputService.StateContainer.State == PlayerState.EPlayerState.Run)
+            {
+                currentSpeed = runSpeed;
+            }
         }
 
         private void Direction(Vector3 direction)
@@ -71,7 +96,23 @@ namespace Scripts.Player
 
         private void Jump()
         {
-            Rigidbody.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+            _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            Debug.Log(_rigidbody.velocity);
+        }
+
+        private void Walking()
+        {
+
+        }
+
+        private void SpeedControl()
+        {
+            Vector3 playerSpeed = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
+            if (playerSpeed.magnitude > currentSpeed)
+            {
+                Vector3 limitedSpeed = playerSpeed.normalized * currentSpeed;
+                _rigidbody.velocity = new Vector3(limitedSpeed.x, _rigidbody.velocity.y, limitedSpeed.z);
+            }
         }
     }
 }

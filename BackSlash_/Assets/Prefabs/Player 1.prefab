@@ -1772,13 +1772,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e6f79e03fbed57499499ead94a1a2a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Rigidbody: {fileID: 6685183773006915289}
-  PlayerCollision: {fileID: 6195640581029348937}
-  WalkSpeed: 1.4
-  MoveSpeed: 2.5
-  SprintSpeed: 1.5
-  GroundDrag: 5
-  JumpForce: 5
+  _rigidbody: {fileID: 6685183773006915289}
+  playerCollision: {fileID: 6195640581029348937}
+  currentSpeed: 0
+  walkSpeed: 1
+  runSpeed: 3
+  sprintSpeed: 4
+  groundDrag: 5
+  jumpForce: 2.5
 --- !u!114 &596467859238033507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2508,8 +2509,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.01
-  m_Height: 0.2
+  m_Radius: 0.1
+  m_Height: 0
   m_Direction: 1
   m_Center: {x: 0, y: 0.09, z: 0}
 --- !u!1 &6981323886987360062
