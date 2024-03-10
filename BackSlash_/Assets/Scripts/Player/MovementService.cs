@@ -7,7 +7,6 @@ namespace Scripts.Player
     public class MovementService : MonoBehaviour
     {
         [SerializeField] private Rigidbody _rigidbody;
-        [SerializeField] private PlayerCollision playerCollision;
         [Header("Monitoring")]
         [SerializeField] private float currentSpeed;
         [Header("Movement")]
@@ -16,10 +15,13 @@ namespace Scripts.Player
         [SerializeField] private float sprintSpeed;
         [SerializeField] private float groundDrag;
         [SerializeField] private float jumpForce;
+        [SerializeField] private float fallForce;
         
 
         private InputService _inputService;
         private ThirdPersonCam _thirdPersonCam;
+
+        public bool IsGrounded;
 
         private Vector3 _moveDirection;
 
@@ -46,14 +48,20 @@ namespace Scripts.Player
             SetRunSpeed();
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            IsGrounded = true;
+        }
+
         private void FixedUpdate()
         {
-            if (playerCollision.IsGrounded)
+            if (IsGrounded)
             {
                 if (_moveDirection.y > 0)
                 {
-                    Jump();
                     _rigidbody.drag = 0;
+                    IsGrounded = false;
+                    JumpMoving();
                 }
                 else _rigidbody.drag = groundDrag;
 
@@ -61,7 +69,7 @@ namespace Scripts.Player
             }
             else
             {
-                Moving(0.1f);
+                Moving(1.5f);
             }
         }
 
@@ -94,10 +102,9 @@ namespace Scripts.Player
             _moveDirection = direction;
         }
 
-        private void Jump()
+        private void JumpMoving()
         {
             _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            Debug.Log(_rigidbody.velocity);
         }
 
         private void Walking()
