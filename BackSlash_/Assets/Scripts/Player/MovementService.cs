@@ -1,88 +1,125 @@
+using Scripts.Player.Camera;
 using UnityEngine;
 using Zenject;
-using Scripts.Player.Camera;
 
 namespace Scripts.Player
 {
     public class MovementService : MonoBehaviour
     {
-        [SerializeField] private Rigidbody Rigidbody;
+        [SerializeField] private Rigidbody _rigidbody;
+        [Header("Monitoring")]
+        [SerializeField] private float currentSpeed;
         [Header("Movement")]
-        [SerializeField] private float MoveSpeed;
-        [SerializeField] private float SprintSpeed;
-        [SerializeField] private float GroundDrag;
-        [SerializeField] private float JumpForce;
-        [Header("Ground Check")]
-        [SerializeField] private LayerMask IsGround;
-
-        public bool Grounded;
-
-        private float _sprintSpeed = 1;
-
-        private Vector3 _moveDirection;
+        [SerializeField] private float walkSpeed;
+        [SerializeField] private float runSpeed;
+        [SerializeField] private float sprintSpeed;
+        [SerializeField] private float groundDrag;
+        [SerializeField] private float jumpForce;
+        [SerializeField] private float fallForce;
+        
 
         private InputService _inputService;
         private ThirdPersonCam _thirdPersonCam;
+
+        public bool IsGrounded;
+
+        private Vector3 _moveDirection;
 
         [Inject]
         private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam)
         {
             _inputService = inputService;
+            _thirdPersonCam = thirdPersonCam;
+
             _inputService.OnDirectionChanged += Direction;
             _inputService.OnSprintKeyPressed += Sprint;
-
-            _thirdPersonCam = thirdPersonCam;
+            _inputService.OnPlayerWalking += Walking;
         }
 
         private void OnDestroy()
         {
             _inputService.OnDirectionChanged -= Direction;
-            _inputService.OnSprintKeyPressed += Sprint;
+            _inputService.OnSprintKeyPressed -= Sprint;
+            _inputService.OnPlayerWalking -= Walking;
         }
 
-        private void Update()
+        private void Awake()
         {
-            Grounded = Physics.Raycast(Rigidbody.transform.position, Vector3.down, 0.05f, IsGround);
+            SetRunSpeed();
+        }
 
-            if (Grounded)
-            {
-                Rigidbody.drag = GroundDrag;
-            }
-            else
-                Rigidbody.drag = 0;
+        private void OnTriggerEnter(Collider other)
+        {
+            IsGrounded = true;
         }
 
         private void FixedUpdate()
         {
-            if (Grounded)
+            if (IsGrounded)
             {
                 if (_moveDirection.y > 0)
                 {
-                    Jump();
+                    _rigidbody.drag = 0;
+                    IsGrounded = false;
+                    JumpMoving();
                 }
-                Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-                Rigidbody.AddForce(movingDirection * MoveSpeed* _sprintSpeed * 10f, ForceMode.Force);
-            }    
+                else _rigidbody.drag = groundDrag;
+
+                Moving(10f);
+            }
+            else
+            {
+                Moving(1.5f);
+            }
+        }
+
+        private void SetRunSpeed()
+        {
+            currentSpeed = runSpeed;
+        }
+
+        private void Moving(float acceleration)
+        {
+            Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+            _rigidbody.AddForce(movingDirection * currentSpeed * acceleration, ForceMode.Force);
+            SpeedControl();
+        }
+
+        private void Sprint()
+        {
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Sprint)
+            {
+                currentSpeed = sprintSpeed;
+            }
+            else if (_inputService.StateContainer.State == PlayerState.EPlayerState.Run)
+            {
+                currentSpeed = runSpeed;
+            }
         }
 
         private void Direction(Vector3 direction)
-        {  
+        {
             _moveDirection = direction;
         }
 
-        private void Sprint(bool runstate)
+        private void JumpMoving()
         {
-            if (runstate == true)
-            {
-                _sprintSpeed = SprintSpeed;
-            }
-            else _sprintSpeed = 1;
+            _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
-        private void Jump()
+        private void Walking()
         {
-            Vector3 Jumpdir = new Vector3(0, 1, 0);
-            Rigidbody.AddForce(Jumpdir * JumpForce, ForceMode.Impulse);
-        }  
+
+        }
+
+        private void SpeedControl()
+        {
+            Vector3 playerSpeed = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
+            if (playerSpeed.magnitude > currentSpeed)
+            {
+                Vector3 limitedSpeed = playerSpeed.normalized * currentSpeed;
+                _rigidbody.velocity = new Vector3(limitedSpeed.x, _rigidbody.velocity.y, limitedSpeed.z);
+            }
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace Scripts.Player.Camera
         [SerializeField] private Transform CombatLookAt;
 
         [SerializeField] private Transform Player;
-        [SerializeField] private Transform PlayerObj;
+        [SerializeField] private Transform PlayerModel;
         [SerializeField] private Rigidbody PlayerRigibody;
 
         [SerializeField] private float RotationTime;
@@ -55,7 +55,7 @@ namespace Scripts.Player.Camera
             Vector3 inputDir = Orientation.forward * direction.z + Orientation.right * direction.x;
             if (inputDir != Vector3.zero)
             {
-                PlayerObj.forward = Vector3.Slerp(PlayerObj.forward, inputDir, Time.deltaTime * RotationTime);
+                PlayerModel.forward = Vector3.Slerp(inputDir, PlayerModel.forward, RotationTime * Time.fixedDeltaTime);
             }
         }
 
@@ -69,7 +69,6 @@ namespace Scripts.Player.Camera
             Vector3 rightRealtiveVerticalInput = direction.x * right;
 
             ForwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
-            Camera.transform.Translate(ForwardDirection, Space.World);
         }
 
         private void DisableCursor()

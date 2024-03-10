@@ -14,12 +14,12 @@ GameObject:
   - component: {fileID: 1792369348389394668}
   - component: {fileID: 2414249563439400512}
   - component: {fileID: 3276612810877713286}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &3410937574527615619
 Transform:
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1493
+  m_VersionIndex: 1502
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -365,12 +365,12 @@ GameObject:
   - component: {fileID: 9164587181992237175}
   - component: {fileID: 9119130956590350871}
   - component: {fileID: 3009763919912291449}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &599611094935252658
 Transform:
@@ -472,10 +472,10 @@ GameObject:
   - component: {fileID: 2147784117935722555}
   m_Layer: 0
   m_Name: Plane (1)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &3182858322576214725
 Transform:
@@ -486,7 +486,7 @@ Transform:
   m_GameObject: {fileID: 2300561488861932512}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.0001, z: 0}
+  m_LocalPosition: {x: 0, y: 0.001, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -576,12 +576,12 @@ GameObject:
   - component: {fileID: 677535841466857367}
   - component: {fileID: 5687039568719356289}
   - component: {fileID: 8392303317722686705}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4272940484382019759
 Transform:
@@ -681,12 +681,12 @@ GameObject:
   - component: {fileID: 4335232447460461591}
   - component: {fileID: 73135316605571901}
   - component: {fileID: 2640034393095469500}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &8969920393368057087
 Transform:
@@ -786,12 +786,12 @@ GameObject:
   - component: {fileID: 6518113698187704806}
   - component: {fileID: 6188980824362672658}
   - component: {fileID: 1743140939654226267}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5317560721025599803
 Transform:
@@ -891,10 +891,10 @@ GameObject:
   - component: {fileID: 2969839456360053277}
   m_Layer: 0
   m_Name: Test Environment
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &2969839456360053277
 Transform:
