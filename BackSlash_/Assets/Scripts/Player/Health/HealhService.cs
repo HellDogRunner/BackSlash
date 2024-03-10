@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class HealhService : MonoBehaviour
 {
-    [SerializeField] private int Health;
+    [SerializeField] private int health;
 
     public Action<int> OnHealthChanged;
 
     public void TakeDamage(int damage, object sender = null) 
     {
-        Health -= damage;
-        OnHealthChanged?.Invoke(Health);
-        if (Health <= 0)
+        health -= damage;
+        OnHealthChanged?.Invoke(health);
+        if (health <= 0)
         {
             Death();
         }

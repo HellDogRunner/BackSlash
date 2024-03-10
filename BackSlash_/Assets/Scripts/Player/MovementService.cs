@@ -34,6 +34,8 @@ namespace Scripts.Player
             _inputService.OnDirectionChanged += Direction;
             _inputService.OnSprintKeyPressed += Sprint;
             _inputService.OnPlayerWalking += Walking;
+
+            currentSpeed = runSpeed;
         }
 
         private void OnDestroy()
@@ -41,11 +43,6 @@ namespace Scripts.Player
             _inputService.OnDirectionChanged -= Direction;
             _inputService.OnSprintKeyPressed -= Sprint;
             _inputService.OnPlayerWalking -= Walking;
-        }
-
-        private void Awake()
-        {
-            SetRunSpeed();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -71,11 +68,6 @@ namespace Scripts.Player
             {
                 Moving(1.5f);
             }
-        }
-
-        private void SetRunSpeed()
-        {
-            currentSpeed = runSpeed;
         }
 
         private void Moving(float acceleration)

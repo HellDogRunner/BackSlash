@@ -1,4 +1,5 @@
 using Scripts.Animations;
+using Scripts.Player.Camera;
 using Scripts.Weapon;
 using Scripts.Weapon.Models;
 using System.Collections;
@@ -10,6 +11,7 @@ namespace Scripts.Player.Attack
     public class PlayerAttackService : MonoBehaviour
     {
         [SerializeField] private LayerMask attackLayer;
+        [SerializeField] private Transform playerModel;
 
         private InputService _inputService;
         private WeaponTypesDatabase _weaponTypesDatabase;
@@ -49,9 +51,10 @@ namespace Scripts.Player.Attack
         private void AttackRaycast(int damage) 
         {
             var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.BasicSword);
-            var attackOrigin = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
-            if (Physics.Raycast(attackOrigin, transform.forward, out RaycastHit hit, weaponType.AttackDistance, attackLayer))
+            var attackOrigin = new Vector3(playerModel.position.x, playerModel.position.y + 1f, playerModel.position.z);
+            if (Physics.Raycast(attackOrigin, playerModel.transform.forward, out RaycastHit hit, weaponType.AttackDistance, attackLayer))
             {
+                Debug.DrawRay(attackOrigin, playerModel.transform.forward * weaponType.AttackDistance, Color.red, 5);
                 if (hit.transform.tag == "Enemy")
                 {
                     if (hit.transform.TryGetComponent<HealhService>(out HealhService T))
