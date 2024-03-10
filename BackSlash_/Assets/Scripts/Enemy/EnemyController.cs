@@ -9,42 +9,33 @@ namespace MyNamespace
 
     public class EnemyController : MonoBehaviour
     {
-        private enum EEnemyState
-        {
-            Patrol,
-            Chase,
-            Attack,
-
-        }
-
         [SerializeField] Transform Target;
 
         [SerializeField] private NavMeshAgent navMeshAgent;
 
         [SerializeField] float ProvokedRange;
         [SerializeField] float ForgetRange;
+        [SerializeField] float TurningSpeed = 5f;
 
         [SerializeField] int Damage = 10;
+        [SerializeField] int AttackDistance = 2 ;
         [SerializeField] int AttackDelay;
-        [SerializeField] float TurningSpeed = 5f;
+
+        [SerializeField] private LayerMask attackLayer;
 
         private bool isProvoked = false;
         private bool _canAttack = true;
 
         private float _distanceToTarget = Mathf.Infinity;
 
-        private HealhService _healhService;
-
         [Inject]
-        private void Construct(HealhService healhService)
+        private void Construct()
         {
-            _healhService = healhService;
-            _healhService.OnHealthChanged += Attack;
+
         }
 
         void Update()
         {
-            //if (dead) { return; }
             _distanceToTarget = Vector3.Distance(Target.position, transform.position);
             if (isProvoked)
             {
@@ -64,7 +55,7 @@ namespace MyNamespace
             {
                 navMeshAgent.SetDestination(Target.position);
             }
-            if (_distanceToTarget <= navMeshAgent.stoppingDistance)
+            if (_distanceToTarget <= AttackDistance)
             {
                 Attack(Damage);
             }
@@ -72,7 +63,6 @@ namespace MyNamespace
             {
                 isProvoked = false;
             }
-
         }
 
         private void Attack(int damage) 
@@ -80,9 +70,8 @@ namespace MyNamespace
             if (_canAttack)
             {
                 _canAttack = false;
-                _healhService.TakeDamage(damage);
-                Debug.Log("Attack " + damage);
-                StartCoroutine(AttackDelayTimer(damage));
+                AttackRaycast(damage);
+                StartCoroutine(AttackDelayTimer());
             }
 
         }
@@ -95,15 +84,32 @@ namespace MyNamespace
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * TurningSpeed);
         }
 
+        private void AttackRaycast(int damage)
+        {
+            var attackOrigin = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+            if (Physics.Raycast(attackOrigin, transform.forward, out RaycastHit hit, AttackDistance, attackLayer))
+            {
+                if (hit.transform.tag == "Player")
+                {
+                    if (hit.transform.TryGetComponent<HealhService>(out HealhService T))
+                    {
+                        T.TakeDamage(damage);
+                    }
+                }
+            }
+        }
+
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, ProvokedRange);
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, ForgetRange);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, AttackDistance);
         }
 
-        IEnumerator AttackDelayTimer(int damage)
+        IEnumerator AttackDelayTimer()
         {
             yield return new WaitForSeconds(AttackDelay);
             _canAttack = true;
