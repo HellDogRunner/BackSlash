@@ -6,22 +6,20 @@ namespace Scripts.Player.Camera
     class ThirdPersonCam : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Transform Camera;
-        [SerializeField] private Transform Orientation;
-        [SerializeField] private Transform CombatLookAt;
+        [SerializeField] private Transform cam;
+        [SerializeField] private Transform orientation;
 
-        [SerializeField] private Transform Player;
-        [SerializeField] private Transform PlayerModel;
-        [SerializeField] private Rigidbody PlayerRigibody;
+        [SerializeField] private Transform player;
+        [SerializeField] private Transform playerModel;
 
         [SerializeField] private float RotationTime;
 
-        [SerializeField] private GameObject PlayerServices;
         [SerializeField] private ECameraStyle CurrentStyle;
 
         private InputService _inputService;
 
-        public Vector3 ForwardDirection;
+        private Vector3 _forwardDirection;
+        public Vector3 ForwardDirection => _forwardDirection;
 
         private enum ECameraStyle
         {
@@ -49,26 +47,26 @@ namespace Scripts.Player.Camera
         private void RotatePlayer()
         {
             var direction = _inputService.MoveDirection;
-            Vector3 ViewDir = Player.position - new Vector3(Camera.transform.position.x, Player.position.y, Camera.transform.position.z);
-            Orientation.forward = ViewDir.normalized;
+            Vector3 ViewDir = player.position - new Vector3(cam.transform.position.x, player.position.y, cam.transform.position.z);
+            orientation.forward = ViewDir.normalized;
 
-            Vector3 inputDir = Orientation.forward * direction.z + Orientation.right * direction.x;
+            Vector3 inputDir = orientation.forward * direction.z + orientation.right * direction.x;
             if (inputDir != Vector3.zero)
             {
-                PlayerModel.forward = Vector3.Slerp(inputDir, PlayerModel.forward, RotationTime * Time.fixedDeltaTime);
+                playerModel.forward = Vector3.Slerp(inputDir, playerModel.forward, RotationTime * Time.fixedDeltaTime);
             }
         }
 
         public void RotateCameraAroundPlayer()
         {
             var direction = _inputService.MoveDirection;
-            Vector3 forward = Camera.transform.forward;
-            Vector3 right = Camera.transform.right;
+            Vector3 forward = cam.transform.forward;
+            Vector3 right = cam.transform.right;
 
             Vector3 forwardRealtiveVerticalInput = direction.z * forward;
             Vector3 rightRealtiveVerticalInput = direction.x * right;
 
-            ForwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
+            _forwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
         }
 
         private void DisableCursor()

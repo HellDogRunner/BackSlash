@@ -9,48 +9,39 @@ namespace MyNamespace
 
     public class EnemyController : MonoBehaviour
     {
-        private enum EEnemyState
-        {
-            Patrol,
-            Chase,
-            Attack,
-
-        }
-
-        [SerializeField] Transform Target;
+        [SerializeField] Transform target;
 
         [SerializeField] private NavMeshAgent navMeshAgent;
 
-        [SerializeField] float ProvokedRange;
-        [SerializeField] float ForgetRange;
+        [SerializeField] float provokedRange;
+        [SerializeField] float forgetRange;
+        [SerializeField] float turningSpeed = 5f;
 
-        [SerializeField] int Damage = 10;
-        [SerializeField] int AttackDelay;
-        [SerializeField] float TurningSpeed = 5f;
+        [SerializeField] int damage = 10;
+        [SerializeField] int attackDistance = 2 ;
+        [SerializeField] int attackDelay;
+
+        [SerializeField] private LayerMask attackLayer;
 
         private bool isProvoked = false;
         private bool _canAttack = true;
 
         private float _distanceToTarget = Mathf.Infinity;
 
-        private HealhService _healhService;
-
         [Inject]
-        private void Construct(HealhService healhService)
+        private void Construct()
         {
-            _healhService = healhService;
-            _healhService.OnHealthChanged += Attack;
+
         }
 
         void Update()
         {
-            //if (dead) { return; }
-            _distanceToTarget = Vector3.Distance(Target.position, transform.position);
+            _distanceToTarget = Vector3.Distance(target.position, transform.position);
             if (isProvoked)
             {
                 EngageTarget();
             }
-            else if (_distanceToTarget <= ProvokedRange)
+            else if (_distanceToTarget <= provokedRange)
             { 
                 isProvoked = true;
             }
@@ -62,17 +53,16 @@ namespace MyNamespace
 
             if (_distanceToTarget >= navMeshAgent.stoppingDistance)
             {
-                navMeshAgent.SetDestination(Target.position);
+                navMeshAgent.SetDestination(target.position);
             }
-            if (_distanceToTarget <= navMeshAgent.stoppingDistance)
+            if (_distanceToTarget <= attackDistance)
             {
-                Attack(Damage);
+                Attack(damage);
             }
-            if (_distanceToTarget >= ForgetRange)
+            if (_distanceToTarget >= forgetRange)
             {
                 isProvoked = false;
             }
-
         }
 
         private void Attack(int damage) 
@@ -80,32 +70,48 @@ namespace MyNamespace
             if (_canAttack)
             {
                 _canAttack = false;
-                _healhService.TakeDamage(damage);
-                Debug.Log("Attack " + damage);
-                StartCoroutine(AttackDelayTimer(damage));
+                AttackRaycast(damage);
+                StartCoroutine(AttackDelayTimer());
             }
 
         }
 
         private void LookToTarget()
         {
-            Vector3 direction = (Target.position - transform.position).normalized;
+            Vector3 direction = (target.position - transform.position).normalized;
 
             Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * TurningSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * turningSpeed);
+        }
+
+        private void AttackRaycast(int damage)
+        {
+            var attackOrigin = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+            if (Physics.Raycast(attackOrigin, transform.forward, out RaycastHit hit, attackDistance, attackLayer))
+            {
+                if (hit.transform.tag == "Player")
+                {
+                    if (hit.transform.TryGetComponent<HealhService>(out HealhService T))
+                    {
+                        T.TakeDamage(damage);
+                    }
+                }
+            }
         }
 
         private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, ProvokedRange);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, provokedRange);
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, ForgetRange);
+            Gizmos.DrawWireSphere(transform.position, forgetRange);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, attackDistance);
         }
 
-        IEnumerator AttackDelayTimer(int damage)
+        IEnumerator AttackDelayTimer()
         {
-            yield return new WaitForSeconds(AttackDelay);
+            yield return new WaitForSeconds(attackDelay);
             _canAttack = true;
         }
     }
