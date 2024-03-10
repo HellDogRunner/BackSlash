@@ -93,6 +93,7 @@ namespace Scripts.Player
             if (attackType == -1)
             {
                 OnLightAttackPressed?.Invoke();
+   
             }
             if (attackType == 1)
             {
