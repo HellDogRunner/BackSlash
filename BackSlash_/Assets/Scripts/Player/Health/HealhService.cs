@@ -21,6 +21,6 @@ public class HealhService : MonoBehaviour
 
     private void Death() 
     {
-        Destroy(gameObject);
+         Debug.Log("Смерть");
     }
 }
