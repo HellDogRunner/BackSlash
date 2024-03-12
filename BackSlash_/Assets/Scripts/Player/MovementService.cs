@@ -15,15 +15,12 @@ namespace Scripts.Player
         [SerializeField] private float sprintSpeed;
         [SerializeField] private float groundDrag;
         [SerializeField] private float jumpForce;
-        [SerializeField] private float fallForce;
-        
+        [SerializeField] private float dodgeForce;
 
         private InputService _inputService;
         private ThirdPersonCam _thirdPersonCam;
 
-        public bool IsGrounded;
-
-        private Vector3 _moveDirection;
+        private bool isGrounded;
 
         [Inject]
         private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam)
@@ -31,50 +28,41 @@ namespace Scripts.Player
             _inputService = inputService;
             _thirdPersonCam = thirdPersonCam;
 
-            _inputService.OnDirectionChanged += Direction;
             _inputService.OnSprintKeyPressed += Sprint;
             _inputService.OnPlayerWalking += Walking;
+            _inputService.OnJumpKeyPressed += Jump;
+            _inputService.OnDogdeKeyPressed += Dodge;
 
             currentSpeed = runSpeed;
         }
 
         private void OnDestroy()
         {
-            _inputService.OnDirectionChanged -= Direction;
             _inputService.OnSprintKeyPressed -= Sprint;
             _inputService.OnPlayerWalking -= Walking;
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            IsGrounded = true;
+            _inputService.OnJumpKeyPressed -= Jump;
+            _inputService.OnDogdeKeyPressed -= Dodge;
         }
 
         private void FixedUpdate()
-        {
-            if (IsGrounded)
+        {   
+            if (isGrounded)
             {
-                if (_moveDirection.y > 0)
-                {
-                    _rigidbody.drag = 0;
-                    IsGrounded = false;
-                    JumpMoving();
-                }
-                else _rigidbody.drag = groundDrag;
-
                 Moving(10f);
+                _rigidbody.drag = groundDrag;
             }
-            else
-            {
-                Moving(1.5f);
-            }
+            Moving(1.5f);
         }
 
         private void Moving(float acceleration)
         {
             Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
             _rigidbody.AddForce(movingDirection * currentSpeed * acceleration, ForceMode.Force);
-            SpeedControl();
+
+            if (!isGrounded)
+            {
+                SpeedControl();
+            }
         }
 
         private void Sprint()
@@ -89,14 +77,29 @@ namespace Scripts.Player
             }
         }
 
-        private void Direction(Vector3 direction)
+        private void Dodge()
         {
-            _moveDirection = direction;
+            if (isGrounded)
+            {
+                Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+                _rigidbody.AddForce(movingDirection * dodgeForce, ForceMode.VelocityChange);
+            }
         }
 
-        private void JumpMoving()
+        private void OnTriggerEnter(Collider other)
         {
-            _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = true;
+        }
+
+        private void Jump()
+        {
+            if (isGrounded)
+            {
+                _rigidbody.drag = 0;
+                _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+                isGrounded = false;
+            }
         }
 
         private void Walking()

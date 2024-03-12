@@ -17,6 +17,7 @@ namespace Scripts.Player
         public event Action OnPlayerWalking;
         public event Action OnSprintKeyPressed;
         public event Action OnJumpKeyPressed;
+        public event Action OnDogdeKeyPressed;
         public event Action OnLightAttackPressed;
         public event Action OnHardAttackPressed;
         public Vector3 MoveDirection => _moveDirection;
@@ -73,7 +74,7 @@ namespace Scripts.Player
 
         private void Dodge(InputAction.CallbackContext context)
         {
-            Debug.Log("Dodge");
+            OnDogdeKeyPressed?.Invoke();
         }
         private void Walking(InputAction.CallbackContext context)
         {
