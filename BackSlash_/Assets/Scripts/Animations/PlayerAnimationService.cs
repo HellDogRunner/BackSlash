@@ -8,6 +8,7 @@ namespace Scripts.Animations
     public class PlayerAnimationService : MonoBehaviour
     {
         [SerializeField] private Animator Animator;
+        [SerializeField] private float smoothBlend;
 
         private InputService _inputService;
 
@@ -17,45 +18,25 @@ namespace Scripts.Animations
         private void Construct(InputService inputService)
         {
             _inputService = inputService;
-            _inputService.OnPlayerIdle += IdleAnimation;
-            _inputService.OnPlayerWalking += WalkingAnimation;
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
             _inputService.OnLightAttackPressed += AttackAnimation;
+            _inputService.OnDogdeKeyPressed += DodgeAnimation;
         }
 
         private void OnDestroy()
         {
-            _inputService.OnPlayerIdle -= IdleAnimation;
-            _inputService.OnPlayerWalking -= WalkingAnimation;
             _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed -= JumpAnimation;
             _inputService.OnLightAttackPressed -= AttackAnimation;
+            _inputService.OnDogdeKeyPressed -= DodgeAnimation;
         }
 
-        private void IdleAnimation()
+        private void Update()
         {
-            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Idle)
-            {
-                Animator.SetBool("IsRun", false);
-                Animator.SetBool("IsSprint", false);
-            }
-            else if (_inputService.StateContainer.State == PlayerState.EPlayerState.Run)
-            {
-                Animator.SetBool("IsRun", true);
-            }
-        }
-
-        private void WalkingAnimation()
-        {
-            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Walk)
-            {
-                Animator.SetBool("IsWalk", true);
-            }
-            else if (_inputService.StateContainer.State != PlayerState.EPlayerState.Walk)
-            {
-                Animator.SetBool("IsWalk", false);
-            }
+            var dir = _inputService.MoveDirection;
+            Animator.SetFloat("InputX", dir.x, smoothBlend, Time.deltaTime);
+            Animator.SetFloat("InputY", dir.z, smoothBlend, Time.deltaTime);
         }
 
         private void SprintAndRunAnimation()
@@ -70,25 +51,19 @@ namespace Scripts.Animations
             }
         }
 
-        private void SiddewayWalking(Vector3 direction)
-        {
-            if (direction == new Vector3(-1f, 0f, 1f) || direction == new Vector3(1f, 0f, 1f))
-            {
-                Animator.SetBool("Sideways", true);
-                if (direction.x == -1f)
-                {
-                    Animator.SetFloat("Blend", 0.1f);
-                }
-                else Animator.SetFloat("Blend", 0.9f);
-            }
-            else { Animator.SetBool("Sideways", false); }
-        }
-
         private void JumpAnimation()
         {
             if (_inputService.StateContainer.State == PlayerState.EPlayerState.Jumping)
             {
                 Animator.Play("Jump forward");
+            }
+        }
+
+        private void DodgeAnimation()
+        {
+            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Dodge)
+            {
+                Animator.Play("Dodge");
             }
         }
 

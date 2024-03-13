@@ -1,4 +1,4 @@
-using Scripts.Player.Camera;
+using Scripts.Player.camera;
 using UnityEngine;
 using Zenject;
 
@@ -9,6 +9,7 @@ namespace Scripts.Player
         [SerializeField] private Rigidbody _rigidbody;
         [Header("Monitoring")]
         [SerializeField] private float currentSpeed;
+        [SerializeField] private float turnSpeed;
         [Header("Movement")]
         [SerializeField] private float walkSpeed;
         [SerializeField] private float runSpeed;
@@ -22,14 +23,16 @@ namespace Scripts.Player
 
         private bool isGrounded;
 
+        private Camera mainCamera;
+
         [Inject]
         private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam)
         {
             _inputService = inputService;
             _thirdPersonCam = thirdPersonCam;
+            mainCamera = Camera.main;
 
             _inputService.OnSprintKeyPressed += Sprint;
-            _inputService.OnPlayerWalking += Walking;
             _inputService.OnJumpKeyPressed += Jump;
             _inputService.OnDogdeKeyPressed += Dodge;
 
@@ -39,19 +42,23 @@ namespace Scripts.Player
         private void OnDestroy()
         {
             _inputService.OnSprintKeyPressed -= Sprint;
-            _inputService.OnPlayerWalking -= Walking;
             _inputService.OnJumpKeyPressed -= Jump;
             _inputService.OnDogdeKeyPressed -= Dodge;
         }
 
         private void FixedUpdate()
-        {   
+        {
+            float yawCamera = mainCamera.transform.rotation.eulerAngles.y;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yawCamera, 0), turnSpeed * Time.fixedDeltaTime);
             if (isGrounded)
             {
                 Moving(10f);
                 _rigidbody.drag = groundDrag;
             }
-            Moving(1.5f);
+            else
+            {
+                Moving(1.5f);
+            }
         }
 
         private void Moving(float acceleration)
@@ -100,11 +107,6 @@ namespace Scripts.Player
 
                 isGrounded = false;
             }
-        }
-
-        private void Walking()
-        {
-
         }
 
         private void SpeedControl()

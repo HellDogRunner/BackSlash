@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace Scripts.Player.Camera
+namespace Scripts.Player.camera
 { 
     class ThirdPersonCam : MonoBehaviour
     {
@@ -40,7 +40,7 @@ namespace Scripts.Player.Camera
 
         private void FixedUpdate()
         {
-            RotatePlayer();
+            //RotatePlayer();
             RotateCameraAroundPlayer();
         }
 

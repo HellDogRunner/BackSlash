@@ -16,10 +16,14 @@ namespace MyNamespace
         [SerializeField] float provokedRange;
         [SerializeField] float forgetRange;
         [SerializeField] float turningSpeed = 5f;
-
+        [Header("MeleeSettings")]
         [SerializeField] int damage = 10;
-        [SerializeField] int attackDistance = 2 ;
+        [SerializeField] int attackDistance = 2;
         [SerializeField] int attackDelay;
+        [Header("RangeSettings")]
+        [SerializeField] int rangeDamage = 10;
+        [SerializeField] int rangeAttackDistance = 2;
+        [SerializeField] int bulletSpeed;
 
         [SerializeField] private LayerMask attackLayer;
 
@@ -42,7 +46,7 @@ namespace MyNamespace
                 EngageTarget();
             }
             else if (_distanceToTarget <= provokedRange)
-            { 
+            {
                 isProvoked = true;
             }
         }
@@ -65,12 +69,12 @@ namespace MyNamespace
             }
         }
 
-        private void Attack(int damage) 
+        private void Attack(int damage)
         {
             if (_canAttack)
             {
                 _canAttack = false;
-                AttackRaycast(damage);
+                RangeAttack(damage);
                 StartCoroutine(AttackDelayTimer());
             }
 
@@ -84,7 +88,7 @@ namespace MyNamespace
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * turningSpeed);
         }
 
-        private void AttackRaycast(int damage)
+        private void MeleeAttack(int damage)
         {
             var attackOrigin = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
             if (Physics.Raycast(attackOrigin, transform.forward, out RaycastHit hit, attackDistance, attackLayer))
@@ -99,6 +103,20 @@ namespace MyNamespace
             }
         }
 
+        private void RangeAttack(int damage)
+        {
+            var attackOrigin = new Vector3(transform.position.x, transform.position.y + 1, transform.position.z);
+            if (Physics.Raycast(attackOrigin, transform.forward, out RaycastHit hit, attackDistance, attackLayer))
+            {
+ 
+            }
+        }
+        IEnumerator AttackDelayTimer()
+        {
+            yield return new WaitForSeconds(attackDelay);
+            _canAttack = true;
+        }
+
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.yellow;
@@ -108,12 +126,5 @@ namespace MyNamespace
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, attackDistance);
         }
-
-        IEnumerator AttackDelayTimer()
-        {
-            yield return new WaitForSeconds(attackDelay);
-            _canAttack = true;
-        }
     }
-
 }

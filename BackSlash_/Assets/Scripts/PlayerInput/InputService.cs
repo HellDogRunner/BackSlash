@@ -74,6 +74,7 @@ namespace Scripts.Player
 
         private void Dodge(InputAction.CallbackContext context)
         {
+            _playerState.State = PlayerState.EPlayerState.Dodge;
             OnDogdeKeyPressed?.Invoke();
         }
         private void Walking(InputAction.CallbackContext context)

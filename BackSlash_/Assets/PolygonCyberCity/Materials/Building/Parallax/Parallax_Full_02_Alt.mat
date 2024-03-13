@@ -1,0 +1,202 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Parallax_Full_02_Alt
+  m_Shader: {fileID: 4800000, guid: 2a33a166317493947a7be330dcc78a05, type: 3}
+  m_ShaderKeywords: _FACADETEXTURE1_ON _FACADETEXTURE2_ON _FACADETEXTURE_ON _GRUNGEDECALSWITCH_1_ON
+    _GRUNGEDECALSWITCH_2_ON _SHOWFACADE_ON _SMOOTHNESSTEXTURE_ON
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Albedo:
+        m_Texture: {fileID: 2800000, guid: b6604f50e4664be419a752b70e986a46, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Back:
+        m_Texture: {fileID: 2800000, guid: abf4bc711532ce9418b431ecc541c6b5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Back1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Ceiling:
+        m_Texture: {fileID: 2800000, guid: 96db0ef7541e12947baea7ceea66d512, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Ceiling1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FacadeAlbedo:
+        m_Texture: {fileID: 2800000, guid: fa85110885592d344a3dad70e606e886, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FacadeAlbedo1:
+        m_Texture: {fileID: 2800000, guid: fa85110885592d344a3dad70e606e886, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FacadeSmoothness:
+        m_Texture: {fileID: 2800000, guid: a451e81424298fc4b87bdb35a0592adb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FacadeSmoothness1:
+        m_Texture: {fileID: 2800000, guid: a451e81424298fc4b87bdb35a0592adb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Floor:
+        m_Texture: {fileID: 2800000, guid: b198d2d8a34741b4dbf5cac7c356a5dc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Floor1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normals:
+        m_Texture: {fileID: 2800000, guid: ffec5d4432cab84498b86dcc83ad32bb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Props:
+        m_Texture: {fileID: 2800000, guid: 43051e0d1c99bfd43b0bce1baae61e8e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Props1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TopTexture0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TriplanarAlpha_1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TriplanarAlpha_2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TriplanarTex_1:
+        m_Texture: {fileID: 2800000, guid: 83546a37408544d49b9426683268e616, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TriplanarTex_2:
+        m_Texture: {fileID: 2800000, guid: 62031f7df88a7ac4db5aa28e74ff1e35, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TriplanarTexture_1:
+        m_Texture: {fileID: 2800000, guid: 981e0e23fe0c3384c931d0b547e49cc6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TriplanarTexture_2:
+        m_Texture: {fileID: 2800000, guid: 62031f7df88a7ac4db5aa28e74ff1e35, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Wall:
+        m_Texture: {fileID: 2800000, guid: abf4bc711532ce9418b431ecc541c6b5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Wall1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WallMask_1:
+        m_Texture: {fileID: 2800000, guid: c8bc4546ad27b0244a3db2f011ba4f77, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WallMask_2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WindowAlpha:
+        m_Texture: {fileID: 2800000, guid: 6d86fe0e2ed0c9746976a103a038135d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _AlphaCutoff: 0.5
+    - _BackWallTexTiling: 0.334
+    - _BackWallTexTiling1: 0
+    - _CeilingTexTiling: 0.3
+    - _CeilingTexTiling1: 0
+    - _DecalTransparency_1: 0.081
+    - _DecalTransparency_2: 1
+    - _EmissionAmount: 1
+    - _FacadeExtrudeAmount: -0.002
+    - _FacadeExtrudeAmount1: 0.002
+    - _FacadeSmoothness: 0.2
+    - _FacadeTexture: 1
+    - _FacadeTexture1: 1
+    - _FacadeTexture2: 1
+    - _FacadeTiling: 1
+    - _FacadeTiling1: 1
+    - _FloorTexTiling: 0.3
+    - _FloorTexTiling1: 0
+    - _GlowThreshold: 0.95
+    - _GrungeDecalSwitch_1: 1
+    - _GrungeDecalSwitch_2: 1
+    - _LinkTiling_1useXonly: 1
+    - _LinkTiling_2useXonly: 1
+    - _Metallic: 0
+    - _NormalAmount: 1
+    - _PropsTexTiling: 2
+    - _PropsTexTiling1: 0
+    - _RoomEmission: 3.1
+    - _RoomIntensity: 4
+    - _RoomIntensity1: 1
+    - _RoomTile: 2
+    - _RoomTile1: 0
+    - _ShowFacade: 1
+    - _Smoothness: 1
+    - _SmoothnessTexture: 1
+    - _SmoothnessValue: 0.625
+    - _SmoothnessValue1: 1
+    - _SwitchPlane: 0
+    - _SwitchPlane1: 0
+    - _SwitchPlane2: 0
+    - _SwitchPlane3: 0
+    - _SwitchPlane4: 0
+    - _TogglePropLayer: 0
+    - _TogglePropLayer1: 0
+    - _TriplanarTiling_1_X: 0.07
+    - _TriplanarTiling_1_Y: 1
+    - _TriplanarTiling_2_X: 0.19
+    - _TriplanarTiling_2_Y: 1
+    - _WallEmission: 0.22
+    - _WallGlowThreshold: 0.95
+    - _WalltexTiling: 0.334
+    - _WalltexTiling1: 0
+    - __dirty: 0
+    - _power: 2
+    - _scale: 1.04
+    m_Colors:
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _PositionOffsetXYZroomsWprops: {r: 0.001, g: 0, b: 0.001, a: 0}
+    - _PositionOffsetXYZroomsWprops1: {r: 0, g: 0, b: 0, a: 0}
+    - _RoomColorTint: {r: 1, g: 1, b: 1, a: 0}
+    - _RoomColorTint1: {r: 1, g: 1, b: 1, a: 0}
+    - _RoomTint: {r: 0, g: 0.7197895, b: 1, a: 0}
+    - _RoomsXYZPropsW: {r: 0.0499, g: 0.167, b: 0.0499, a: 1.12}
+    - _RoomsXYZPropsW1: {r: 1, g: 1, b: 1, a: 1}
+    - _emitOverlay: {r: 0.44705883, g: 0.37859038, b: 0, a: 0}
+    - _emitOverlay1: {r: 0.54, g: 0.3913412, b: 0.16092002, a: 0}
+  m_BuildTextureStacks: []

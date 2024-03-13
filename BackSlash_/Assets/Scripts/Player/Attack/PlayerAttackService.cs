@@ -1,5 +1,5 @@
 using Scripts.Animations;
-using Scripts.Player.Camera;
+using Scripts.Player.camera;
 using Scripts.Weapon;
 using Scripts.Weapon.Models;
 using System.Collections;
