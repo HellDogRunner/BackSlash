@@ -6,6 +6,7 @@ namespace Scripts.Weapon
     public enum EWeaponType : int
     {
         None = 0,
-        BasicSword = 1
+        Melee = 1,
+        Range = 2
     }
 }

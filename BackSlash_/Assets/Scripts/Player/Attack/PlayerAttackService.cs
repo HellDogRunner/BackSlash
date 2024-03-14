@@ -11,7 +11,6 @@ namespace Scripts.Player.Attack
     public class PlayerAttackService : MonoBehaviour
     {
         [SerializeField] private LayerMask attackLayer;
-        [SerializeField] private Transform playerModel;
 
         private InputService _inputService;
         private WeaponTypesDatabase _weaponTypesDatabase;
@@ -22,20 +21,17 @@ namespace Scripts.Player.Attack
             _inputService = inputService;
             _weaponTypesDatabase = weaponTypesDatabase;
 
-            _inputService.OnLightAttackPressed += LightAttack;
-            _inputService.OnHardAttackPressed += HardAttack;
             Debug.DrawRay(transform.position, transform.forward * 3, Color.green);
         }
 
         private void OnDestroy()
         {
-            _inputService.OnLightAttackPressed -= LightAttack;
-            _inputService.OnHardAttackPressed -= HardAttack;
+
         }
 
-        private void LightAttack() 
+        private void LightAttack(bool isPressed) 
         {
-            var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.BasicSword);
+            var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Range);
             var weaponDamage = weaponType.LightAttackDamage;
             AttackRaycast(weaponDamage);
 
@@ -43,18 +39,18 @@ namespace Scripts.Player.Attack
 
         private void HardAttack()
         {
-            var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.BasicSword);
+            var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Range);
             var weaponDamage = weaponType.HardAttackDamage;
             AttackRaycast(weaponDamage);
         }
 
         private void AttackRaycast(int damage) 
         {
-            var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.BasicSword);
-            var attackOrigin = new Vector3(playerModel.position.x, playerModel.position.y + 1f, playerModel.position.z);
-            if (Physics.Raycast(attackOrigin, playerModel.transform.forward, out RaycastHit hit, weaponType.AttackDistance, attackLayer))
+            var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Range);
+            var attackOrigin = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+            if (Physics.Raycast(attackOrigin, transform.forward, out RaycastHit hit, weaponType.AttackDistance, attackLayer))
             {
-                Debug.DrawRay(attackOrigin, playerModel.transform.forward * weaponType.AttackDistance, Color.red, 5);
+                Debug.DrawRay(attackOrigin, transform.transform.forward * weaponType.AttackDistance, Color.red, 5);
                 if (hit.transform.tag == "Enemy")
                 {
                     if (hit.transform.TryGetComponent<HealhService>(out HealhService T))

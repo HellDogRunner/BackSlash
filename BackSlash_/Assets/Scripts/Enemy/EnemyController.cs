@@ -20,10 +20,6 @@ namespace MyNamespace
         [SerializeField] int damage = 10;
         [SerializeField] int attackDistance = 2;
         [SerializeField] int attackDelay;
-        [Header("RangeSettings")]
-        [SerializeField] int rangeDamage = 10;
-        [SerializeField] int rangeAttackDistance = 2;
-        [SerializeField] int bulletSpeed;
 
         [SerializeField] private LayerMask attackLayer;
 

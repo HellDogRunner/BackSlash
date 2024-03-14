@@ -13,8 +13,19 @@ MonoBehaviour:
   m_Name: WeaponTypesDatabase
   m_EditorClassIdentifier: 
   _data:
+  - WeaponType: 0
+    WeaponPrefab: {fileID: 0}
+    LightAttackDamage: 0
+    HardAttackDamage: 0
+    AttackDistance: 0
   - WeaponType: 1
     WeaponPrefab: {fileID: 3759398401733693954, guid: 63743ababf9fb82409ba58c64235501c,
+      type: 3}
+    LightAttackDamage: 5
+    HardAttackDamage: 10
+    AttackDistance: 3
+  - WeaponType: 2
+    WeaponPrefab: {fileID: 6687216543345146240, guid: 95dbf4d5f702faa4c99d3b0cc3c82e89,
       type: 3}
     LightAttackDamage: 5
     HardAttackDamage: 10

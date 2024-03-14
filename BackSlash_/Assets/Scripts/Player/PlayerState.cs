@@ -13,7 +13,7 @@ namespace Scripts.Player
             Run,
             Sprint,
             Dodge,
-            Target,
+            Attack,
             Jumping,
             Fall
         }

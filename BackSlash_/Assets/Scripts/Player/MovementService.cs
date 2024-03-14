@@ -32,7 +32,6 @@ namespace Scripts.Player
             _thirdPersonCam = thirdPersonCam;
             mainCamera = Camera.main;
 
-            _inputService.OnSprintKeyPressed += Sprint;
             _inputService.OnJumpKeyPressed += Jump;
             _inputService.OnDogdeKeyPressed += Dodge;
 
@@ -41,18 +40,23 @@ namespace Scripts.Player
 
         private void OnDestroy()
         {
-            _inputService.OnSprintKeyPressed -= Sprint;
             _inputService.OnJumpKeyPressed -= Jump;
             _inputService.OnDogdeKeyPressed -= Dodge;
+        }
+
+        private void Update()
+        {
+          
         }
 
         private void FixedUpdate()
         {
             float yawCamera = mainCamera.transform.rotation.eulerAngles.y;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yawCamera, 0), turnSpeed * Time.fixedDeltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yawCamera, 0), turnSpeed * Time.deltaTime);
             if (isGrounded)
             {
-                Moving(10f);
+                Moving(10f);              
+                Sprint();
                 _rigidbody.drag = groundDrag;
             }
             else
@@ -74,11 +78,11 @@ namespace Scripts.Player
 
         private void Sprint()
         {
-            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Sprint)
+            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Sprint)
             {
                 currentSpeed = sprintSpeed;
             }
-            else if (_inputService.StateContainer.State == PlayerState.EPlayerState.Run)
+            else if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Run)
             {
                 currentSpeed = runSpeed;
             }
@@ -102,10 +106,13 @@ namespace Scripts.Player
         {
             if (isGrounded)
             {
-                _rigidbody.drag = 0;
-                _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Jumping)
+                {
+                    _rigidbody.drag = 0;
+                    _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
-                isGrounded = false;
+                    isGrounded = false;
+                }
             }
         }
 
@@ -118,5 +125,7 @@ namespace Scripts.Player
                 _rigidbody.velocity = new Vector3(limitedSpeed.x, _rigidbody.velocity.y, limitedSpeed.z);
             }
         }
+
+       
     }
 }

@@ -2,6 +2,7 @@ using Scripts.Player;
 using System;
 using UnityEngine;
 using Zenject;
+using UnityEngine.Animations.Rigging;
 
 namespace Scripts.Animations
 {
@@ -9,10 +10,11 @@ namespace Scripts.Animations
     {
         [SerializeField] private Animator Animator;
         [SerializeField] private float smoothBlend;
+        [SerializeField] private Rig aimLayer;
+
+        [SerializeField] private float aimDuration;
 
         private InputService _inputService;
-
-        public event Action OnAttack;
 
         [Inject]
         private void Construct(InputService inputService)
@@ -20,7 +22,7 @@ namespace Scripts.Animations
             _inputService = inputService;
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
-            _inputService.OnLightAttackPressed += AttackAnimation;
+           // _inputService.OnLightAttackPressed += AttackAnimation;
             _inputService.OnDogdeKeyPressed += DodgeAnimation;
         }
 
@@ -28,7 +30,7 @@ namespace Scripts.Animations
         {
             _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed -= JumpAnimation;
-            _inputService.OnLightAttackPressed -= AttackAnimation;
+           // _inputService.OnLightAttackPressed -= AttackAnimation;
             _inputService.OnDogdeKeyPressed -= DodgeAnimation;
         }
 
@@ -37,15 +39,24 @@ namespace Scripts.Animations
             var dir = _inputService.MoveDirection;
             Animator.SetFloat("InputX", dir.x, smoothBlend, Time.deltaTime);
             Animator.SetFloat("InputY", dir.z, smoothBlend, Time.deltaTime);
+
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
+            {
+                aimLayer.weight += Time.deltaTime / aimDuration;
+            }
+            else if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
+            {
+                aimLayer.weight -= Time.deltaTime / aimDuration;
+            }
         }
 
         private void SprintAndRunAnimation()
         {
-            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Sprint)
+            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Sprint)
             {
                 Animator.SetBool("IsSprint", true);
             }
-            else if (_inputService.StateContainer.State == PlayerState.EPlayerState.Run)
+            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Run)
             {
                 Animator.SetBool("IsSprint", false);
             }
@@ -53,7 +64,7 @@ namespace Scripts.Animations
 
         private void JumpAnimation()
         {
-            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Jumping)
+            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Jumping)
             {
                 Animator.Play("Jump forward");
             }
@@ -61,7 +72,7 @@ namespace Scripts.Animations
 
         private void DodgeAnimation()
         {
-            if (_inputService.StateContainer.State == PlayerState.EPlayerState.Dodge)
+            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Dodge)
             {
                 Animator.Play("Dodge");
             }
@@ -69,7 +80,7 @@ namespace Scripts.Animations
 
         private void AttackAnimation()
         {
-            Animator.Play("LightAttack");
+           // Animator.Play("LightAttack");
         }
     }
 }
