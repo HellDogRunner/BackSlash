@@ -71,6 +71,24 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ShowWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""66351d25-1992-4538-a908-dc7d821867a8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HideWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""dfceaf67-c5b0-4083-8094-8c0d6780bdd9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -194,6 +212,28 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b73de4f-9d54-4a46-a38d-a81a5596456b"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1fa1f6bf-37e2-4419-b82b-ba4a16d60a0e"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HideWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -207,6 +247,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Gameplay_Sprint = m_Gameplay.FindAction("Sprint", throwIfNotFound: true);
         m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
         m_Gameplay_Dodge = m_Gameplay.FindAction("Dodge", throwIfNotFound: true);
+        m_Gameplay_ShowWeapon = m_Gameplay.FindAction("ShowWeapon", throwIfNotFound: true);
+        m_Gameplay_HideWeapon = m_Gameplay.FindAction("HideWeapon", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -273,6 +315,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Sprint;
     private readonly InputAction m_Gameplay_Attack;
     private readonly InputAction m_Gameplay_Dodge;
+    private readonly InputAction m_Gameplay_ShowWeapon;
+    private readonly InputAction m_Gameplay_HideWeapon;
     public struct GameplayActions
     {
         private @GameControls m_Wrapper;
@@ -282,6 +326,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_Gameplay_Sprint;
         public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
         public InputAction @Dodge => m_Wrapper.m_Gameplay_Dodge;
+        public InputAction @ShowWeapon => m_Wrapper.m_Gameplay_ShowWeapon;
+        public InputAction @HideWeapon => m_Wrapper.m_Gameplay_HideWeapon;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -306,6 +352,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Dodge.started += instance.OnDodge;
             @Dodge.performed += instance.OnDodge;
             @Dodge.canceled += instance.OnDodge;
+            @ShowWeapon.started += instance.OnShowWeapon;
+            @ShowWeapon.performed += instance.OnShowWeapon;
+            @ShowWeapon.canceled += instance.OnShowWeapon;
+            @HideWeapon.started += instance.OnHideWeapon;
+            @HideWeapon.performed += instance.OnHideWeapon;
+            @HideWeapon.canceled += instance.OnHideWeapon;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -325,6 +377,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Dodge.started -= instance.OnDodge;
             @Dodge.performed -= instance.OnDodge;
             @Dodge.canceled -= instance.OnDodge;
+            @ShowWeapon.started -= instance.OnShowWeapon;
+            @ShowWeapon.performed -= instance.OnShowWeapon;
+            @ShowWeapon.canceled -= instance.OnShowWeapon;
+            @HideWeapon.started -= instance.OnHideWeapon;
+            @HideWeapon.performed -= instance.OnHideWeapon;
+            @HideWeapon.canceled -= instance.OnHideWeapon;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -349,5 +407,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
+        void OnShowWeapon(InputAction.CallbackContext context);
+        void OnHideWeapon(InputAction.CallbackContext context);
     }
 }

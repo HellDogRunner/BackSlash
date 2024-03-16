@@ -9,7 +9,9 @@ namespace Scripts.Player
         public enum EWeaponState
         {
             Attack,
-            Idle
+            Idle,
+            Show,
+            Hide
         }
     }
 }

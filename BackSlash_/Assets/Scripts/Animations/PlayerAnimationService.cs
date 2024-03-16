@@ -42,11 +42,11 @@ namespace Scripts.Animations
 
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
             {
-                aimLayer.weight += Time.deltaTime / aimDuration;
+                aimLayer.weight = 1f;
             }
             else if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
             {
-                aimLayer.weight -= Time.deltaTime / aimDuration;
+               // aimLayer.weight -= Time.deltaTime / aimDuration;
             }
         }
 

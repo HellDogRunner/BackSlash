@@ -9,19 +9,22 @@ namespace Scripts.Weapon
 {
     public class WeaponController : MonoBehaviour
     {
-        [SerializeField] private Transform handTransform;
+        [SerializeField] private Transform WeaponPivot;
+        [SerializeField] private Transform crossHairTarget;
+        [SerializeField] private UnityEngine.Animations.Rigging.Rig _handIk;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
         private GameObject _currentWeapon;
         private InputService _inputService;
         private RaycastWeapon _raycastWeapon;
 
-        private bool _isAttack;
         [Inject]
         private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputService inputService)
         {
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
+
+            _handIk.weight = 0f;
         }
 
         private void OnDestroy()
@@ -29,13 +32,13 @@ namespace Scripts.Weapon
 
         }
 
-        private void FixedUpdate()
+        private void LateUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Show)
             {
                 ShowWeapon();
             }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Hide)
             {
                 HideWeapon();
             }
@@ -45,7 +48,17 @@ namespace Scripts.Weapon
                 {
                     _raycastWeapon.StartFiring();
                 }
-                else _raycastWeapon.StopFiring();
+                if (_raycastWeapon.IsFiring)
+                {
+                    _raycastWeapon.UpdateFiring(Time.deltaTime);
+
+                }
+                _raycastWeapon.UpdateBullets(Time.deltaTime);
+                if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
+                {
+                    _raycastWeapon.StopFiring();
+
+                }
             }
         }
 
@@ -55,12 +68,15 @@ namespace Scripts.Weapon
             {
                 return;
             }
+            _handIk.weight = 1f;
+
             var weaponModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Range);
-            _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, handTransform.position, handTransform.rotation);
-            _currentWeapon.transform.parent = handTransform.transform;
+            _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, WeaponPivot.position, WeaponPivot.rotation);
+            _currentWeapon.transform.parent = WeaponPivot.transform;
             if (_currentWeapon.TryGetComponent<RaycastWeapon>(out RaycastWeapon raycastWeapon))
             {
                 _raycastWeapon = raycastWeapon;
+                _raycastWeapon.RaycastDestination = crossHairTarget;
             }
         }
 
@@ -70,6 +86,7 @@ namespace Scripts.Weapon
             {
                 return;
             }
+            _handIk.weight = 0f;
             Destroy(_currentWeapon);
         }
     }

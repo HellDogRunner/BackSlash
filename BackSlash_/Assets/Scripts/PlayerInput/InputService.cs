@@ -16,7 +16,6 @@ namespace Scripts.Player
         public event Action OnSprintKeyPressed;
         public event Action OnJumpKeyPressed;
         public event Action OnDogdeKeyPressed;
-
         public Vector3 MoveDirection => _moveDirection;
         public PlayerState PlayerStateContainer => _playerState;
         public WeaponState WeaponStateContainer => _weaponState;
@@ -26,7 +25,6 @@ namespace Scripts.Player
 
         private bool _isAttackPressed;
         private bool _isJumpPressed;
-
 
         [Inject]
         private void Construct()
@@ -46,6 +44,10 @@ namespace Scripts.Player
             _playerControls.Gameplay.Sprint.started += Sprint;
             _playerControls.Gameplay.Sprint.performed += Run;
             _playerControls.Gameplay.Sprint.canceled += Run;
+
+            _playerControls.Gameplay.ShowWeapon.performed += ShowWeapon;
+            _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
+
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
@@ -61,12 +63,19 @@ namespace Scripts.Player
                 _playerState.State = PlayerState.EPlayerState.Jumping;
                 OnJumpKeyPressed?.Invoke();
             }
-            if (_moveDirection != Vector3.zero && _moveDirection.y < 1) 
+            if (_moveDirection != Vector3.zero && _moveDirection.y < 1 && _playerState.State != PlayerState.EPlayerState.Sprint) 
             {
                 _playerState.State = PlayerState.EPlayerState.Run;
             }
         }
-
+        private void ShowWeapon(InputAction.CallbackContext context) 
+        {
+            _weaponState.State = WeaponState.EWeaponState.Show;
+        }
+        private void HideWeapon(InputAction.CallbackContext context)
+        {
+            _weaponState.State = WeaponState.EWeaponState.Hide;
+        }
         private void Run(InputAction.CallbackContext context)
         {
             _playerState.State = PlayerState.EPlayerState.Run;
