@@ -461,7 +461,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 650114270}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12218325, y: 0.000000017077465, z: 0.0000000021023316, w: 0.9925076}
+  m_LocalRotation: {x: -0.12218327, y: -0.000000017077465, z: -0.0000000021023319,
+    w: 0.9925076}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2350,7 +2351,7 @@ Transform:
   m_GameObject: {fileID: 251434209856607805}
   serializedVersion: 2
   m_LocalRotation: {x: 0.45030645, y: -0.41892996, z: -0.4694551, w: 0.6335091}
-  m_LocalPosition: {x: 0.029, y: -0.039, z: -0.169}
+  m_LocalPosition: {x: 0.011, y: -0.131, z: 0.223}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2650,6 +2651,9 @@ MonoBehaviour:
   WeaponPivot: {fileID: 3182068588101176777}
   crossHairTarget: {fileID: 1015202076}
   _handIk: {fileID: 8540425454802338757}
+  weaponParent: {fileID: 0}
+  weaponLeftGrip: {fileID: 0}
+  weaponRightGrip: {fileID: 0}
 --- !u!4 &1737766219254398074
 Transform:
   m_ObjectHideFlags: 0
@@ -2831,7 +2835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afb9eedda7e8431468388df6ac1a894a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Animator: {fileID: 8104622147828930521}
+  animator: {fileID: 8104622147828930521}
   smoothBlend: 0.1
   aimLayer: {fileID: 8339916187549169283}
   aimDuration: 0.2
@@ -3184,7 +3188,7 @@ Transform:
   m_GameObject: {fileID: 2690682140284411455}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.013, y: -0.094, z: 0.445}
+  m_LocalPosition: {x: -0.022, y: 0.026, z: 0.042}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5135,7 +5139,7 @@ Animator:
   m_GameObject: {fileID: 7446622949906355236}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 63fe7ab5bee7cb64dad5df2e59878359, type: 3}
-  m_Controller: {fileID: 9100000, guid: eab2d03db87485d4ebdce3e6acb17700, type: 2}
+  m_Controller: {fileID: 22100000, guid: 2b3567552a7c86f4db0e4520f4cc4dea, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -5155,7 +5159,7 @@ Transform:
   m_GameObject: {fileID: 8229407587896281952}
   serializedVersion: 2
   m_LocalRotation: {x: 0.56200325, y: 0.47868508, z: 0.3667315, w: 0.5661457}
-  m_LocalPosition: {x: -0.088, y: -0.034, z: -0.097}
+  m_LocalPosition: {x: -0.078, y: -0.147, z: 0.368}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

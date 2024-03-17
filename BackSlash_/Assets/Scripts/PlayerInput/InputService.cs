@@ -20,12 +20,6 @@ namespace Scripts.Player
         public PlayerState PlayerStateContainer => _playerState;
         public WeaponState WeaponStateContainer => _weaponState;
 
-        public bool IsAttackPressed => _isAttackPressed;
-        public bool IsJumpPressed => _isJumpPressed;
-
-        private bool _isAttackPressed;
-        private bool _isJumpPressed;
-
         [Inject]
         private void Construct()
         {
@@ -38,7 +32,7 @@ namespace Scripts.Player
             _playerControls.Gameplay.WASD.performed += ChangeDirection;           
             _playerControls.Gameplay.Dodge.performed += Dodge;
 
-            _playerControls.Gameplay.Attack.performed += AttackPerformed;
+            _playerControls.Gameplay.Attack.started += AttackStarted;
             _playerControls.Gameplay.Attack.canceled += AttackCanceled;
 
             _playerControls.Gameplay.Sprint.started += Sprint;
@@ -98,7 +92,7 @@ namespace Scripts.Player
             _playerState.State = PlayerState.EPlayerState.Walk;
         }
 
-        private void AttackPerformed(InputAction.CallbackContext contex)
+        private void AttackStarted(InputAction.CallbackContext contex)
         {
             _weaponState.State = WeaponState.EWeaponState.Attack;
         }

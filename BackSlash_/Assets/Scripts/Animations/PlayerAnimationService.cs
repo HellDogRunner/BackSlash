@@ -8,7 +8,7 @@ namespace Scripts.Animations
 {
     public class PlayerAnimationService : MonoBehaviour
     {
-        [SerializeField] private Animator Animator;
+        [SerializeField] private Animator animator;
         [SerializeField] private float smoothBlend;
         [SerializeField] private Rig aimLayer;
 
@@ -16,29 +16,33 @@ namespace Scripts.Animations
 
         private InputService _inputService;
 
+        private AnimatorOverrideController _overrides;
+
         [Inject]
         private void Construct(InputService inputService)
         {
             _inputService = inputService;
+
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
-           // _inputService.OnLightAttackPressed += AttackAnimation;
             _inputService.OnDogdeKeyPressed += DodgeAnimation;
+            _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
+
+            _overrides = animator.runtimeAnimatorController as AnimatorOverrideController;
         }
 
         private void OnDestroy()
         {
             _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed -= JumpAnimation;
-           // _inputService.OnLightAttackPressed -= AttackAnimation;
             _inputService.OnDogdeKeyPressed -= DodgeAnimation;
         }
 
         private void Update()
         {
             var dir = _inputService.MoveDirection;
-            Animator.SetFloat("InputX", dir.x, smoothBlend, Time.deltaTime);
-            Animator.SetFloat("InputY", dir.z, smoothBlend, Time.deltaTime);
+            animator.SetFloat("InputX", dir.x, smoothBlend, Time.deltaTime);
+            animator.SetFloat("InputY", dir.z, smoothBlend, Time.deltaTime);
 
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
             {
@@ -46,19 +50,30 @@ namespace Scripts.Animations
             }
             else if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
             {
-               // aimLayer.weight -= Time.deltaTime / aimDuration;
+                 //aimLayer.weight -= Time.deltaTime / aimDuration;
             }
+        }
+
+        public void ShowWeapon(RaycastWeapon weapon)
+        {
+            animator.SetLayerWeight(1, 1f);
+            _overrides["weapon_anim_none"] = weapon.WeaponAnimation;
+        }
+
+        public void HideWeapon()
+        {
+            animator.SetLayerWeight(1, 0f);
         }
 
         private void SprintAndRunAnimation()
         {
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Sprint)
             {
-                Animator.SetBool("IsSprint", true);
+                animator.SetBool("IsSprint", true);
             }
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Run)
             {
-                Animator.SetBool("IsSprint", false);
+                animator.SetBool("IsSprint", false);
             }
         }
 
@@ -66,7 +81,7 @@ namespace Scripts.Animations
         {
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Jumping)
             {
-                Animator.Play("Jump forward");
+                animator.Play("Jump forward");
             }
         }
 
@@ -74,7 +89,7 @@ namespace Scripts.Animations
         {
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Dodge)
             {
-                Animator.Play("Dodge");
+                animator.Play("Dodge");
             }
         }
 

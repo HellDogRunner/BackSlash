@@ -18,6 +18,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private ParticleSystem hitEffect;
     [SerializeField] private Transform raycastOrigin;
     [SerializeField] private TrailRenderer tracerEffect;
+    [SerializeField] private AnimationClip weaponAnimation;
     [Header("BulletSettings")]
 
     [SerializeField] private int fireRate = 25;
@@ -25,7 +26,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private float bulletDrop = 0f;
 
     private float _accumulatedTime;
-    private float _maxLifeTime = 3f;
+    private float _maxLifeTime = 3;
 
     private List<Bullet> _bullets = new List<Bullet>();
 
@@ -43,6 +44,8 @@ public class RaycastWeapon : MonoBehaviour
         get => _raycastDestination;
         set => _raycastDestination = value;
     }
+
+    public AnimationClip WeaponAnimation => weaponAnimation;
 
     private void Awake()
     {
@@ -122,9 +125,16 @@ public class RaycastWeapon : MonoBehaviour
 
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = _maxLifeTime;
+
+            if (hitInfo.transform.tag == "Enemy")
+            {
+                if (hitInfo.transform.TryGetComponent<HealhService>(out HealhService T))
+                {
+                    T.TakeDamage(5);
+                }
+            }
         }
         else {
-            bullet.time = _maxLifeTime;
             bullet.tracer.transform.position = end; 
         }
     }
