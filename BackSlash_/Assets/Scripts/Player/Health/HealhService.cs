@@ -1,3 +1,4 @@
+using Scripts.Enemy;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,11 +6,19 @@ using UnityEngine;
 
 public class HealhService : MonoBehaviour
 {
-    [SerializeField] private int health;
+    [SerializeField] private float health;
 
-    public Action<int> OnHealthChanged;
+    private Ragdoll _ragdoll;
 
-    public void TakeDamage(int damage, object sender = null) 
+    public Action<float> OnHealthChanged;
+    public float Health => health;
+
+    private void Start() 
+    { 
+        _ragdoll = GetComponent<Ragdoll>();
+    }
+
+    public void TakeDamage(float damage) 
     {
         health -= damage;
         OnHealthChanged?.Invoke(health);
@@ -21,6 +30,11 @@ public class HealhService : MonoBehaviour
 
     private void Death() 
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        if (_ragdoll)
+        {
+            Debug.Log("dead");
+            _ragdoll.ActivateRagdoll();
+        }
     }
 }

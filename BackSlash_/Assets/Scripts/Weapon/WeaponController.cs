@@ -62,7 +62,7 @@ namespace Scripts.Weapon
                 }
                 if (_raycastWeapon.IsFiring)
                 {
-                    _raycastWeapon.UpdateFiring(Time.deltaTime);
+                    _raycastWeapon.UpdateFiring(Time.deltaTime, crossHairTarget.position);
                 }
                 _raycastWeapon.UpdateBullets(Time.deltaTime);
                 if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
@@ -89,7 +89,6 @@ namespace Scripts.Weapon
             if (_currentWeapon.TryGetComponent<RaycastWeapon>(out RaycastWeapon raycastWeapon))
             {
                 _raycastWeapon = raycastWeapon;
-                _raycastWeapon.RaycastDestination = crossHairTarget;
                 _animationService.ShowWeapon(_raycastWeapon);
             }
         }

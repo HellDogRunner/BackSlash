@@ -24,6 +24,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private int fireRate = 25;
     [SerializeField] private float bulletSpeed = 1000;
     [SerializeField] private float bulletDrop = 0f;
+    [SerializeField] private float damage = 0f;
 
     private float _accumulatedTime;
     private float _maxLifeTime = 3;
@@ -33,24 +34,12 @@ public class RaycastWeapon : MonoBehaviour
     private Ray ray;
     private RaycastHit hitInfo;
 
-    private Camera mainCamera;
-
     private bool _isFiring = false;
-    public bool IsFiring => _isFiring;
 
-    private Transform _raycastDestination;
-    public Transform RaycastDestination 
-    {
-        get => _raycastDestination;
-        set => _raycastDestination = value;
-    }
+    public bool IsFiring => _isFiring;
 
     public AnimationClip WeaponAnimation => weaponAnimation;
 
-    private void Awake()
-    {
-        mainCamera = Camera.main;
-    }
 
     private Vector3 GetPosition(Bullet bullet) 
     {
@@ -73,18 +62,23 @@ public class RaycastWeapon : MonoBehaviour
     public void StartFiring()
     {
         _isFiring = true;
-        _accumulatedTime = 0f;
-        FireBullet();
+        if (_accumulatedTime > 0f)
+        {
+            _accumulatedTime = 0f;
+        }
     }
 
-    public void UpdateFiring(float deltaTime) 
+    public void UpdateFiring(float deltaTime, Vector3 target) 
     {
-        _accumulatedTime += deltaTime;
-        float fireInterval = 1f / fireRate;
-        while (_accumulatedTime >= 0f)
+        if (_isFiring)
         {
-            FireBullet();
-            _accumulatedTime -= fireInterval;
+            _accumulatedTime += deltaTime;
+            float fireInterval = 1f / fireRate;
+            while (_accumulatedTime >= 0f)
+            {
+                FireBullet(target);
+                _accumulatedTime -= fireInterval;
+            }
         }
     }
 
@@ -126,26 +120,24 @@ public class RaycastWeapon : MonoBehaviour
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = _maxLifeTime;
 
-            if (hitInfo.transform.tag == "Enemy")
+            if (hitInfo.transform.TryGetComponent<HealhService>(out HealhService T))
             {
-                if (hitInfo.transform.TryGetComponent<HealhService>(out HealhService T))
-                {
-                    T.TakeDamage(5);
-                }
+                T.TakeDamage(damage);
             }
+
         }
         else {
             bullet.tracer.transform.position = end; 
         }
     }
 
-    private void FireBullet()
+    private void FireBullet(Vector3 target)
     {
         foreach (var particle in muzzleFlash)
         {
             particle.Emit(1);
         }
-        Vector3 velocity = (_raycastDestination.position - raycastOrigin.position).normalized * bulletSpeed;
+        Vector3 velocity = (target - raycastOrigin.position).normalized * bulletSpeed;
         var bullet = CreateBullet(raycastOrigin.position, velocity);
         _bullets.Add(bullet);    
     }
