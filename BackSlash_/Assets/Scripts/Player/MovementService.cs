@@ -1,4 +1,5 @@
 using Scripts.Player.camera;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using Zenject;
 
@@ -7,6 +8,9 @@ namespace Scripts.Player
     public class MovementService : MonoBehaviour
     {
         [SerializeField] private Rigidbody _rigidbody;
+        [Header("IsGround settings")]
+        [SerializeField] private float maxDistanse;
+        [SerializeField] private float sphereRadius;
         [Header("Monitoring")]
         [SerializeField] private float currentSpeed;
         [SerializeField] private float turnSpeed;
@@ -19,18 +23,13 @@ namespace Scripts.Player
         [SerializeField] private float dodgeForce;
 
         private InputService _inputService;
-        private ThirdPersonCam _thirdPersonCam;
-
-        private bool isGrounded;
-
-        private Camera mainCamera;
+        private ThirdPersonCameraService _thirdPersonCam;
 
         [Inject]
-        private void Construct(InputService inputService, ThirdPersonCam thirdPersonCam)
+        private void Construct(InputService inputService, ThirdPersonCameraService thirdPersonCam)
         {
             _inputService = inputService;
             _thirdPersonCam = thirdPersonCam;
-            mainCamera = Camera.main;
 
             _inputService.OnJumpKeyPressed += Jump;
             _inputService.OnDogdeKeyPressed += Dodge;
@@ -44,16 +43,9 @@ namespace Scripts.Player
             _inputService.OnDogdeKeyPressed -= Dodge;
         }
 
-        private void Update()
-        {
-          
-        }
-
         private void FixedUpdate()
         {
-            float yawCamera = mainCamera.transform.rotation.eulerAngles.y;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yawCamera, 0), turnSpeed * Time.deltaTime);
-            if (isGrounded)
+            if (IsGrounded())
             {
                 Moving(10f);              
                 Sprint();
@@ -62,6 +54,7 @@ namespace Scripts.Player
             else
             {
                 Moving(1.5f);
+                _rigidbody.drag = 0;
             }
         }
 
@@ -70,7 +63,7 @@ namespace Scripts.Player
             Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
             _rigidbody.AddForce(movingDirection * currentSpeed * acceleration, ForceMode.Force);
 
-            if (!isGrounded)
+            if (!IsGrounded())
             {
                 SpeedControl();
             }
@@ -90,28 +83,20 @@ namespace Scripts.Player
 
         private void Dodge()
         {
-            if (isGrounded)
+            if (IsGrounded())
             {
                 Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
                 _rigidbody.AddForce(movingDirection * dodgeForce, ForceMode.VelocityChange);
             }
         }
 
-        private void OnTriggerEnter(Collider other)
-        {
-            isGrounded = true;
-        }
-
         private void Jump()
         {
-            if (isGrounded)
+            if (IsGrounded())
             {
                 if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Jumping)
                 {
-                    _rigidbody.drag = 0;
                     _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
-                    isGrounded = false;
                 }
             }
         }
@@ -126,6 +111,16 @@ namespace Scripts.Player
             }
         }
 
-       
+        private bool IsGrounded()
+        {
+            RaycastHit hitInfo;
+            Vector3 directionDown = transform.TransformDirection(Vector3.down);
+
+            if (Physics.SphereCast(gameObject.transform.position + Vector3.up, sphereRadius, directionDown, out hitInfo, maxDistanse))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

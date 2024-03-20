@@ -13,7 +13,6 @@ namespace Scripts.Weapon
     {
         [SerializeField] private Transform WeaponPivot;
         [SerializeField] private Transform crossHairTarget;
-        [SerializeField] private UnityEngine.Animations.Rigging.Rig _handIk;
         [Space]
         [SerializeField] private Transform weaponParent;
         [SerializeField] private Transform weaponLeftGrip;
@@ -34,8 +33,6 @@ namespace Scripts.Weapon
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
             _animationService = playerAnimationService;
-
-            _handIk.weight = 0f;
         }
 
         private void OnDestroy()
@@ -80,7 +77,6 @@ namespace Scripts.Weapon
                 return;
             }
 
-            _handIk.weight = 1f;
             var weaponModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Range);
 
             _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, WeaponPivot.position, WeaponPivot.rotation);
@@ -99,7 +95,6 @@ namespace Scripts.Weapon
             {
                 return;
             }
-            _handIk.weight = 0f;
             _animationService.HideWeapon();
             Destroy(_currentWeapon);
         }

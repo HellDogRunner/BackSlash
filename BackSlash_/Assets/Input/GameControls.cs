@@ -89,6 +89,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""bca16aa9-8df2-4b94-9f0a-3b2c428313b4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -159,28 +168,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""forward"",
-                    ""id"": ""b6bfced4-29f8-4e1e-855e-fd03110c1da0"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WASD"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""backward"",
-                    ""id"": ""8e7ab06c-2bf9-4e58-8e5a-90c8cc556fc1"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""WASD"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""fcaf5830-c5bb-4704-83cb-8450a35f93e0"",
                     ""path"": ""<Keyboard>/leftShift"",
@@ -234,6 +221,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""HideWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""561633d1-f326-4ee0-9a9d-96dce95c9bb4"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -249,6 +247,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Gameplay_Dodge = m_Gameplay.FindAction("Dodge", throwIfNotFound: true);
         m_Gameplay_ShowWeapon = m_Gameplay.FindAction("ShowWeapon", throwIfNotFound: true);
         m_Gameplay_HideWeapon = m_Gameplay.FindAction("HideWeapon", throwIfNotFound: true);
+        m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -317,6 +316,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Dodge;
     private readonly InputAction m_Gameplay_ShowWeapon;
     private readonly InputAction m_Gameplay_HideWeapon;
+    private readonly InputAction m_Gameplay_Jump;
     public struct GameplayActions
     {
         private @GameControls m_Wrapper;
@@ -328,6 +328,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Dodge => m_Wrapper.m_Gameplay_Dodge;
         public InputAction @ShowWeapon => m_Wrapper.m_Gameplay_ShowWeapon;
         public InputAction @HideWeapon => m_Wrapper.m_Gameplay_HideWeapon;
+        public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -358,6 +359,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @HideWeapon.started += instance.OnHideWeapon;
             @HideWeapon.performed += instance.OnHideWeapon;
             @HideWeapon.canceled += instance.OnHideWeapon;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -383,6 +387,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @HideWeapon.started -= instance.OnHideWeapon;
             @HideWeapon.performed -= instance.OnHideWeapon;
             @HideWeapon.canceled -= instance.OnHideWeapon;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -409,5 +416,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnDodge(InputAction.CallbackContext context);
         void OnShowWeapon(InputAction.CallbackContext context);
         void OnHideWeapon(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }

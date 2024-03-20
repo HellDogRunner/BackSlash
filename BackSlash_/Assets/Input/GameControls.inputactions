@@ -67,6 +67,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "bca16aa9-8df2-4b94-9f0a-3b2c428313b4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -137,28 +146,6 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "forward",
-                    "id": "b6bfced4-29f8-4e1e-855e-fd03110c1da0",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "WASD",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "backward",
-                    "id": "8e7ab06c-2bf9-4e58-8e5a-90c8cc556fc1",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "WASD",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "",
                     "id": "fcaf5830-c5bb-4704-83cb-8450a35f93e0",
                     "path": "<Keyboard>/leftShift",
@@ -210,6 +197,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "HideWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "561633d1-f326-4ee0-9a9d-96dce95c9bb4",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

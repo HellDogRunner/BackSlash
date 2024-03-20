@@ -39,6 +39,9 @@ namespace Scripts.Player
             _playerControls.Gameplay.Sprint.performed += Run;
             _playerControls.Gameplay.Sprint.canceled += Run;
 
+
+            _playerControls.Gameplay.Jump.performed += Jump;
+
             _playerControls.Gameplay.ShowWeapon.performed += ShowWeapon;
             _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
 
@@ -100,6 +103,12 @@ namespace Scripts.Player
         private void AttackCanceled(InputAction.CallbackContext contex)
         {
             _weaponState.State = WeaponState.EWeaponState.Idle;
+        }
+
+        private void Jump(InputAction.CallbackContext contex)
+        {
+            _playerState.State = PlayerState.EPlayerState.Jumping;
+            OnJumpKeyPressed?.Invoke();
         }
 
         private void OnEnable()

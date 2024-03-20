@@ -10,7 +10,6 @@ namespace Scripts.Animations
     {
         [SerializeField] private Animator animator;
         [SerializeField] private float smoothBlend;
-        [SerializeField] private Rig aimLayer;
 
         [SerializeField] private float aimDuration;
 
@@ -46,7 +45,6 @@ namespace Scripts.Animations
 
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
             {
-                aimLayer.weight = 1f;
             }
             else if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
             {
