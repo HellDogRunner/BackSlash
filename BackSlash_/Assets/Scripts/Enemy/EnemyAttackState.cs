@@ -13,16 +13,23 @@ namespace Scripts.Enemy
         private Vector3 _offset;
         private float _distanceToTarget = Mathf.Infinity;
         private float _provokedRange = 8f;
-        public override void EnterState(EnemyStateManager enemy, Transform Target)
+        public override void EnterState(EnemyStateManager enemy)
         {
             _weapon = enemy.GetComponentInChildren<RaycastWeapon>();
-            _player = Target;
+            _player = enemy.PlayerTransform;
             _offset = new Vector3(0, 1.5f, 0);
+        }
+
+        public override void OnAnimationTrigger(EnemyStateManager enemy)
+        {
+            throw new System.NotImplementedException();
         }
 
         public override void UpdateState(EnemyStateManager enemy)
         {
             _distanceToTarget = Vector3.Distance(_player.position, enemy.transform.position);
+            enemy.gameObject.transform.LookAt(_player);
+            enemy.Animator.SetFloat("Speed", enemy.Agent.velocity.magnitude);
             if (!_isAttack)
             {
                 _weapon.StartFiring();
@@ -39,11 +46,6 @@ namespace Scripts.Enemy
                 _weapon.StopFiring();
                 _isAttack = false;
             }
-            //if (_isAttack)
-            //{
-            //    _weapon.StopFiring();
-            //    _isAttack = false;
-            //}
         }
     }
 }

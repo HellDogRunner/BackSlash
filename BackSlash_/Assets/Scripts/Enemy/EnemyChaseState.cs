@@ -15,10 +15,13 @@ namespace Scripts.Enemy
         private float _forgotRagnge = 10;
         private float _distanceToTarget = Mathf.Infinity;
 
-        public override void EnterState(EnemyStateManager enemy, Transform player)
+        public override void EnterState(EnemyStateManager enemy)
         {
-            _agent = enemy.GetComponent<NavMeshAgent>();
-            _playerTransform = player;
+            _agent = enemy.Agent;
+            _playerTransform = enemy.PlayerTransform;
+        }
+        public override void OnAnimationTrigger(EnemyStateManager enemy)
+        {
         }
 
         public override void UpdateState(EnemyStateManager enemy)
@@ -27,6 +30,7 @@ namespace Scripts.Enemy
             {
                 return;
             }
+            enemy.Animator.SetFloat("Speed", _agent.velocity.magnitude);
             _distanceToTarget = Vector3.Distance(_playerTransform.position, enemy.transform.position);
             if (_distanceToTarget > _forgotRagnge)
             {

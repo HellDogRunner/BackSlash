@@ -9,14 +9,19 @@ namespace Scripts.Enemy {
         private HealhService _health;
         private NavMeshAgent _agent;
         private Animator _animator;
-        public override void EnterState(EnemyStateManager enemy, Transform player)
+        public override void EnterState(EnemyStateManager enemy)
         {
-            _health = enemy.GetComponent<HealhService>();
-            _agent = enemy.GetComponent<NavMeshAgent>();
-            _animator = enemy.GetComponent<Animator>();
+            _health = enemy.EnemyHealth;
+            _agent = enemy.Agent;
+            _animator = enemy.Animator;
 
             _agent.enabled = false;
             _animator.enabled = false;
+        }
+
+        public override void OnAnimationTrigger(EnemyStateManager enemy)
+        {
+            throw new System.NotImplementedException();
         }
 
         public override void UpdateState(EnemyStateManager enemy)

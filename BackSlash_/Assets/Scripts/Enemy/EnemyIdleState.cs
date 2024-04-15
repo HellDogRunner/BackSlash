@@ -13,10 +13,15 @@ namespace Scripts.Enemy
         private float _distanceToTarget = Mathf.Infinity;
 
         private HealhService _health;
-        public override void EnterState(EnemyStateManager enemy, Transform player)
+        public override void EnterState(EnemyStateManager enemy)
         {
-            _playerTransform = player;
-            _health = enemy.GetComponent<HealhService>();
+            _playerTransform = enemy.PlayerTransform;
+            _health = enemy.EnemyHealth;
+        }
+
+        public override void OnAnimationTrigger(EnemyStateManager enemy)
+        {
+            throw new System.NotImplementedException();
         }
 
         public override void UpdateState(EnemyStateManager enemy)
