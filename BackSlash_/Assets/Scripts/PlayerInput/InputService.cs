@@ -16,6 +16,7 @@ namespace Scripts.Player
         public event Action OnSprintKeyPressed;
         public event Action OnJumpKeyPressed;
         public event Action OnDogdeKeyPressed;
+        public event Action OnAttackPressed;
         public Vector3 MoveDirection => _moveDirection;
         public PlayerState PlayerStateContainer => _playerState;
         public WeaponState WeaponStateContainer => _weaponState;
@@ -98,6 +99,7 @@ namespace Scripts.Player
         private void AttackStarted(InputAction.CallbackContext contex)
         {
             _weaponState.State = WeaponState.EWeaponState.Attack;
+            OnAttackPressed?.Invoke();
         }
 
         private void AttackCanceled(InputAction.CallbackContext contex)

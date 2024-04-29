@@ -14,17 +14,17 @@ public class RaycastWeapon : MonoBehaviour
         public TrailRenderer tracer;
     }
 
-    [SerializeField] private ParticleSystem[] muzzleFlash;
-    [SerializeField] private ParticleSystem hitEffect;
-    [SerializeField] private Transform raycastOrigin;
-    [SerializeField] private TrailRenderer tracerEffect;
-    [SerializeField] private AnimationClip weaponAnimation;
+    [SerializeField] private ParticleSystem[] _muzzleFlash;
+    [SerializeField] private ParticleSystem _hitEffect;
+    [SerializeField] private Transform _raycastOrigin;
+    [SerializeField] private TrailRenderer _tracerEffect;
+    [SerializeField] private AnimationClip _weaponAnimation;
     [Header("BulletSettings")]
 
-    [SerializeField] private int fireRate = 25;
-    [SerializeField] private float bulletSpeed = 1000;
-    [SerializeField] private float bulletDrop = 0f;
-    [SerializeField] private float damage = 0f;
+    [SerializeField] private int _fireRate = 25;
+    [SerializeField] private float _bulletSpeed = 1000;
+    [SerializeField] private float _bulletDrop = 0f;
+    [SerializeField] private float _damage = 0f;
 
     private float _accumulatedTime;
     private float _maxLifeTime = 3;
@@ -38,12 +38,12 @@ public class RaycastWeapon : MonoBehaviour
 
     public bool IsFiring => _isFiring;
 
-    public AnimationClip WeaponAnimation => weaponAnimation;
+    public AnimationClip WeaponAnimation => _weaponAnimation;
 
 
     private Vector3 GetPosition(Bullet bullet) 
     {
-        Vector3 gravity = Vector3.down * bulletDrop;
+        Vector3 gravity = Vector3.down * _bulletDrop;
         return (bullet.initialPosition) + (bullet.initialVelocity * bullet.time) + (0.5f * gravity * bullet.time * bullet.time);
     }
 
@@ -54,7 +54,7 @@ public class RaycastWeapon : MonoBehaviour
         bullet.initialPosition = position;
         bullet.initialVelocity = velocity;
         bullet.time = 0f;
-        bullet.tracer = Instantiate(tracerEffect, position, Quaternion.identity);
+        bullet.tracer = Instantiate(_tracerEffect, position, Quaternion.identity);
         bullet.tracer.AddPosition(position);
         return bullet;
     }
@@ -73,7 +73,7 @@ public class RaycastWeapon : MonoBehaviour
         if (_isFiring)
         {
             _accumulatedTime += deltaTime;
-            float fireInterval = 1f / fireRate;
+            float fireInterval = 1f / _fireRate;
             while (_accumulatedTime >= 0f)
             {
                 FireBullet(target);
@@ -113,16 +113,16 @@ public class RaycastWeapon : MonoBehaviour
 
         if (Physics.Raycast(ray, out hitInfo, distance))
         {
-            hitEffect.transform.position = hitInfo.point;
-            hitEffect.transform.forward = hitInfo.normal;
-            hitEffect.Emit(1);
+            _hitEffect.transform.position = hitInfo.point;
+            _hitEffect.transform.forward = hitInfo.normal;
+            _hitEffect.Emit(1);
 
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = _maxLifeTime;
 
-            if (hitInfo.transform.TryGetComponent<HealhService>(out HealhService T))
+            if (hitInfo.transform.TryGetComponent<HealthService>(out HealthService T))
             {
-                T.TakeDamage(damage);
+                T.TakeDamage(_damage);
             }
 
         }
@@ -133,12 +133,12 @@ public class RaycastWeapon : MonoBehaviour
 
     private void FireBullet(Vector3 target)
     {
-        foreach (var particle in muzzleFlash)
+        foreach (var particle in _muzzleFlash)
         {
             particle.Emit(1);
         }
-        Vector3 velocity = (target - raycastOrigin.position).normalized * bulletSpeed;
-        var bullet = CreateBullet(raycastOrigin.position, velocity);
+        Vector3 velocity = (target - _raycastOrigin.position).normalized * _bulletSpeed;
+        var bullet = CreateBullet(_raycastOrigin.position, velocity);
         _bullets.Add(bullet);    
     }
 

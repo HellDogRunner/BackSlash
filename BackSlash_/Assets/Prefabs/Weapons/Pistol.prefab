@@ -9922,17 +9922,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c704ce8eef8d2489e7e0c697cb73d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muzzleFlash:
-  - {fileID: 2064923131688396380}
+  _muzzleFlash:
   - {fileID: 4224901941509261390}
-  hitEffect: {fileID: 2026609403716866426}
-  raycastOrigin: {fileID: 7272271231610657830}
-  tracerEffect: {fileID: 3052021911545049099, guid: d69ff3c2fc720a44cb4349aef207f83a,
+  - {fileID: 2064923131688396380}
+  _hitEffect: {fileID: 2026609403716866426}
+  _raycastOrigin: {fileID: 7272271231610657830}
+  _tracerEffect: {fileID: 3052021911545049099, guid: d69ff3c2fc720a44cb4349aef207f83a,
     type: 3}
-  weaponAnimation: {fileID: 7400000, guid: d480ce51a3f307a479e383f5da8c87a8, type: 2}
-  fireRate: 1
-  bulletSpeed: 1000
-  bulletDrop: 300
+  _weaponAnimation: {fileID: 7400000, guid: d480ce51a3f307a479e383f5da8c87a8, type: 2}
+  _fireRate: 25
+  _bulletSpeed: 1000
+  _bulletDrop: 0
+  _damage: 5
 --- !u!114 &2965704086332234460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19583,7 +19584,7 @@ Transform:
   m_GameObject: {fileID: 6163308223231343270}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.12290001, z: 0.8821}
+  m_LocalPosition: {x: 0, y: 0, z: 0.304}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []

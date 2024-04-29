@@ -8,9 +8,12 @@ namespace Scripts.Enemy
     {
 
         private RaycastWeapon _weapon;
+
         private Transform _player;
+
         private bool _isAttack;
         private Vector3 _offset;
+
         private float _distanceToTarget = Mathf.Infinity;
         private float _provokedRange = 8f;
         public override void EnterState(EnemyStateManager enemy)
@@ -28,8 +31,10 @@ namespace Scripts.Enemy
         public override void UpdateState(EnemyStateManager enemy)
         {
             _distanceToTarget = Vector3.Distance(_player.position, enemy.transform.position);
+
             enemy.gameObject.transform.LookAt(_player);
             enemy.Animator.SetFloat("Speed", enemy.Agent.velocity.magnitude);
+
             if (!_isAttack)
             {
                 _weapon.StartFiring();

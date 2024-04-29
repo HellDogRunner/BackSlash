@@ -19,7 +19,7 @@ namespace Scripts.Enemy
         public Animator Animator;
         public NavMeshAgent Agent;
         public Transform PlayerTransform;
-        public HealhService EnemyHealth;
+        public HealthService EnemyHealth;
 
         private void Start()
         {

@@ -11,12 +11,12 @@ namespace Scripts.Weapon
 {
     public class WeaponController : MonoBehaviour
     {
-        [SerializeField] private Transform WeaponPivot;
-        [SerializeField] private Transform crossHairTarget;
+        [SerializeField] private Transform _weaponPivot;
+        [SerializeField] private Transform _crossHairTarget;
         [Space]
-        [SerializeField] private Transform weaponParent;
-        [SerializeField] private Transform weaponLeftGrip;
-        [SerializeField] private Transform weaponRightGrip;
+        [SerializeField] private Transform _weaponParent;
+        [SerializeField] private Transform _weaponLeftGrip;
+        [SerializeField] private Transform _weaponRightGrip;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
@@ -59,7 +59,7 @@ namespace Scripts.Weapon
                 }
                 if (_raycastWeapon.IsFiring)
                 {
-                    _raycastWeapon.UpdateFiring(Time.deltaTime, crossHairTarget.position);
+                    _raycastWeapon.UpdateFiring(Time.deltaTime, _crossHairTarget.position);
                 }
                 _raycastWeapon.UpdateBullets(Time.deltaTime);
                 if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
@@ -77,10 +77,10 @@ namespace Scripts.Weapon
                 return;
             }
 
-            var weaponModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Range);
+            var weaponModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
 
-            _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, WeaponPivot.position, WeaponPivot.rotation);
-            _currentWeapon.transform.parent = WeaponPivot.transform;
+            _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, _weaponPivot.position, _weaponPivot.rotation);
+            _currentWeapon.transform.parent = _weaponPivot.transform;
 
             if (_currentWeapon.TryGetComponent<RaycastWeapon>(out RaycastWeapon raycastWeapon))
             {
@@ -107,9 +107,9 @@ namespace Scripts.Weapon
                 return;
             }
             GameObjectRecorder recorder = new GameObjectRecorder(gameObject);
-            recorder.BindComponentsOfType<Transform>(weaponParent.gameObject, false);
-            recorder.BindComponentsOfType<Transform>(weaponRightGrip.gameObject, false);
-            recorder.BindComponentsOfType<Transform>(weaponLeftGrip.gameObject, false);
+            recorder.BindComponentsOfType<Transform>(_weaponParent.gameObject, false);
+            recorder.BindComponentsOfType<Transform>(_weaponRightGrip.gameObject, false);
+            recorder.BindComponentsOfType<Transform>(_weaponLeftGrip.gameObject, false);
             recorder.TakeSnapshot(0f);
             recorder.SaveToClip(_raycastWeapon.WeaponAnimation);
             UnityEditor.AssetDatabase.SaveAssets();

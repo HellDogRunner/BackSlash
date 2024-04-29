@@ -4,14 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealhService : MonoBehaviour
+public class HealthService : MonoBehaviour
 {
-    [SerializeField] private float health;
+    [SerializeField] private float _health;
 
     private Ragdoll _ragdoll;
 
     public Action<float> OnHealthChanged;
-    public float Health => health;
+    public float Health => _health;
 
     private void Start() 
     { 
@@ -20,9 +20,9 @@ public class HealhService : MonoBehaviour
 
     public void TakeDamage(float damage) 
     {
-        health -= damage;
-        OnHealthChanged?.Invoke(health);
-        if (health <= 0)
+        _health -= damage;
+        OnHealthChanged?.Invoke(_health);
+        if (_health <= 0)
         {
             Death();
         }

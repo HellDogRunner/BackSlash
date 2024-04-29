@@ -10038,18 +10038,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80c704ce8eef8d2489e7e0c697cb73d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  muzzleFlash:
+  _muzzleFlash:
   - {fileID: 2064923131688396380}
   - {fileID: 4224901941509261390}
-  hitEffect: {fileID: 2026609403716866426}
-  raycastOrigin: {fileID: 7272271231610657830}
-  tracerEffect: {fileID: 3052021911545049099, guid: d69ff3c2fc720a44cb4349aef207f83a,
+  _hitEffect: {fileID: 2026609403716866426}
+  _raycastOrigin: {fileID: 7272271231610657830}
+  _tracerEffect: {fileID: 3052021911545049099, guid: d69ff3c2fc720a44cb4349aef207f83a,
     type: 3}
-  weaponAnimation: {fileID: 7400000, guid: 6e7d1dc560e6982428a1d55a8ebc6328, type: 2}
-  fireRate: 25
-  bulletSpeed: 1000
-  bulletDrop: 300
-  damage: 2
+  _weaponAnimation: {fileID: 7400000, guid: 6e7d1dc560e6982428a1d55a8ebc6328, type: 2}
+  _fireRate: 25
+  _bulletSpeed: 1000
+  _bulletDrop: 0
+  _damage: 2
 --- !u!114 &2965704086332234460
 MonoBehaviour:
   m_ObjectHideFlags: 0

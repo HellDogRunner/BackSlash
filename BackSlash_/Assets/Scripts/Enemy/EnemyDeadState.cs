@@ -6,7 +6,7 @@ using UnityEngine.AI;
 namespace Scripts.Enemy {
     public class EnemyDeadState : BaseEnemyState
     {
-        private HealhService _health;
+        private HealthService _health;
         private NavMeshAgent _agent;
         private Animator _animator;
         public override void EnterState(EnemyStateManager enemy)
@@ -21,12 +21,12 @@ namespace Scripts.Enemy {
 
         public override void OnAnimationTrigger(EnemyStateManager enemy)
         {
-            throw new System.NotImplementedException();
+            //TOTDO some logic here
         }
 
         public override void UpdateState(EnemyStateManager enemy)
         {
- 
+            //TOTDO some logic here
         }
     }
 }

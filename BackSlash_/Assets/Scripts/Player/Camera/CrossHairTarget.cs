@@ -6,12 +6,12 @@ using Zenject;
 
 public class CrossHairTarget : MonoBehaviour
 {
-    [SerializeField] LayerMask attackLayer;
+    [SerializeField] LayerMask _attackLayer;
 
     private Camera _mainCamera;
 
-    Ray ray;
-    RaycastHit hitInfo;
+    private Ray _ray;
+    private RaycastHit _hitInfo;
 
     public Vector3 CrossHairTargetPosition => transform.position;
 
@@ -23,15 +23,15 @@ public class CrossHairTarget : MonoBehaviour
 
     void Update()
     {
-        ray.origin = _mainCamera.transform.position;
-        ray.direction = _mainCamera.transform.forward;
-        if (Physics.Raycast(ray, out hitInfo, attackLayer))
+        _ray.origin = _mainCamera.transform.position;
+        _ray.direction = _mainCamera.transform.forward;
+        if (Physics.Raycast(_ray, out _hitInfo, _attackLayer))
         {
-            transform.position = hitInfo.point;
+            transform.position = _hitInfo.point;
         }
         else
         {
-            transform.position = ray.origin + ray.direction * 1000.0f;
+            transform.position = _ray.origin + _ray.direction * 1000.0f;
         }
     }
 }

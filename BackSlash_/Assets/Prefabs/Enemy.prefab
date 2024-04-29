@@ -2494,7 +2494,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5961693609402878055}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.70123494, z: -0, w: 0.71293026}
+  m_LocalRotation: {x: 0, y: 0.7012329, z: 0, w: 0.7129323}
   m_LocalPosition: {x: -17.07, y: 0, z: -0.21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2558,7 +2558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e908449820a3d304880498c09858af61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  _health: 100
 --- !u!114 &2063432838259369988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2625,7 +2625,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5f3c6403d6fb8d47ae50faa22039ad9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTransform: {fileID: 0}
+  Animator: {fileID: 5830989082111267631}
+  Agent: {fileID: 5751453091618699809}
+  PlayerTransform: {fileID: 0}
+  EnemyHealth: {fileID: 3759006753693581023}
 --- !u!1 &6079015373365047969
 GameObject:
   m_ObjectHideFlags: 0

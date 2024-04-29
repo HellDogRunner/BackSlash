@@ -9,7 +9,7 @@ namespace Scripts.Installer
     [CreateAssetMenu(fileName = "GameScriptableInstaller", menuName = "[RMG] Scriptable/Installer/GameScriptableInstaller")]
     public class GameScriptableInstaller : ScriptableObjectInstaller<GameScriptableInstaller>
     {
-        [SerializeField] private List<ScriptableObject> scriptableObjects;
+        [SerializeField] private List<ScriptableObject> _scriptableObjects;
 
         public override void InstallBindings()
         {
@@ -23,7 +23,7 @@ namespace Scripts.Installer
 
         private void ForeachScriptableObject(Action<ScriptableObject> action)
         {
-            scriptableObjects.ForEach(action);
+            _scriptableObjects.ForEach(action);
         }
     }
 }

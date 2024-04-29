@@ -9,18 +9,18 @@ namespace Scripts.Player
     {
         [SerializeField] private Rigidbody _rigidbody;
         [Header("IsGround settings")]
-        [SerializeField] private float maxDistanse;
-        [SerializeField] private float sphereRadius;
+        [SerializeField] private float _maxDistanse;
+        [SerializeField] private float _sphereRadius;
         [Header("Monitoring")]
-        [SerializeField] private float currentSpeed;
-        [SerializeField] private float turnSpeed;
+        [SerializeField] private float _currentSpeed;
+        [SerializeField] private float _turnSpeed;
         [Header("Movement")]
-        [SerializeField] private float walkSpeed;
-        [SerializeField] private float runSpeed;
-        [SerializeField] private float sprintSpeed;
-        [SerializeField] private float groundDrag;
-        [SerializeField] private float jumpForce;
-        [SerializeField] private float dodgeForce;
+        [SerializeField] private float _walkSpeed;
+        [SerializeField] private float _runSpeed;
+        [SerializeField] private float _sprintSpeed;
+        [SerializeField] private float _groundDrag;
+        [SerializeField] private float _jumpForce;
+        [SerializeField] private float _dodgeForce;
 
         private InputService _inputService;
         private ThirdPersonCameraService _thirdPersonCam;
@@ -34,7 +34,7 @@ namespace Scripts.Player
             _inputService.OnJumpKeyPressed += Jump;
             _inputService.OnDogdeKeyPressed += Dodge;
 
-            currentSpeed = runSpeed;
+            _currentSpeed = _runSpeed;
         }
 
         private void OnDestroy()
@@ -49,7 +49,7 @@ namespace Scripts.Player
             {
                 Moving(10f);              
                 Sprint();
-                _rigidbody.drag = groundDrag;
+                _rigidbody.drag = _groundDrag;
             }
             else
             {
@@ -61,7 +61,7 @@ namespace Scripts.Player
         private void Moving(float acceleration)
         {
             Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-            _rigidbody.AddForce(movingDirection * currentSpeed * acceleration, ForceMode.Force);
+            _rigidbody.AddForce(movingDirection * _currentSpeed * acceleration, ForceMode.Force);
 
             if (!IsGrounded())
             {
@@ -73,11 +73,11 @@ namespace Scripts.Player
         {
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Sprint)
             {
-                currentSpeed = sprintSpeed;
+                _currentSpeed = _sprintSpeed;
             }
             else if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Run)
             {
-                currentSpeed = runSpeed;
+                _currentSpeed = _runSpeed;
             }
         }
 
@@ -86,7 +86,7 @@ namespace Scripts.Player
             if (IsGrounded())
             {
                 Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-                _rigidbody.AddForce(movingDirection * dodgeForce, ForceMode.VelocityChange);
+                _rigidbody.AddForce(movingDirection * _dodgeForce, ForceMode.VelocityChange);
             }
         }
 
@@ -96,7 +96,7 @@ namespace Scripts.Player
             {
                 if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Jumping)
                 {
-                    _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                    _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
                 }
             }
         }
@@ -104,9 +104,9 @@ namespace Scripts.Player
         private void SpeedControl()
         {
             Vector3 playerSpeed = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
-            if (playerSpeed.magnitude > currentSpeed)
+            if (playerSpeed.magnitude > _currentSpeed)
             {
-                Vector3 limitedSpeed = playerSpeed.normalized * currentSpeed;
+                Vector3 limitedSpeed = playerSpeed.normalized * _currentSpeed;
                 _rigidbody.velocity = new Vector3(limitedSpeed.x, _rigidbody.velocity.y, limitedSpeed.z);
             }
         }
@@ -116,7 +116,7 @@ namespace Scripts.Player
             RaycastHit hitInfo;
             Vector3 directionDown = transform.TransformDirection(Vector3.down);
 
-            if (Physics.SphereCast(gameObject.transform.position + Vector3.up, sphereRadius, directionDown, out hitInfo, maxDistanse))
+            if (Physics.SphereCast(gameObject.transform.position + Vector3.up, _sphereRadius, directionDown, out hitInfo, _maxDistanse))
             {
                 return true;
             }

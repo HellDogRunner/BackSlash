@@ -6,9 +6,9 @@ namespace Scripts.Player.camera
     class ThirdPersonCameraService : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Transform Camera;
-        [SerializeField] private Transform Orientation;
-        [SerializeField] private float RotationTime;
+        [SerializeField] private Transform _camera;
+        [SerializeField] private Transform _orientation;
+        [SerializeField] private float _rotationTime;
 
         private InputService _inputService;
         private Vector3 _forwardDirection;
@@ -31,21 +31,21 @@ namespace Scripts.Player.camera
         private void RotatePlayer()
         {
             var direction = _inputService.MoveDirection;
-            Vector3 ViewDir = gameObject.transform.position - new Vector3(Camera.transform.position.x, gameObject.transform.position.y, Camera.transform.position.z);
-            Orientation.forward = ViewDir.normalized;
+            Vector3 ViewDir = gameObject.transform.position - new Vector3(_camera.transform.position.x, gameObject.transform.position.y, _camera.transform.position.z);
+            _orientation.forward = ViewDir.normalized;
 
-            Vector3 inputDir = Orientation.forward * direction.z + Orientation.right * direction.x;
+            Vector3 inputDir = _orientation.forward * direction.z + _orientation.right * direction.x;
             if (inputDir != Vector3.zero)
             {
-                gameObject.transform.forward = Vector3.Slerp(inputDir, gameObject.transform.forward, RotationTime * Time.fixedDeltaTime);
+                gameObject.transform.forward = Vector3.Slerp(inputDir, gameObject.transform.forward, _rotationTime * Time.fixedDeltaTime);
             }
         }
 
         public void RotateCameraAroundPlayer()
         {
             var direction = _inputService.MoveDirection;
-            Vector3 forward = Camera.transform.forward;
-            Vector3 right = Camera.transform.right;
+            Vector3 forward = _camera.transform.forward;
+            Vector3 right = _camera.transform.right;
 
             Vector3 forwardRealtiveVerticalInput = direction.z * forward;
             Vector3 rightRealtiveVerticalInput = direction.x * right;

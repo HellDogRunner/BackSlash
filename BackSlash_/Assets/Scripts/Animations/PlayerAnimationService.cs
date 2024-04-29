@@ -8,10 +8,10 @@ namespace Scripts.Animations
 {
     public class PlayerAnimationService : MonoBehaviour
     {
-        [SerializeField] private Animator animator;
-        [SerializeField] private float smoothBlend;
+        [SerializeField] private Animator _animator;
+        [SerializeField] private float _smoothBlend;
 
-        [SerializeField] private float aimDuration;
+        [SerializeField] private float _aimDuration;
 
         private InputService _inputService;
 
@@ -27,7 +27,7 @@ namespace Scripts.Animations
             _inputService.OnDogdeKeyPressed += DodgeAnimation;
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
 
-            _overrides = animator.runtimeAnimatorController as AnimatorOverrideController;
+            _overrides = _animator.runtimeAnimatorController as AnimatorOverrideController;
         }
 
         private void OnDestroy()
@@ -40,8 +40,8 @@ namespace Scripts.Animations
         private void Update()
         {
             var dir = _inputService.MoveDirection;
-            animator.SetFloat("InputX", dir.x, smoothBlend, Time.deltaTime);
-            animator.SetFloat("InputY", dir.z, smoothBlend, Time.deltaTime);
+            _animator.SetFloat("InputX", dir.x, _smoothBlend, Time.deltaTime);
+            _animator.SetFloat("InputY", dir.z, _smoothBlend, Time.deltaTime);
 
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
             {
@@ -54,24 +54,24 @@ namespace Scripts.Animations
 
         public void ShowWeapon(RaycastWeapon weapon)
         {
-            animator.SetLayerWeight(1, 1f);
+            _animator.SetLayerWeight(1, 1f);
             _overrides["weapon_anim_none"] = weapon.WeaponAnimation;
         }
 
         public void HideWeapon()
         {
-            animator.SetLayerWeight(1, 0f);
+            _animator.SetLayerWeight(1, 0f);
         }
 
         private void SprintAndRunAnimation()
         {
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Sprint)
             {
-                animator.SetBool("IsSprint", true);
+                _animator.SetBool("IsSprint", true);
             }
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Run)
             {
-                animator.SetBool("IsSprint", false);
+                _animator.SetBool("IsSprint", false);
             }
         }
 
@@ -79,7 +79,7 @@ namespace Scripts.Animations
         {
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Jumping)
             {
-                animator.Play("Jump forward");
+                _animator.Play("Jump forward");
             }
         }
 
@@ -87,7 +87,7 @@ namespace Scripts.Animations
         {
             if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Dodge)
             {
-                animator.Play("Dodge");
+                _animator.Play("Dodge");
             }
         }
 

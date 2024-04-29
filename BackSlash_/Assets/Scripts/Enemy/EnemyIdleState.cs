@@ -12,7 +12,7 @@ namespace Scripts.Enemy
 
         private float _distanceToTarget = Mathf.Infinity;
 
-        private HealhService _health;
+        private HealthService _health;
         public override void EnterState(EnemyStateManager enemy)
         {
             _playerTransform = enemy.PlayerTransform;
@@ -21,7 +21,7 @@ namespace Scripts.Enemy
 
         public override void OnAnimationTrigger(EnemyStateManager enemy)
         {
-            throw new System.NotImplementedException();
+            //TOTDO some logic here
         }
 
         public override void UpdateState(EnemyStateManager enemy)
