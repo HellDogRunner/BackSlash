@@ -6,6 +6,7 @@ using UnityEngine;
 using Zenject;
 using UnityEditor.Animations;
 using Scripts.Animations;
+using System;
 
 namespace Scripts.Weapon 
 {
@@ -13,6 +14,11 @@ namespace Scripts.Weapon
     {
         [SerializeField] private Transform _weaponPivot;
         [SerializeField] private Transform _crossHairTarget;
+
+
+        [Header("Attack Parameters")]
+        [SerializeField] private int _currentAttack = 0;
+        private float _timeSinceAttack;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
@@ -25,6 +31,7 @@ namespace Scripts.Weapon
         private bool _isAttack;
 
         public EWeaponType CurrentWeaponType => _curentWeaponType;
+        public event Action<int> OnAttack;
 
         [Inject]
         private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputService inputService, PlayerAnimationService playerAnimationService)
@@ -32,6 +39,7 @@ namespace Scripts.Weapon
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
             _animationService = playerAnimationService;
+
             _curentWeaponType = EWeaponType.None;
         }
 
@@ -45,6 +53,14 @@ namespace Scripts.Weapon
             {
                 HideWeapon();
             }
+
+            _timeSinceAttack += Time.deltaTime;
+
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
+            {
+                Attack();
+            }
+
             if (_raycastWeapon)
             {
                 if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack && !_isAttack)
@@ -88,6 +104,27 @@ namespace Scripts.Weapon
             }
             _curentWeaponType = EWeaponType.None;
             Destroy(_currentWeapon);
+        }
+
+        private void Attack()
+        {
+            if (_timeSinceAttack > 0.8f)
+            {
+                _currentAttack++;
+
+                if (_currentAttack > 3)
+                {
+                    _currentAttack = 1;
+                }
+
+                if (_timeSinceAttack > 1.0f)
+                {
+                    _currentAttack = 1;
+                }
+
+                OnAttack?.Invoke(_currentAttack);
+                _timeSinceAttack = 0;
+            }
         }
     }
 }

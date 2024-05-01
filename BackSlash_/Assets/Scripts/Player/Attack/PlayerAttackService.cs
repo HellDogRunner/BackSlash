@@ -2,6 +2,7 @@ using Scripts.Animations;
 using Scripts.Player.camera;
 using Scripts.Weapon;
 using Scripts.Weapon.Models;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,18 +26,18 @@ namespace Scripts.Player.Attack
             _weaponTypesDatabase = weaponTypesDatabase;
             _weaponController = weaponController;
 
-            _inputService.OnAttackPressed += LightAttack;
+            _weaponController.OnAttack += LightAttack;
         }
 
         private void OnDestroy()
         {
-            _inputService.OnAttackPressed -= LightAttack;
+            _weaponController.OnAttack -= LightAttack;
         }
 
-        private void LightAttack() 
+        private void LightAttack(int currentAttack) 
         {         
             if (_weaponController.CurrentWeaponType != EWeaponType.None)
-            {
+            {       
                 var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(_weaponController.CurrentWeaponType);
                 var weaponDamage = weaponType.LightAttackDamage;
                 AttackRaycast(weaponDamage);
@@ -69,8 +70,7 @@ namespace Scripts.Player.Attack
             }
         }
         private void OnDrawGizmos()
-        {
-            
+        {        
             var attackDistance = 6f;
 
             Gizmos.DrawWireSphere(_attackOrigin.position, attackDistance);

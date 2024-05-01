@@ -24,10 +24,12 @@ namespace Scripts.Animations
             _inputService = inputService;
             _weaponController = weaponController;
 
+            _weaponController.OnAttack += AttackAnimation;
+
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
             _inputService.OnDogdeKeyPressed += DodgeAnimation;
-            _inputService.OnAttackPressed += AttackAnimation;
+            //_inputService.OnAttackPressed += AttackAnimation;
         }
 
         private void OnDestroy()
@@ -35,7 +37,7 @@ namespace Scripts.Animations
             _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed -= JumpAnimation;
             _inputService.OnDogdeKeyPressed -= DodgeAnimation;
-            _inputService.OnAttackPressed -= AttackAnimation;
+           // _inputService.OnAttackPressed -= AttackAnimation;
         }
 
         private void Update()
@@ -73,13 +75,13 @@ namespace Scripts.Animations
             }
         }
 
-        private void AttackAnimation()
+        private void AttackAnimation(int currentAttack)
         {
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
             {
                 if (_weaponController.CurrentWeaponType == EWeaponType.Melee)
                 {
-                    _animator.Play("LightAttack");
+                    _animator.SetTrigger("Attack" + currentAttack);
                 }
             }
         }

@@ -13,6 +13,8 @@ public class HealthService : MonoBehaviour
 
     public float Health => _health;
 
+    public event Action<float> OnHealthChanged;
+
     private void Start() 
     { 
         _ragdoll = GetComponent<Ragdoll>();
@@ -21,11 +23,13 @@ public class HealthService : MonoBehaviour
     public void TakeDamage(float damage) 
     {
         _health -= damage;
+
         if (_health <= 0)
         {
             Death();
             _health = 0;
         }
+        OnHealthChanged?.Invoke(_health);
     }
 
     private void Death() 
