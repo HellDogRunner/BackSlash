@@ -9,6 +9,7 @@ namespace Scripts.Enemy
     {
         private float _provokedRange = 8f;
         private Transform _playerTransform;
+        private NavMeshAgent _agent;
 
         private float _distanceToTarget = Mathf.Infinity;
 
@@ -17,6 +18,7 @@ namespace Scripts.Enemy
         {
             _playerTransform = enemy.PlayerTransform;
             _health = enemy.EnemyHealth;
+            _agent = enemy.Agent;
         }
 
         public override void OnAnimationTrigger(EnemyStateManager enemy)
@@ -27,7 +29,8 @@ namespace Scripts.Enemy
         public override void UpdateState(EnemyStateManager enemy)
         {
             _distanceToTarget = Vector3.Distance(_playerTransform.position, enemy.transform.position);
-            if (_distanceToTarget < _provokedRange)
+            _agent.destination = _agent.transform.position;
+            if (_distanceToTarget <= _provokedRange)
             {
                 enemy.SwitchState(enemy.ChaseState);
             }

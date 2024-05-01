@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace Scripts.Enemy
     {
 
         private RaycastWeapon _weapon;
+        private HealthService _health;
 
         private Transform _player;
 
@@ -16,11 +18,13 @@ namespace Scripts.Enemy
 
         private float _distanceToTarget = Mathf.Infinity;
         private float _provokedRange = 8f;
+   
         public override void EnterState(EnemyStateManager enemy)
         {
             _weapon = enemy.GetComponentInChildren<RaycastWeapon>();
             _player = enemy.PlayerTransform;
             _offset = new Vector3(0, 1.5f, 0);
+            _health = enemy.EnemyHealth;
         }
 
         public override void OnAnimationTrigger(EnemyStateManager enemy)
@@ -34,9 +38,9 @@ namespace Scripts.Enemy
 
             enemy.gameObject.transform.LookAt(_player);
             enemy.Animator.SetFloat("Speed", enemy.Agent.velocity.magnitude);
-
             if (!_isAttack)
             {
+                enemy.Animator.SetBool("Attack", true);
                 _weapon.StartFiring();
                 _isAttack = true;
             }
@@ -50,6 +54,11 @@ namespace Scripts.Enemy
                 enemy.SwitchState(enemy.ChaseState);
                 _weapon.StopFiring();
                 _isAttack = false;
+                enemy.Animator.SetBool("Attack", false);
+            }
+            if (_health.Health <= 0)
+            {
+                enemy.SwitchState(enemy.DeadState);
             }
         }
     }

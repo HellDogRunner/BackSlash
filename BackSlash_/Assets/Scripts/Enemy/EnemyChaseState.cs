@@ -10,6 +10,7 @@ namespace Scripts.Enemy
     {
         private NavMeshAgent _agent;
         private Transform _playerTransform;
+        private HealthService _health;
 
         private float _provokedRange = 8f;
         private float _forgotRagnge = 10;
@@ -19,6 +20,7 @@ namespace Scripts.Enemy
         {
             _agent = enemy.Agent;
             _playerTransform = enemy.PlayerTransform;
+            _health = enemy.EnemyHealth;
         }
         public override void OnAnimationTrigger(EnemyStateManager enemy)
         {
@@ -30,19 +32,23 @@ namespace Scripts.Enemy
             {
                 return;
             }
-            enemy.Animator.SetFloat("Speed", _agent.velocity.magnitude);
+
+
             _distanceToTarget = Vector3.Distance(_playerTransform.position, enemy.transform.position);
-            if (_distanceToTarget > _forgotRagnge)
+            _agent.destination = _playerTransform.position;
+            enemy.Animator.SetFloat("Speed", _agent.velocity.magnitude);
+
+            if (_distanceToTarget >= _forgotRagnge)
             {
                 enemy.SwitchState(enemy.IdleState);
             }
-            if (_distanceToTarget > _provokedRange)
-            {
-               _agent.destination = _playerTransform.position;
-            }
-            if (_distanceToTarget <= _provokedRange)
+            if (_distanceToTarget <= _agent.stoppingDistance)
             {
                 enemy.SwitchState(enemy.AttackState);
+            }
+            if (_health.Health <= 0)
+            {
+                enemy.SwitchState(enemy.DeadState);
             }
         }
     }

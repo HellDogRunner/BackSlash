@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System;
 
 namespace Scripts.Enemy {
     public class EnemyDeadState : BaseEnemyState
     {
-        private HealthService _health;
         private NavMeshAgent _agent;
         private Animator _animator;
+
         public override void EnterState(EnemyStateManager enemy)
         {
-            _health = enemy.EnemyHealth;
             _agent = enemy.Agent;
             _animator = enemy.Animator;
 
@@ -28,5 +28,6 @@ namespace Scripts.Enemy {
         {
             //TOTDO some logic here
         }
+
     }
 }

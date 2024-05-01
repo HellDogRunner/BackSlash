@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using Zenject;
 using UnityEngine.Animations.Rigging;
+using Scripts.Weapon;
 
 namespace Scripts.Animations
 {
@@ -14,20 +15,20 @@ namespace Scripts.Animations
         [SerializeField] private float _aimDuration;
 
         private InputService _inputService;
+        private WeaponController _weaponController;
 
-        private AnimatorOverrideController _overrides;
 
         [Inject]
-        private void Construct(InputService inputService)
+        private void Construct(InputService inputService, WeaponController weaponController)
         {
             _inputService = inputService;
+            _weaponController = weaponController;
 
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
             _inputService.OnDogdeKeyPressed += DodgeAnimation;
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
-
-            _overrides = _animator.runtimeAnimatorController as AnimatorOverrideController;
+            _inputService.OnAttackPressed += AttackAnimation;
         }
 
         private void OnDestroy()
@@ -35,6 +36,7 @@ namespace Scripts.Animations
             _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed -= JumpAnimation;
             _inputService.OnDogdeKeyPressed -= DodgeAnimation;
+            _inputService.OnAttackPressed -= AttackAnimation;
         }
 
         private void Update()
@@ -42,25 +44,14 @@ namespace Scripts.Animations
             var dir = _inputService.MoveDirection;
             _animator.SetFloat("InputX", dir.x, _smoothBlend, Time.deltaTime);
             _animator.SetFloat("InputY", dir.z, _smoothBlend, Time.deltaTime);
-
-            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
-            {
-            }
-            else if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
-            {
-                 //aimLayer.weight -= Time.deltaTime / aimDuration;
-            }
         }
 
-        public void ShowWeapon(RaycastWeapon weapon)
+        public void ShowWeapon()
         {
-            _animator.SetLayerWeight(1, 1f);
-            _overrides["weapon_anim_none"] = weapon.WeaponAnimation;
         }
 
         public void HideWeapon()
         {
-            _animator.SetLayerWeight(1, 0f);
         }
 
         private void SprintAndRunAnimation()
@@ -93,7 +84,13 @@ namespace Scripts.Animations
 
         private void AttackAnimation()
         {
-           // Animator.Play("LightAttack");
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
+            {
+                if (_weaponController.CurrentWeaponType == EWeaponType.Melee)
+                {
+                    _animator.Play("LightAttack");
+                }
+            }
         }
     }
 }

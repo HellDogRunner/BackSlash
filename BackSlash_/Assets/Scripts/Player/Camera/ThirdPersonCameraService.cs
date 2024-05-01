@@ -19,7 +19,7 @@ namespace Scripts.Player.camera
         private void Construct(InputService inputService)
         {
             _inputService = inputService;
-            //DisableCursor();
+            DisableCursor();
         }
 
         private void FixedUpdate()

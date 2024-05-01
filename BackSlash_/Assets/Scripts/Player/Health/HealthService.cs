@@ -7,10 +7,10 @@ using UnityEngine;
 public class HealthService : MonoBehaviour
 {
     [SerializeField] private float _health;
+    [SerializeField] private float _timeToDestroyLeft = 5f;
 
     private Ragdoll _ragdoll;
 
-    public Action<float> OnHealthChanged;
     public float Health => _health;
 
     private void Start() 
@@ -21,20 +21,30 @@ public class HealthService : MonoBehaviour
     public void TakeDamage(float damage) 
     {
         _health -= damage;
-        OnHealthChanged?.Invoke(_health);
         if (_health <= 0)
         {
             Death();
+            _health = 0;
         }
     }
 
     private void Death() 
     {
-        //Destroy(gameObject);
         if (_ragdoll)
         {
             Debug.Log("dead");
             _ragdoll.ActivateRagdoll();
+
+            if (gameObject.tag == "Enemy")
+            {
+                StartCoroutine(DestroyObject());
+            }
         }
+    }
+
+    private IEnumerator DestroyObject()
+    {
+        yield return new WaitForSeconds(_timeToDestroyLeft);
+        Destroy(gameObject);
     }
 }

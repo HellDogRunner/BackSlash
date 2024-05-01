@@ -21,10 +21,11 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private AnimationClip _weaponAnimation;
     [Header("BulletSettings")]
 
-    [SerializeField] private int _fireRate = 25;
+    [SerializeField] private float _fireRate = 25;
     [SerializeField] private float _bulletSpeed = 1000;
     [SerializeField] private float _bulletDrop = 0f;
     [SerializeField] private float _damage = 0f;
+    [SerializeField] private float _inaccuracy = 0f;
 
     private float _accumulatedTime;
     private float _maxLifeTime = 3;
@@ -76,6 +77,7 @@ public class RaycastWeapon : MonoBehaviour
             float fireInterval = 1f / _fireRate;
             while (_accumulatedTime >= 0f)
             {
+                target += UnityEngine.Random.insideUnitSphere * _inaccuracy;
                 FireBullet(target);
                 _accumulatedTime -= fireInterval;
             }

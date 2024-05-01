@@ -13,10 +13,6 @@ namespace Scripts.Weapon
     {
         [SerializeField] private Transform _weaponPivot;
         [SerializeField] private Transform _crossHairTarget;
-        [Space]
-        [SerializeField] private Transform _weaponParent;
-        [SerializeField] private Transform _weaponLeftGrip;
-        [SerializeField] private Transform _weaponRightGrip;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
@@ -24,8 +20,11 @@ namespace Scripts.Weapon
         private InputService _inputService;
         private RaycastWeapon _raycastWeapon;
         private PlayerAnimationService _animationService;
+        private EWeaponType _curentWeaponType;
 
         private bool _isAttack;
+
+        public EWeaponType CurrentWeaponType => _curentWeaponType;
 
         [Inject]
         private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputService inputService, PlayerAnimationService playerAnimationService)
@@ -33,11 +32,7 @@ namespace Scripts.Weapon
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
             _animationService = playerAnimationService;
-        }
-
-        private void OnDestroy()
-        {
-
+            _curentWeaponType = EWeaponType.None;
         }
 
         private void Update()
@@ -82,11 +77,9 @@ namespace Scripts.Weapon
             _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, _weaponPivot.position, _weaponPivot.rotation);
             _currentWeapon.transform.parent = _weaponPivot.transform;
 
-            if (_currentWeapon.TryGetComponent<RaycastWeapon>(out RaycastWeapon raycastWeapon))
-            {
-                _raycastWeapon = raycastWeapon;
-                _animationService.ShowWeapon(_raycastWeapon);
-            }
+            _curentWeaponType = EWeaponType.Melee;
+
+            _animationService.ShowWeapon();
         }
 
         private void HideWeapon()
@@ -96,23 +89,8 @@ namespace Scripts.Weapon
                 return;
             }
             _animationService.HideWeapon();
+            _curentWeaponType = EWeaponType.None;
             Destroy(_currentWeapon);
-        }
-
-        [ContextMenu("Save weapon pose")]
-        private void SaveWeaponPose()
-        {
-            if (_raycastWeapon == null)
-            {
-                return;
-            }
-            GameObjectRecorder recorder = new GameObjectRecorder(gameObject);
-            recorder.BindComponentsOfType<Transform>(_weaponParent.gameObject, false);
-            recorder.BindComponentsOfType<Transform>(_weaponRightGrip.gameObject, false);
-            recorder.BindComponentsOfType<Transform>(_weaponLeftGrip.gameObject, false);
-            recorder.TakeSnapshot(0f);
-            recorder.SaveToClip(_raycastWeapon.WeaponAnimation);
-            UnityEditor.AssetDatabase.SaveAssets();
         }
     }
 }
