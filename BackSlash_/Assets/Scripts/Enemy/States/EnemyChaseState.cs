@@ -12,7 +12,6 @@ namespace Scripts.Enemy
         private Transform _playerTransform;
         private HealthService _health;
 
-        private float _provokedRange = 8f;
         private float _forgotRagnge = 10;
         private float _distanceToTarget = Mathf.Infinity;
 
@@ -22,17 +21,13 @@ namespace Scripts.Enemy
             _playerTransform = enemy.PlayerTransform;
             _health = enemy.EnemyHealth;
         }
-        public override void OnAnimationTrigger(EnemyStateManager enemy)
-        {
-        }
-
+ 
         public override void UpdateState(EnemyStateManager enemy)
         {
             if (!_agent.enabled)
             {
                 return;
             }
-
 
             _distanceToTarget = Vector3.Distance(_playerTransform.position, enemy.transform.position);
             _agent.destination = _playerTransform.position;

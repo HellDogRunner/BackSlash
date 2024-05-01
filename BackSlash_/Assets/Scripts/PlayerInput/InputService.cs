@@ -40,18 +40,17 @@ namespace Scripts.Player
             _playerControls.Gameplay.Sprint.performed += Run;
             _playerControls.Gameplay.Sprint.canceled += Run;
 
-
             _playerControls.Gameplay.Jump.performed += Jump;
 
             _playerControls.Gameplay.ShowWeapon.performed += ShowWeapon;
             _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
-
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
         {
             var direction = _playerControls.Gameplay.WASD.ReadValue<Vector3>();
             _moveDirection = new Vector3(direction.x, direction.z, direction.y);
+
             if (_moveDirection == Vector3.zero)
             {
                 _playerState.State = PlayerState.EPlayerState.Idle;

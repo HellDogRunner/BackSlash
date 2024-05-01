@@ -60,10 +60,6 @@ namespace Scripts.Player.Attack
             {           
                 if (hit.transform.tag == "Enemy")
                 {
-                    //if (hit.transform.TryGetComponent<HealthService>(out HealthService T))
-                    //{
-                    //    T.TakeDamage(damage);
-                    //}
                     var enemyHealth = hit.transform.GetComponentInParent<HealthService>();
                     if (enemyHealth)
                     {
@@ -87,7 +83,6 @@ namespace Scripts.Player.Attack
                 Gizmos.DrawWireSphere(sphereCastMidpoint, _attackRadius);
                 Gizmos.DrawSphere(hit.point, 0.1f);
                 Debug.DrawLine(_attackOrigin.position, sphereCastMidpoint, Color.green);
-                //Debug.Log(hit.transform.tag);
             }
             else
             {

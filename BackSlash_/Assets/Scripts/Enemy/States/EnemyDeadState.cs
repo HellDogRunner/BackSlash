@@ -19,15 +19,9 @@ namespace Scripts.Enemy {
             _animator.enabled = false;
         }
 
-        public override void OnAnimationTrigger(EnemyStateManager enemy)
-        {
-            //TOTDO some logic here
-        }
-
         public override void UpdateState(EnemyStateManager enemy)
         {
-            //TOTDO some logic here
+            //TODO some logic here
         }
-
     }
 }

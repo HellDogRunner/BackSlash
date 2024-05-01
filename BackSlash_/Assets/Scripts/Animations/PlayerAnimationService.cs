@@ -27,7 +27,6 @@ namespace Scripts.Animations
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
             _inputService.OnDogdeKeyPressed += DodgeAnimation;
-            _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnAttackPressed += AttackAnimation;
         }
 
@@ -44,14 +43,6 @@ namespace Scripts.Animations
             var dir = _inputService.MoveDirection;
             _animator.SetFloat("InputX", dir.x, _smoothBlend, Time.deltaTime);
             _animator.SetFloat("InputY", dir.z, _smoothBlend, Time.deltaTime);
-        }
-
-        public void ShowWeapon()
-        {
-        }
-
-        public void HideWeapon()
-        {
         }
 
         private void SprintAndRunAnimation()

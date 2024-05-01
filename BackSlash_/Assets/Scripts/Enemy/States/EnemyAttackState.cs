@@ -7,7 +7,6 @@ namespace Scripts.Enemy
 {
     public class EnemyAttackState : BaseEnemyState
     {
-
         private RaycastWeapon _weapon;
         private HealthService _health;
 
@@ -25,11 +24,6 @@ namespace Scripts.Enemy
             _player = enemy.PlayerTransform;
             _offset = new Vector3(0, 1.5f, 0);
             _health = enemy.EnemyHealth;
-        }
-
-        public override void OnAnimationTrigger(EnemyStateManager enemy)
-        {
-            throw new System.NotImplementedException();
         }
 
         public override void UpdateState(EnemyStateManager enemy)

@@ -7,23 +7,18 @@ namespace Scripts.Enemy
 {
     public class EnemyIdleState : BaseEnemyState
     {
-        private float _provokedRange = 8f;
+        private HealthService _health;
         private Transform _playerTransform;
         private NavMeshAgent _agent;
 
         private float _distanceToTarget = Mathf.Infinity;
+        private float _provokedRange = 8f;
 
-        private HealthService _health;
         public override void EnterState(EnemyStateManager enemy)
         {
             _playerTransform = enemy.PlayerTransform;
             _health = enemy.EnemyHealth;
             _agent = enemy.Agent;
-        }
-
-        public override void OnAnimationTrigger(EnemyStateManager enemy)
-        {
-            //TOTDO some logic here
         }
 
         public override void UpdateState(EnemyStateManager enemy)

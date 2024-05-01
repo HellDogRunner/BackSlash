@@ -78,8 +78,6 @@ namespace Scripts.Weapon
             _currentWeapon.transform.parent = _weaponPivot.transform;
 
             _curentWeaponType = EWeaponType.Melee;
-
-            _animationService.ShowWeapon();
         }
 
         private void HideWeapon()
@@ -88,7 +86,6 @@ namespace Scripts.Weapon
             {
                 return;
             }
-            _animationService.HideWeapon();
             _curentWeaponType = EWeaponType.None;
             Destroy(_currentWeapon);
         }

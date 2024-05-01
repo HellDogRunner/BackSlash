@@ -30,7 +30,6 @@ namespace Scripts.Enemy
         private void Update()
         {
             _currentState.UpdateState(this);
-           // _animator.SetFloat("Speed", _agent.velocity.magnitude);
         }
 
         public void SwitchState(BaseEnemyState state)
