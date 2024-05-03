@@ -10,13 +10,12 @@ namespace Scripts.Animations
     public class PlayerAnimationService : MonoBehaviour
     {
         [SerializeField] private Animator _animator;
-        [SerializeField] private float _smoothBlend;
-
-        [SerializeField] private float _aimDuration;
+        [SerializeField] private float _smoothBlend = 0.1f;
+        [SerializeField] private AnimatorOverrideController _swordOverride;
+        [SerializeField] private AnimatorOverrideController _mainOverride;
 
         private InputService _inputService;
         private WeaponController _weaponController;
-
 
         [Inject]
         private void Construct(InputService inputService, WeaponController weaponController)
@@ -24,12 +23,14 @@ namespace Scripts.Animations
             _inputService = inputService;
             _weaponController = weaponController;
 
-            _weaponController.OnAttack += AttackAnimation;
-
             _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
             _inputService.OnDogdeKeyPressed += DodgeAnimation;
-            //_inputService.OnAttackPressed += AttackAnimation;
+            _inputService.OnShowWeaponPressed += ShowWeaponAnimation;
+            _inputService.OnHideWeaponPressed += HideWeaponAnimation;
+            _inputService.OnBlockPressed += BlockAnimation;
+            _inputService.OnWeaponIdle += WeaponIdle;
+            _weaponController.OnAttack += AttackAnimation;          
         }
 
         private void OnDestroy()
@@ -37,7 +38,11 @@ namespace Scripts.Animations
             _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
             _inputService.OnJumpKeyPressed -= JumpAnimation;
             _inputService.OnDogdeKeyPressed -= DodgeAnimation;
-           // _inputService.OnAttackPressed -= AttackAnimation;
+            _inputService.OnShowWeaponPressed -= ShowWeaponAnimation;
+            _inputService.OnHideWeaponPressed -= HideWeaponAnimation;
+            _inputService.OnBlockPressed -= BlockAnimation;
+            _inputService.OnWeaponIdle -= WeaponIdle;
+            _weaponController.OnAttack -= AttackAnimation;
         }
 
         private void Update()
@@ -75,6 +80,24 @@ namespace Scripts.Animations
             }
         }
 
+        private void ShowWeaponAnimation()
+        {
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Show)
+            {
+                _animator.SetTrigger("Equip");
+                _animator.runtimeAnimatorController = _swordOverride;
+            }
+        }
+
+        private void HideWeaponAnimation()
+        {
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Hide)
+            {
+                _animator.SetTrigger("Unequip");
+                _animator.runtimeAnimatorController = _mainOverride;
+            }
+        }
+
         private void AttackAnimation(int currentAttack)
         {
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
@@ -83,6 +106,22 @@ namespace Scripts.Animations
                 {
                     _animator.SetTrigger("Attack" + currentAttack);
                 }
+            }
+        }
+
+        private void BlockAnimation()
+        {
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Block)
+            {
+                _animator.SetBool("Block", true);
+            }
+        }
+
+        private void WeaponIdle()
+        {
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
+            {
+                _animator.SetBool("Block", false);
             }
         }
     }

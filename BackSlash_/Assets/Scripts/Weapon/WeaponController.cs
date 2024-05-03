@@ -14,18 +14,17 @@ namespace Scripts.Weapon
     {
         [SerializeField] private Transform _weaponPivot;
         [SerializeField] private Transform _crossHairTarget;
+        [SerializeField] private Transform _weaponOnBeltPivot;
 
-
-        [Header("Attack Parameters")]
-        [SerializeField] private int _currentAttack = 0;
+        private int _currentAttack = 0;
         private float _timeSinceAttack;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
         private GameObject _currentWeapon;
         private InputService _inputService;
+        private PlayerAnimationService _playerAnimationService;
         private RaycastWeapon _raycastWeapon;
-        private PlayerAnimationService _animationService;
         private EWeaponType _curentWeaponType;
 
         private bool _isAttack;
@@ -38,20 +37,27 @@ namespace Scripts.Weapon
         {
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
-            _animationService = playerAnimationService;
+            _playerAnimationService = playerAnimationService;
 
             _curentWeaponType = EWeaponType.None;
+        }
+
+        private void Start()
+        {
+            var weaponModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
+            _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation);
+            _currentWeapon.transform.parent = _weaponOnBeltPivot.transform;
         }
 
         private void Update()
         {
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Show)
             {
-                ShowWeapon();
+                //ShowWeapon();
             }
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Hide)
             {
-                HideWeapon();
+               // HideWeapon();
             }
 
             _timeSinceAttack += Time.deltaTime;
@@ -59,6 +65,11 @@ namespace Scripts.Weapon
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
             {
                 Attack();
+            }
+
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Block)
+            {
+                Block();
             }
 
             if (_raycastWeapon)
@@ -81,29 +92,26 @@ namespace Scripts.Weapon
             }
         }
 
-        private void ShowWeapon() 
-        {
-            if (_currentWeapon != null)
-            {
-                return;
-            }
-
-            var weaponModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
-
-            _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, _weaponPivot.position, _weaponPivot.rotation);
-            _currentWeapon.transform.parent = _weaponPivot.transform;
-
-            _curentWeaponType = EWeaponType.Melee;
-        }
-
-        private void HideWeapon()
+        private void DrawWeapon() 
         {
             if (_currentWeapon == null)
             {
                 return;
             }
+
+            ChangeWeaponTransform(_weaponPivot);
+            _curentWeaponType = EWeaponType.Melee;
+        }
+
+        private void SheathWeapon()
+        {
+            if (_currentWeapon == null)
+            {
+                return;
+            }
+  
+            ChangeWeaponTransform(_weaponOnBeltPivot);
             _curentWeaponType = EWeaponType.None;
-            Destroy(_currentWeapon);
         }
 
         private void Attack()
@@ -125,6 +133,18 @@ namespace Scripts.Weapon
                 OnAttack?.Invoke(_currentAttack);
                 _timeSinceAttack = 0;
             }
+        }
+
+        private void Block()
+        {
+
+        }
+
+        private void ChangeWeaponTransform(Transform target)
+        {
+            _currentWeapon.transform.parent = target.transform;
+            _currentWeapon.transform.position = target.position;
+            _currentWeapon.transform.rotation = target.rotation;
         }
     }
 }

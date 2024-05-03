@@ -6,19 +6,19 @@ namespace Scripts.Player.camera
     class ThirdPersonCameraService : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Transform _camera;
         [SerializeField] private Transform _orientation;
         [SerializeField] private float _rotationTime;
 
         private InputService _inputService;
         private Vector3 _forwardDirection;
-
+        private Transform _camera;
         public Vector3 ForwardDirection => _forwardDirection;
 
         [Inject]
         private void Construct(InputService inputService)
         {
             _inputService = inputService;
+            _camera = Camera.main.transform;
             DisableCursor();
         }
 

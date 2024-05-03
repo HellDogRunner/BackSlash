@@ -15,23 +15,21 @@ namespace Scripts.Player.Attack
         [SerializeField] private Transform _attackOrigin;
         [SerializeField] private float _attackRadius = 0.5f;
 
-        private InputService _inputService;
         private WeaponTypesDatabase _weaponTypesDatabase;
         private WeaponController _weaponController;
 
         [Inject]
-        private void Construct(InputService inputService, WeaponTypesDatabase weaponTypesDatabase, WeaponController weaponController)
+        private void Construct(WeaponTypesDatabase weaponTypesDatabase, WeaponController weaponController)
         {
-            _inputService = inputService;
             _weaponTypesDatabase = weaponTypesDatabase;
             _weaponController = weaponController;
 
-            _weaponController.OnAttack += LightAttack;
+            //_weaponController.OnAttack += LightAttack;
         }
 
         private void OnDestroy()
         {
-            _weaponController.OnAttack -= LightAttack;
+            //_weaponController.OnAttack -= LightAttack;
         }
 
         private void LightAttack(int currentAttack) 

@@ -11,7 +11,8 @@ namespace Scripts.Player
             Attack,
             Idle,
             Show,
-            Hide
+            Hide,
+            Block
         }
     }
 }

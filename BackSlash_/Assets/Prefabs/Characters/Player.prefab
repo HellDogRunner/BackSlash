@@ -340,6 +340,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2132242225010759737}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3445408788166805265
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7934484346377334542}
+  m_Layer: 6
+  m_Name: HolsteredWeapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7934484346377334542
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3445408788166805265}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: -0.38268343, w: 0.92387956}
+  m_LocalPosition: {x: -0.008, y: -0.115, z: -0.218}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7431482172132327075}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -45}
 --- !u!1 &3470610753124871451
 GameObject:
   m_ObjectHideFlags: 0
@@ -902,7 +933,7 @@ Transform:
   m_GameObject: {fileID: 4890872869908790388}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5139025, y: -0.3007696, z: 0.7094739, w: -0.37694645}
-  m_LocalPosition: {x: 0.048, y: 0.047, z: -0.017}
+  m_LocalPosition: {x: 0.1182, y: 0.0523, z: -0.0027}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1480,6 +1511,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4558312397774548180}
+  - {fileID: 7934484346377334542}
   m_Father: {fileID: 2334555220759337295}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7544718657395930157
@@ -1897,7 +1929,6 @@ GameObject:
   - component: {fileID: 9087614315155568461}
   - component: {fileID: 4014532856921303228}
   - component: {fileID: 5530042786574198228}
-  - component: {fileID: 7649268116520256867}
   - component: {fileID: 3831153863078339735}
   - component: {fileID: 4003745565070631084}
   - component: {fileID: 1417933816927670133}
@@ -1951,7 +1982,7 @@ MonoBehaviour:
   _runSpeed: 3
   _sprintSpeed: 4
   _groundDrag: 5
-  _jumpForce: 5
+  _jumpForce: 5.5
   _dodgeForce: 10
 --- !u!114 &4014532856921303228
 MonoBehaviour:
@@ -1981,23 +2012,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponPivot: {fileID: 7108460016812821245}
   _crossHairTarget: {fileID: 0}
---- !u!114 &7649268116520256867
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540106101222958762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b197a1697418914d93375a6718c58a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _attackLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  _attackOrigin: {fileID: 6535169240358909275}
-  _attackRadius: 0.5
+  _weaponOnBeltPivot: {fileID: 7934484346377334542}
 --- !u!114 &3831153863078339735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2011,8 +2026,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 1259562901829629793}
-  _smoothBlend: 0.1
-  _aimDuration: 0.2
+  _smoothBlend: 0.05
+  _swordOverride: {fileID: 22100000, guid: 2b3567552a7c86f4db0e4520f4cc4dea, type: 2}
+  _mainOverride: {fileID: 22100000, guid: 76317af943e834842bef78f0de7bfbd5, type: 2}
 --- !u!114 &4003745565070631084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2025,7 +2041,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b803daacd1629764fbd1a29bab1987a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _camera: {fileID: 0}
   _orientation: {fileID: 655372459109497677}
   _rotationTime: 0.3
 --- !u!114 &1417933816927670133
@@ -2126,7 +2141,6 @@ MonoBehaviour:
   _components:
   - {fileID: 4014532856921303228}
   - {fileID: 5530042786574198228}
-  - {fileID: 7649268116520256867}
   - {fileID: 3831153863078339735}
   - {fileID: 1417933816927670133}
   - {fileID: 9087614315155568461}

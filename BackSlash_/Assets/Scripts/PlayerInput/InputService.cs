@@ -17,6 +17,10 @@ namespace Scripts.Player
         public event Action OnJumpKeyPressed;
         public event Action OnDogdeKeyPressed;
         public event Action OnAttackPressed;
+        public event Action OnShowWeaponPressed;
+        public event Action OnHideWeaponPressed;
+        public event Action OnBlockPressed;
+        public event Action OnWeaponIdle;
         public Vector3 MoveDirection => _moveDirection;
         public PlayerState PlayerStateContainer => _playerState;
         public WeaponState WeaponStateContainer => _weaponState;
@@ -34,11 +38,15 @@ namespace Scripts.Player
             _playerControls.Gameplay.Dodge.performed += Dodge;
 
             _playerControls.Gameplay.Attack.started += AttackStarted;
-            _playerControls.Gameplay.Attack.canceled += AttackCanceled;
+            _playerControls.Gameplay.Attack.canceled += WeaponIdle;
 
             _playerControls.Gameplay.Sprint.started += Sprint;
             _playerControls.Gameplay.Sprint.performed += Run;
             _playerControls.Gameplay.Sprint.canceled += Run;
+
+            _playerControls.Gameplay.Block.started += Block;
+            _playerControls.Gameplay.Block.performed += WeaponIdle;
+            _playerControls.Gameplay.Block.canceled += WeaponIdle;
 
             _playerControls.Gameplay.Jump.performed += Jump;
 
@@ -65,14 +73,19 @@ namespace Scripts.Player
                 _playerState.State = PlayerState.EPlayerState.Run;
             }
         }
+
         private void ShowWeapon(InputAction.CallbackContext context) 
         {
             _weaponState.State = WeaponState.EWeaponState.Show;
+            OnShowWeaponPressed?.Invoke();
         }
+
         private void HideWeapon(InputAction.CallbackContext context)
         {
             _weaponState.State = WeaponState.EWeaponState.Hide;
+            OnHideWeaponPressed?.Invoke();
         }
+
         private void Run(InputAction.CallbackContext context)
         {
             _playerState.State = PlayerState.EPlayerState.Run;
@@ -101,15 +114,22 @@ namespace Scripts.Player
             OnAttackPressed?.Invoke();
         }
 
-        private void AttackCanceled(InputAction.CallbackContext contex)
+        private void WeaponIdle(InputAction.CallbackContext contex)
         {
             _weaponState.State = WeaponState.EWeaponState.Idle;
+            OnWeaponIdle?.Invoke();
         }
 
         private void Jump(InputAction.CallbackContext contex)
         {
             _playerState.State = PlayerState.EPlayerState.Jumping;
             OnJumpKeyPressed?.Invoke();
+        }
+
+        private void Block(InputAction.CallbackContext contex)
+        {
+            _weaponState.State = WeaponState.EWeaponState.Block;
+            OnBlockPressed?.Invoke();
         }
 
         private void OnEnable()

@@ -98,6 +98,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Block"",
+                    ""type"": ""Value"",
+                    ""id"": ""383a9525-7348-4f22-81f5-cb72d5b34aba"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -232,6 +241,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3b844c81-1f4b-4ba9-8e5a-bf7c4052ec84"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": ""Hold(duration=9999,pressPoint=0.2)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Block"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -248,6 +268,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Gameplay_ShowWeapon = m_Gameplay.FindAction("ShowWeapon", throwIfNotFound: true);
         m_Gameplay_HideWeapon = m_Gameplay.FindAction("HideWeapon", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
+        m_Gameplay_Block = m_Gameplay.FindAction("Block", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -317,6 +338,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ShowWeapon;
     private readonly InputAction m_Gameplay_HideWeapon;
     private readonly InputAction m_Gameplay_Jump;
+    private readonly InputAction m_Gameplay_Block;
     public struct GameplayActions
     {
         private @GameControls m_Wrapper;
@@ -329,6 +351,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @ShowWeapon => m_Wrapper.m_Gameplay_ShowWeapon;
         public InputAction @HideWeapon => m_Wrapper.m_Gameplay_HideWeapon;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
+        public InputAction @Block => m_Wrapper.m_Gameplay_Block;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -362,6 +385,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Block.started += instance.OnBlock;
+            @Block.performed += instance.OnBlock;
+            @Block.canceled += instance.OnBlock;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -390,6 +416,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Block.started -= instance.OnBlock;
+            @Block.performed -= instance.OnBlock;
+            @Block.canceled -= instance.OnBlock;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -417,5 +446,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnShowWeapon(InputAction.CallbackContext context);
         void OnHideWeapon(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnBlock(InputAction.CallbackContext context);
     }
 }
