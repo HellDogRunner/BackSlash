@@ -25,6 +25,9 @@ namespace Scripts.Enemy
         {
             _distanceToTarget = Vector3.Distance(_playerTransform.position, enemy.transform.position);
             _agent.destination = _agent.transform.position;
+
+            enemy.Animator.SetFloat("Speed", _agent.velocity.magnitude);
+
             if (_distanceToTarget <= _provokedRange)
             {
                 enemy.SwitchState(enemy.ChaseState);

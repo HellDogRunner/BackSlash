@@ -33,6 +33,8 @@ namespace Scripts.Player
 
             _inputService.OnJumpKeyPressed += Jump;
             _inputService.OnDogdeKeyPressed += Dodge;
+            _inputService.OnSprintKeyPressed += Sprint;
+            _inputService.OnSprintKeyRealesed += Run;
 
             _currentSpeed = _runSpeed;
         }
@@ -41,6 +43,8 @@ namespace Scripts.Player
         {
             _inputService.OnJumpKeyPressed -= Jump;
             _inputService.OnDogdeKeyPressed -= Dodge;
+            _inputService.OnSprintKeyPressed -= Sprint;
+            _inputService.OnSprintKeyRealesed -= Run;
         }
 
         private void FixedUpdate()
@@ -48,7 +52,6 @@ namespace Scripts.Player
             if (IsGrounded())
             {
                 Moving(10f);              
-                Sprint();
                 _rigidbody.drag = _groundDrag;
             }
             else
@@ -71,14 +74,12 @@ namespace Scripts.Player
 
         private void Sprint()
         {
-            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Sprint)
-            {
-                _currentSpeed = _sprintSpeed;
-            }
-            else if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Run)
-            {
-                _currentSpeed = _runSpeed;
-            }
+            _currentSpeed = _sprintSpeed;
+        }
+
+        private void Run()
+        {
+            _currentSpeed = _runSpeed;
         }
 
         private void Dodge()
@@ -94,10 +95,7 @@ namespace Scripts.Player
         {
             if (IsGrounded())
             {
-                if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Jumping)
-                {
-                    _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
-                }
+                _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             }
         }
 

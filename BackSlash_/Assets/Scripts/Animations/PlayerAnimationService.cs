@@ -14,6 +14,9 @@ namespace Scripts.Animations
         [SerializeField] private AnimatorOverrideController _swordOverride;
         [SerializeField] private AnimatorOverrideController _mainOverride;
 
+        float ikWeight = 1f;
+        [SerializeField] float footPlacementOffset;
+
         private InputService _inputService;
         private WeaponController _weaponController;
 
@@ -23,19 +26,21 @@ namespace Scripts.Animations
             _inputService = inputService;
             _weaponController = weaponController;
 
-            _inputService.OnSprintKeyPressed += SprintAndRunAnimation;
+            _inputService.OnSprintKeyPressed += SprintAnimation;
+            _inputService.OnSprintKeyRealesed += RunAnimation;
             _inputService.OnJumpKeyPressed += JumpAnimation;
             _inputService.OnDogdeKeyPressed += DodgeAnimation;
             _inputService.OnShowWeaponPressed += ShowWeaponAnimation;
             _inputService.OnHideWeaponPressed += HideWeaponAnimation;
             _inputService.OnBlockPressed += BlockAnimation;
             _inputService.OnWeaponIdle += WeaponIdle;
-            _weaponController.OnAttack += AttackAnimation;          
+            _weaponController.OnAttack += AttackAnimation;
         }
 
         private void OnDestroy()
         {
-            _inputService.OnSprintKeyPressed -= SprintAndRunAnimation;
+            _inputService.OnSprintKeyPressed -= SprintAnimation;
+            _inputService.OnSprintKeyRealesed -= RunAnimation;
             _inputService.OnJumpKeyPressed -= JumpAnimation;
             _inputService.OnDogdeKeyPressed -= DodgeAnimation;
             _inputService.OnShowWeaponPressed -= ShowWeaponAnimation;
@@ -52,32 +57,24 @@ namespace Scripts.Animations
             _animator.SetFloat("InputY", dir.z, _smoothBlend, Time.deltaTime);
         }
 
-        private void SprintAndRunAnimation()
+        private void SprintAnimation()
         {
-            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Sprint)
-            {
-                _animator.SetBool("IsSprint", true);
-            }
-            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Run)
-            {
-                _animator.SetBool("IsSprint", false);
-            }
+            _animator.SetBool("IsSprint", true);
+        }
+
+        private void RunAnimation()
+        {
+            _animator.SetBool("IsSprint", false);
         }
 
         private void JumpAnimation()
         {
-            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Jumping)
-            {
-                _animator.Play("Jump forward");
-            }
+            _animator.Play("Jump forward");
         }
 
         private void DodgeAnimation()
         {
-            if (_inputService.PlayerStateContainer.State == PlayerState.EPlayerState.Dodge)
-            {
-                _animator.Play("Dodge");
-            }
+            _animator.Play("Dodge");
         }
 
         private void ShowWeaponAnimation()

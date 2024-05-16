@@ -8,12 +8,12 @@ namespace Scripts.Player
     public class InputService : MonoBehaviour
     {
         private GameControls _playerControls;
-        private PlayerState _playerState;
         private WeaponState _weaponState;
 
         private Vector3 _moveDirection;
 
         public event Action OnSprintKeyPressed;
+        public event Action OnSprintKeyRealesed;
         public event Action OnJumpKeyPressed;
         public event Action OnDogdeKeyPressed;
         public event Action OnAttackPressed;
@@ -22,14 +22,12 @@ namespace Scripts.Player
         public event Action OnBlockPressed;
         public event Action OnWeaponIdle;
         public Vector3 MoveDirection => _moveDirection;
-        public PlayerState PlayerStateContainer => _playerState;
         public WeaponState WeaponStateContainer => _weaponState;
 
         [Inject]
         private void Construct()
         {
             _playerControls = new GameControls();
-            _playerState = new PlayerState();
             _weaponState = new WeaponState();
 
             _weaponState.State = WeaponState.EWeaponState.Idle;
@@ -59,18 +57,9 @@ namespace Scripts.Player
             var direction = _playerControls.Gameplay.WASD.ReadValue<Vector3>();
             _moveDirection = new Vector3(direction.x, direction.z, direction.y);
 
-            if (_moveDirection == Vector3.zero)
-            {
-                _playerState.State = PlayerState.EPlayerState.Idle;
-            }
             if (_moveDirection.y > 0)
-            {
-                _playerState.State = PlayerState.EPlayerState.Jumping;
+            {           
                 OnJumpKeyPressed?.Invoke();
-            }
-            if (_moveDirection != Vector3.zero && _moveDirection.y < 1 && _playerState.State != PlayerState.EPlayerState.Sprint) 
-            {
-                _playerState.State = PlayerState.EPlayerState.Run;
             }
         }
 
@@ -88,24 +77,20 @@ namespace Scripts.Player
 
         private void Run(InputAction.CallbackContext context)
         {
-            _playerState.State = PlayerState.EPlayerState.Run;
-            OnSprintKeyPressed?.Invoke();
+            OnSprintKeyRealesed?.Invoke();
         }
 
         private void Sprint(InputAction.CallbackContext context)
         {
-            _playerState.State = PlayerState.EPlayerState.Sprint;
             OnSprintKeyPressed?.Invoke();
         }
 
         private void Dodge(InputAction.CallbackContext context)
         {
-            _playerState.State = PlayerState.EPlayerState.Dodge;
             OnDogdeKeyPressed?.Invoke();
         }
         private void Walking(InputAction.CallbackContext context)
         {
-            _playerState.State = PlayerState.EPlayerState.Walk;
         }
 
         private void AttackStarted(InputAction.CallbackContext contex)
@@ -122,7 +107,6 @@ namespace Scripts.Player
 
         private void Jump(InputAction.CallbackContext contex)
         {
-            _playerState.State = PlayerState.EPlayerState.Jumping;
             OnJumpKeyPressed?.Invoke();
         }
 
