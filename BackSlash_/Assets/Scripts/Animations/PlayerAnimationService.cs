@@ -14,7 +14,6 @@ namespace Scripts.Animations
         [SerializeField] private AnimatorOverrideController _swordOverride;
         [SerializeField] private AnimatorOverrideController _mainOverride;
 
-        float ikWeight = 1f;
         [SerializeField] float footPlacementOffset;
 
         private InputService _inputService;

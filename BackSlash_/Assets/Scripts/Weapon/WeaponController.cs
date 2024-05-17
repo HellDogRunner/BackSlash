@@ -51,15 +51,6 @@ namespace Scripts.Weapon
 
         private void Update()
         {
-            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Show)
-            {
-                //ShowWeapon();
-            }
-            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Hide)
-            {
-               // HideWeapon();
-            }
-
             _timeSinceAttack += Time.deltaTime;
 
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)

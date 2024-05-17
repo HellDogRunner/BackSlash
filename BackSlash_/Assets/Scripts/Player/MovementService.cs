@@ -13,9 +13,7 @@ namespace Scripts.Player
         [SerializeField] private float _sphereRadius;
         [Header("Monitoring")]
         [SerializeField] private float _currentSpeed;
-        [SerializeField] private float _turnSpeed;
         [Header("Movement")]
-        [SerializeField] private float _walkSpeed;
         [SerializeField] private float _runSpeed;
         [SerializeField] private float _sprintSpeed;
         [SerializeField] private float _groundDrag;
@@ -102,9 +100,9 @@ namespace Scripts.Player
         private void SpeedControl()
         {
             Vector3 playerSpeed = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
-            if (playerSpeed.magnitude > _currentSpeed)
+            if (playerSpeed.magnitude > _currentSpeed / 2)
             {
-                Vector3 limitedSpeed = playerSpeed.normalized * _currentSpeed;
+                Vector3 limitedSpeed = playerSpeed.normalized * _currentSpeed / 2;
                 _rigidbody.velocity = new Vector3(limitedSpeed.x, _rigidbody.velocity.y, limitedSpeed.z);
             }
         }
