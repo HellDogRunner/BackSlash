@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -28,6 +29,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private float _inaccuracyRadius = 0f;
     [SerializeField] private float _accuracyPercent = 0f;
     [SerializeField] private float _missShotRadius = 0f;
+    [SerializeField] private int _hitLayerMaskIndex = 7;
 
     private float _accumulatedTime;
     private float _maxLifeTime = 3;
@@ -139,15 +141,20 @@ public class RaycastWeapon : MonoBehaviour
 
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = _maxLifeTime;
-            Debug.Log(hitInfo.collider.name);
 
-            if (hitInfo.transform.TryGetComponent<HealthService>(out HealthService T))
+            if (hitInfo.collider.gameObject.layer == _hitLayerMaskIndex)
             {
-                T.TakeDamage(_damage);
-            }
+                if (!hitInfo.transform.GetComponentInParent<HealthService>())
+                {
+                    return;
+                }
 
+                var health = hitInfo.transform.GetComponentInParent<HealthService>();
+                health.TakeDamage(_damage);
+            }
         }
-        else {
+        else 
+        {
             bullet.tracer.transform.position = end; 
         }
     }
