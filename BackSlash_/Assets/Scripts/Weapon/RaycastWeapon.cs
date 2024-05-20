@@ -25,7 +25,9 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private float _bulletSpeed = 1000;
     [SerializeField] private float _bulletDrop = 0f;
     [SerializeField] private float _damage = 0f;
-    [SerializeField] private float _inaccuracy = 0f;
+    [SerializeField] private float _inaccuracyRadius = 0f;
+    [SerializeField] private float _accuracyPercent = 0f;
+    [SerializeField] private float _missShotRadius = 0f;
 
     private float _accumulatedTime;
     private float _maxLifeTime = 3;
@@ -34,6 +36,7 @@ public class RaycastWeapon : MonoBehaviour
 
     private Ray ray;
     private RaycastHit hitInfo;
+    private LayerMask _hitboxLayer;
 
     private bool _isFiring = false;
 
@@ -41,6 +44,12 @@ public class RaycastWeapon : MonoBehaviour
 
     public AnimationClip WeaponAnimation => _weaponAnimation;
 
+
+    private void Awake()
+    {
+        _hitboxLayer = LayerMask.GetMask("Player");
+        _hitboxLayer = ~_hitboxLayer;
+    }
 
     private Vector3 GetPosition(Bullet bullet) 
     {
@@ -77,7 +86,16 @@ public class RaycastWeapon : MonoBehaviour
             float fireInterval = 1f / _fireRate;
             while (_accumulatedTime >= 0f)
             {
-                target += UnityEngine.Random.insideUnitSphere * _inaccuracy;
+                var percent = UnityEngine.Random.Range(1, 100);
+                if (_accuracyPercent >= percent)
+                {
+                    target += UnityEngine.Random.insideUnitSphere * _inaccuracyRadius;    
+                }
+                else
+                {
+                    target += UnityEngine.Random.insideUnitSphere * _missShotRadius;
+                    
+                }
                 FireBullet(target);
                 _accumulatedTime -= fireInterval;
             }
@@ -113,7 +131,7 @@ public class RaycastWeapon : MonoBehaviour
         ray.origin = start;
         ray.direction = direction;
 
-        if (Physics.Raycast(ray, out hitInfo, distance))
+        if (Physics.Raycast(ray, out hitInfo, distance, _hitboxLayer))
         {
             _hitEffect.transform.position = hitInfo.point;
             _hitEffect.transform.forward = hitInfo.normal;
@@ -121,6 +139,7 @@ public class RaycastWeapon : MonoBehaviour
 
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = _maxLifeTime;
+            Debug.Log(hitInfo.collider.name);
 
             if (hitInfo.transform.TryGetComponent<HealthService>(out HealthService T))
             {
@@ -148,4 +167,5 @@ public class RaycastWeapon : MonoBehaviour
     {
         _isFiring = false;
     }
+
 }

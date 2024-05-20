@@ -1,6 +1,7 @@
 using Scripts.Player.camera;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 using Zenject;
 
 namespace Scripts.Player
@@ -19,7 +20,9 @@ namespace Scripts.Player
         [SerializeField] private float _groundDrag;
         [SerializeField] private float _jumpForce;
         [SerializeField] private float _dodgeForce;
-
+        [SerializeField] private GameObject _sphere;
+        
+        private LayerMask _hitboxLayer;
         private InputService _inputService;
         private ThirdPersonCameraService _thirdPersonCam;
 
@@ -35,6 +38,9 @@ namespace Scripts.Player
             _inputService.OnSprintKeyRealesed += Run;
 
             _currentSpeed = _runSpeed;
+
+            _hitboxLayer = 1 << 7;
+            _hitboxLayer = ~_hitboxLayer;
         }
 
         private void OnDestroy()
@@ -47,6 +53,27 @@ namespace Scripts.Player
 
         private void FixedUpdate()
         {
+            RaycastHit hitInfo2;
+            Vector3 directionDown = transform.TransformDirection(Vector3.down);
+
+            if (Physics.SphereCast(gameObject.transform.position + Vector3.up, _sphereRadius, directionDown, out hitInfo2, _maxDistanse, _hitboxLayer))
+            {
+                Debug.Log("on ground");
+                //Debug.Log(hitInfo2.transform.gameObject.name);
+                //Debug.Log(hitInfo2.transform.gameObject.layer);
+            }
+            else
+            {
+                Debug.Log("not on ground");
+            }
+
+            RaycastHit hitInfo;
+            //Vector3 directionDown = transform.TransformDirection(Vector3.down);
+            if (Physics.Raycast(gameObject.transform.position + Vector3.up, directionDown, out hitInfo, _maxDistanse))
+            {
+                _sphere.transform.position = hitInfo.point;
+            }
+
             if (IsGrounded())
             {
                 Moving(10f);              
@@ -64,10 +91,10 @@ namespace Scripts.Player
             Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
             _rigidbody.AddForce(movingDirection * _currentSpeed * acceleration, ForceMode.Force);
 
-            if (!IsGrounded())
-            {
-                SpeedControl();
-            }
+            //if (!IsGrounded())
+            //{
+            //    SpeedControl();
+            //}
         }
 
         private void Sprint()
@@ -112,8 +139,11 @@ namespace Scripts.Player
             RaycastHit hitInfo;
             Vector3 directionDown = transform.TransformDirection(Vector3.down);
 
-            if (Physics.SphereCast(gameObject.transform.position + Vector3.up, _sphereRadius, directionDown, out hitInfo, _maxDistanse))
+            if (Physics.SphereCast(gameObject.transform.position + Vector3.up, _sphereRadius, directionDown, out hitInfo, _maxDistanse, _hitboxLayer))
             {
+                //Debug.Log("hitbox " + _hitboxLayer);
+                //Debug.Log(hitInfo.transform.gameObject.name);
+                //Debug.Log(hitInfo.transform.gameObject.layer);
                 return true;
             }
             return false;

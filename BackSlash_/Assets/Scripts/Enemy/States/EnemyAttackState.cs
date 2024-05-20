@@ -22,7 +22,7 @@ namespace Scripts.Enemy
         {
             _weapon = enemy.GetComponentInChildren<RaycastWeapon>();
             _player = enemy.PlayerTransform;
-            _offset = new Vector3(0, 1.5f, 0);
+            _offset = new Vector3(0, 1.3f, 0);
             _health = enemy.EnemyHealth;
         }
 
