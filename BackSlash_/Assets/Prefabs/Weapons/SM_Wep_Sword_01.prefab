@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 7027965772093151246}
   - component: {fileID: 874166510249355357}
   - component: {fileID: 2203002426512146428}
+  - component: {fileID: 2853471779492703318}
   m_Layer: 0
   m_Name: SM_Wep_Sword_01
   m_TagString: Sword
@@ -140,6 +141,27 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1472449844171204496, guid: a23329df95361794e8d1a14c7b4f51b1, type: 2}
+--- !u!65 &2853471779492703318
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7117139524774637573}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.05, y: 1.37, z: 0.04}
+  m_Center: {x: 0, y: 1.1, z: 0}
 --- !u!1 &7825498033305477054
 GameObject:
   m_ObjectHideFlags: 0

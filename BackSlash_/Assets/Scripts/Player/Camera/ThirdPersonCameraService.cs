@@ -6,42 +6,61 @@ namespace Scripts.Player.camera
     class ThirdPersonCameraService : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private Transform _orientation;
+        [SerializeField] private Transform _baseOrientation;
         [SerializeField] private float _rotationTime;
 
         private InputService _inputService;
+        private TargetLock _targetLock;
+
         private Vector3 _forwardDirection;
         private Transform _camera;
         public Vector3 ForwardDirection => _forwardDirection;
 
         [Inject]
-        private void Construct(InputService inputService)
+        private void Construct(InputService inputService, TargetLock targetLock)
         {
             _inputService = inputService;
+            _targetLock = targetLock;
             _camera = Camera.main.transform;
             DisableCursor();
         }
 
         private void FixedUpdate()
         {
-            RotatePlayer();
-            RotateCameraAroundPlayer();
+            CalculateForwardDirection();
+            if (_targetLock.CurrentTarget != null)
+            {
+                RotatePlayerLocked();
+            }
+            else
+            {
+                RotatePlayer();
+            }
         }
 
         private void RotatePlayer()
         {
             var direction = _inputService.MoveDirection;
             Vector3 ViewDir = gameObject.transform.position - new Vector3(_camera.transform.position.x, gameObject.transform.position.y, _camera.transform.position.z);
-            _orientation.forward = ViewDir.normalized;
+            _baseOrientation.forward = ViewDir.normalized;
 
-            Vector3 inputDir = _orientation.forward * direction.z + _orientation.right * direction.x;
+            Vector3 inputDir = _baseOrientation.forward * direction.z + _baseOrientation.right * direction.x;
             if (inputDir != Vector3.zero)
             {
                 gameObject.transform.forward = Vector3.Slerp(inputDir, gameObject.transform.forward, _rotationTime * Time.fixedDeltaTime);
             }
         }
 
-        public void RotateCameraAroundPlayer()
+        private void RotatePlayerLocked()
+        {
+            Vector3 rotationDirection = _targetLock.CurrentTarget.position - gameObject.transform.position;
+            rotationDirection.Normalize();
+            rotationDirection.y = 0;
+            Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationTime * Time.fixedDeltaTime);
+        }
+
+        public void CalculateForwardDirection()
         {
             var direction = _inputService.MoveDirection;
             Vector3 forward = _camera.transform.forward;

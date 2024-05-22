@@ -23,7 +23,6 @@ namespace Scripts.Weapon
 
         private GameObject _currentWeapon;
         private InputService _inputService;
-        private PlayerAnimationService _playerAnimationService;
         private RaycastWeapon _raycastWeapon;
         private EWeaponType _curentWeaponType;
 
@@ -33,11 +32,10 @@ namespace Scripts.Weapon
         public event Action<int> OnAttack;
 
         [Inject]
-        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputService inputService, PlayerAnimationService playerAnimationService)
+        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputService inputService)
         {
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
-            _playerAnimationService = playerAnimationService;
 
             _curentWeaponType = EWeaponType.None;
         }

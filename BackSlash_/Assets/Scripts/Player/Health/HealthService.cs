@@ -14,7 +14,7 @@ public class HealthService : MonoBehaviour
     public float Health => _health;
 
     public event Action<float> OnHealthChanged;
-
+    public event Action OnDeath;
     private void Start() 
     { 
         _ragdoll = GetComponent<Ragdoll>();
@@ -36,8 +36,8 @@ public class HealthService : MonoBehaviour
     {
         if (_ragdoll)
         {
-            Debug.Log("dead");
             _ragdoll.ActivateRagdoll();
+            OnDeath?.Invoke();
 
             if (gameObject.tag == "Enemy")
             {

@@ -17,13 +17,15 @@ namespace Scripts.Animations
         private InputService _inputService;
         private WeaponController _weaponController;
         private MovementService _movementService;
+        private TargetLock _targetLock;
 
         [Inject]
-        private void Construct(InputService inputService, WeaponController weaponController, MovementService movementService)
+        private void Construct(InputService inputService, WeaponController weaponController, MovementService movementService, TargetLock targetLock)
         {
             _inputService = inputService;
             _weaponController = weaponController;
             _movementService = movementService;
+            _targetLock = targetLock;
 
             _movementService.OnJump += JumpAnimation;
             _movementService.OnDogde += DodgeAnimation;
@@ -56,6 +58,14 @@ namespace Scripts.Animations
             var dir = _inputService.MoveDirection;
             _animator.SetFloat("InputX", dir.x, _smoothBlend, Time.deltaTime);
             _animator.SetFloat("InputY", dir.z, _smoothBlend, Time.deltaTime);
+            if (_targetLock.CurrentTarget != null)
+            {
+                _animator.SetBool("TargetLock", true);
+            }
+            else
+            {
+                _animator.SetBool("TargetLock", false);
+            }
         }
 
         private void SprintAnimation()
