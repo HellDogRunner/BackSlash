@@ -89,6 +89,7 @@ namespace Scripts.Player
         {
             OnDogdeKeyPressed?.Invoke();
         }
+
         private void Walking(InputAction.CallbackContext context)
         {
         }

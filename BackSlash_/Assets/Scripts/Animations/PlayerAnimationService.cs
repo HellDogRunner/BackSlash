@@ -14,21 +14,22 @@ namespace Scripts.Animations
         [SerializeField] private AnimatorOverrideController _swordOverride;
         [SerializeField] private AnimatorOverrideController _mainOverride;
 
-        [SerializeField] float footPlacementOffset;
-
         private InputService _inputService;
         private WeaponController _weaponController;
+        private MovementService _movementService;
 
         [Inject]
-        private void Construct(InputService inputService, WeaponController weaponController)
+        private void Construct(InputService inputService, WeaponController weaponController, MovementService movementService)
         {
             _inputService = inputService;
             _weaponController = weaponController;
+            _movementService = movementService;
+
+            _movementService.OnJump += JumpAnimation;
+            _movementService.OnDogde += DodgeAnimation;
 
             _inputService.OnSprintKeyPressed += SprintAnimation;
             _inputService.OnSprintKeyRealesed += RunAnimation;
-            _inputService.OnJumpKeyPressed += JumpAnimation;
-            _inputService.OnDogdeKeyPressed += DodgeAnimation;
             _inputService.OnShowWeaponPressed += ShowWeaponAnimation;
             _inputService.OnHideWeaponPressed += HideWeaponAnimation;
             _inputService.OnBlockPressed += BlockAnimation;
@@ -38,10 +39,11 @@ namespace Scripts.Animations
 
         private void OnDestroy()
         {
+            _movementService.OnJump -= JumpAnimation;
+            _movementService.OnDogde -= DodgeAnimation;
+
             _inputService.OnSprintKeyPressed -= SprintAnimation;
             _inputService.OnSprintKeyRealesed -= RunAnimation;
-            _inputService.OnJumpKeyPressed -= JumpAnimation;
-            _inputService.OnDogdeKeyPressed -= DodgeAnimation;
             _inputService.OnShowWeaponPressed -= ShowWeaponAnimation;
             _inputService.OnHideWeaponPressed -= HideWeaponAnimation;
             _inputService.OnBlockPressed -= BlockAnimation;

@@ -1,4 +1,6 @@
 using Scripts.Player.camera;
+using System;
+using System.Collections;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
@@ -20,11 +22,18 @@ namespace Scripts.Player
         [SerializeField] private float _groundDrag;
         [SerializeField] private float _jumpForce;
         [SerializeField] private float _dodgeForce;
-        
+        [SerializeField] private float _dodgeCooldown;
+        [SerializeField] private float _jumpCooldown;
+
         private LayerMask _hitboxLayer;
         private InputService _inputService;
         private ThirdPersonCameraService _thirdPersonCam;
 
+        private bool isJump = true;
+        private bool IsDodge = true;
+
+        public event Action OnJump;
+        public event Action OnDogde;
         [Inject]
         private void Construct(InputService inputService, ThirdPersonCameraService thirdPersonCam)
         {
@@ -87,18 +96,24 @@ namespace Scripts.Player
 
         private void Dodge()
         {
-            if (IsGrounded())
+            if (IsGrounded() && IsDodge)
             {
                 Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
                 _rigidbody.AddForce(movingDirection * _dodgeForce, ForceMode.VelocityChange);
+                StartCoroutine(DodgeCooldown(_dodgeCooldown));
+                IsDodge = false;
+                OnDogde?.Invoke();
             }
         }
 
         private void Jump()
         {
-            if (IsGrounded())
+            if (IsGrounded() && isJump)
             {
                 _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+                StartCoroutine(JumpCooldown(_jumpCooldown));
+                isJump = false;
+                OnJump?.Invoke();
             }
         }
 
@@ -122,6 +137,17 @@ namespace Scripts.Player
                 return true;
             }
             return false;
+        }
+
+        private IEnumerator JumpCooldown(float secounds)
+        {
+            yield return new WaitForSeconds(secounds);
+            isJump = true;
+        }
+        private IEnumerator DodgeCooldown(float secounds)
+        {
+            yield return new WaitForSeconds(secounds);
+            IsDodge = true;
         }
     }
 }
