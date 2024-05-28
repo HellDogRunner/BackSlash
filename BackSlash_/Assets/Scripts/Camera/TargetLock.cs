@@ -32,12 +32,12 @@ public class TargetLock : MonoBehaviour
 
     private List<Target> enemies;
 
-    private InputService _inputService;
+    private InputController _inputService;
     private EnemyService _enemyService;
     public Transform CurrentTarget => _currentTarget;
 
     [Inject]
-    private void Construct(InputService inputService, EnemyService enemyService)
+    private void Construct(InputController inputService, EnemyService enemyService)
     {
         _inputService = inputService;
         _inputService.OnLockKeyPressed += AssignTarget;
@@ -108,7 +108,7 @@ public class TargetLock : MonoBehaviour
         Vector3 viewPos = _mainCamera.WorldToViewportPoint(target.position);
 
         if (_aimIcon)
-            _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(target.position);
+            _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(new Vector3(target.position.x, 1 ,target.position.z));
 
         if ((target.position - transform.position).magnitude < _minDistance) return;
         _mouseX = (viewPos.x - 0.5f + _targetLockOffset.x) * 3f;             

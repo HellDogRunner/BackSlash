@@ -7,43 +7,21 @@ using Zenject;
 
 public class HitBox : MonoBehaviour
 {
-    [SerializeField] private List<Collider> _hitboxes;
+    public HealthController Health;
 
-    private HealthService _health;
-    private WeaponController _weaponController;
-    private WeaponTypesDatabase _weaponTypesDatabase;
-
-    private bool isHit;
-
-    [Inject]
-    private void Construct(WeaponController weaponController, WeaponTypesDatabase weaponTypesDatabase)
+    private void Awake()
     {
-        _weaponController = weaponController;
-        _weaponTypesDatabase = weaponTypesDatabase;
-
-        _health = GetComponent<HealthService>();
-        _weaponController.OnAttack += Hit;
+        Health = this.GetComponent<HealthController>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void OnRaycastHit(RaycastWeapon weapon)
     {
-        if (other.gameObject.tag == "Sword" && isHit)
-        {
-            var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(_weaponController.CurrentWeaponType);
-            var weaponDamage = weaponType.LightAttackDamage;
-
-            _health.TakeDamage(weaponDamage);
-            isHit = false;
-        }
+        Health.TakeDamage(weapon.Damage);
     }
 
-    private void Hit(int currentAttack)
+    public void OnSwordHit(WeaponTypeModel swordType)
     {
-        isHit = true;
+        Health.TakeDamage(swordType.LightAttackDamage);
     }
 
-    private void OnDestroy()
-    {
-        _weaponController.OnAttack -= Hit;
-    }
 }

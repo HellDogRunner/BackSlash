@@ -7,7 +7,7 @@ namespace Scripts.Enemy
 {
     public class EnemyIdleState : BaseEnemyState
     {
-        private HealthService _health;
+        private HealthController _health;
         private Transform _playerTransform;
         private NavMeshAgent _agent;
 

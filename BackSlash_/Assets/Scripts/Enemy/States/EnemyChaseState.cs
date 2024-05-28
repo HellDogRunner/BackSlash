@@ -10,7 +10,7 @@ namespace Scripts.Enemy
     {
         private NavMeshAgent _agent;
         private Transform _playerTransform;
-        private HealthService _health;
+        private HealthController _health;
 
         private float _forgotRagnge = 10;
         private float _distanceToTarget = Mathf.Infinity;

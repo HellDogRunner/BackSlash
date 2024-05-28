@@ -29,7 +29,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private float _inaccuracyRadius = 0f;
     [SerializeField] private float _accuracyPercent = 0f;
     [SerializeField] private float _missShotRadius = 0f;
-    [SerializeField] private int _hitLayerMaskIndex = 7;
+    [SerializeField] private LayerMask _hitboxLayer;
 
     private float _accumulatedTime;
     private float _maxLifeTime = 3;
@@ -38,20 +38,13 @@ public class RaycastWeapon : MonoBehaviour
 
     private Ray ray;
     private RaycastHit hitInfo;
-    private LayerMask _hitboxLayer;
 
     private bool _isFiring = false;
 
     public bool IsFiring => _isFiring;
+    public float Damage => _damage;
 
     public AnimationClip WeaponAnimation => _weaponAnimation;
-
-
-    private void Awake()
-    {
-        _hitboxLayer = LayerMask.GetMask("Player");
-        _hitboxLayer = ~_hitboxLayer;
-    }
 
     private Vector3 GetPosition(Bullet bullet) 
     {
@@ -142,15 +135,10 @@ public class RaycastWeapon : MonoBehaviour
             bullet.tracer.transform.position = hitInfo.point;
             bullet.time = _maxLifeTime;
 
-            if (hitInfo.collider.gameObject.layer == _hitLayerMaskIndex)
+            var hitbox = hitInfo.collider.GetComponent<HitBox>();
+            if (hitbox)
             {
-                if (!hitInfo.transform.GetComponentInParent<HealthService>())
-                {
-                    return;
-                }
-
-                var health = hitInfo.transform.GetComponentInParent<HealthService>();
-                health.TakeDamage(_damage);
+                hitbox.OnRaycastHit(this);
             }
         }
         else 

@@ -7,7 +7,7 @@ public class Target : MonoBehaviour
 {
     private bool isValid = true;
 
-    private HealthService _health;
+    private HealthController _health;
 
     public bool IsValid => isValid;
 
@@ -15,7 +15,7 @@ public class Target : MonoBehaviour
 
     private void Awake()
     {
-        _health = gameObject.GetComponent<HealthService>();
+        _health = gameObject.GetComponent<HealthController>();
         _health.OnDeath += ChangeValidation;
     }
 

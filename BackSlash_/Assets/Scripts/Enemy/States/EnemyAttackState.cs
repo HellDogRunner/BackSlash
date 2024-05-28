@@ -8,7 +8,7 @@ namespace Scripts.Enemy
     public class EnemyAttackState : BaseEnemyState
     {
         private RaycastWeapon _weapon;
-        private HealthService _health;
+        private HealthController _health;
 
         private Transform _player;
 

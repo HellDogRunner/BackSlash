@@ -22,17 +22,19 @@ namespace Scripts.Weapon
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
         private GameObject _currentWeapon;
-        private InputService _inputService;
+        private InputController _inputService;
         private RaycastWeapon _raycastWeapon;
         private EWeaponType _curentWeaponType;
+        private WeaponTypeModel _weaponTypeModel;
 
         private bool _isAttack;
 
         public EWeaponType CurrentWeaponType => _curentWeaponType;
         public event Action<int> OnAttack;
+        public event Action<WeaponTypeModel> OnAttackPerformed;
 
         [Inject]
-        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputService inputService)
+        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputService)
         {
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
@@ -42,8 +44,8 @@ namespace Scripts.Weapon
 
         private void Start()
         {
-            var weaponModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
-            _currentWeapon = Instantiate(weaponModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation);
+            _weaponTypeModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
+            _currentWeapon = Instantiate(_weaponTypeModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation);
             _currentWeapon.transform.parent = _weaponOnBeltPivot.transform;
         }
 
@@ -118,8 +120,8 @@ namespace Scripts.Weapon
                 {
                     _currentAttack = 1;
                 }
-
                 OnAttack?.Invoke(_currentAttack);
+                OnAttackPerformed?.Invoke(_weaponTypeModel);
                 _timeSinceAttack = 0;
             }
         }

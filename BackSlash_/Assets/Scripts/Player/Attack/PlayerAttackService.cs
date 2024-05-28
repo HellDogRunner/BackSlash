@@ -59,7 +59,7 @@ namespace Scripts.Player.Attack
             {           
                 if (hit.transform.tag == "Enemy")
                 {
-                    var enemyHealth = hit.transform.GetComponentInParent<HealthService>();
+                    var enemyHealth = hit.transform.GetComponentInParent<HealthController>();
                     if (enemyHealth)
                     {
                         enemyHealth.TakeDamage(damage);

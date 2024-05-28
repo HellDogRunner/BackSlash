@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class HealthView : MonoBehaviour
 {
     [SerializeField] private Slider _healthBar;
-    private HealthService _health;
+    private HealthController _health;
 
     void Start()
     {
-        _health = GetComponent<HealthService>();
+        _health = GetComponent<HealthController>();
 
         _health.OnHealthChanged += FillHealthBar;
     }
