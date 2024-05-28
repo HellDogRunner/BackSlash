@@ -10,11 +10,14 @@ public class HealthService : MonoBehaviour
     [SerializeField] private float _timeToDestroyLeft = 5f;
 
     private Ragdoll _ragdoll;
+    private bool isDead;
 
     public float Health => _health;
+    public bool IsDead => isDead;
 
     public event Action<float> OnHealthChanged;
     public event Action OnDeath;
+
     private void Start() 
     { 
         _ragdoll = GetComponent<Ragdoll>();
@@ -22,18 +25,22 @@ public class HealthService : MonoBehaviour
 
     public void TakeDamage(float damage) 
     {
-        _health -= damage;
-
-        if (_health <= 0)
+        if (!isDead)
         {
-            Death();
-            _health = 0;
+            _health -= damage;
+
+            if (_health <= 0)
+            {
+                Death();
+                _health = 0;
+            }
+            OnHealthChanged?.Invoke(_health);
         }
-        OnHealthChanged?.Invoke(_health);
     }
 
     private void Death() 
     {
+        isDead = true;
         if (_ragdoll)
         {
             _ragdoll.ActivateRagdoll();

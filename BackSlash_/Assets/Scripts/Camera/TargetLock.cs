@@ -30,20 +30,28 @@ public class TargetLock : MonoBehaviour
     private float _mouseX;
     private float _mouseY;
 
-    private InputService _inputService;
-    private HealthService _health;
+    private List<Target> enemies;
 
+    private InputService _inputService;
+    private EnemyService _enemyService;
     public Transform CurrentTarget => _currentTarget;
 
     [Inject]
-    private void Construct(InputService inputService)
+    private void Construct(InputService inputService, EnemyService enemyService)
     {
         _inputService = inputService;
         _inputService.OnLockKeyPressed += AssignTarget;
 
+        _enemyService = enemyService;
+    }
+
+    private void Awake()
+    {
         _maxAngle = 90f;
         _cinemachineFreeLook.m_XAxis.m_InputAxisName = "";
         _cinemachineFreeLook.m_YAxis.m_InputAxisName = "";
+
+        enemies = _enemyService.EnemyList;
     }
 
     private void OnDestroy()
@@ -73,7 +81,7 @@ public class TargetLock : MonoBehaviour
     }
 
     private void AssignTarget()
-    {
+    {       
         if (isTargeting)
         {
             isTargeting = false;
@@ -84,8 +92,8 @@ public class TargetLock : MonoBehaviour
         if (ClosestTarget())
         {
             _currentTarget = ClosestTarget().transform;
-            _health = _currentTarget.GetComponentInParent<HealthService>();
-            _health.OnDeath += ForceUnlock;
+            var target = ClosestTarget();
+            target.OnTargetDeath += ForceUnlock;
             isTargeting = true;
         }
     }
@@ -107,39 +115,35 @@ public class TargetLock : MonoBehaviour
         _mouseY = (viewPos.y - 0.5f + _targetLockOffset.y) * 3f;              
     }
 
-    private void ForceUnlock()
+    private void ForceUnlock(Target target)
     {
         _currentTarget = null;
-        _health.OnDeath -= ForceUnlock;
+        target.OnTargetDeath -= ForceUnlock;
     }
 
 
-    private GameObject ClosestTarget() 
+    private Target ClosestTarget() 
     {
-        GameObject[] gos;
-        gos = GameObject.FindGameObjectsWithTag(_enemyTag);
-        GameObject closest = null;
+        Target closest = null;
         float distance = _maxDistance;
         float currAngle = _maxAngle;
         Vector3 position = transform.position;
-        foreach (GameObject go in gos)
+        foreach (Target target in enemies)
         {
-            if (go.GetComponentInParent<HealthService>().Health <= 0)
-            {
-                continue;
-            }
-
-            Vector3 diff = go.transform.position - position;
+            Vector3 diff = target.transform.position - position;
             float curDistance = diff.magnitude;
             if (curDistance < distance)
             {
-                Vector3 viewPos = _mainCamera.WorldToViewportPoint(go.transform.position);
-                Vector2 newPos = new Vector3(viewPos.x - 0.5f, viewPos.y - 0.5f);
-                if (Vector3.Angle(diff.normalized, _mainCamera.transform.forward) < _maxAngle)
+                if (target.IsValid)
                 {
-                    closest = go;
-                    currAngle = Vector3.Angle(diff.normalized, _mainCamera.transform.forward.normalized);
-                    distance = curDistance;
+                    Vector3 viewPos = _mainCamera.WorldToViewportPoint(target.transform.position);
+                    Vector2 newPos = new Vector3(viewPos.x - 0.5f, viewPos.y - 0.5f);
+                    if (Vector3.Angle(diff.normalized, _mainCamera.transform.forward) < _maxAngle)
+                    {
+                        closest = target;
+                        currAngle = Vector3.Angle(diff.normalized, _mainCamera.transform.forward.normalized);
+                        distance = curDistance;
+                    }
                 }
             }
         }
