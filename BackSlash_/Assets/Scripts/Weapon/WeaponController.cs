@@ -13,7 +13,6 @@ namespace Scripts.Weapon
     public class WeaponController : MonoBehaviour
     {
         [SerializeField] private Transform _weaponPivot;
-        [SerializeField] private Transform _crossHairTarget;
         [SerializeField] private Transform _weaponOnBeltPivot;
 
         private int _currentAttack = 0;
@@ -61,25 +60,6 @@ namespace Scripts.Weapon
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Block)
             {
                 Block();
-            }
-
-            if (_raycastWeapon)
-            {
-                if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack && !_isAttack)
-                {
-                    _raycastWeapon.StartFiring();
-                    _isAttack = true;
-                }
-                if (_raycastWeapon.IsFiring)
-                {
-                    _raycastWeapon.UpdateFiring(Time.deltaTime, _crossHairTarget.position);
-                }
-                _raycastWeapon.UpdateBullets(Time.deltaTime);
-                if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
-                {
-                    _raycastWeapon.StopFiring();
-                    _isAttack = false;
-                }
             }
         }
 

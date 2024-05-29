@@ -18,7 +18,6 @@ public class TargetLock : MonoBehaviour
     [Space]
     [Header("Settings")]
     [Space]
-    [SerializeField] private string _enemyTag; 
     [SerializeField] private Vector2 _targetLockOffset;
     [SerializeField] private float _minDistance; 
     [SerializeField] private float _maxDistance;

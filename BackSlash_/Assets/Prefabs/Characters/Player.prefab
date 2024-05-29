@@ -860,81 +860,6 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!1 &3946582887400914041
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5790657649754113757}
-  - component: {fileID: 6558550126547173626}
-  - component: {fileID: 5979416171584592703}
-  m_Layer: 6
-  m_Name: Dot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5790657649754113757
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3946582887400914041}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1834076322542823141}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10, y: 10}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &6558550126547173626
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3946582887400914041}
-  m_CullTransparentMesh: 1
---- !u!114 &5979416171584592703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3946582887400914041}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &4401409456888724579
 GameObject:
   m_ObjectHideFlags: 0
@@ -1932,8 +1857,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5790657649754113757}
+  m_Children: []
   m_Father: {fileID: 9154375475347445579}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2949,6 +2873,7 @@ GameObject:
   - component: {fileID: 4003745565070631084}
   - component: {fileID: 4037733144099541882}
   - component: {fileID: 1417933816927670133}
+  - component: {fileID: 1945681995266547424}
   - component: {fileID: 6843714413104379186}
   - component: {fileID: 7192937150158336365}
   - component: {fileID: 1259562901829629793}
@@ -3015,7 +2940,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponPivot: {fileID: 7108460016812821245}
-  _crossHairTarget: {fileID: 0}
   _weaponOnBeltPivot: {fileID: 7934484346377334542}
 --- !u!114 &3831153863078339735
 MonoBehaviour:
@@ -3073,6 +2997,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b205013aa73fa5c47b1b7b2591478dd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1945681995266547424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 569198f987bf4f34d8e56a3a5cb172a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainCamera: {fileID: 0}
+  _cinemachineFreeLook: {fileID: 0}
+  _aimIcon: {fileID: 0}
+  _targetLockOffset: {x: 0, y: 0}
+  _minDistance: 5
+  _maxDistance: 20
+  isTargeting: 0
 --- !u!136 &6843714413104379186
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3163,6 +3106,7 @@ MonoBehaviour:
   - {fileID: 1417933816927670133}
   - {fileID: 9087614315155568461}
   - {fileID: 4003745565070631084}
+  - {fileID: 1945681995266547424}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}
