@@ -3,17 +3,11 @@ using UnityEngine.UI;
 
 namespace Scripts.Menu
 {
-    public class SettingsButton : MonoBehaviour
+    public class SettingsButton : BaseButton
     {
-        private void Start()
+        protected override void HandleButtonClick()
         {
-            Button button = GetComponent<Button>();
-            button.onClick.AddListener(TaskOnClick);
-        }
-
-        void TaskOnClick()
-        {
-            Debug.Log("Settings button clicked!");
+            Debug.Log("Settings");
         }
     }
 }

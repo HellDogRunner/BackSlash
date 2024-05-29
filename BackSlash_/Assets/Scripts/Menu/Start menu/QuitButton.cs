@@ -3,15 +3,9 @@ using UnityEngine.UI;
 
 namespace Scripts.Menu
 {
-    public class QuitButton : MonoBehaviour
+    public class QuitButton : BaseButton
     {
-        private void Start()
-        {
-            Button button = GetComponent<Button>();
-            button.onClick.AddListener(TaskOnClick);
-        }
-
-        void TaskOnClick()
+        protected override void HandleButtonClick()
         {
             Debug.Log("Quit button clicked!");
             Application.Quit();
