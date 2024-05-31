@@ -1,9 +1,7 @@
 using Scripts.Player.camera;
 using System;
 using System.Collections;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.ProBuilder.Shapes;
 using Zenject;
 
 namespace Scripts.Player

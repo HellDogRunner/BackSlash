@@ -18,8 +18,7 @@ public class TargetLock : MonoBehaviour
     [Space]
     [Header("Settings")]
     [Space]
-    [SerializeField] private Vector2 _targetLockOffset;
-    [SerializeField] private float _minDistance; 
+    [SerializeField] private Vector2 _targetLockOffset; 
     [SerializeField] private float _maxDistance;
 
     public bool isTargeting = false;
@@ -29,19 +28,16 @@ public class TargetLock : MonoBehaviour
     private float _mouseX;
     private float _mouseY;
 
-    private List<Target> enemies;
+    [SerializeField] private List<Target> _targets;
 
     private InputController _inputService;
-    private EnemyService _enemyService;
     public Transform CurrentTarget => _currentTarget;
 
     [Inject]
-    private void Construct(InputController inputService, EnemyService enemyService)
+    private void Construct(InputController inputService)
     {
         _inputService = inputService;
         _inputService.OnLockKeyPressed += AssignTarget;
-
-        _enemyService = enemyService;
     }
 
     private void Awake()
@@ -49,9 +45,23 @@ public class TargetLock : MonoBehaviour
         _maxAngle = 90f;
         _cinemachineFreeLook.m_XAxis.m_InputAxisName = "";
         _cinemachineFreeLook.m_YAxis.m_InputAxisName = "";
-
-        enemies = _enemyService.EnemyList;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.TryGetComponent<Target>(out Target target)) { return; }
+
+        _targets.Add(target);
+        target.OnTargetDeath += ForceUnlock;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.TryGetComponent<Target>(out Target target)) { return; }
+
+        ForceUnlock(target);
+    }
+
 
     private void OnDestroy()
     {
@@ -64,6 +74,7 @@ public class TargetLock : MonoBehaviour
         {
             _mouseX = Input.GetAxis("Mouse X");
             _mouseY = Input.GetAxis("Mouse Y");
+
         }
         else
         {
@@ -91,8 +102,6 @@ public class TargetLock : MonoBehaviour
         if (ClosestTarget())
         {
             _currentTarget = ClosestTarget().transform;
-            var target = ClosestTarget();
-            target.OnTargetDeath += ForceUnlock;
             isTargeting = true;
         }
     }
@@ -109,7 +118,6 @@ public class TargetLock : MonoBehaviour
         if (_aimIcon)
             _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(new Vector3(target.position.x, 1 ,target.position.z));
 
-        if ((target.position - transform.position).magnitude < _minDistance) return;
         _mouseX = (viewPos.x - 0.5f + _targetLockOffset.x) * 3f;             
         _mouseY = (viewPos.y - 0.5f + _targetLockOffset.y) * 3f;              
     }
@@ -117,6 +125,7 @@ public class TargetLock : MonoBehaviour
     private void ForceUnlock(Target target)
     {
         _currentTarget = null;
+        _targets.Remove(target);
         target.OnTargetDeath -= ForceUnlock;
     }
 
@@ -127,7 +136,7 @@ public class TargetLock : MonoBehaviour
         float distance = _maxDistance;
         float currAngle = _maxAngle;
         Vector3 position = transform.position;
-        foreach (Target target in enemies)
+        foreach (Target target in _targets)
         {
             Vector3 diff = target.transform.position - position;
             float curDistance = diff.magnitude;
