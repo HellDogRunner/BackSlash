@@ -1,10 +1,8 @@
 using Scripts.Player;
 using Scripts.Weapon.Models;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using Scripts.Animations;
 using System;
 
 namespace Scripts.Weapon 
@@ -21,15 +19,14 @@ namespace Scripts.Weapon
 
         private GameObject _currentWeapon;
         private InputController _inputService;
-        private RaycastWeapon _raycastWeapon;
         private EWeaponType _curentWeaponType;
         private WeaponTypeModel _weaponTypeModel;
 
-        private bool _isAttack;
-
         public EWeaponType CurrentWeaponType => _curentWeaponType;
         public event Action<int> OnAttack;
-        public event Action<WeaponTypeModel> OnAttackPerformed;
+        public event Action<bool> IsAttacking;
+
+        [Inject] private DiContainer _diContainer;
 
         [Inject]
         private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputService)
@@ -43,8 +40,7 @@ namespace Scripts.Weapon
         private void Start()
         {
             _weaponTypeModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
-            _currentWeapon = Instantiate(_weaponTypeModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation);
-            _currentWeapon.transform.parent = _weaponOnBeltPivot.transform;
+            _currentWeapon = _diContainer.InstantiatePrefab(_weaponTypeModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation, _weaponOnBeltPivot.transform);
         }
 
         private void Update()
@@ -54,11 +50,16 @@ namespace Scripts.Weapon
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
             {
                 Attack();
+                IsAttacking?.Invoke(true);
             }
 
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Block)
             {
                 Block();
+            }
+            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
+            {
+                IsAttacking?.Invoke(false);
             }
         }
 
@@ -100,9 +101,8 @@ namespace Scripts.Weapon
                     _currentAttack = 1;
                 }
                 OnAttack?.Invoke(_currentAttack);
-                OnAttackPerformed?.Invoke(_weaponTypeModel);
                 _timeSinceAttack = 0;
-            }
+            }          
         }
 
         private void Block()

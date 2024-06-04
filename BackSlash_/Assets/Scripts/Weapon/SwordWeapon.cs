@@ -2,20 +2,23 @@ using Scripts.Weapon;
 using Scripts.Weapon.Models;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 using Zenject;
 
 public class SwordWeapon : MonoBehaviour
 {
-    private WeaponController _weaponController;
-    private WeaponTypeModel _swordType;
-
     private bool isHit;
 
-    private void Start()
+    private WeaponTypesDatabase _weaponTypesDatabase;
+    private WeaponController _weaponController;
+
+    [Inject]
+    private void Construct(WeaponTypesDatabase weaponTypesDatabase, WeaponController weaponController)
     {
-        _weaponController = GetComponentInParent<WeaponController>();
-        _weaponController.OnAttackPerformed += Hit;
+        _weaponTypesDatabase = weaponTypesDatabase;
+        _weaponController = weaponController;
+        _weaponController.IsAttacking += DealDamage;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -25,20 +28,20 @@ public class SwordWeapon : MonoBehaviour
             var hitbox = other.GetComponent<HitBox>();
             if (hitbox)
             {
-                hitbox.OnSwordHit(_swordType);
+                var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(_weaponController.CurrentWeaponType);
+                var weaponDamage = weaponType.LightAttackDamage;
+                hitbox.OnSwordHit(weaponDamage);
             }
-            isHit = false;
         }
     }
 
-    private void Hit(WeaponTypeModel weaponType)
+    private void DealDamage(bool isAble)
     {
-        _swordType = weaponType;
-        isHit = true;
+        isHit = isAble;
     }
 
     private void OnDestroy()
     {
-        _weaponController.OnAttackPerformed -= Hit;
+        _weaponController.IsAttacking -= DealDamage;
     }
 }

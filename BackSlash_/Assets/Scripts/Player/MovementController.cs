@@ -1,3 +1,4 @@
+using Scripts.Animations;
 using Scripts.Player.camera;
 using System;
 using System.Collections;
@@ -26,17 +27,20 @@ namespace Scripts.Player
         private LayerMask _hitboxLayer;
         private InputController _inputService;
         private ThirdPersonCameraController _thirdPersonCam;
+        private PlayerAnimationController _playerAnimationController;
 
         private bool isJump = true;
-        private bool IsDodge = true;
+        private bool isDodge = true;
 
         public event Action OnJump;
         public event Action OnDogde;
+        public event Action<bool> IsMoving;
         [Inject]
-        private void Construct(InputController inputService, ThirdPersonCameraController thirdPersonCam)
+        private void Construct(InputController inputService, ThirdPersonCameraController thirdPersonCam, PlayerAnimationController playerAnimationController)
         {
             _inputService = inputService;
             _thirdPersonCam = thirdPersonCam;
+            _playerAnimationController = playerAnimationController;
 
             _inputService.OnJumpKeyPressed += Jump;
             _inputService.OnDogdeKeyPressed += Dodge;
@@ -61,6 +65,11 @@ namespace Scripts.Player
         {
             if (IsGrounded())
             {
+                if (_playerAnimationController.IsAttacking)
+                {
+                    IsMoving?.Invoke(false);
+                    return;
+                }
                 Moving(10f);              
                 _rigidbody.drag = _groundDrag;
             }
@@ -73,6 +82,7 @@ namespace Scripts.Player
 
         private void Moving(float acceleration)
         {
+            IsMoving?.Invoke(true);
             Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
             _rigidbody.AddForce(movingDirection * _currentSpeed * acceleration, ForceMode.Force);
 
@@ -94,12 +104,12 @@ namespace Scripts.Player
 
         private void Dodge()
         {
-            if (IsGrounded() && IsDodge)
+            if (IsGrounded() && isDodge)
             {
                 Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
                 _rigidbody.AddForce(movingDirection * _dodgeForce, ForceMode.VelocityChange);
                 StartCoroutine(DodgeCooldown(_dodgeCooldown));
-                IsDodge = false;
+                isDodge = false;
                 OnDogde?.Invoke();
             }
         }
@@ -145,7 +155,7 @@ namespace Scripts.Player
         private IEnumerator DodgeCooldown(float secounds)
         {
             yield return new WaitForSeconds(secounds);
-            IsDodge = true;
+            isDodge = true;
         }
     }
 }

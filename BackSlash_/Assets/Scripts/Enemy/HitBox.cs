@@ -19,9 +19,9 @@ public class HitBox : MonoBehaviour
         Health.TakeDamage(weapon.Damage);
     }
 
-    public void OnSwordHit(WeaponTypeModel swordType)
+    public void OnSwordHit(float damage)
     {
-        Health.TakeDamage(swordType.LightAttackDamage);
+        Health.TakeDamage(damage);
     }
 
 }

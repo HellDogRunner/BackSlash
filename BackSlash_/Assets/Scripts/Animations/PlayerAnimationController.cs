@@ -16,19 +16,21 @@ namespace Scripts.Animations
 
         private InputController _inputService;
         private WeaponController _weaponController;
-        private MovementController _movementService;
+        private MovementController _movementController;
         private TargetLock _targetLock;
 
+        public bool IsAttacking;
         [Inject]
         private void Construct(InputController inputService, WeaponController weaponController, MovementController movementService, TargetLock targetLock)
         {
             _inputService = inputService;
             _weaponController = weaponController;
-            _movementService = movementService;
+            _movementController = movementService;
             _targetLock = targetLock;
 
-            _movementService.OnJump += JumpAnimation;
-            _movementService.OnDogde += DodgeAnimation;
+            _movementController.OnJump += JumpAnimation;
+            _movementController.OnDogde += DodgeAnimation;
+            _movementController.IsMoving += SetIsMovingState;
 
             _inputService.OnSprintKeyPressed += SprintAnimation;
             _inputService.OnSprintKeyRealesed += RunAnimation;
@@ -41,8 +43,9 @@ namespace Scripts.Animations
 
         private void OnDestroy()
         {
-            _movementService.OnJump -= JumpAnimation;
-            _movementService.OnDogde -= DodgeAnimation;
+            _movementController.OnJump -= JumpAnimation;
+            _movementController.OnDogde -= DodgeAnimation;
+            _movementController.IsMoving -= SetIsMovingState;
 
             _inputService.OnSprintKeyPressed -= SprintAnimation;
             _inputService.OnSprintKeyRealesed -= RunAnimation;
@@ -58,7 +61,7 @@ namespace Scripts.Animations
             var dir = _inputService.MoveDirection;
             _animator.SetFloat("InputX", dir.x, _smoothBlend, Time.deltaTime);
             _animator.SetFloat("InputY", dir.z, _smoothBlend, Time.deltaTime);
-            if (_targetLock.CurrentTarget != null)
+            if (_targetLock.CurrentTargetTransform != null)
             {
                 _animator.SetBool("TargetLock", true);
             }
@@ -113,8 +116,14 @@ namespace Scripts.Animations
                 if (_weaponController.CurrentWeaponType == EWeaponType.Melee)
                 {
                     _animator.SetTrigger("Attack" + currentAttack);
+                    IsAttacking = true;
                 }
             }
+        }
+
+        private void SetIsMovingState(bool isMove)
+        {
+            _animator.SetBool("Moving", isMove);
         }
 
         private void BlockAnimation()
@@ -130,7 +139,16 @@ namespace Scripts.Animations
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
             {
                 _animator.SetBool("Block", false);
+                IsAttacking = false;
             }
+        }
+        public bool IsAnimationPlaying(string animationName)
+        {
+            var animatorStateInfo = _animator.GetCurrentAnimatorStateInfo(1);
+            if (animatorStateInfo.IsName(animationName))
+                return true;
+
+            return false;
         }
     }
 }

@@ -24,14 +24,15 @@ public class TargetLock : MonoBehaviour
     public bool isTargeting = false;
 
     private float _maxAngle;
-    private Transform _currentTarget;
+    private Transform _currentTargetTransform;
+    private Target _currentTarget;
     private float _mouseX;
     private float _mouseY;
 
-    [SerializeField] private List<Target> _targets;
+    private List<Target> _targets = new List<Target>();
 
     private InputController _inputService;
-    public Transform CurrentTarget => _currentTarget;
+    public Transform CurrentTargetTransform => _currentTargetTransform;
 
     [Inject]
     private void Construct(InputController inputService)
@@ -58,8 +59,7 @@ public class TargetLock : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (!other.TryGetComponent<Target>(out Target target)) { return; }
-
-        ForceUnlock(target);
+        _targets.Remove(target);
     }
 
 
@@ -78,7 +78,7 @@ public class TargetLock : MonoBehaviour
         }
         else
         {
-            NewInputTarget(_currentTarget);
+            NewInputTarget(_currentTargetTransform);
         }
 
         if (_aimIcon)
@@ -95,24 +95,32 @@ public class TargetLock : MonoBehaviour
         if (isTargeting)
         {
             isTargeting = false;
-            _currentTarget = null;
+            _currentTargetTransform = null;
             return;
         }
 
         if (ClosestTarget())
         {
-            _currentTarget = ClosestTarget().transform;
+            _currentTarget = ClosestTarget();
+            _currentTargetTransform = _currentTarget.transform;
             isTargeting = true;
         }
     }
 
     private void NewInputTarget(Transform target) 
     {
-        if (!_currentTarget)
+        if (!_currentTargetTransform)
         {
             isTargeting = false;
             return;
         }
+
+        float distance = Vector3.Distance(_currentTargetTransform.position, gameObject.transform.position);
+        if (distance > _maxDistance)
+        {
+            ForceUnlock(_currentTarget);
+        }
+
         Vector3 viewPos = _mainCamera.WorldToViewportPoint(target.position);
 
         if (_aimIcon)
@@ -124,9 +132,17 @@ public class TargetLock : MonoBehaviour
 
     private void ForceUnlock(Target target)
     {
-        _currentTarget = null;
-        _targets.Remove(target);
-        target.OnTargetDeath -= ForceUnlock;
+        if (target)
+        {
+            _currentTargetTransform = null;
+            _targets.Remove(target);
+            target.OnTargetDeath -= ForceUnlock;
+            if (isTargeting)
+            {
+                isTargeting = false;
+                AssignTarget();
+            }
+        }
     }
 
 
