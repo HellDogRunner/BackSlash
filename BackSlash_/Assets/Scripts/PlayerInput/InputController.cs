@@ -22,6 +22,7 @@ namespace Scripts.Player
         public event Action OnBlockPressed;
         public event Action OnWeaponIdle;
         public event Action OnLockKeyPressed;
+        public event Action OnMenuKeyPressed;
         public Vector3 MoveDirection => _moveDirection;
         public WeaponState WeaponStateContainer => _weaponState;
 
@@ -53,6 +54,8 @@ namespace Scripts.Player
             _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
 
             _playerControls.Gameplay.TargetLock.performed += Lock;
+
+            _playerControls.Gameplay.Menu.performed += PauseMenu;
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
@@ -124,6 +127,11 @@ namespace Scripts.Player
             OnLockKeyPressed?.Invoke();
         }
 
+        private void PauseMenu(InputAction.CallbackContext contex)
+        {
+            OnMenuKeyPressed?.Invoke();
+        }
+
         private void OnEnable()
         {
             _playerControls.Enable();
@@ -135,4 +143,3 @@ namespace Scripts.Player
         }
     }
 }
-
