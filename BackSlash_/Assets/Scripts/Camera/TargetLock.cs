@@ -22,7 +22,6 @@ public class TargetLock : MonoBehaviour
     [SerializeField] private float _maxDistance;
 
     public bool isTargeting = false;
-    private bool _isMenuOpen = false;
 
     private float _maxAngle;
     private Transform _currentTargetTransform;
@@ -87,19 +86,13 @@ public class TargetLock : MonoBehaviour
             _aimIcon.gameObject.SetActive(isTargeting);
         }
 
-        if (_isMenuOpen)
-        {
-            _mouseX = 0f;
-            _mouseY = 0f;
-        }
-
         _cinemachineFreeLook.m_XAxis.m_InputAxisValue = _mouseX;
         _cinemachineFreeLook.m_YAxis.m_InputAxisValue = _mouseY;
     }
 
     private void AssignTarget()
     {       
-        if (isTargeting && _isMenuOpen)
+        if (isTargeting)
         {
             isTargeting = false;
             _currentTargetTransform = null;
@@ -181,18 +174,9 @@ public class TargetLock : MonoBehaviour
         return closest;
     }
 
-    public void MenuSwich(bool _isOpen)
+    private void OnDisable()
     {
-        if (_isOpen)
-        {
-            isTargeting = false;
-            _currentTarget = null;
-            _isMenuOpen = true;
-        }
-        else
-        {
-            _isMenuOpen = false;
-        }
+        _aimIcon.gameObject.SetActive(false);
     }
 
     private void OnDrawGizmos()
