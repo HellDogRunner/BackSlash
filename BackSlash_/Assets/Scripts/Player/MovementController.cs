@@ -33,6 +33,7 @@ namespace Scripts.Player
         private bool isDodge = true;
 
         public event Action OnJump;
+        public event Action<bool> InAir;
         public event Action OnDogde;
         public event Action<bool> IsMoving;
         [Inject]
@@ -65,6 +66,7 @@ namespace Scripts.Player
         {
             if (IsGrounded())
             {
+                InAir?.Invoke(false);
                 if (_playerAnimationController.IsAttacking)
                 {
                     IsMoving?.Invoke(false);
@@ -77,6 +79,7 @@ namespace Scripts.Player
             {
                 Moving(0.7f);
                 _rigidbody.drag = 0;
+                InAir?.Invoke(true);
             }
         }
 

@@ -29,6 +29,7 @@ namespace Scripts.Animations
             _targetLock = targetLock;
 
             _movementController.OnJump += JumpAnimation;
+            _movementController.InAir += JumpAnimation;
             _movementController.OnDogde += DodgeAnimation;
             _movementController.IsMoving += SetIsMovingState;
 
@@ -44,6 +45,7 @@ namespace Scripts.Animations
         private void OnDestroy()
         {
             _movementController.OnJump -= JumpAnimation;
+            _movementController.InAir -= JumpAnimation;
             _movementController.OnDogde -= DodgeAnimation;
             _movementController.IsMoving -= SetIsMovingState;
 
@@ -83,7 +85,11 @@ namespace Scripts.Animations
 
         private void JumpAnimation()
         {
-            _animator.Play("Jump forward");
+            _animator.Play("Jump");
+        }
+        private void JumpAnimation(bool isInAir)
+        {
+            _animator.SetBool("InAir", isInAir);
         }
 
         private void DodgeAnimation()

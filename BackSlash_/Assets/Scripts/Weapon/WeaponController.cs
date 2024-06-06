@@ -33,6 +33,7 @@ namespace Scripts.Weapon
         {
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
+            _inputService.OnWeaponIdle += CancelAttack;
 
             _curentWeaponType = EWeaponType.None;
         }
@@ -56,10 +57,6 @@ namespace Scripts.Weapon
             if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Block)
             {
                 Block();
-            }
-            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Idle)
-            {
-                IsAttacking?.Invoke(false);
             }
         }
 
@@ -105,6 +102,12 @@ namespace Scripts.Weapon
             }          
         }
 
+        private void CancelAttack()
+        {
+            StopCoroutine(IdleTimeout());
+            StartCoroutine(IdleTimeout());
+        }
+
         private void Block()
         {
 
@@ -115,6 +118,11 @@ namespace Scripts.Weapon
             _currentWeapon.transform.parent = target.transform;
             _currentWeapon.transform.position = target.position;
             _currentWeapon.transform.rotation = target.rotation;
+        }
+        IEnumerator IdleTimeout()
+        {
+            yield return new WaitForSeconds(.5f);
+            IsAttacking?.Invoke(false);
         }
     }
 }
