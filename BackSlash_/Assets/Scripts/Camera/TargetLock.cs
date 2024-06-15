@@ -5,6 +5,7 @@ using Cinemachine;
 using UnityEngine.UI;
 using Scripts.Player;
 using Zenject;
+using System;
 
 public class TargetLock : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class TargetLock : MonoBehaviour
 
     public bool isTargeting = false;
 
+    public event Action<GameObject> OnStartTargeting;
+    public event Action<GameObject> OnStopTarteting;
+
     private float _maxAngle;
     private Transform _currentTargetTransform;
     private Target _currentTarget;
@@ -32,6 +36,7 @@ public class TargetLock : MonoBehaviour
     private List<Target> _targets = new List<Target>();
 
     private InputController _inputService;
+
     public Transform CurrentTargetTransform => _currentTargetTransform;
 
     [Inject]
@@ -96,6 +101,7 @@ public class TargetLock : MonoBehaviour
         {
             isTargeting = false;
             _currentTargetTransform = null;
+            OnStopTarteting?.Invoke(_currentTarget.gameObject);
             return;
         }
 
@@ -104,6 +110,7 @@ public class TargetLock : MonoBehaviour
             _currentTarget = ClosestTarget();
             _currentTargetTransform = _currentTarget.transform;
             isTargeting = true;
+            OnStartTargeting?.Invoke(_currentTarget.gameObject);
         }
     }
 
@@ -172,11 +179,6 @@ public class TargetLock : MonoBehaviour
             }
         }
         return closest;
-    }
-
-    private void OnDisable()
-    {
-        _aimIcon.gameObject.SetActive(false);
     }
 
     private void OnDrawGizmos()

@@ -150,14 +150,14 @@ namespace Scripts.Player
             return false;
         }
 
-        private IEnumerator JumpCooldown(float secounds)
+        private IEnumerator JumpCooldown(float seconds)
         {
-            yield return new WaitForSeconds(secounds);
+            yield return new WaitForSeconds(seconds);
             isJump = true;
         }
-        private IEnumerator DodgeCooldown(float secounds)
+        private IEnumerator DodgeCooldown(float seconds)
         {
-            yield return new WaitForSeconds(secounds);
+            yield return new WaitForSeconds(seconds);
             isDodge = true;
         }
     }

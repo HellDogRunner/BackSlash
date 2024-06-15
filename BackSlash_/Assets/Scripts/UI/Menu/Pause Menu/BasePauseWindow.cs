@@ -1,4 +1,5 @@
 using Cinemachine;
+using Scripts.Player;
 using UnityEngine;
 using Zenject;
 
@@ -8,25 +9,30 @@ namespace Scripts.UI
     {
         [Header("Camera")]
         [SerializeField] protected CinemachineFreeLook _cinemachineFreeLook;
+        [SerializeField] protected GameObject _player;
 
         [Header("Canvas")]
         [SerializeField] protected Canvas _pauseMenuCanvas;
         [SerializeField] protected Canvas _settingsMenuCanvas;
+        [SerializeField] private Canvas _gameplayHUDCanvas;
 
         [Header("First Selected Field")]
         [SerializeField] protected GameObject _mainMenuFirst;
         [SerializeField] protected GameObject _settingsMenuFirst;
 
         protected UIController _uiController;
-        protected TargetLock _targetLock;
+        protected InputController _inputController;
+        protected MovementController _movementController;
 
         protected bool _isMenuActive;
 
         [Inject]
-        protected virtual void Construct(UIController uiController, TargetLock targetLock)
+        protected virtual void Construct(UIController uiController)
         {
             _uiController = uiController;
-            _targetLock = targetLock;
+
+            _inputController = _player.GetComponent<InputController>();
+            _movementController = _player.GetComponent<MovementController>();
 
             _isMenuActive = false;
 
@@ -55,6 +61,10 @@ namespace Scripts.UI
         {
             if (_isMenuActive)
             {
+                Time.timeScale = 1f;
+                
+                _gameplayHUDCanvas.gameObject.SetActive(_isMenuActive);
+                
                 _isMenuActive = false;
 
                 Cursor.lockState = CursorLockMode.Locked;
@@ -62,14 +72,19 @@ namespace Scripts.UI
             }
             else
             {
+                Time.timeScale = 0f;
+
+                _gameplayHUDCanvas.gameObject.SetActive(_isMenuActive);
+
                 _isMenuActive = true;
 
                 Cursor.lockState = CursorLockMode.Confined;
                 _pauseMenuCanvas.gameObject.SetActive(_isMenuActive);
             }
-            Cursor.visible = _isMenuActive;
 
-            _targetLock.enabled = !_isMenuActive;
+            Cursor.visible = _isMenuActive;
+            _inputController.enabled = !_isMenuActive;
+            _movementController.enabled = !_isMenuActive;
         }
     }
 }

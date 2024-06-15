@@ -135,6 +135,8 @@ namespace Scripts.Player
         private void OnEnable()
         {
             _playerControls.Enable();
+
+            _moveDirection = Vector3.zero;
         }
 
         private void OnDisable()
