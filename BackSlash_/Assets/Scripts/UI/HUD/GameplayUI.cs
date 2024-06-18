@@ -1,6 +1,7 @@
 using Scripts.Player;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Scripts.UI
 {
@@ -21,13 +22,22 @@ namespace Scripts.UI
         private MovementController _movement;
         private ImageTransition _imageTransition;
 
+        [Inject]
+        private void Construct(MovementController movementController)
+        {
+            _movement = movementController;
+        }
+
+        private void Awake()
+        {
+            _health = _player.GetComponent<HealthController>();
+
+            _imageTransition = _dodgeTransition.GetComponent<ImageTransition>();
+        }
+
         private void Start()
         {
             _healthBar.value = _maxHealth;
-
-            _health = _player.GetComponent<HealthController>();
-            _movement = _player.GetComponent<MovementController>();
-            _imageTransition = _dodgeTransition.GetComponent<ImageTransition>();
 
             _health.OnHealthChanged += ChangeHealthView;
             _movement.OnDogde += DodgeCooldown;

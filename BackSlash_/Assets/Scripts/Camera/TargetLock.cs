@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
@@ -12,7 +11,8 @@ public class TargetLock : MonoBehaviour
     [Header("Objects")]
     [Space]
     [SerializeField] private Camera _mainCamera;
-    [SerializeField] private CinemachineFreeLook _cinemachineFreeLook; 
+    [SerializeField] private CinemachineFreeLook _cinemachineFreeLook;
+    [SerializeField] private SphereCollider _triggerCollider;
     [Space]
     [Header("UI")]
     [SerializeField] private Image _aimIcon;  
@@ -49,6 +49,7 @@ public class TargetLock : MonoBehaviour
     private void Awake()
     {
         _maxAngle = 90f;
+        _triggerCollider.radius = _maxDistance;
         _cinemachineFreeLook.m_XAxis.m_InputAxisName = "";
         _cinemachineFreeLook.m_YAxis.m_InputAxisName = "";
     }

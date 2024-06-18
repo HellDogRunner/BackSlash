@@ -7,7 +7,7 @@ namespace Scripts.UI
 {
     public class UIController : MonoBehaviour
     {
-        private GameControls _playerControls;
+        private UIControls _playerControls;
 
         public event Action OnEnterKeyPressed;
         public event Action OnEscapeKeyPressed;
@@ -15,7 +15,7 @@ namespace Scripts.UI
         [Inject]
         private void Construct()
         {
-            _playerControls = new GameControls();
+            _playerControls = new UIControls();
 
             _playerControls.UI.Enter.performed += Enter;
             _playerControls.UI.Escape.performed += Escape;

@@ -84,7 +84,6 @@ namespace Scripts.UI
 
             Cursor.visible = _isMenuActive;
             _inputController.enabled = !_isMenuActive;
-            _movementController.enabled = !_isMenuActive;
         }
     }
 }
