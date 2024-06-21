@@ -2837,16 +2837,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 7192937150158336365}
+  _playerCollider: {fileID: 6843714413104379186}
   _maxDistanse: 0.8
   _sphereRadius: 0.25
   _currentSpeed: 0
-  _runSpeed: 10
-  _sprintSpeed: 12
-  _groundDrag: 10
+  _runSpeed: 5
+  _sprintSpeed: 8
+  _groundDrag: 5
   _jumpForce: 8
   _dodgeForce: 10
   _dodgeCooldown: 1
   _jumpCooldown: 0.5
+  _airMultiplier: 0.2
+  _maxSlopeAngle: 40
 --- !u!114 &5530042786574198228
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ namespace Scripts.Player
     public class MovementController : MonoBehaviour
     {
         [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] CapsuleCollider _playerCollider;
         [Header("IsGround settings")]
         [SerializeField] private float _maxDistanse;
         [SerializeField] private float _sphereRadius;
@@ -23,7 +24,14 @@ namespace Scripts.Player
         [SerializeField] private float _dodgeForce;
         [SerializeField] private float _dodgeCooldown;
         [SerializeField] private float _jumpCooldown;
+        [SerializeField] private float _airMultiplier = 0.7f;
 
+        [SerializeField] private float _maxSlopeAngle;
+
+        private float _playerHeight;
+        private Vector3 _moveDirection;
+
+        private RaycastHit _slopeHit;
         private LayerMask _hitboxLayer;
         private InputController _inputService;
         private ThirdPersonCameraController _thirdPersonCam;
@@ -36,6 +44,7 @@ namespace Scripts.Player
         public event Action<bool> InAir;
         public event Action OnDogde;
         public event Action<bool> IsMoving;
+
         [Inject]
         private void Construct(InputController inputService, ThirdPersonCameraController thirdPersonCam, PlayerAnimationController playerAnimationController)
         {
@@ -54,6 +63,11 @@ namespace Scripts.Player
             _hitboxLayer = ~_hitboxLayer;
         }
 
+        private void Awake()
+        {
+            _playerHeight = _playerCollider.height;
+        }
+
         private void OnDestroy()
         {
             _inputService.OnJumpKeyPressed -= Jump;
@@ -64,7 +78,14 @@ namespace Scripts.Player
 
         private void FixedUpdate()
         {
-            if (IsGrounded())
+            _moveDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+            MovePlayer();
+            SpeedControl();
+        }
+
+        private void MovePlayer()
+        {
+            if (IsGrounded() && !OnSlope())
             {
                 InAir?.Invoke(false);
                 if (_playerAnimationController.IsAttacking)
@@ -72,26 +93,21 @@ namespace Scripts.Player
                     IsMoving?.Invoke(false);
                     return;
                 }
-                Moving(10f);              
+                IsMoving?.Invoke(true);
+                _rigidbody.AddForce(_moveDirection * _currentSpeed * 10f, ForceMode.Force);
                 _rigidbody.drag = _groundDrag;
             }
-            else
+            else if (IsGrounded() && OnSlope())
             {
-                Moving(0.7f);
+                InAir?.Invoke(false);
+                _rigidbody.AddForce(GetSlopeMoveDirection() * _currentSpeed * 10f, ForceMode.Force);
+                _rigidbody.velocity -= _slopeHit.normal * 0.5f;
+            }
+            else if (!IsGrounded())
+            {
+                _rigidbody.AddForce(_moveDirection * _currentSpeed * 10f * _airMultiplier, ForceMode.Force);
                 _rigidbody.drag = 0;
                 InAir?.Invoke(true);
-            }
-        }
-
-        private void Moving(float acceleration)
-        {
-            IsMoving?.Invoke(true);
-            Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-            _rigidbody.AddForce(movingDirection * _currentSpeed * acceleration, ForceMode.Force);
-
-            if (!IsGrounded())
-            {
-                SpeedControl();
             }
         }
 
@@ -109,8 +125,7 @@ namespace Scripts.Player
         {
             if (IsGrounded() && isDodge)
             {
-                Vector3 movingDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-                _rigidbody.AddForce(movingDirection * _dodgeForce, ForceMode.VelocityChange);
+                _rigidbody.AddForce(_moveDirection * _dodgeForce, ForceMode.VelocityChange);
                 StartCoroutine(DodgeCooldown(_dodgeCooldown));
                 isDodge = false;
                 OnDogde?.Invoke();
@@ -131,9 +146,9 @@ namespace Scripts.Player
         private void SpeedControl()
         {
             Vector3 playerSpeed = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
-            if (playerSpeed.magnitude > _currentSpeed / 2)
+            if (playerSpeed.magnitude > _currentSpeed)
             {
-                Vector3 limitedSpeed = playerSpeed.normalized * _currentSpeed / 2;
+                Vector3 limitedSpeed = playerSpeed.normalized * _currentSpeed;
                 _rigidbody.velocity = new Vector3(limitedSpeed.x, _rigidbody.velocity.y, limitedSpeed.z);
             }
         }
@@ -150,11 +165,33 @@ namespace Scripts.Player
             return false;
         }
 
+        private bool OnSlope()
+        {
+            if (!IsGrounded()) return false;
+
+            if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, _playerHeight * 0.5f + 1.5f))
+            {
+                float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);            
+                if (angle < _maxSlopeAngle)
+                {
+                    Debug.Log(Vector3.Angle(Vector3.up, _slopeHit.normal));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private Vector3 GetSlopeMoveDirection()
+        {
+            return Vector3.ProjectOnPlane(_moveDirection, _slopeHit.normal).normalized;
+        }
+
         private IEnumerator JumpCooldown(float seconds)
         {
             yield return new WaitForSeconds(seconds);
             isJump = true;
         }
+
         private IEnumerator DodgeCooldown(float seconds)
         {
             yield return new WaitForSeconds(seconds);
