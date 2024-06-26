@@ -9,7 +9,6 @@ namespace Scripts.UI
     {
         [Header("Camera")]
         [SerializeField] protected CinemachineFreeLook _cinemachineFreeLook;
-        [SerializeField] protected GameObject _player;
 
         [Header("Canvas")]
         [SerializeField] protected Canvas _pauseMenuCanvas;
@@ -22,26 +21,18 @@ namespace Scripts.UI
 
         protected UIController _uiController;
         protected InputController _inputController;
-        protected MovementController _movementController;
 
         protected bool _isMenuActive;
 
         [Inject]
-        protected virtual void Construct(UIController uiController)
+        protected virtual void Construct(UIController uiController, InputController inputController)
         {
             _uiController = uiController;
-
-            _inputController = _player.GetComponent<InputController>();
-            _movementController = _player.GetComponent<MovementController>();
+            _inputController = inputController;
 
             _isMenuActive = false;
 
             _uiController.OnEscapeKeyPressed += PauseMenu;
-        }
-
-        protected virtual void OnDestroy()
-        {
-            _uiController.OnEscapeKeyPressed -= PauseMenu;
         }
 
         protected abstract void OnEnable();
@@ -84,6 +75,11 @@ namespace Scripts.UI
 
             Cursor.visible = _isMenuActive;
             _inputController.enabled = !_isMenuActive;
+        }
+
+        protected virtual void OnDestroy()
+        {
+            _uiController.OnEscapeKeyPressed -= PauseMenu;
         }
     }
 }

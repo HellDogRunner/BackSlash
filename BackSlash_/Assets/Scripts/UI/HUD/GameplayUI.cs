@@ -8,11 +8,10 @@ namespace Scripts.UI
     public class GameplayUI : MonoBehaviour
     { 
         [Header("Game Objects")]
-        [SerializeField] private GameObject _player;
         [SerializeField] private Image _dodgeTransition;
 
         [Header("Scripts")]
-        [SerializeField] private PLayerHealthBar _healthBarView;
+        [SerializeField] private PlayerHealthBar _healthBarView;
 
         private MovementController _movementController;
         private ImageTransition _imageTransition;
