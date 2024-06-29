@@ -113,5 +113,14 @@ namespace RedMoonGames.Window
             windowCachedBehaviour.gameObject.SetActive(false);
             RemoveWindow(window);
         }
+
+        public IWindow ReturnWindow(WindowHandler window)
+        {
+            if (_createdWindows.TrySearchKeyByValue(window, out var openedWindow))
+            {
+                return openedWindow;
+            }
+            return null;
+        }
     }
 }

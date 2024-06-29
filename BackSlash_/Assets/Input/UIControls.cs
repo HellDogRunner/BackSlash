@@ -246,6 +246,17 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""d12e8ad0-41c1-4cc9-81fd-33119ab72380"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""b7befcbf-e926-43eb-bc03-1711481ae72b"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",

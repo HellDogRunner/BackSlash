@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
 
-namespace Scripts.UI
+namespace Scripts.Player
 {
     public class UIController : MonoBehaviour
     {
