@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2405831873996627189}
   - component: {fileID: 1436564195840998315}
   - component: {fileID: 7360160228212516030}
+  - component: {fileID: 6245692603679428361}
   - component: {fileID: 2942088125291685781}
   m_Layer: 5
   m_Name: Scene Transition
@@ -64,7 +65,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &8969546702497867229
 MonoBehaviour:
@@ -128,6 +129,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 261a4913b124db74aa5ec459fe816afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6245692603679428361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2284193532720179800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0af5575a94b4c42babdd2cad2a9a80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _canvasGroup: {fileID: 1436564195840998315}

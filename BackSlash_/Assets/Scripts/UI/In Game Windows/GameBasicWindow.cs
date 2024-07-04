@@ -21,6 +21,7 @@ namespace RedMoonGames.Window
             _canvasGroup = GetComponent<CanvasGroup>();
 
             _windowManager.OnWindowClosed += HideCurrentWindow;
+            _windowManager.OnPausing += EnablePause;
         }
 
         protected virtual void GameWindowDestroy()
@@ -33,10 +34,16 @@ namespace RedMoonGames.Window
             _animationController.HideWindowAnimation(_canvasGroup, handler);
         }
 
+        protected virtual void EnablePause()
+        {
+
+        }
+
         protected virtual void OnDestroy()
         {
             GameWindowDestroy();
             _windowManager.OnWindowClosed -= HideCurrentWindow;
+            _windowManager.OnPausing -= EnablePause;
         }
     }
 }

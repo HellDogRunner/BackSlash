@@ -15,8 +15,6 @@ namespace RedMoonGames.Window
 
         private void OnEnable()
         {
-            _animationController.ShowWindowAnimation(_canvasGroup);
-
             _continue.Select();
             _continue.onClick.AddListener(ContinueClick);
             _settings.onClick.AddListener(SettingsClick);
@@ -38,7 +36,7 @@ namespace RedMoonGames.Window
 
         private void SettingsClick()
         {
-            _animationController.HideWindowAnimation(_canvasGroup, _pauseHandler);
+            _windowManager.CloseWindow(_pauseHandler);
             _windowManager.OpenWindow(_settingsHandler);
         }
 
@@ -46,6 +44,11 @@ namespace RedMoonGames.Window
         {
             Cursor.visible = false;
             _sceneTransition.SwichToScene("StartMenu");
+        }
+
+        protected override void EnablePause()
+        {
+            _animationController.ShowWindowAnimation(_canvasGroup);
         }
     }
 }

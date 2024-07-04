@@ -531,7 +531,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5595580419383357740}
   m_HandleRect: {fileID: 3378993930394303498}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1171,7 +1171,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3254396778618136616}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1187,9 +1187,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3df20da6919034ebd0c9284928f520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pauseHandler: {fileID: 11400000, guid: fc24f6d270a45a54d871f41d082fbcaf, type: 2}
   _settingsHandler: {fileID: 11400000, guid: 53aa551dec54ecb48b774a8d1b55a4ee, type: 2}
-  _backButtonHandler: {fileID: 11400000, guid: fc24f6d270a45a54d871f41d082fbcaf, type: 2}
+  _pauseHandler: {fileID: 11400000, guid: fc24f6d270a45a54d871f41d082fbcaf, type: 2}
   _back: {fileID: 4205009839472827400}
 --- !u!114 &5737777083716467553
 MonoBehaviour:

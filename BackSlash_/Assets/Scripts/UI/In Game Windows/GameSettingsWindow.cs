@@ -13,8 +13,6 @@ namespace RedMoonGames.Window
 
         private void OnEnable()
         {
-            _animationController.ShowWindowAnimation(_canvasGroup);
-
             _back.Select();
             _back.onClick.AddListener(BackClick);
         }
@@ -26,7 +24,7 @@ namespace RedMoonGames.Window
 
         private void BackClick()
         {
-            _animationController.HideWindowAnimation(_canvasGroup, _settingsHandler);
+            _windowManager.CloseWindow(_settingsHandler);
             _windowManager.OpenWindow(_pauseHandler);
 
         }

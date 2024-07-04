@@ -16,6 +16,8 @@ namespace RedMoonGames.Window
         private WindowHandler _currentWindow;
 
         public event Action<WindowHandler> OnWindowClosed;
+        public event Action OnPausing;
+
         public event Action OnHUDHide;
         public event Action OnHUDShow;
 
@@ -37,6 +39,7 @@ namespace RedMoonGames.Window
             if (currentWindow == null)
             {
                 OpenWindow(_pauseWindowHandler);
+                OnPausing?.Invoke();
                 OnHUDHide?.Invoke();
 
                 Time.timeScale = 0f;

@@ -9,16 +9,14 @@ namespace RedMoonGames.Window
         [Header("Animation Settings")]
         [SerializeField] private float _fadeDuration = 1f;
 
-        private StartWindowsManager _windowsController;
+        private StartWindowsManager _windowsManager;
 
         private WindowHandler _handler;
 
-        //private Sequence _sequence;
-
         [Inject]
-        private void Construct(StartWindowsManager windowsController)
+        private void Construct(StartWindowsManager windowsManager)
         {
-            _windowsController = windowsController;
+            _windowsManager = windowsManager;
         }
 
         public void ShowWindowAnimation(CanvasGroup cg)
@@ -35,7 +33,7 @@ namespace RedMoonGames.Window
 
         private void CloseHandle()
         {
-            _windowsController.CloseWindow(_handler);
+            _windowsManager.CloseWindow(_handler);
         }
     }
 }

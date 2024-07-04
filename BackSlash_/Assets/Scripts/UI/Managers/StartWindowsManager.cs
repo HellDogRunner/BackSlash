@@ -1,5 +1,4 @@
 using Scripts.Player;
-using System;
 using UnityEngine;
 using Zenject;
 
@@ -13,8 +12,6 @@ namespace RedMoonGames.Window
         private WindowService _windowService;
 
         private WindowHandler _currentWindow;
-
-        //public event Action<WindowHandler> OnWindowClosed;
 
         [Inject]
         private void Construct(UIController uiController, WindowService windowService)

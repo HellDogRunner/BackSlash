@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -34,8 +35,11 @@ namespace RedMoonGames.Window
         {
             _backgroundCG = _background.GetComponent<CanvasGroup>();
             _backgroundTransform = _background.GetComponent<Transform>();
+        }
 
-            ShowHUD();
+        private void Start()
+        {
+            StartCoroutine(ShowHUDDelay());
         }
 
         private void ShowHUD()
@@ -56,6 +60,12 @@ namespace RedMoonGames.Window
                 _backgroundCG.DOFade(0f, _fadeDuration).SetEase(Ease.OutQuart).SetUpdate(true);
                 _backgroundTransform.DOScale(_endBackgroundScale, _scaleDuration).SetEase(Ease.InSine).SetUpdate(true);
             }).SetUpdate(true);
+        }
+
+        IEnumerator ShowHUDDelay()
+        {
+            yield return new WaitForSeconds(3f);
+            ShowHUD();
         }
 
         protected virtual void OnDestroy()

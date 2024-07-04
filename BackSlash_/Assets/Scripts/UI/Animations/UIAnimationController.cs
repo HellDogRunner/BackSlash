@@ -23,11 +23,8 @@ namespace RedMoonGames.Window
 
         public void ShowWindowAnimation(CanvasGroup cg)
         {
-            _sequence = DOTween.Sequence();
-            _sequence.AppendCallback(() =>
-            {
-                cg.DOFade(1f, _fadeDuration).SetUpdate(true);
-            }).SetUpdate(true);
+            cg.alpha = 0f;
+            cg.DOFade(1f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true);
         }
 
         public void HideWindowAnimation(CanvasGroup cg, WindowHandler handler)
@@ -37,10 +34,10 @@ namespace RedMoonGames.Window
             _sequence = DOTween.Sequence();
             _sequence.AppendCallback(() =>
             {
-                cg.DOFade(0f, _fadeDuration).SetUpdate(true).OnComplete(CloseHandle);
+                cg.DOFade(0f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true).OnComplete(CloseHandle);
             }).SetUpdate(true);
         }
-
+            
         private void CloseHandle()
         {
             _windowsController.CloseWindow(_handler);
