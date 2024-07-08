@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d873d4358de6014c8cce6523bdb072d, type: 3}
+  m_Name: StartMenuSettings
+  m_EditorClassIdentifier: 
+  Windows:
+  - Window: {fileID: 11400000, guid: a895f7e52c720bb4aa5b3f561a6765b3, type: 2}
+    WindowPrefab: {fileID: 1296204403146133402, guid: 6745fbc23fcb4cb4794cf5cbdb8a1d23,
+      type: 3}
+    IsSingle: 1
+  - Window: {fileID: 11400000, guid: 3498f0be62fdfee4dbef0bf11b98fa7a, type: 2}
+    WindowPrefab: {fileID: 6440903455523625924, guid: 387eeef51e13804499b9b48e25613da1,
+      type: 3}
+    IsSingle: 1

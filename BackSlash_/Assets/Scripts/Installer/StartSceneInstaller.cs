@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace Scripts.UI
+namespace Scripts.Player
 {
     public class StartSceneInstaller : MonoInstaller
     {

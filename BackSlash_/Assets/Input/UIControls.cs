@@ -38,9 +38,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Navigate"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""f72e4f94-da68-4c9d-ac2b-e79e50de14b0"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -65,12 +65,12 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Click"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""c692f3e1-8307-45d1-9e27-409f4481b671"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""ScrollWheel"",
@@ -98,13 +98,22 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TabsNavigation"",
+                    ""type"": ""Button"",
+                    ""id"": ""d4515c22-4d7d-411c-b45d-83f822aeebb1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
                     ""id"": ""f2953fdf-237b-4406-a6ae-468abf68e544"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard/Mouse"",
@@ -246,6 +255,17 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""d12e8ad0-41c1-4cc9-81fd-33119ab72380"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""b7befcbf-e926-43eb-bc03-1711481ae72b"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
@@ -298,6 +318,39 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""action"": ""RightClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""eee92aa4-ab7a-41ab-b5a6-e8277201f690"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TabsNavigation"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Negative"",
+                    ""id"": ""af59e91b-4a9e-42a7-8502-4a2db7798405"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TabsNavigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""3ccf3eb7-bd1e-4cbd-9619-93488873623e"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TabsNavigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -314,6 +367,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
+        m_UI_TabsNavigation = m_UI.FindAction("TabsNavigation", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -383,6 +437,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_ScrollWheel;
     private readonly InputAction m_UI_MiddleClick;
     private readonly InputAction m_UI_RightClick;
+    private readonly InputAction m_UI_TabsNavigation;
     public struct UIActions
     {
         private @UIControls m_Wrapper;
@@ -395,6 +450,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
         public InputAction @MiddleClick => m_Wrapper.m_UI_MiddleClick;
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
+        public InputAction @TabsNavigation => m_Wrapper.m_UI_TabsNavigation;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -428,6 +484,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @RightClick.started += instance.OnRightClick;
             @RightClick.performed += instance.OnRightClick;
             @RightClick.canceled += instance.OnRightClick;
+            @TabsNavigation.started += instance.OnTabsNavigation;
+            @TabsNavigation.performed += instance.OnTabsNavigation;
+            @TabsNavigation.canceled += instance.OnTabsNavigation;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -456,6 +515,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @RightClick.started -= instance.OnRightClick;
             @RightClick.performed -= instance.OnRightClick;
             @RightClick.canceled -= instance.OnRightClick;
+            @TabsNavigation.started -= instance.OnTabsNavigation;
+            @TabsNavigation.performed -= instance.OnTabsNavigation;
+            @TabsNavigation.canceled -= instance.OnTabsNavigation;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -483,5 +545,6 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         void OnScrollWheel(InputAction.CallbackContext context);
         void OnMiddleClick(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
+        void OnTabsNavigation(InputAction.CallbackContext context);
     }
 }

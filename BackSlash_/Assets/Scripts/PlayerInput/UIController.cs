@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
 
-namespace Scripts.UI
+namespace Scripts.Player
 {
     public class UIController : MonoBehaviour
     {
@@ -11,6 +11,7 @@ namespace Scripts.UI
 
         public event Action OnEnterKeyPressed;
         public event Action OnEscapeKeyPressed;
+        public event Action<string> OnTabPressed;
 
         [Inject]
         private void Construct()
@@ -19,6 +20,7 @@ namespace Scripts.UI
 
             _playerControls.UI.Enter.performed += Enter;
             _playerControls.UI.Escape.performed += Escape;
+            _playerControls.UI.TabsNavigation.performed += TabsNavigation;
         }
 
         private void Enter(InputAction.CallbackContext context)
@@ -29,6 +31,11 @@ namespace Scripts.UI
         private void Escape(InputAction.CallbackContext context)
         {
             OnEscapeKeyPressed?.Invoke();
+        }
+
+        private void TabsNavigation(InputAction.CallbackContext context)
+        {
+            OnTabPressed?.Invoke(context.control.name);
         }
 
         private void OnEnable()

@@ -54,8 +54,6 @@ namespace Scripts.Player
             _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
 
             _playerControls.Gameplay.TargetLock.performed += Lock;
-
-            _playerControls.Gameplay.Menu.performed += PauseMenu;
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
