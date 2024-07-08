@@ -38,7 +38,6 @@ namespace RedMoonGames.Window
 
             openedWindow.SetModel(model);
             openedWindow.Show();
-
             return TryResult.Successfully;
         }
 

@@ -13,9 +13,9 @@ namespace RedMoonGames.Window
         private InputController _controller;
         private WindowService _windowService;
 
-        private WindowHandler _currentWindow;
+        [SerializeField] private WindowHandler _currentWindow;
 
-        public event Action<WindowHandler> OnWindowClosed;
+        public event Action OnUnpause;
         public event Action OnPausing;
 
         public event Action OnHUDHide;
@@ -38,7 +38,7 @@ namespace RedMoonGames.Window
             var currentWindow = _windowService.ReturnWindow(_currentWindow);
             if (currentWindow == null)
             {
-                OpenWindow(_pauseWindowHandler);
+                OpenWindow(_currentWindow);
                 OnPausing?.Invoke();
                 OnHUDHide?.Invoke();
 
@@ -49,7 +49,8 @@ namespace RedMoonGames.Window
             }
             else
             {
-                OnWindowClosed?.Invoke(_currentWindow);
+                OnUnpause?.Invoke();
+                _currentWindow = _pauseWindowHandler;
                 OnHUDShow?.Invoke();
 
                 Time.timeScale = 1f;
@@ -68,6 +69,7 @@ namespace RedMoonGames.Window
         public void CloseWindow(WindowHandler handler)
         {
             var currentWindow = _windowService.ReturnWindow(handler);
+            //_windowService.CloseWindow(currentWindow);
             currentWindow?.Close();
         }
 

@@ -11,6 +11,7 @@ namespace Scripts.Player
 
         public event Action OnEnterKeyPressed;
         public event Action OnEscapeKeyPressed;
+        public event Action<string> OnTabPressed;
 
         [Inject]
         private void Construct()
@@ -19,6 +20,7 @@ namespace Scripts.Player
 
             _playerControls.UI.Enter.performed += Enter;
             _playerControls.UI.Escape.performed += Escape;
+            _playerControls.UI.TabsNavigation.performed += TabsNavigation;
         }
 
         private void Enter(InputAction.CallbackContext context)
@@ -29,6 +31,11 @@ namespace Scripts.Player
         private void Escape(InputAction.CallbackContext context)
         {
             OnEscapeKeyPressed?.Invoke();
+        }
+
+        private void TabsNavigation(InputAction.CallbackContext context)
+        {
+            OnTabPressed?.Invoke(context.control.name);
         }
 
         private void OnEnable()

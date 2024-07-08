@@ -50,5 +50,10 @@ namespace RedMoonGames.Window
         {
             _animationController.ShowWindowAnimation(_canvasGroup);
         }
+
+        protected override void HideCurrentWindow()
+        {
+            _animationController.HideWindowAnimation(_canvasGroup, _pauseHandler);
+        }
     }
 }
