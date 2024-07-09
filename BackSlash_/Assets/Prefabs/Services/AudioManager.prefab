@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1283314986486484235
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6197659733934034371}
+  - component: {fileID: 1460481438900598199}
+  - component: {fileID: 3813896679666971353}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6197659733934034371
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283314986486484235}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.188657, y: -0.5588184, z: 7.9079065}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1460481438900598199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283314986486484235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4862d6a099afa454f859cea719ce0146, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <_uiDropEvent>k__BackingField:
+    Guid:
+      Data1: 585677694
+      Data2: 1287866577
+      Data3: -407042129
+      Data4: -876552587
+    Path: event:/UiEvents/UIDrop
+  <_uiButtonClickEvent>k__BackingField:
+    Guid:
+      Data1: -1402756113
+      Data2: 1151832278
+      Data3: -202883160
+      Data4: 1679181065
+    Path: event:/UiEvents/UIClick
+  <_uiDragEvent>k__BackingField:
+    Guid:
+      Data1: -846668938
+      Data2: 1328520242
+      Data3: -1434211907
+      Data4: -352483565
+    Path: event:/UiEvents/UIDrag
+  <_uiHoverEvent>k__BackingField:
+    Guid:
+      Data1: -562920972
+      Data2: 1126772902
+      Data3: -1352719488
+      Data4: -1287121425
+    Path: event:/UiEvents/UIHover
+  <_uiWindowOpenEvent>k__BackingField:
+    Guid:
+      Data1: -1308894935
+      Data2: 1256641786
+      Data3: -1868835706
+      Data4: -376363123
+    Path: event:/UiEvents/UIWindowOpen
+--- !u!114 &3813896679666971353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283314986486484235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _components:
+  - {fileID: 1460481438900598199}
+  _identifier: 
+  _useSceneContext: 0
+  _context: {fileID: 0}
+  _bindType: 0

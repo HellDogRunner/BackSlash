@@ -174,7 +174,6 @@ namespace Scripts.Player
                 float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);            
                 if (angle < _maxSlopeAngle)
                 {
-                    Debug.Log(Vector3.Angle(Vector3.up, _slopeHit.normal));
                     return true;
                 }
             }
