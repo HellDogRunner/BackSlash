@@ -456,7 +456,7 @@ MonoBehaviour:
   sourceProjectPath: 
   sourceBankPath: Assets/FMODBanks/Desktop
   sourceBankPathUnformatted: 
-  BankRefreshCooldown: 5
+  BankRefreshCooldown: 1
   ShowBankRefreshWindow: 1
   AutomaticEventLoading: 0
   BankLoadType: 0
@@ -477,7 +477,11 @@ MonoBehaviour:
   Plugins: []
   MasterBanks:
   - Master
-  Banks: []
+  Banks:
+  - Ambient
+  - Player
+  - UI
+  - Weapon
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0

@@ -1,3 +1,5 @@
+using FMOD.Studio;
+using FMODUnity;
 using Scripts.Animations;
 using Scripts.Player.camera;
 using System;
@@ -25,7 +27,7 @@ namespace Scripts.Player
         [SerializeField] private float _dodgeCooldown;
         [SerializeField] private float _jumpCooldown;
         [SerializeField] private float _airMultiplier = 0.7f;
-
+        [Header("SlopeAngle")]
         [SerializeField] private float _maxSlopeAngle;
 
         private float _playerHeight;
@@ -36,21 +38,28 @@ namespace Scripts.Player
         private InputController _inputService;
         private ThirdPersonCameraController _thirdPersonCam;
         private PlayerAnimationController _playerAnimationController;
+        private AudioManager _audioManager;
 
         private bool isJump = true;
         private bool isDodge = true;
+
+        //Audio
+        private EventInstance _playerFootsteps;
 
         public event Action OnJump;
         public event Action<bool> InAir;
         public event Action OnDogde;
         public event Action<bool> IsMoving;
 
+        private bool _wasGrounded = true;
+
         [Inject]
-        private void Construct(InputController inputService, ThirdPersonCameraController thirdPersonCam, PlayerAnimationController playerAnimationController)
+        private void Construct(InputController inputService, ThirdPersonCameraController thirdPersonCam, PlayerAnimationController playerAnimationController, AudioManager audioManager)
         {
             _inputService = inputService;
             _thirdPersonCam = thirdPersonCam;
             _playerAnimationController = playerAnimationController;
+            _audioManager = audioManager;
 
             _inputService.OnJumpKeyPressed += Jump;
             _inputService.OnDogdeKeyPressed += Dodge;
@@ -68,6 +77,12 @@ namespace Scripts.Player
             _playerHeight = _playerCollider.height;
         }
 
+        private void Start()
+        {
+            _playerFootsteps = _audioManager.CreateEventInstance(FMODEvents.instance.PlayerFootSteps);
+
+        }
+
         private void OnDestroy()
         {
             _inputService.OnJumpKeyPressed -= Jump;
@@ -79,8 +94,11 @@ namespace Scripts.Player
         private void FixedUpdate()
         {
             _moveDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+            PlayerLanded();
+            _wasGrounded = IsGrounded();
             MovePlayer();
             SpeedControl();
+            UpdateSound();
         }
 
         private void MovePlayer()
@@ -111,19 +129,31 @@ namespace Scripts.Player
             }
         }
 
+        private void PlayerLanded() 
+        {
+            if (IsGrounded() && !_wasGrounded)
+            {
+                _audioManager.PlayGenericEvent(FMODEvents.instance.PlayerLanded);
+            }
+        }
+
         private void Sprint()
         {
+            _playerFootsteps.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             _currentSpeed = _sprintSpeed;
+            _playerFootsteps.setParameterByName("RunSprint", 1);
         }
 
         private void Run()
         {
+            _playerFootsteps.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            _playerFootsteps.setParameterByName("RunSprint", 0);
             _currentSpeed = _runSpeed;
         }
 
         private void Dodge()
         {
-            if (IsGrounded() && isDodge)
+            if (IsGrounded() && (_moveDirection != Vector3.zero) && isDodge)
             {
                 _rigidbody.AddForce(_moveDirection * _dodgeForce, ForceMode.VelocityChange);
                 StartCoroutine(DodgeCooldown(_dodgeCooldown));
@@ -178,6 +208,23 @@ namespace Scripts.Player
                 }
             }
             return false;
+        }
+
+        private void UpdateSound()
+        {
+            if (_moveDirection != Vector3.zero && IsGrounded() && !_playerAnimationController.IsAttacking)
+            {
+                PLAYBACK_STATE playbackState;
+                _playerFootsteps.getPlaybackState(out playbackState);
+                if (playbackState.Equals(PLAYBACK_STATE.STOPPED))
+                {
+                    _playerFootsteps.start();
+                }
+            }
+            else 
+            {
+                _playerFootsteps.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            }
         }
 
         private Vector3 GetSlopeMoveDirection()

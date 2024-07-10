@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine;
 using Zenject;
 using System;
+using FMOD.Studio;
 
 namespace Scripts.Weapon 
 {
@@ -12,15 +13,18 @@ namespace Scripts.Weapon
         [SerializeField] private Transform _weaponPivot;
         [SerializeField] private Transform _weaponOnBeltPivot;
 
-        private int _currentAttack = 0;
+        [SerializeField] private int _currentAttack = 0;
         private float _timeSinceAttack;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
         private GameObject _currentWeapon;
         private InputController _inputService;
-        private EWeaponType _curentWeaponType;
+        private AudioManager _audioManager;
         private WeaponTypeModel _weaponTypeModel;
+        private EWeaponType _curentWeaponType;
+        //audio
+        private EventInstance _swordSlashSound;
 
         public EWeaponType CurrentWeaponType => _curentWeaponType;
         public event Action<int> OnAttack;
@@ -29,9 +33,10 @@ namespace Scripts.Weapon
         [Inject] private DiContainer _diContainer;
 
         [Inject]
-        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputService)
+        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputService, AudioManager audioManager)
         {
             _weaponTypesDatabase = weaponTypesDatabase;
+            _audioManager = audioManager;
             _inputService = inputService;
             _inputService.OnWeaponIdle += CancelAttack;
 
@@ -42,6 +47,8 @@ namespace Scripts.Weapon
         {
             _weaponTypeModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
             _currentWeapon = _diContainer.InstantiatePrefab(_weaponTypeModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation, _weaponOnBeltPivot.transform);
+
+            _swordSlashSound = _audioManager.CreateEventInstance(FMODEvents.instance.SlashSword);
         }
 
         private void Update()
@@ -66,7 +73,7 @@ namespace Scripts.Weapon
             {
                 return;
             }
-
+            _audioManager.PlayGenericEvent(FMODEvents.instance.DrawSword);
             ChangeWeaponTransform(_weaponPivot);
             _curentWeaponType = EWeaponType.Melee;
         }
@@ -77,15 +84,20 @@ namespace Scripts.Weapon
             {
                 return;
             }
-  
+            _audioManager.PlayGenericEvent(FMODEvents.instance.SneathSword);
             ChangeWeaponTransform(_weaponOnBeltPivot);
             _curentWeaponType = EWeaponType.None;
         }
 
         private void Attack()
         {
+            if (_curentWeaponType == EWeaponType.None)
+            {
+                return;
+            }
             if (_timeSinceAttack > 0.8f)
             {
+                //_audioManager.PlayGenericEvent(FMODEvents.instance.SlashSword);
                 _currentAttack++;
 
                 if (_currentAttack > 3)
@@ -97,6 +109,9 @@ namespace Scripts.Weapon
                 {
                     _currentAttack = 1;
                 }
+                _swordSlashSound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                _swordSlashSound.setParameterByName("Combo", _currentAttack);
+                _swordSlashSound.start();
                 OnAttack?.Invoke(_currentAttack);
                 _timeSinceAttack = 0;
             }          

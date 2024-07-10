@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
@@ -11,13 +9,13 @@ public class ButtonAudioController : MonoBehaviour
     [SerializeField] private bool _soundOnHover;
 
     private Button _thisButton;
-    private UIAudioManager _audioManager;
+    private AudioManager _audioManager;
 
     [Inject]
-    private void Construct(UIAudioManager uiAudioManager)
+    private void Construct(AudioManager audioManager)
     {
         _thisButton = GetComponent<Button>();
-        _audioManager = uiAudioManager;
+        _audioManager = audioManager;
 
         _thisButton.onClick.AsObservable().Subscribe(_ =>
         {
@@ -29,9 +27,10 @@ public class ButtonAudioController : MonoBehaviour
             OnHover();
         }).AddTo(this);
 
+
         _thisButton.OnPointerEnterAsObservable().Subscribe(_ =>
         {
-            OnHover();
+           // OnHover();
         }).AddTo(this);
     }
 
@@ -39,12 +38,12 @@ public class ButtonAudioController : MonoBehaviour
     {
         if (_soundOnHover)
         {         
-            _audioManager.PlayGenericEvent(_audioManager._uiHoverEvent);
+            _audioManager.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
         }
     }
 
     private void OnClick()
     {
-        _audioManager.PlayGenericEvent(_audioManager._uiButtonClickEvent);          
+        _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);          
     }
 }

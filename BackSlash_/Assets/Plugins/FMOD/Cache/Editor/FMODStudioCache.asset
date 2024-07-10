@@ -20,6 +20,48 @@ MonoBehaviour:
   - Name: 
     Value: 934
   Exists: 1
+--- !u!114 &-7846730526109413994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/SwordSlash/Combo
+  m_EditorClassIdentifier: 
+  Name: Combo
+  StudioPath: 
+  Min: 1
+  Max: 3
+  Default: 2
+  ID:
+    data1: 2733258468
+    data2: 3516606162
+  Type: 1
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &-7489488680586143679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Player.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/FMODBanks/Desktop/Player.bank
+  Name: Player
+  StudioPath: bank:/Player
+  lastModified: 638562193110424265
+  FileSizes: []
+  Exists: 1
 --- !u!114 &-7221386215545267267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39,7 +81,7 @@ MonoBehaviour:
     Data3: -1868835706
     Data4: -376363123
   Banks:
-  - {fileID: 2657019969679101870}
+  - {fileID: -5153096615059892513}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -47,6 +89,69 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-6458579594355773439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/PlayerEvents/PlayerLanded
+  m_EditorClassIdentifier: 
+  Path: event:/PlayerEvents/PlayerLanded
+  Guid:
+    Data1: -1233744640
+    Data2: 1173228949
+    Data3: -2012341865
+    Data4: 1424114215
+  Banks:
+  - {fileID: -7489488680586143679}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-6062947100089514399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Weapon.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/FMODBanks/Desktop/Weapon.bank
+  Name: Weapon
+  StudioPath: bank:/Weapon
+  lastModified: 638562198370246096
+  FileSizes: []
+  Exists: 1
+--- !u!114 &-5153096615059892513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/UI.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/FMODBanks/Desktop/UI.bank
+  Name: UI
+  StudioPath: bank:/UI
+  lastModified: 638561191451920049
+  FileSizes: []
+  Exists: 1
 --- !u!114 &-4374822071570602637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,6 +179,111 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-4144940949402501525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/FootSteps/RunSprint
+  m_EditorClassIdentifier: 
+  Name: RunSprint
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3351767732
+    data2: 2469419962
+  Type: 1
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &-1760784688357919094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Ambient/MenuAmbient
+  m_EditorClassIdentifier: 
+  Path: event:/Ambient/MenuAmbient
+  Guid:
+    Data1: 761418667
+    Data2: 1202593258
+    Data3: -617726541
+    Data4: 174844898
+  Banks:
+  - {fileID: 7553869509278124901}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 220000
+--- !u!114 &-1411752502292875449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Weapon/SneathWeapon
+  m_EditorClassIdentifier: 
+  Path: event:/Weapon/SneathWeapon
+  Guid:
+    Data1: 622693119
+    Data2: 1103576092
+    Data3: 527702692
+    Data4: -1356641622
+  Banks:
+  - {fileID: -7489488680586143679}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-876998645561294632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Ambient/GameplayAmbient
+  m_EditorClassIdentifier: 
+  Path: event:/Ambient/GameplayAmbient
+  Guid:
+    Data1: -253537959
+    Data2: 1227299827
+    Data3: -1027558000
+    Data4: -1278742192
+  Banks:
+  - {fileID: 7553869509278124901}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 250000
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,18 +299,30 @@ MonoBehaviour:
   EditorBanks:
   - {fileID: 6009810307895637080}
   - {fileID: 2657019969679101870}
+  - {fileID: -7489488680586143679}
+  - {fileID: -5153096615059892513}
+  - {fileID: -6062947100089514399}
+  - {fileID: 7553869509278124901}
   EditorEvents:
   - {fileID: -7221386215545267267}
   - {fileID: 1024370689147115992}
   - {fileID: 8034906315472712005}
   - {fileID: 4046062228172661601}
   - {fileID: 6097731826291122019}
+  - {fileID: 4494439229484948424}
+  - {fileID: -6458579594355773439}
+  - {fileID: 3585115972975780157}
+  - {fileID: -1411752502292875449}
+  - {fileID: 7122363802803894108}
+  - {fileID: -876998645561294632}
+  - {fileID: -1760784688357919094}
+  - {fileID: 2139105971614969861}
   EditorParameters: []
   MasterBanks:
   - {fileID: 2657019969679101870}
   StringsBanks:
   - {fileID: 6009810307895637080}
-  cacheTime: 638560441516242220
+  cacheTime: 638562264957869818
   cacheVersion: 131618
 --- !u!114 &1024370689147115992
 MonoBehaviour:
@@ -121,13 +343,40 @@ MonoBehaviour:
     Data3: -1434211907
     Data4: -352483565
   Banks:
-  - {fileID: 2657019969679101870}
+  - {fileID: -5153096615059892513}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
+  Length: 0
+--- !u!114 &2139105971614969861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: snapshot:/New Snapshot
+  m_EditorClassIdentifier: 
+  Path: snapshot:/New Snapshot
+  Guid:
+    Data1: -2040263751
+    Data2: 1288656285
+    Data3: -419119478
+    Data4: -1630984082
+  Banks:
+  - {fileID: 2657019969679101870}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 0
   Length: 0
 --- !u!114 &2557328712094741818
 MonoBehaviour:
@@ -171,9 +420,36 @@ MonoBehaviour:
   Path: Assets/FMODBanks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638560441516221926
+  lastModified: 638562264438776906
   FileSizes: []
   Exists: 1
+--- !u!114 &3585115972975780157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Weapon/DrawWeapon
+  m_EditorClassIdentifier: 
+  Path: event:/Weapon/DrawWeapon
+  Guid:
+    Data1: 1892164992
+    Data2: 1179362086
+    Data3: 865580419
+    Data4: -2067580448
+  Banks:
+  - {fileID: -7489488680586143679}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &4046062228172661601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,7 +469,7 @@ MonoBehaviour:
     Data3: -202883160
     Data4: 1679181065
   Banks:
-  - {fileID: 2657019969679101870}
+  - {fileID: -5153096615059892513}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -201,6 +477,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &4494439229484948424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/PlayerEvents/FootSteps
+  m_EditorClassIdentifier: 
+  Path: event:/PlayerEvents/FootSteps
+  Guid:
+    Data1: 298042381
+    Data2: 1255409294
+    Data3: -608724570
+    Data4: 94455629
+  Banks:
+  - {fileID: -7489488680586143679}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -4144940949402501525}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 340
 --- !u!114 &5809166081597723567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,10 +547,10 @@ MonoBehaviour:
   Path: Assets/FMODBanks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638560441516242220
+  lastModified: 638562264438791967
   FileSizes:
   - Name: 
-    Value: 934
+    Value: 1626
   Exists: 1
 --- !u!114 &6097731826291122019
 MonoBehaviour:
@@ -267,7 +571,7 @@ MonoBehaviour:
     Data3: -1352719488
     Data4: -1287121425
   Banks:
-  - {fileID: 2657019969679101870}
+  - {fileID: -5153096615059892513}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -329,6 +633,52 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &7122363802803894108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Weapon/SwordSlash
+  m_EditorClassIdentifier: 
+  Path: event:/Weapon/SwordSlash
+  Guid:
+    Data1: -1660266685
+    Data2: 1154692907
+    Data3: 457012395
+    Data4: 1514467933
+  Banks:
+  - {fileID: -6062947100089514399}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: -7846730526109413994}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 773
+--- !u!114 &7553869509278124901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Ambient.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/FMODBanks/Desktop/Ambient.bank
+  Name: Ambient
+  StudioPath: bank:/Ambient
+  lastModified: 638562264957869818
+  FileSizes: []
+  Exists: 1
 --- !u!114 &8034906315472712005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,7 +698,7 @@ MonoBehaviour:
     Data3: -407042129
     Data4: -876552587
   Banks:
-  - {fileID: 2657019969679101870}
+  - {fileID: -5153096615059892513}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
