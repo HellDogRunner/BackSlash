@@ -8,7 +8,6 @@ namespace Scripts.Player
     public class InputController : MonoBehaviour
     {
         private GameControls _playerControls;
-        private WeaponState _weaponState;
 
         private Vector3 _moveDirection;
 
@@ -24,15 +23,11 @@ namespace Scripts.Player
         public event Action OnLockKeyPressed;
         public event Action OnMenuKeyPressed;
         public Vector3 MoveDirection => _moveDirection;
-        public WeaponState WeaponStateContainer => _weaponState;
 
         [Inject]
         private void Construct()
         {
             _playerControls = new GameControls();
-            _weaponState = new WeaponState();
-
-            _weaponState.State = WeaponState.EWeaponState.Idle;
 
             _playerControls.Gameplay.WASD.performed += ChangeDirection;           
             _playerControls.Gameplay.Dodge.performed += Dodge;
@@ -69,13 +64,11 @@ namespace Scripts.Player
 
         private void ShowWeapon(InputAction.CallbackContext context) 
         {
-            _weaponState.State = WeaponState.EWeaponState.Show;
             OnShowWeaponPressed?.Invoke();
         }
 
         private void HideWeapon(InputAction.CallbackContext context)
         {
-            _weaponState.State = WeaponState.EWeaponState.Hide;
             OnHideWeaponPressed?.Invoke();
         }
 
@@ -94,19 +87,13 @@ namespace Scripts.Player
             OnDogdeKeyPressed?.Invoke();
         }
 
-        private void Walking(InputAction.CallbackContext context)
-        {
-        }
-
         private void AttackStarted(InputAction.CallbackContext contex)
         {
-            _weaponState.State = WeaponState.EWeaponState.Attack;
             OnAttackPressed?.Invoke();
         }
 
         private void WeaponIdle(InputAction.CallbackContext contex)
         {
-            _weaponState.State = WeaponState.EWeaponState.Idle;
             OnWeaponIdle?.Invoke();
         }
 
@@ -117,7 +104,6 @@ namespace Scripts.Player
 
         private void Block(InputAction.CallbackContext contex)
         {
-            _weaponState.State = WeaponState.EWeaponState.Block;
             OnBlockPressed?.Invoke();
         }
         private void Lock(InputAction.CallbackContext contex)

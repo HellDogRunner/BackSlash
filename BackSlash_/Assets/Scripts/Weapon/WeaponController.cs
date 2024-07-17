@@ -4,7 +4,6 @@ using System.Collections;
 using UnityEngine;
 using Zenject;
 using System;
-using FMOD.Studio;
 
 namespace Scripts.Weapon 
 {
@@ -12,34 +11,34 @@ namespace Scripts.Weapon
     {
         [SerializeField] private Transform _weaponPivot;
         [SerializeField] private Transform _weaponOnBeltPivot;
-
         [SerializeField] private int _currentAttack = 0;
+
         private float _timeSinceAttack;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
         private GameObject _currentWeapon;
         private InputController _inputService;
-        private AudioManager _audioManager;
         private WeaponTypeModel _weaponTypeModel;
         private EWeaponType _curentWeaponType;
-        //audio
-        private EventInstance _swordSlashSound;
 
         public EWeaponType CurrentWeaponType => _curentWeaponType;
+
         public event Action<int> OnAttack;
         public event Action<bool> IsAttacking;
+        public event Action OnDrawWeapon;
+        public event Action OnSneathWeapon;
 
         [Inject] private DiContainer _diContainer;
 
         [Inject]
-        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputService, AudioManager audioManager)
+        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputService)
         {
             _weaponTypesDatabase = weaponTypesDatabase;
-            _audioManager = audioManager;
             _inputService = inputService;
             _inputService.OnWeaponIdle += CancelAttack;
-
+            _inputService.OnAttackPressed += Attack;
+            _inputService.OnBlockPressed += Block;
             _curentWeaponType = EWeaponType.None;
         }
 
@@ -47,35 +46,23 @@ namespace Scripts.Weapon
         {
             _weaponTypeModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
             _currentWeapon = _diContainer.InstantiatePrefab(_weaponTypeModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation, _weaponOnBeltPivot.transform);
-
-            _swordSlashSound = _audioManager.CreateEventInstance(FMODEvents.instance.SlashSword);
         }
 
         private void Update()
         {
             _timeSinceAttack += Time.deltaTime;
-
-            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Attack)
-            {
-                Attack();
-                IsAttacking?.Invoke(true);
-            }
-
-            if (_inputService.WeaponStateContainer.State == WeaponState.EWeaponState.Block)
-            {
-                Block();
-            }
         }
 
         private void DrawWeapon() 
         {
+            //TODO: попытатся уйти от animation event чтобы анимация не проигрывала по 2 раза
             if (_currentWeapon == null)
             {
                 return;
             }
-            _audioManager.PlayGenericEvent(FMODEvents.instance.DrawSword);
             ChangeWeaponTransform(_weaponPivot);
             _curentWeaponType = EWeaponType.Melee;
+            OnDrawWeapon?.Invoke();
         }
 
         private void SheathWeapon()
@@ -84,20 +71,21 @@ namespace Scripts.Weapon
             {
                 return;
             }
-            _audioManager.PlayGenericEvent(FMODEvents.instance.SneathSword);
             ChangeWeaponTransform(_weaponOnBeltPivot);
             _curentWeaponType = EWeaponType.None;
+            OnSneathWeapon?.Invoke();
         }
 
         private void Attack()
         {
+            //TODO: Сделать нормальный метод обработки комбо 
             if (_curentWeaponType == EWeaponType.None)
             {
                 return;
             }
+            IsAttacking?.Invoke(true);
             if (_timeSinceAttack > 0.8f)
             {
-                //_audioManager.PlayGenericEvent(FMODEvents.instance.SlashSword);
                 _currentAttack++;
 
                 if (_currentAttack > 3)
@@ -109,9 +97,6 @@ namespace Scripts.Weapon
                 {
                     _currentAttack = 1;
                 }
-                _swordSlashSound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-                _swordSlashSound.setParameterByName("Combo", _currentAttack);
-                _swordSlashSound.start();
                 OnAttack?.Invoke(_currentAttack);
                 _timeSinceAttack = 0;
             }          
@@ -134,6 +119,14 @@ namespace Scripts.Weapon
             _currentWeapon.transform.position = target.position;
             _currentWeapon.transform.rotation = target.rotation;
         }
+
+        private void OnDestroy()
+        {
+            _inputService.OnWeaponIdle -= CancelAttack;
+            _inputService.OnAttackPressed -= Attack;
+            _inputService.OnBlockPressed -= Block;
+        }
+
         IEnumerator IdleTimeout()
         {
             yield return new WaitForSeconds(.5f);

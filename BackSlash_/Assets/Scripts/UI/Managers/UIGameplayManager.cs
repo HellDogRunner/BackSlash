@@ -26,7 +26,7 @@ namespace Scripts.UI
 
         private void Start()
         {
-            _movementController.OnDogde += DodgeCooldown;
+            _movementController.OnDodge += DodgeCooldown;
         }
 
         private void DodgeCooldown()
@@ -36,7 +36,7 @@ namespace Scripts.UI
 
         private void OnDestroy()
         {
-            _movementController.OnDogde -= DodgeCooldown;
+            _movementController.OnDodge -= DodgeCooldown;
         }
     }
 }

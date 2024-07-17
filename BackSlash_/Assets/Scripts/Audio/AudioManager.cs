@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FMODUnity;
@@ -6,6 +5,17 @@ using FMOD.Studio;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("Volume")]
+
+    [Range(0f, 1f)]
+    public float masterVolume = 1;
+
+    [Range(0f, 1f)]
+    public float ambientVolume = 1;
+
+    [Range(0f, 1f)]
+    public float sfxVolume = 1;
+
     [SerializeField] private bool _startWithMenuAmbience;
     [SerializeField] private bool _startWithGameplayAmbience;
 
@@ -13,17 +23,27 @@ public class AudioManager : MonoBehaviour
 
     private EventInstance _ambientEventInstance;
 
+    private Bus masterBus;
+    private Bus ambientBus;
+    private Bus sfxBus;
+
+    private void Awake()
+    {
+        masterBus = RuntimeManager.GetBus("bus:/");
+        ambientBus = RuntimeManager.GetBus("bus:/Ambience");
+        sfxBus = RuntimeManager.GetBus("bus:/SFX");
+    }
+
     private void Start()
     {
         if (_startWithGameplayAmbience)
         {
             InitialazeAmbience(FMODEvents.instance.GameplayAmbience);
-            _startWithMenuAmbience = false;
+            return;
         }
         if (_startWithMenuAmbience)
         {
             InitialazeAmbience(FMODEvents.instance.StartMenuAmbience);
-            _startWithGameplayAmbience = false;
         }
     }
 
@@ -31,6 +51,13 @@ public class AudioManager : MonoBehaviour
     {
         _ambientEventInstance = CreateEventInstance(abienceEventReference);
         _ambientEventInstance.start();
+    }
+
+    private void Update()
+    {
+        masterBus.setVolume(masterVolume);
+        ambientBus.setVolume(ambientVolume);
+        sfxBus.setVolume(sfxVolume);
     }
 
     public void PlayGenericEvent(EventReference uiEvent) 
