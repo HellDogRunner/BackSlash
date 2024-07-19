@@ -3,6 +3,8 @@ using Zenject;
 
 namespace RedMoonGames.Window
 {
+    [RequireComponent(typeof(CanvasGroup))]
+
     public class GameBasicWindow : BasicWindow
     {
         protected CanvasGroup _canvasGroup;
@@ -18,29 +20,28 @@ namespace RedMoonGames.Window
             _animationController = animationController;
             _sceneTransition = sceneTransition;
 
-            _canvasGroup = GetComponent<CanvasGroup>();
-        }
-
-        private void Awake()
-        {
-            _windowManager.OnUnpause += HideCurrentWindow;
+            _windowManager.OnUnpausing += DisablePause;
             _windowManager.OnPausing += EnablePause;
         }
 
-        protected virtual void HideCurrentWindow()
+        protected void Awake()
         {
+            _canvasGroup = GetComponent<CanvasGroup>();
+        }
 
+        protected virtual void DisablePause()
+        {
         }
 
         protected virtual void EnablePause()
         {
-
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
-            _windowManager.OnUnpause -= HideCurrentWindow;
+            _windowManager.OnUnpausing -= DisablePause;
             _windowManager.OnPausing -= EnablePause;
         }
+
     }
 }

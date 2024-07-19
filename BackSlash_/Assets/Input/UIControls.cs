@@ -46,6 +46,15 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""TabsNavigation"",
+                    ""type"": ""Button"",
+                    ""id"": ""d4515c22-4d7d-411c-b45d-83f822aeebb1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Escape"",
                     ""type"": ""Button"",
                     ""id"": ""5c0f5901-dfa9-451f-8e29-8b1ba2a44b04"",
@@ -94,15 +103,6 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""name"": ""RightClick"",
                     ""type"": ""Button"",
                     ""id"": ""7c2aef99-3ae0-4f45-bbe8-af1deb55b38d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""TabsNavigation"",
-                    ""type"": ""Button"",
-                    ""id"": ""d4515c22-4d7d-411c-b45d-83f822aeebb1"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -233,39 +233,6 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e4e2ff2a-6d63-4ea2-9c46-c90e98b87b12"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard/Mouse"",
-                    ""action"": ""Escape"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4027b039-77ef-4671-9c45-ab3e5d798d7d"",
-                    ""path"": ""<Mouse>/backButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard/Mouse"",
-                    ""action"": ""Escape"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d12e8ad0-41c1-4cc9-81fd-33119ab72380"",
-                    ""path"": ""<Keyboard>/p"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Escape"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""b7befcbf-e926-43eb-bc03-1711481ae72b"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
@@ -351,6 +318,39 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""action"": ""TabsNavigation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4e2ff2a-6d63-4ea2-9c46-c90e98b87b12"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4027b039-77ef-4671-9c45-ab3e5d798d7d"",
+                    ""path"": ""<Mouse>/backButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d12e8ad0-41c1-4cc9-81fd-33119ab72380"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Escape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -361,13 +361,13 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Enter = m_UI.FindAction("Enter", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
+        m_UI_TabsNavigation = m_UI.FindAction("TabsNavigation", throwIfNotFound: true);
         m_UI_Escape = m_UI.FindAction("Escape", throwIfNotFound: true);
         m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
         m_UI_Click = m_UI.FindAction("Click", throwIfNotFound: true);
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
-        m_UI_TabsNavigation = m_UI.FindAction("TabsNavigation", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -431,26 +431,26 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
     private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
     private readonly InputAction m_UI_Enter;
     private readonly InputAction m_UI_Navigate;
+    private readonly InputAction m_UI_TabsNavigation;
     private readonly InputAction m_UI_Escape;
     private readonly InputAction m_UI_Point;
     private readonly InputAction m_UI_Click;
     private readonly InputAction m_UI_ScrollWheel;
     private readonly InputAction m_UI_MiddleClick;
     private readonly InputAction m_UI_RightClick;
-    private readonly InputAction m_UI_TabsNavigation;
     public struct UIActions
     {
         private @UIControls m_Wrapper;
         public UIActions(@UIControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Enter => m_Wrapper.m_UI_Enter;
         public InputAction @Navigate => m_Wrapper.m_UI_Navigate;
+        public InputAction @TabsNavigation => m_Wrapper.m_UI_TabsNavigation;
         public InputAction @Escape => m_Wrapper.m_UI_Escape;
         public InputAction @Point => m_Wrapper.m_UI_Point;
         public InputAction @Click => m_Wrapper.m_UI_Click;
         public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
         public InputAction @MiddleClick => m_Wrapper.m_UI_MiddleClick;
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
-        public InputAction @TabsNavigation => m_Wrapper.m_UI_TabsNavigation;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -466,6 +466,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @Navigate.started += instance.OnNavigate;
             @Navigate.performed += instance.OnNavigate;
             @Navigate.canceled += instance.OnNavigate;
+            @TabsNavigation.started += instance.OnTabsNavigation;
+            @TabsNavigation.performed += instance.OnTabsNavigation;
+            @TabsNavigation.canceled += instance.OnTabsNavigation;
             @Escape.started += instance.OnEscape;
             @Escape.performed += instance.OnEscape;
             @Escape.canceled += instance.OnEscape;
@@ -484,9 +487,6 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @RightClick.started += instance.OnRightClick;
             @RightClick.performed += instance.OnRightClick;
             @RightClick.canceled += instance.OnRightClick;
-            @TabsNavigation.started += instance.OnTabsNavigation;
-            @TabsNavigation.performed += instance.OnTabsNavigation;
-            @TabsNavigation.canceled += instance.OnTabsNavigation;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -497,6 +497,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @Navigate.started -= instance.OnNavigate;
             @Navigate.performed -= instance.OnNavigate;
             @Navigate.canceled -= instance.OnNavigate;
+            @TabsNavigation.started -= instance.OnTabsNavigation;
+            @TabsNavigation.performed -= instance.OnTabsNavigation;
+            @TabsNavigation.canceled -= instance.OnTabsNavigation;
             @Escape.started -= instance.OnEscape;
             @Escape.performed -= instance.OnEscape;
             @Escape.canceled -= instance.OnEscape;
@@ -515,9 +518,6 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @RightClick.started -= instance.OnRightClick;
             @RightClick.performed -= instance.OnRightClick;
             @RightClick.canceled -= instance.OnRightClick;
-            @TabsNavigation.started -= instance.OnTabsNavigation;
-            @TabsNavigation.performed -= instance.OnTabsNavigation;
-            @TabsNavigation.canceled -= instance.OnTabsNavigation;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -539,12 +539,12 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
     {
         void OnEnter(InputAction.CallbackContext context);
         void OnNavigate(InputAction.CallbackContext context);
+        void OnTabsNavigation(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
         void OnClick(InputAction.CallbackContext context);
         void OnScrollWheel(InputAction.CallbackContext context);
         void OnMiddleClick(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
-        void OnTabsNavigation(InputAction.CallbackContext context);
     }
 }

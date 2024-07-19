@@ -24,6 +24,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "TabsNavigation",
+                    "type": "Button",
+                    "id": "d4515c22-4d7d-411c-b45d-83f822aeebb1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Escape",
                     "type": "Button",
                     "id": "5c0f5901-dfa9-451f-8e29-8b1ba2a44b04",
@@ -72,15 +81,6 @@
                     "name": "RightClick",
                     "type": "Button",
                     "id": "7c2aef99-3ae0-4f45-bbe8-af1deb55b38d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "TabsNavigation",
-                    "type": "Button",
-                    "id": "d4515c22-4d7d-411c-b45d-83f822aeebb1",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -211,39 +211,6 @@
                 },
                 {
                     "name": "",
-                    "id": "e4e2ff2a-6d63-4ea2-9c46-c90e98b87b12",
-                    "path": "<Keyboard>/escape",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard/Mouse",
-                    "action": "Escape",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4027b039-77ef-4671-9c45-ab3e5d798d7d",
-                    "path": "<Mouse>/backButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard/Mouse",
-                    "action": "Escape",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d12e8ad0-41c1-4cc9-81fd-33119ab72380",
-                    "path": "<Keyboard>/p",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Escape",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b7befcbf-e926-43eb-bc03-1711481ae72b",
                     "path": "<Mouse>/position",
                     "interactions": "",
@@ -329,6 +296,39 @@
                     "action": "TabsNavigation",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "e4e2ff2a-6d63-4ea2-9c46-c90e98b87b12",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4027b039-77ef-4671-9c45-ab3e5d798d7d",
+                    "path": "<Mouse>/backButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d12e8ad0-41c1-4cc9-81fd-33119ab72380",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
