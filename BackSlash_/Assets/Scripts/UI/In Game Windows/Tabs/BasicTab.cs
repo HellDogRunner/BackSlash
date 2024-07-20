@@ -5,6 +5,7 @@ public class BasicTab : MonoBehaviour
 {
     [SerializeField] protected Image _selectedImage;
 
+
     protected virtual void OnEnable()
     {
         _selectedImage.enabled = true;
@@ -13,5 +14,10 @@ public class BasicTab : MonoBehaviour
     protected virtual void OnDisable()
     {
         _selectedImage.enabled = false;
+    }
+
+    public void ChangeTab(float navigate)
+    {
+        Debug.Log(navigate);
     }
 }

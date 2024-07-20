@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
-using static UnityEngine.InputSystem.InputAction;
 
 namespace Scripts.Player
 {
@@ -12,7 +11,7 @@ namespace Scripts.Player
 
         public event Action OnEnterKeyPressed;
         public event Action OnEscapeKeyPressed;
-        public event Action<string> OnTabPressed;
+        public event Action<int> OnTabPressed;
         public event Action OnAnyKeyPressed;
         public event Action OnMousePoint;
 
@@ -44,7 +43,8 @@ namespace Scripts.Player
 
         private void TabsNavigation(InputAction.CallbackContext context)
         {
-            OnTabPressed?.Invoke(context.control.name);
+            int navigate = (int) _playerControls.UI.TabsNavigation.ReadValue<float>();
+            OnTabPressed?.Invoke(navigate);
         }
 
         private void AnyKeyboard(InputAction.CallbackContext context)

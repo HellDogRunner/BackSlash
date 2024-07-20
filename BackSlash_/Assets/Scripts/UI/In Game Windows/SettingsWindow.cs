@@ -27,9 +27,10 @@ namespace RedMoonGames.Window
         [SerializeField] private Button _videoButton;
         [SerializeField] private Button _backButton;
         [Space]
-        [SerializeField]  private List<GameObject> _tabs = new List<GameObject>();
+        [SerializeField] private List<GameObject> _tabs = new List<GameObject>();
 
         private UIController _controller;
+        private BasicTab _basicTab;
 
         private GameObject _currentTab;
         private int _currentTabIndex;
@@ -58,8 +59,8 @@ namespace RedMoonGames.Window
 
         private void OnEnable()
         {
-            _prevTabButton.onClick.AddListener(() => SelectingTab("q"));
-            _nextTabButton.onClick.AddListener(() => SelectingTab("e"));
+            _prevTabButton.onClick.AddListener(() => SelectingTab(-1));
+            _nextTabButton.onClick.AddListener(() => SelectingTab(1));
             _gameplayButton.onClick.AddListener(() => SwitchActiveTab(_gameplayTab, 0));
             _managementButton.onClick.AddListener(() => SwitchActiveTab(_managementTab, 1));
             _soundButton.onClick.AddListener(() => SwitchActiveTab(_soundTab, 2));
@@ -69,8 +70,8 @@ namespace RedMoonGames.Window
 
         private void OnDisable()
         {
-            _prevTabButton.onClick.RemoveListener(() => SelectingTab("q"));
-            _nextTabButton.onClick.RemoveListener(() => SelectingTab("e"));
+            _prevTabButton.onClick.RemoveListener(() => SelectingTab(-1));
+            _nextTabButton.onClick.RemoveListener(() => SelectingTab(1));
             _gameplayButton.onClick.RemoveListener(() => SwitchActiveTab(_gameplayTab, 0));
             _managementButton.onClick.RemoveListener(() => SwitchActiveTab(_managementTab, 1));
             _soundButton.onClick.RemoveListener(() => SwitchActiveTab(_soundTab, 2));
@@ -78,18 +79,12 @@ namespace RedMoonGames.Window
             _backButton.onClick.RemoveListener(CloseWindow);
         }
 
-        private void SelectingTab(string key)
+        private void SelectingTab(int navigate)
         {
             int tabIndex;
-            if (key == "q")
-            {
-                tabIndex = (_currentTabIndex - 1) % _tabs.Count;
-                if (tabIndex < 0) tabIndex = _tabs.Count - 1;
-            }
-            else
-            {
-                tabIndex = (_currentTabIndex + 1) % _tabs.Count;
-            }
+            tabIndex = (_currentTabIndex + navigate) % _tabs.Count;
+            if (tabIndex < 0) tabIndex = _tabs.Count - 1;
+
             SwitchActiveTab(_tabs[tabIndex], tabIndex);
         }
 
