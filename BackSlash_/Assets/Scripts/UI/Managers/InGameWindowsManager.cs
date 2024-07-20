@@ -36,8 +36,6 @@ namespace RedMoonGames.Window
 
             _controller.OnMenuKeyPressed += PauseSwitch;
             _uiController.OnEscapeKeyPressed += PauseSwitch;
-            _uiController.OnAnyKeyPressed += DisableCursor;
-            _uiController.OnMousePoint += EnableCursor;
         }
 
         public void PauseSwitch()
@@ -94,8 +92,6 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _uiController.OnAnyKeyPressed -= DisableCursor;
-            _uiController.OnMousePoint -= EnableCursor;
             _controller.OnMenuKeyPressed -= PauseSwitch;
         }
     }

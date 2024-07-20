@@ -36,7 +36,7 @@ namespace Scripts.Weapon
         {
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputService = inputService;
-            _inputService.OnWeaponIdle += CancelAttack;
+            _inputService.OnWeaponIdle += FinishLastSwing;
             _inputService.OnAttackPressed += Attack;
             _inputService.OnBlockPressed += Block;
             _curentWeaponType = EWeaponType.None;
@@ -102,7 +102,7 @@ namespace Scripts.Weapon
             }          
         }
 
-        private void CancelAttack()
+        private void FinishLastSwing()
         {
             StopCoroutine(IdleTimeout());
             StartCoroutine(IdleTimeout());
@@ -122,7 +122,7 @@ namespace Scripts.Weapon
 
         private void OnDestroy()
         {
-            _inputService.OnWeaponIdle -= CancelAttack;
+            _inputService.OnWeaponIdle -= FinishLastSwing;
             _inputService.OnAttackPressed -= Attack;
             _inputService.OnBlockPressed -= Block;
         }
