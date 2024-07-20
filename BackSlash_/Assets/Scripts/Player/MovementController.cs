@@ -215,7 +215,12 @@ namespace Scripts.Player
 
         private Vector3 MoveDiretion()
         {
-            return _moveDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+            _moveDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+            if (_moveDirection != Vector3.zero)
+            {
+                return _moveDirection;
+            }
+            return Vector3.zero;
         }
 
         private Vector3 SlopeMoveDirection()

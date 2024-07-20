@@ -34,8 +34,6 @@ namespace RedMoonGames.Window
             _currentWindow = _pauseWindowHandler;
 
             _uiController.OnEscapeKeyPressed += PauseSwitch;
-            _uiController.OnAnyKeyPressed += DisableCursor;
-            _uiController.OnMousePoint += EnableCursor;
         }
 
         public void PauseSwitch()
@@ -78,32 +76,30 @@ namespace RedMoonGames.Window
             currentWindow?.Close();
         }
 
-        private void DisableCursor()
-        {
-            if (Time.timeScale == 0)
-            {
-                if (Mouse.current.position.ReadValue() != Vector2.one)
-                {
-                    _lastMousePosition = Mouse.current.position.ReadValue();
-                }
-                Cursor.visible = false;
-                Mouse.current.WarpCursorPosition(Vector2.one);
-            }
-        }
+        //private void DisableCursor()
+        //{
+        //    if (Time.timeScale == 0)
+        //    {
+        //        if (Mouse.current.position.ReadValue() != Vector2.one)
+        //        {
+        //            _lastMousePosition = Mouse.current.position.ReadValue();
+        //        }
+        //        Cursor.visible = false;
+        //        Mouse.current.WarpCursorPosition(Vector2.one);
+        //    }
+        //}
 
-        private void EnableCursor()
-        {
-            if (Time.timeScale == 0 && Cursor.visible == false && Mouse.current.position.ReadValue() != Vector2.one)
-            {
-                Mouse.current.WarpCursorPosition(_lastMousePosition);
-                Cursor.visible = true;
-            }
-        }
+        //private void EnableCursor()
+        //{
+        //    if (Time.timeScale == 0 && Cursor.visible == false && Mouse.current.position.ReadValue() != Vector2.one)
+        //    {
+        //        Mouse.current.WarpCursorPosition(_lastMousePosition);
+        //        Cursor.visible = true;
+        //    }
+        //}
 
         private void OnDestroy()
         {
-            _uiController.OnAnyKeyPressed -= DisableCursor;
-            _uiController.OnMousePoint -= EnableCursor;
             _controller.OnMenuKeyPressed -= PauseSwitch;
         }
     }
