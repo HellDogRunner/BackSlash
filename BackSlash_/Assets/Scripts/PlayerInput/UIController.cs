@@ -12,8 +12,8 @@ namespace Scripts.Player
         public event Action OnEnterKeyPressed;
         public event Action OnEscapeKeyPressed;
         public event Action<int> OnTabPressed;
-        public event Action OnAnyKeyPressed;
-        public event Action OnMousePoint;
+        public event Action<bool> OnAnyKeyPressed;
+        public event Action<bool> OnMousePoint;
 
         [Inject]
         private void Construct()
@@ -49,12 +49,12 @@ namespace Scripts.Player
 
         private void AnyKeyboard(InputAction.CallbackContext context)
         {
-            OnAnyKeyPressed?.Invoke();
+            OnAnyKeyPressed?.Invoke(true);
         }
 
         private void MousePointChange(InputAction.CallbackContext context)
         {
-            OnMousePoint?.Invoke();
+            OnMousePoint?.Invoke(true);
         }
 
         private void OnEnable()

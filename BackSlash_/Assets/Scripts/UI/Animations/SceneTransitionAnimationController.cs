@@ -18,11 +18,11 @@ public class SceneTransitionAnimationController : MonoBehaviour
 
     private bool _isClockwise;
 
-    private SceneTransitionManager _transitionManager;
+    private SceneTransitionController _transitionManager;
 
     private void Awake()
     {
-        _transitionManager = gameObject.GetComponent<SceneTransitionManager>();
+        _transitionManager = gameObject.GetComponent<SceneTransitionController>();
 
         _isClockwise = true;
     }

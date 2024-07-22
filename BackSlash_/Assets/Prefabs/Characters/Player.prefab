@@ -2793,6 +2793,7 @@ GameObject:
   - component: {fileID: 3831153863078339735}
   - component: {fileID: 4003745565070631084}
   - component: {fileID: 4037733144099541882}
+  - component: {fileID: 5300293899505624239}
   - component: {fileID: 1417933816927670133}
   - component: {fileID: 1945681995266547424}
   - component: {fileID: 6843714413104379186}
@@ -2843,7 +2844,7 @@ MonoBehaviour:
   _currentSpeed: 0
   _runSpeed: 5
   _sprintSpeed: 8
-  _groundDrag: 5
+  _groundDrag: 0
   _jumpForce: 8
   _dodgeForce: 10
   _dodgeCooldown: 1
@@ -2864,6 +2865,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponPivot: {fileID: 7108460016812821245}
   _weaponOnBeltPivot: {fileID: 7934484346377334542}
+  _currentAttack: 0
 --- !u!114 &3831153863078339735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2909,6 +2911,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health: 100
   _timeToDestroyLeft: 5
+--- !u!114 &5300293899505624239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48d02d57053b5e3488daf8721e7c58c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1417933816927670133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3031,6 +3045,7 @@ MonoBehaviour:
   - {fileID: 9087614315155568461}
   - {fileID: 4003745565070631084}
   - {fileID: 1945681995266547424}
+  - {fileID: 5300293899505624239}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}

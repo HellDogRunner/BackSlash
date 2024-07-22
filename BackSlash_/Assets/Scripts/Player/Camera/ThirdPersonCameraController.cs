@@ -22,7 +22,6 @@ namespace Scripts.Player.camera
             _inputService = inputService;
             _targetLock = targetLock;
             _camera = Camera.main.transform;
-            DisableCursor();
         }
 
         private void FixedUpdate()
@@ -70,12 +69,6 @@ namespace Scripts.Player.camera
             Vector3 rightRealtiveVerticalInput = direction.x * right;
 
             _forwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
-        }
-
-        private void DisableCursor()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
     }
 }

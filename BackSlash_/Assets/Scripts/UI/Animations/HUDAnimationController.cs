@@ -15,7 +15,7 @@ namespace RedMoonGames.Window
         [SerializeField] private float _fadeDuration = 0.5f;
         [SerializeField] private float _endBackgroundScale = 1.5f;
 
-        private GameWindowsManager _windowsController;
+        private GameWindowsController _windowsController;
 
         private Sequence _sequence;
 
@@ -23,7 +23,7 @@ namespace RedMoonGames.Window
         private Transform _backgroundTransform;
 
         [Inject]
-        private void Construct(GameWindowsManager windowsController)
+        private void Construct(GameWindowsController windowsController)
         {
             _windowsController = windowsController;
 

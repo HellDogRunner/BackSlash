@@ -9,12 +9,12 @@ namespace RedMoonGames.Window
         [Header("Animation Settings")]
         [SerializeField] private float _fadeDuration = 1f;
 
-        private StartWindowsManager _windowsManager;
+        private StartWindowsController _windowsManager;
 
         private WindowHandler _handler;
 
         [Inject]
-        private void Construct(StartWindowsManager windowsManager)
+        private void Construct(StartWindowsController windowsManager)
         {
             _windowsManager = windowsManager;
         }
