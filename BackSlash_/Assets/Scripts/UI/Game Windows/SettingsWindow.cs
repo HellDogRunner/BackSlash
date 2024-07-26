@@ -50,8 +50,9 @@ namespace RedMoonGames.Window
                 tab.SetActive(false);
             }
 
-            _currentTabIndex = -1;
-            _currentTab = _tabs[0];
+            _currentTabIndex = 0; 
+            _currentTab = _tabs[_currentTabIndex];
+            _currentTab.SetActive(true);
         }
 
         private void Awake()
@@ -86,6 +87,7 @@ namespace RedMoonGames.Window
 
         private void SwitchActiveTab(GameObject tab, int tabIndex)
         {
+            PlayClickSound();
             _currentTabIndex = tabIndex;
             _currentTab.SetActive(false);
             _currentTab = tab;

@@ -17,23 +17,35 @@ public class BasicTab : MonoBehaviour
 
     protected void SelectUI(Slider slider)
     {
+        PlayClickSound();
         slider.Select();
     }
 
     protected void SelectUI(TMP_Dropdown dropdown)
     {
+        PlayClickSound();
         dropdown.Select();
     }
 
-    protected void OnUIChanged(Slider slider, TMP_Text value)
+    protected void OnSliderChanged(Slider slider, TMP_Text value)
     {
-        _audioManager.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
+        PlayHoverSound();
         value.text = slider.value.ToString();
     }
 
-    protected void OnUIChanged(TMP_Dropdown dropdown)
+    protected int OnDropdownChanged(TMP_Dropdown dropdown)
+    {
+        PlayHoverSound();
+        return dropdown.value;
+    }
+
+    protected void PlayHoverSound()
     {
         _audioManager.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
-        QualitySettings.SetQualityLevel(dropdown.value);
+    }
+
+    protected void  PlayClickSound()
+    {
+        _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
     }
 }

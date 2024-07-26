@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,26 +14,30 @@ public class VideoTab : BasicTab
 
     private void OnEnable()
     {
-        _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
-
         _selectedTabImage.enabled = true;
 
         _brightnessButton.Select();
         _brightnessButton.onClick.AddListener(() => { SelectUI(_brightnessSlider); });
         _videoPresetButton.onClick.AddListener(() => { SelectUI(_videoPresetDropdown); });
 
-        _brightnessSlider.onValueChanged.AddListener((x) => { OnUIChanged(_brightnessSlider, _brightnessValue); });
-        _videoPresetDropdown.onValueChanged.AddListener((x) => { OnUIChanged(_videoPresetDropdown); });
+        _brightnessSlider.onValueChanged.AddListener((x) => { OnSliderChanged(_brightnessSlider, _brightnessValue); });
+        _videoPresetDropdown.onValueChanged.AddListener((x) => { VideoPresetChange(_videoPresetDropdown); });
     }
 
     private void OnDisable()
     {
         _selectedTabImage.enabled = false;
 
-        _brightnessButton.onClick.RemoveListener(() => { SelectUI(_brightnessSlider); });
-        _videoPresetButton.onClick.RemoveListener(() => { SelectUI(_videoPresetDropdown); });
+        _brightnessButton.onClick.RemoveAllListeners();
+        _videoPresetButton.onClick.RemoveAllListeners();
 
         _brightnessSlider.onValueChanged.RemoveAllListeners();
         _videoPresetDropdown.onValueChanged.RemoveAllListeners();
+    }
+
+    private void VideoPresetChange(TMP_Dropdown dropdown)
+    {
+        PlayHoverSound();
+        QualitySettings.SetQualityLevel(dropdown.value);
     }
 }

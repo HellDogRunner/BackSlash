@@ -25,8 +25,6 @@ namespace RedMoonGames.Window
 
         private void OnEnable()
         {
-            _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
-
             _selectedTabImage.enabled = true;
 
             _totalButton.Select();
@@ -35,20 +33,20 @@ namespace RedMoonGames.Window
             _musicButton.onClick.AddListener(() => { SelectUI(_musicSlider); });
             _embientButton.onClick.AddListener(() => { SelectUI(_embientSlider); });
 
-            _totalSlider.onValueChanged.AddListener((x) => { OnUIChanged(_totalSlider, _totalValue); });
-            _sFXSlider.onValueChanged.AddListener((x) => { OnUIChanged(_sFXSlider, _sFXValue); });
-            _musicSlider.onValueChanged.AddListener((x) => { OnUIChanged(_musicSlider, _musicValue); });
-            _embientSlider.onValueChanged.AddListener((x) => { OnUIChanged(_embientSlider, _embientValue); });
+            _totalSlider.onValueChanged.AddListener((x) => { OnSliderChanged(_totalSlider, _totalValue); });
+            _sFXSlider.onValueChanged.AddListener((x) => { OnSliderChanged(_sFXSlider, _sFXValue); });
+            _musicSlider.onValueChanged.AddListener((x) => { OnSliderChanged(_musicSlider, _musicValue); });
+            _embientSlider.onValueChanged.AddListener((x) => { OnSliderChanged(_embientSlider, _embientValue); });
         }
 
         private void OnDisable()
         {
             _selectedTabImage.enabled = false;
 
-            _totalButton.onClick.RemoveListener(() => { SelectUI(_totalSlider); });
-            _sFXButton.onClick.RemoveListener(() => { SelectUI(_sFXSlider); });
-            _musicButton.onClick.RemoveListener(() => { SelectUI(_musicSlider); });
-            _embientButton.onClick.RemoveListener(() => { SelectUI(_embientSlider); });
+            _totalButton.onClick.RemoveAllListeners();
+            _sFXButton.onClick.RemoveAllListeners();
+            _musicButton.onClick.RemoveAllListeners();
+            _embientButton.onClick.RemoveAllListeners();
 
             _totalSlider.onValueChanged.RemoveAllListeners();
             _sFXSlider.onValueChanged.RemoveAllListeners();
