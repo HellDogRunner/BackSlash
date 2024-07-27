@@ -220,7 +220,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""31ed970c-7418-477e-81bb-ced7ccb751e6"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Press(behavior=2)"",
+                    ""interactions"": ""Hold(duration=9999,pressPoint=0.2)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Attack"",

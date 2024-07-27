@@ -19,7 +19,7 @@ namespace Scripts.Player
         public event Action OnShowWeaponPressed;
         public event Action OnHideWeaponPressed;
         public event Action OnBlockPressed;
-        public event Action OnWeaponIdle;
+        public event Action OnAttackFinished;
         public event Action OnLockKeyPressed;
         public event Action OnMenuKeyPressed;
         public Vector3 MoveDirection => _moveDirection;
@@ -33,15 +33,16 @@ namespace Scripts.Player
             _playerControls.Gameplay.Dodge.performed += Dodge;
 
             _playerControls.Gameplay.Attack.started += AttackStarted;
-            _playerControls.Gameplay.Attack.canceled += WeaponIdle;
+            _playerControls.Gameplay.Attack.performed += AttackFinished;
+            _playerControls.Gameplay.Attack.canceled += AttackFinished;
 
             _playerControls.Gameplay.Sprint.started += Sprint;
             _playerControls.Gameplay.Sprint.performed += Run;
             _playerControls.Gameplay.Sprint.canceled += Run;
 
             _playerControls.Gameplay.Block.started += Block;
-            _playerControls.Gameplay.Block.performed += WeaponIdle;
-            _playerControls.Gameplay.Block.canceled += WeaponIdle;
+            _playerControls.Gameplay.Block.performed += AttackFinished;
+            _playerControls.Gameplay.Block.canceled += AttackFinished;
 
             _playerControls.Gameplay.Jump.performed += Jump;
 
@@ -94,9 +95,9 @@ namespace Scripts.Player
             OnAttackPressed?.Invoke();
         }
 
-        private void WeaponIdle(InputAction.CallbackContext contex)
+        private void AttackFinished(InputAction.CallbackContext contex)
         {
-            OnWeaponIdle?.Invoke();
+            OnAttackFinished?.Invoke();
         }
 
         private void Jump(InputAction.CallbackContext contex)
@@ -126,6 +127,11 @@ namespace Scripts.Player
         }
 
         private void OnDisable()
+        {
+            _playerControls.Disable();
+        }
+
+        private void OnDestroy()
         {
             _playerControls.Disable();
         }

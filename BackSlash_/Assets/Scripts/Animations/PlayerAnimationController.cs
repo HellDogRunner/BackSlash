@@ -17,7 +17,6 @@ namespace Scripts.Animations
         private MovementController _movementController;
         private TargetLock _targetLock;
 
-        public bool IsAttacking;
         [Inject]
         private void Construct(InputController inputController, WeaponController weaponController, MovementController movementController, TargetLock targetLock)
         {
@@ -27,7 +26,6 @@ namespace Scripts.Animations
             _movementController.OnJump += JumpAnimation;
             _movementController.InAir += JumpAnimation;
             _movementController.OnDodge += DodgeAnimation;
-            _movementController.IsMoving += SetIsMovingState;
 
             _inputController = inputController;
             _inputController.OnSprintKeyPressed += SprintAnimation;
@@ -35,10 +33,11 @@ namespace Scripts.Animations
             _inputController.OnShowWeaponPressed += ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed += HideWeaponAnimation;
             _inputController.OnBlockPressed += BlockAnimation;
-            _inputController.OnWeaponIdle += WeaponIdle;
+            _inputController.OnAttackFinished += WeaponIdle;
 
             _weaponController = weaponController;
             _weaponController.OnAttack += AttackAnimation;
+            _weaponController.IsAttacking += RunAndAttackAnimation;
         }
 
         private void OnDestroy()
@@ -46,14 +45,13 @@ namespace Scripts.Animations
             _movementController.OnJump -= JumpAnimation;
             _movementController.InAir -= JumpAnimation;
             _movementController.OnDodge -= DodgeAnimation;
-            _movementController.IsMoving -= SetIsMovingState;
 
             _inputController.OnSprintKeyPressed -= SprintAnimation;
             _inputController.OnSprintKeyRealesed -= RunAnimation;
             _inputController.OnShowWeaponPressed -= ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed -= HideWeaponAnimation;
             _inputController.OnBlockPressed -= BlockAnimation;
-            _inputController.OnWeaponIdle -= WeaponIdle;
+            _inputController.OnAttackFinished -= WeaponIdle;
 
             _weaponController.OnAttack -= AttackAnimation;
         }
@@ -83,10 +81,16 @@ namespace Scripts.Animations
             _animator.SetBool("IsSprint", false);
         }
 
+        private void RunAndAttackAnimation(bool isAttacking) 
+        {
+            _animator.SetBool("Attacking", isAttacking);
+        }
+
         private void JumpAnimation()
         {
             _animator.Play("Jump");
         }
+
         private void JumpAnimation(bool isInAir)
         {
             _animator.SetBool("InAir", isInAir);
@@ -120,13 +124,7 @@ namespace Scripts.Animations
             if (_weaponController.CurrentWeaponType == EWeaponType.Melee)
             {
                 _animator.SetTrigger("Attack" + currentAttack);
-                IsAttacking = true;
             }
-        }
-
-        private void SetIsMovingState(bool isMove)
-        {
-            _animator.SetBool("Moving", isMove);
         }
 
         private void BlockAnimation()
@@ -137,7 +135,6 @@ namespace Scripts.Animations
         private void WeaponIdle()
         {
             _animator.SetBool("Block", false);
-            IsAttacking = false;
         }
     }
 }
