@@ -9,7 +9,6 @@ namespace Scripts.UI
         [Header("Objects")]
         [SerializeField] private CanvasGroup _enemyCG;
         [SerializeField] private Transform _camera;
-        [SerializeField] private GameObject _player;
 
         [Header("Bars")]
         [SerializeField] private Image _healthBar;

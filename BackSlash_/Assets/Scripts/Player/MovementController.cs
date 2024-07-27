@@ -41,7 +41,6 @@ namespace Scripts.Player
         private bool _wasGrounded = true;
 
         public event Action<bool> InAir;
-        public event Action<bool> IsMoving;
         public event Action<bool> IsMovingOnGround;
         public event Action OnLanded;
         public event Action OnDodge;
@@ -116,32 +115,23 @@ namespace Scripts.Player
 
         private void MovePlayer()
         {
-            if (!IsPlayerAttacking())
+            if (IsGrounded() && !OnSlope())
             {
-                IsMoving?.Invoke(true);
-
-                if (IsGrounded() && !OnSlope())
-                {
-                    InAir?.Invoke(false);
-                    _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f, ForceMode.Force);
-                    _rigidbody.drag = _groundDrag;
-                }
-                else if (IsGrounded() && OnSlope())
-                {
-                    InAir?.Invoke(false);
-                    _rigidbody.AddForce(SlopeMoveDirection() * _currentSpeed * 10f, ForceMode.Force);
-                    _rigidbody.velocity -= _slopeHit.normal * 0.5f;
-                }
-                else if (!IsGrounded())
-                {
-                    InAir?.Invoke(true);
-                    _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f * _airMultiplier, ForceMode.Force);
-                    _rigidbody.drag = 0;
-                }
+                InAir?.Invoke(false);
+                _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f, ForceMode.Force);
+                _rigidbody.drag = _groundDrag;
             }
-            else
+            else if (IsGrounded() && OnSlope())
             {
-                IsMoving?.Invoke(false);
+                InAir?.Invoke(false);
+                _rigidbody.AddForce(SlopeMoveDirection() * _currentSpeed * 10f, ForceMode.Force);
+                _rigidbody.velocity -= _slopeHit.normal * 0.5f;
+            }
+            else if (!IsGrounded())
+            {
+                InAir?.Invoke(true);
+                _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f * _airMultiplier, ForceMode.Force);
+                _rigidbody.drag = 0;
             }
         }
 

@@ -10,7 +10,6 @@ public class TargetLock : MonoBehaviour
 {
     [Header("Objects")]
     [Space]
-    [SerializeField] private Camera _mainCamera;
     [SerializeField] private CinemachineFreeLook _cinemachineFreeLook;
     [SerializeField] private SphereCollider _triggerCollider;
     [Space]
@@ -28,6 +27,7 @@ public class TargetLock : MonoBehaviour
     public event Action<GameObject> OnStopTarteting;
 
     private float _maxAngle;
+    private Camera _mainCamera;
     private Transform _currentTargetTransform;
     private Target _currentTarget;
     private float _mouseX;
@@ -48,6 +48,7 @@ public class TargetLock : MonoBehaviour
 
     private void Awake()
     {
+        _mainCamera = Camera.main;
         _maxAngle = 90f;
         _triggerCollider.radius = _maxDistance;
         _cinemachineFreeLook.m_XAxis.m_InputAxisName = "";

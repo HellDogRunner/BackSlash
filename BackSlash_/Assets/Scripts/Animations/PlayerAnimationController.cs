@@ -15,19 +15,16 @@ namespace Scripts.Animations
         private InputController _inputController;
         private WeaponController _weaponController;
         private MovementController _movementController;
-        private TargetLock _targetLock;
 
         public bool IsAttacking;
-        [Inject]
-        private void Construct(InputController inputController, WeaponController weaponController, MovementController movementController, TargetLock targetLock)
-        {
-            _targetLock = targetLock;
 
+        [Inject]
+        private void Construct(InputController inputController, WeaponController weaponController, MovementController movementController)
+        {
             _movementController = movementController;
             _movementController.OnJump += JumpAnimation;
             _movementController.InAir += JumpAnimation;
             _movementController.OnDodge += DodgeAnimation;
-            _movementController.IsMoving += SetIsMovingState;
 
             _inputController = inputController;
             _inputController.OnSprintKeyPressed += SprintAnimation;
@@ -46,7 +43,6 @@ namespace Scripts.Animations
             _movementController.OnJump -= JumpAnimation;
             _movementController.InAir -= JumpAnimation;
             _movementController.OnDodge -= DodgeAnimation;
-            _movementController.IsMoving -= SetIsMovingState;
 
             _inputController.OnSprintKeyPressed -= SprintAnimation;
             _inputController.OnSprintKeyRealesed -= RunAnimation;
@@ -63,14 +59,6 @@ namespace Scripts.Animations
             var dir = _inputController.MoveDirection;
             _animator.SetFloat("InputX", dir.x, _smoothBlend, Time.deltaTime);
             _animator.SetFloat("InputY", dir.z, _smoothBlend, Time.deltaTime);
-            if (_targetLock.CurrentTargetTransform != null)
-            {
-                _animator.SetBool("TargetLock", true);
-            }
-            else
-            {
-                _animator.SetBool("TargetLock", false);
-            }
         }
 
         private void SprintAnimation()
@@ -122,11 +110,6 @@ namespace Scripts.Animations
                 _animator.SetTrigger("Attack" + currentAttack);
                 IsAttacking = true;
             }
-        }
-
-        private void SetIsMovingState(bool isMove)
-        {
-            _animator.SetBool("Moving", isMove);
         }
 
         private void BlockAnimation()
