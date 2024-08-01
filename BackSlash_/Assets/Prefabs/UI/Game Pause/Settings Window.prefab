@@ -3451,7 +3451,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2114223454510538956}
   - component: {fileID: 704106138039678991}
-  - component: {fileID: 8515601333032812610}
   m_Layer: 5
   m_Name: Buttons
   m_TagString: Untagged
@@ -3489,36 +3488,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2644198614061233527}
   m_CullTransparentMesh: 1
---- !u!114 &8515601333032812610
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2644198614061233527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &2751988880464082835
 GameObject:
   m_ObjectHideFlags: 0
@@ -3716,6 +3685,7 @@ GameObject:
   - component: {fileID: 7637138775923284019}
   - component: {fileID: 5358200584675316865}
   - component: {fileID: 7648605175723949254}
+  - component: {fileID: 8626894546832050311}
   m_Layer: 5
   m_Name: Next Button
   m_TagString: Untagged
@@ -3773,8 +3743,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 1580ca2540dfb8c448a145fcd8c9d845, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3841,6 +3811,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundOnHover: 1
   _soundOnClick: 0
+--- !u!114 &8626894546832050311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2922616280940853372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5a4f0dbac975f74e9e60b39641936ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2962839673101499080
 GameObject:
   m_ObjectHideFlags: 0
@@ -7324,7 +7306,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -9958,6 +9940,7 @@ GameObject:
   - component: {fileID: 1527862457699033260}
   - component: {fileID: 1861397136698614817}
   - component: {fileID: 2361515131501736646}
+  - component: {fileID: 466527618106360700}
   m_Layer: 5
   m_Name: Prev Button
   m_TagString: Untagged
@@ -10015,8 +9998,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 1580ca2540dfb8c448a145fcd8c9d845, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -10083,6 +10066,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundOnHover: 1
   _soundOnClick: 0
+--- !u!114 &466527618106360700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7124265359471797715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5a4f0dbac975f74e9e60b39641936ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7131300859681180768
 GameObject:
   m_ObjectHideFlags: 0
@@ -10619,9 +10614,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.08627451, g: 0.13333334, b: 0.21960786, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -11232,9 +11227,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.08085617, g: 0.139721, b: 0.21698111, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -12187,7 +12182,7 @@ GameObject:
   - component: {fileID: 8030723223760697144}
   - component: {fileID: 1738490749308165922}
   - component: {fileID: 9038219637941105049}
-  - component: {fileID: 6851732957579873876}
+  - component: {fileID: 6852905162338809875}
   m_Layer: 5
   m_Name: Back Button
   m_TagString: Untagged
@@ -12213,7 +12208,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -100, y: 14.770264}
+  m_AnchoredPosition: {x: -100, y: 15}
   m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &879503988102464987
@@ -12237,7 +12232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0627451, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -12245,14 +12240,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: f5d2093f712911147a80e100074b8cc0, type: 3}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
-  m_UseSpriteMesh: 1
+  m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 --- !u!114 &1738490749308165922
 MonoBehaviour:
@@ -12312,7 +12307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundOnHover: 1
   _soundOnClick: 0
---- !u!114 &6851732957579873876
+--- !u!114 &6852905162338809875
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12321,11 +12316,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8616042112664721968}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9198937800b7a8b4fb298033eb5abf8a, type: 3}
+  m_Script: {fileID: 11500000, guid: f5a4f0dbac975f74e9e60b39641936ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _soundOnHover: 1
-  _soundOnClick: 0
 --- !u!1 &8619485270582692638
 GameObject:
   m_ObjectHideFlags: 0

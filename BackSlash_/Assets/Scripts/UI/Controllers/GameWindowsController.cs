@@ -25,13 +25,13 @@ namespace RedMoonGames.Window
         private void Construct(UIController uiController, InputController inputController, WindowService windowService)
         {
             _uiController = uiController;
-            _uiController.OnEscapeKeyPressed += PauseSwitch;
+            _uiController.OnEscapeKeyPressed += SwitchPause;
             _uiController.OnAnyKeyPressed += DisableCursor;
             _uiController.OnMousePoint += EnableCursor;
             _uiController.enabled = false;
 
             _controller = inputController;
-            _controller.OnMenuKeyPressed += PauseSwitch;
+            _controller.OnMenuKeyPressed += SwitchPause;
 
             _windowService = windowService;
 
@@ -39,7 +39,7 @@ namespace RedMoonGames.Window
             DisableCursor(false);
         }
 
-        public void PauseSwitch()
+        public void SwitchPause()
         {
             var currentWindow = _windowService.ReturnWindow(_currentWindow);
 
@@ -99,8 +99,8 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _controller.OnMenuKeyPressed -= PauseSwitch;
-            _uiController.OnEscapeKeyPressed -= PauseSwitch;
+            _controller.OnMenuKeyPressed -= SwitchPause;
+            _uiController.OnEscapeKeyPressed -= SwitchPause;
             _uiController.OnAnyKeyPressed -= DisableCursor;
             _uiController.OnMousePoint -= EnableCursor;
         }

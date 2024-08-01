@@ -31,7 +31,7 @@ namespace RedMoonGames.Window
         private void ContinueClick()
         {
             _animationController.HideWindowAnimation(_canvasGroup, _pauseHandler);
-            _windowManager.PauseSwitch();
+            _windowManager.SwitchPause();
         }
 
         private void SettingsClick()

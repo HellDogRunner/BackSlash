@@ -38,7 +38,6 @@ namespace RedMoonGames.Window
         private void Build(UIController controller)
         {
             _controller = controller;
-            _controller.OnTabPressed += SelectingTab;
 
             _tabs.Add(_gameplayTab);
             _tabs.Add(_managementTab);
@@ -57,24 +56,15 @@ namespace RedMoonGames.Window
 
         private void Awake()
         {
+            _controller.OnTabPressed += SelectingTab;
+
             _prevTabButton.onClick.AddListener(() => SelectingTab(-1));
             _nextTabButton.onClick.AddListener(() => SelectingTab(1));
             _gameplayButton.onClick.AddListener(() => SwitchActiveTab(_gameplayTab, 0));
             _managementButton.onClick.AddListener(() => SwitchActiveTab(_managementTab, 1));
             _soundButton.onClick.AddListener(() => SwitchActiveTab(_soundTab, 2));
             _videoButton.onClick.AddListener(() => SwitchActiveTab(_videoTab, 3));
-            _backButton.onClick.AddListener(CloseWindow);
-        }
-
-        private void OnDisable()
-        {
-            _prevTabButton.onClick.RemoveListener(() => SelectingTab(-1));
-            _nextTabButton.onClick.RemoveListener(() => SelectingTab(1));
-            _gameplayButton.onClick.RemoveListener(() => SwitchActiveTab(_gameplayTab, 0));
-            _managementButton.onClick.RemoveListener(() => SwitchActiveTab(_managementTab, 1));
-            _soundButton.onClick.RemoveListener(() => SwitchActiveTab(_soundTab, 2));
-            _videoButton.onClick.RemoveListener(() => SwitchActiveTab(_videoTab, 3));
-            _backButton.onClick.RemoveListener(CloseWindow);
+            _backButton.onClick.AddListener(CloseSettings);
         }
 
         private void SelectingTab(int navigate)
@@ -93,7 +83,8 @@ namespace RedMoonGames.Window
             _currentTab = tab;
             _currentTab.SetActive(true);
         }
-        private void CloseWindow()
+
+        private void CloseSettings()
         {
             _windowManager.CloseWindow(_settingsHandler);
             _windowManager.OpenWindow(_pauseHandler);
@@ -109,6 +100,15 @@ namespace RedMoonGames.Window
             _controller.OnTabPressed -= SelectingTab;
             _windowManager.OnUnpausing -= DisablePause;
             _windowManager.OnPausing -= EnablePause;
+
+            Debug.Log(2);
+            _prevTabButton.onClick.RemoveListener(() => SelectingTab(-1));
+            _nextTabButton.onClick.RemoveListener(() => SelectingTab(1));
+            _gameplayButton.onClick.RemoveListener(() => SwitchActiveTab(_gameplayTab, 0));
+            _managementButton.onClick.RemoveListener(() => SwitchActiveTab(_managementTab, 1));
+            _soundButton.onClick.RemoveListener(() => SwitchActiveTab(_soundTab, 2));
+            _videoButton.onClick.RemoveListener(() => SwitchActiveTab(_videoTab, 3));
+            _backButton.onClick.RemoveListener(CloseSettings);
         }
     }
 }
