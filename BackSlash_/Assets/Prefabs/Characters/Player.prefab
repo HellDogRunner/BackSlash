@@ -697,6 +697,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3743708974053878962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8912080351853966069}
+  m_Layer: 6
+  m_Name: CameraLookAt
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8912080351853966069
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3743708974053878962}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.66, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9154375475347445579}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3874984696178148826
 GameObject:
   m_ObjectHideFlags: 0
@@ -2823,6 +2854,7 @@ Transform:
   - {fileID: 7734398532158820195}
   - {fileID: 655372459109497677}
   - {fileID: 6535169240358909275}
+  - {fileID: 8912080351853966069}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9087614315155568461
@@ -2882,7 +2914,6 @@ MonoBehaviour:
   _smoothBlend: 0.05
   _swordOverride: {fileID: 22100000, guid: 2b3567552a7c86f4db0e4520f4cc4dea, type: 2}
   _mainOverride: {fileID: 22100000, guid: 76317af943e834842bef78f0de7bfbd5, type: 2}
-  IsAttacking: 0
 --- !u!114 &4003745565070631084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2897,6 +2928,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _baseOrientation: {fileID: 655372459109497677}
   _rotationTime: 30
+  _turnSpeed: 30
 --- !u!114 &4037733144099541882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2947,7 +2979,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569198f987bf4f34d8e56a3a5cb172a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainCamera: {fileID: 0}
   _cinemachineFreeLook: {fileID: 0}
   _triggerCollider: {fileID: 5122264834111569371}
   _aimIcon: {fileID: 0}

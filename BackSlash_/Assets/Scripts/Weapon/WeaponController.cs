@@ -21,7 +21,7 @@ namespace Scripts.Weapon
         private GameObject _currentWeapon;
         private InputController _inputController;
         private WeaponTypeModel _weaponTypeModel;
-        private EWeaponType _curentWeaponType;
+        [SerializeField] private EWeaponType _curentWeaponType;
 
         public EWeaponType CurrentWeaponType => _curentWeaponType;
 
@@ -102,7 +102,10 @@ namespace Scripts.Weapon
 
         private void Block()
         {
-            IsBlocking?.Invoke(true);
+            if (_curentWeaponType != EWeaponType.None)
+            {
+               IsBlocking?.Invoke(true);
+            }
         }
 
         private void DrawWeapon() 

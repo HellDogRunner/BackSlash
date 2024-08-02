@@ -32,12 +32,12 @@ namespace Scripts.Animations
             _inputController.OnSprintKeyRealesed += RunAnimation;
             _inputController.OnShowWeaponPressed += ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed += HideWeaponAnimation;
-            _inputController.OnBlockPressed += BlockAnimation;
             _inputController.OnAttackFinished += WeaponIdle;
 
             _weaponController = weaponController;
             _weaponController.OnAttack += AttackAnimation;
             _weaponController.IsAttacking += RunAndAttackAnimation;
+            _weaponController.IsBlocking += BlockAnimation;
         }
 
         private void OnDestroy()
@@ -50,10 +50,11 @@ namespace Scripts.Animations
             _inputController.OnSprintKeyRealesed -= RunAnimation;
             _inputController.OnShowWeaponPressed -= ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed -= HideWeaponAnimation;
-            _inputController.OnBlockPressed -= BlockAnimation;
             _inputController.OnAttackFinished -= WeaponIdle;
 
             _weaponController.OnAttack -= AttackAnimation;
+            _weaponController.IsAttacking -= RunAndAttackAnimation;
+            _weaponController.IsBlocking -= BlockAnimation;
         }
 
         private void Update()
@@ -127,9 +128,9 @@ namespace Scripts.Animations
             }
         }
 
-        private void BlockAnimation()
+        private void BlockAnimation(bool isBlocking)
         {
-            _animator.SetBool("Block", true);
+            _animator.SetBool("Block", isBlocking);
         }
 
         private void WeaponIdle()

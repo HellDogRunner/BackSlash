@@ -8,8 +8,6 @@ namespace Scripts.UI
     {
         [Header("Objects")]
         [SerializeField] private CanvasGroup _enemyCG;
-        [SerializeField] private Transform _camera;
-        [SerializeField] private GameObject _player;
 
         [Header("Bars")]
         [SerializeField] private Image _healthBar;
@@ -28,12 +26,14 @@ namespace Scripts.UI
         [SerializeField] private float _currentHealth = 0;
 
         private HealthController _health;
+        private Camera _camera;
 
         private bool _isEnemyCanvasVisible;
 
         private void Awake()
         {
             _health = GetComponent<HealthController>();
+            _camera = Camera.main;
 
             _maxHealth = _health.Health;
             _currentHealth = _maxHealth;
@@ -56,7 +56,7 @@ namespace Scripts.UI
 
         private void LateUpdate()
         {
-            _enemyCG.transform.LookAt(transform.position + _camera.forward);
+            _enemyCG.transform.LookAt(transform.position + _camera.transform.forward);
         }
 
         private void ShowHealthBar(GameObject target)
