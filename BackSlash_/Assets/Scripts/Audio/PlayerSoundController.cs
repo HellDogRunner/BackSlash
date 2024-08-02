@@ -29,7 +29,7 @@ public class PlayerSoundController : MonoBehaviour
         _inputController.OnSprintKeyRealesed += IsRunning;
 
         _movementController = movementController;
-        _movementController.IsMovingOnGround += PlayFootstepsSound;
+        _movementController.IsMoving += PlayFootstepsSound;
         _movementController.OnLanded += PlayLandingSound;
     }
 
@@ -42,7 +42,7 @@ public class PlayerSoundController : MonoBehaviour
         _inputController.OnSprintKeyPressed -= IsSptrinting;
         _inputController.OnSprintKeyRealesed -= IsRunning;
 
-        _movementController.IsMovingOnGround -= PlayFootstepsSound;
+        _movementController.IsMoving -= PlayFootstepsSound;
         _movementController.OnLanded -= PlayLandingSound;
     }
 

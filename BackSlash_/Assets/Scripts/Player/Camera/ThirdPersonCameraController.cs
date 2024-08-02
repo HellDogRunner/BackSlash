@@ -1,3 +1,4 @@
+using Scripts.Weapon;
 using UnityEngine;
 using Zenject;
 
@@ -7,21 +8,38 @@ namespace Scripts.Player.camera
     {
         [Header("References")]
         [SerializeField] private Transform _baseOrientation;
-        [SerializeField] private float _rotationTime;
+        [SerializeField] private float _rotationTime = 30;
+        [SerializeField] private float _turnSpeed = 30;
 
         private InputController _inputService;
         private TargetLock _targetLock;
+        private WeaponController _weaponController;
 
         private Vector3 _forwardDirection;
         private Transform _camera;
         public Vector3 ForwardDirection => _forwardDirection;
 
+
+        private bool _isAttaking;
+        private bool _isBlocking;
+
         [Inject]
-        private void Construct(InputController inputService, TargetLock targetLock)
+        private void Construct(InputController inputService, TargetLock targetLock, WeaponController weaponController)
         {
             _inputService = inputService;
             _targetLock = targetLock;
+            _weaponController = weaponController;
+
+            _weaponController.IsAttacking += OnAttack;
+            _weaponController.IsBlocking += OnBlock;
+
             _camera = Camera.main.transform;
+        }
+
+        private void OnDestroy()
+        {
+            _weaponController.IsAttacking -= OnAttack;
+            _weaponController.IsBlocking -= OnBlock;
         }
 
         private void FixedUpdate()
@@ -33,6 +51,11 @@ namespace Scripts.Player.camera
             }
             else
             {
+                if (_isAttaking || _isBlocking)
+                {
+                    RotatePlayerForward();
+                }
+                else
                 RotatePlayer();
             }
         }
@@ -57,6 +80,22 @@ namespace Scripts.Player.camera
             rotationDirection.y = 0;
             Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationTime * Time.fixedDeltaTime);
+        }
+
+        private void RotatePlayerForward()
+        {
+            float cameraYaw = _camera.transform.eulerAngles.y;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), _turnSpeed * Time.fixedDeltaTime);
+        }
+
+        private void OnAttack(bool attack) 
+        {
+            _isAttaking = attack;
+        }
+
+        private void OnBlock(bool block)
+        {
+            _isBlocking = block;
         }
 
         public void CalculateForwardDirection()

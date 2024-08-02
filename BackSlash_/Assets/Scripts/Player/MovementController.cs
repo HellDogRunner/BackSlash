@@ -42,16 +42,14 @@ namespace Scripts.Player
 
         public event Action<bool> InAir;
         public event Action<bool> IsMoving;
-        public event Action<bool> IsMovingOnGround;
         public event Action OnLanded;
         public event Action OnDodge;
         public event Action OnJump;
 
         [Inject]
-        private void Construct(InputController inputController, ThirdPersonCameraController thirdPersonCam, PlayerAnimationController playerAnimationController)
+        private void Construct(InputController inputController, ThirdPersonCameraController thirdPersonCam)
         {
             _thirdPersonCam = thirdPersonCam;
-            _playerAnimationController = playerAnimationController;
 
             _inputController = inputController;
             _inputController.OnJumpKeyPressed += Jump;
@@ -116,32 +114,23 @@ namespace Scripts.Player
 
         private void MovePlayer()
         {
-            if (!IsPlayerAttacking())
+            if (IsGrounded() && !OnSlope())
             {
-                IsMoving?.Invoke(true);
-
-                if (IsGrounded() && !OnSlope())
-                {
-                    InAir?.Invoke(false);
-                    _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f, ForceMode.Force);
-                    _rigidbody.drag = _groundDrag;
-                }
-                else if (IsGrounded() && OnSlope())
-                {
-                    InAir?.Invoke(false);
-                    _rigidbody.AddForce(SlopeMoveDirection() * _currentSpeed * 10f, ForceMode.Force);
-                    _rigidbody.velocity -= _slopeHit.normal * 0.5f;
-                }
-                else if (!IsGrounded())
-                {
-                    InAir?.Invoke(true);
-                    _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f * _airMultiplier, ForceMode.Force);
-                    _rigidbody.drag = 0;
-                }
+                InAir?.Invoke(false);
+                _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f, ForceMode.Force);
+                _rigidbody.drag = _groundDrag;
             }
-            else
+            else if (IsGrounded() && OnSlope())
             {
-                IsMoving?.Invoke(false);
+                InAir?.Invoke(false);
+                _rigidbody.AddForce(SlopeMoveDirection() * _currentSpeed * 10f, ForceMode.Force);
+                _rigidbody.velocity -= _slopeHit.normal * 0.5f;
+            }
+            else if (!IsGrounded())
+            {
+                InAir?.Invoke(true);
+                _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f * _airMultiplier, ForceMode.Force);
+                _rigidbody.drag = 0;
             }
         }
 
@@ -177,15 +166,6 @@ namespace Scripts.Player
             return false;
         }
 
-        private bool IsPlayerAttacking() 
-        {
-            if (_playerAnimationController.IsAttacking)
-            {
-                return true;
-            }
-            else { return false; }
-        }
-
         private bool OnSlope()
         {
             if (!IsGrounded()) return false;
@@ -203,13 +183,13 @@ namespace Scripts.Player
 
         private void IsGroundedAndMoving()
         {
-            if (IsGrounded() && MoveDiretion() != Vector3.zero && !IsPlayerAttacking())
+            if (IsGrounded() && MoveDiretion() != Vector3.zero)
             {
-                IsMovingOnGround?.Invoke(true);
+                IsMoving?.Invoke(true);
             }
             else
             {
-                IsMovingOnGround?.Invoke(false);
+                IsMoving?.Invoke(false);
             }
         }
 

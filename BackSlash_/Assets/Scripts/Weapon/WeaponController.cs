@@ -14,11 +14,12 @@ namespace Scripts.Weapon
         [SerializeField] private int _currentAttack = 0;
 
         private float _timeSinceAttack;
+        private bool _isAttacking;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
         private GameObject _currentWeapon;
-        private InputController _inputService;
+        private InputController _inputController;
         private WeaponTypeModel _weaponTypeModel;
         private EWeaponType _curentWeaponType;
 
@@ -26,19 +27,20 @@ namespace Scripts.Weapon
 
         public event Action<int> OnAttack;
         public event Action<bool> IsAttacking;
+        public event Action<bool> IsBlocking;
         public event Action OnDrawWeapon;
         public event Action OnSneathWeapon;
 
         [Inject] private DiContainer _diContainer;
 
         [Inject]
-        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputService)
+        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputController)
         {
             _weaponTypesDatabase = weaponTypesDatabase;
-            _inputService = inputService;
-            _inputService.OnWeaponIdle += FinishLastSwing;
-            _inputService.OnAttackPressed += Attack;
-            _inputService.OnBlockPressed += Block;
+            _inputController = inputController;
+            _inputController.OnAttackFinished += AttackFinished;
+            _inputController.OnAttackPressed += AttackPressed;
+            _inputController.OnBlockPressed += Block;
             _curentWeaponType = EWeaponType.None;
         }
 
@@ -51,6 +53,56 @@ namespace Scripts.Weapon
         private void Update()
         {
             _timeSinceAttack += Time.deltaTime;
+            if (_curentWeaponType != EWeaponType.None && _isAttacking)
+            {
+                AttackCombo();
+            }         
+        }
+
+        private void AttackPressed()
+        {
+            if (_curentWeaponType != EWeaponType.None)
+            {
+                _isAttacking = true;
+                IsAttacking?.Invoke(true);
+            }
+        }
+
+        private void AttackFinished()
+        {
+            _isAttacking = false;
+            IsBlocking?.Invoke(false);
+        }
+
+        private void OnAttackAnimationEnd()
+        {
+            IsAttacking?.Invoke(_isAttacking);
+        }
+
+        private void AttackCombo()
+        {
+            if (_timeSinceAttack > 0.8f)
+            {
+                _currentAttack++;
+
+                if (_currentAttack > 3)
+                {
+                    _currentAttack = 1;
+                }
+
+                if (_timeSinceAttack > 1f)
+                {
+                    _currentAttack = 1;
+                }
+
+                OnAttack?.Invoke(_currentAttack);
+                _timeSinceAttack = 0;
+            }          
+        }
+
+        private void Block()
+        {
+            IsBlocking?.Invoke(true);
         }
 
         private void DrawWeapon() 
@@ -76,43 +128,6 @@ namespace Scripts.Weapon
             OnSneathWeapon?.Invoke();
         }
 
-        private void Attack()
-        {
-            //TODO: Сделать нормальный метод обработки комбо 
-            if (_curentWeaponType == EWeaponType.None)
-            {
-                return;
-            }
-            IsAttacking?.Invoke(true);
-            if (_timeSinceAttack > 0.8f)
-            {
-                _currentAttack++;
-
-                if (_currentAttack > 3)
-                {
-                    _currentAttack = 1;
-                }
-
-                if (_timeSinceAttack > 1.0f)
-                {
-                    _currentAttack = 1;
-                }
-                OnAttack?.Invoke(_currentAttack);
-                _timeSinceAttack = 0;
-            }          
-        }
-
-        private void FinishLastSwing()
-        {
-            StopCoroutine(IdleTimeout());
-            StartCoroutine(IdleTimeout());
-        }
-
-        private void Block()
-        {
-
-        }
-
         private void ChangeWeaponTransform(Transform target)
         {
             _currentWeapon.transform.parent = target.transform;
@@ -122,15 +137,9 @@ namespace Scripts.Weapon
 
         private void OnDestroy()
         {
-            _inputService.OnWeaponIdle -= FinishLastSwing;
-            _inputService.OnAttackPressed -= Attack;
-            _inputService.OnBlockPressed -= Block;
-        }
-
-        IEnumerator IdleTimeout()
-        {
-            yield return new WaitForSeconds(.5f);
-            IsAttacking?.Invoke(false);
+            _inputController.OnAttackFinished -= AttackFinished;
+            _inputController.OnAttackPressed -= AttackPressed;
+            _inputController.OnBlockPressed -= Block;
         }
     }
 }
