@@ -53,7 +53,7 @@ namespace Scripts.Player.camera
             {
                 if (_isAttaking || _isBlocking)
                 {
-                    RotatePlayerAttacking();
+                    RotatePlayerForward();
                 }
                 else
                 RotatePlayer();
@@ -82,7 +82,7 @@ namespace Scripts.Player.camera
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationTime * Time.fixedDeltaTime);
         }
 
-        private void RotatePlayerAttacking()
+        private void RotatePlayerForward()
         {
             float cameraYaw = _camera.transform.eulerAngles.y;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), _turnSpeed * Time.fixedDeltaTime);

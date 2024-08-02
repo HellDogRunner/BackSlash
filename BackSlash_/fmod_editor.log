@@ -7,7 +7,7 @@
 [LOG] OutputWASAPI::init                       : Output buffer size: 4096 samples, latency: 0.00ms, period: 10.00ms, DSP buffer: 1024 * 4
 [LOG] Thread::initThread                       : Init FMOD stream thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFB, Stack Size: 98304, Semaphore: No, Sleep Time: 10, Looping: Yes.
 [LOG] Thread::initThread                       : Init FMOD mixer thread. Affinity: 0x4000000000000001, Priority: 0xFFFF7FFA, Stack Size: 81920, Semaphore: No, Sleep Time: 0, Looping: Yes.
-[LOG] AsyncManager::init                       : manager 000001F209EA21D8 isAsync 0 updatePeriod 0.02
+[LOG] AsyncManager::init                       : manager 0000024354F40B88 isAsync 0 updatePeriod 0.02
 [LOG] AsyncManager::init                       : done
 [LOG] PlaybackSystem::init                     : 
 [LOG] Thread::initThread                       : Init FMOD Studio sample load thread. Affinity: 0x4000000000000003, Priority: 0xFFFF7FFD, Stack Size: 98304, Semaphore: No, Sleep Time: 1, Looping: No.
@@ -22,85 +22,10 @@
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
 [LOG] Manager::readBank                        : fileversion = 142, compatVersion = 140 (oldest = 44, newest = 142)
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 33696
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 5312
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 000000AA76E5F5F8
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FFDD4AA4130
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FFDD4AA40F0
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FFDD4AA4210
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FFDD4AA42D0
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001F21A4697B8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='button-hover', format=5, channels=2, frequency=48000, lengthbytes=4320, lengthpcm=37894, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.484344.
-[LOG] SystemI::createSoundInternal             : Create name='', mode=0x02000202
-[LOG] SystemI::createSoundInternal             : exinfo->cbsize             = 224
-[LOG] SystemI::createSoundInternal             : exinfo->length             = 33696
-[LOG] SystemI::createSoundInternal             : exinfo->fileoffset         = 5312
-[LOG] SystemI::createSoundInternal             : exinfo->numsubsounds       = 1
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlist      = 000000AA76E5F5F8
-[LOG] SystemI::createSoundInternal             : exinfo->inclusionlistnum   = 1
-[LOG] SystemI::createSoundInternal             : exinfo->suggestedsoundtype = 5
-[LOG] SystemI::createSoundInternal             : exinfo->useropen           = 00007FFDD4AA4130
-[LOG] SystemI::createSoundInternal             : exinfo->userclose          = 00007FFDD4AA40F0
-[LOG] SystemI::createSoundInternal             : exinfo->userread           = 00007FFDD4AA4210
-[LOG] SystemI::createSoundInternal             : exinfo->userseek           = 00007FFDD4AA42D0
-[LOG] SystemI::createSoundInternal             : exinfo->fileuserdata       = 000001F22A09A7C8
-[LOG] SystemI::createSoundInternal             : exinfo->initialseekpostype = 1
-[LOG] SystemI::DSPCodecPoolRegister            : register codec pool for pool type 5
-[LOG] SystemI::createSoundInternal             : Sample 0/1: name='FUI Holographic Button Press-1', format=5, channels=2, frequency=48000, lengthbytes=11168, lengthpcm=32392, pcmblocksize=0, loopstart=0, loopend=0, mode=0x00000000, channelmask=0x00000000, channelorder=0, peakvolume=0.348328.
-[LOG] SoundI::release                          : Karl_Casey_White_Bat_Audio_-_Lost_City_74807354 (000001F0F6091C68)
-[LOG] SoundI::release                          :     Karl_Casey_White_Bat_Audio_-_Lost_City_74807354 (000001F246D00F48)
-[LOG] SoundI::release                          :     Karl_Casey_White_Bat_Audio_-_Lost_City_74807354 (000001F1934F7C58)
-[LOG] SoundI::release                          :  (000001F2291D1098)
-[LOG] SoundI::release                          :     footsteps concrete  1 (000001F0548AC068)
-[LOG] SoundI::release                          :  (000001F2291D1378)
-[LOG] SoundI::release                          :     footsteps concrete  2 (000001F0548ACA28)
-[LOG] SoundI::release                          :  (000001F2291D17C8)
-[LOG] SoundI::release                          :     footsteps concrete  3 (000001F059B8C678)
-[LOG] SoundI::release                          :  (000001F2291D1D88)
-[LOG] SoundI::release                          :     footsteps concrete  4 (000001F0548ACD68)
-[LOG] SoundI::release                          :  (000001F2291D1208)
-[LOG] SoundI::release                          :     footsteps concrete  5 (000001F0548AC888)
-[LOG] SoundI::release                          :  (000001F1FC8CC2A8)
-[LOG] SoundI::release                          :     footsteps concrete  6 (000001F059B8E6F8)
-[LOG] SoundI::release                          :  (000001F1FC8CC6F8)
-[LOG] SoundI::release                          :     footsteps concrete  7 (000001F059B8D1D8)
-[LOG] SoundI::release                          :  (000001F2291D1938)
-[LOG] SoundI::release                          :     footsteps concrete  8 (000001F0548ACBC8)
-[LOG] SoundI::release                          :  (000001F1FC8CC588)
-[LOG] SoundI::release                          :     footsteps concrete  9 (000001F059B8B2F8)
-[LOG] SoundI::release                          :  (000001F1FC8CC418)
-[LOG] SoundI::release                          :     footsteps concrete  x12 (000001F059B8D378)
-[LOG] SoundI::release                          :  (000001F2291D14E8)
-[LOG] SoundI::release                          :     footsteps concrete 10 (000001F059B8C9B8)
-[LOG] SoundI::release                          :  (000001F2291D1658)
-[LOG] SoundI::release                          :     footsteps concrete 11 (000001F0548AC6E8)
-[LOG] SoundI::release                          :  (000001F1FC8CC868)
-[LOG] SoundI::release                          :     footsteps concrete 12 (000001F059B8B638)
-[LOG] SoundI::release                          :  (000001F06354B228)
-[LOG] SoundI::release                          :     FUI Holographic Button Press-1 (000001F05507A218)
-[LOG] SoundI::release                          :  (000001F0555D8188)
-[LOG] SoundI::release                          :     button-hover (000001F0D2D983A8)
-[LOG] SoundI::release                          :  (000001F066A57918)
-[LOG] SoundI::release                          :     zamah-mecha-vo-vremya-boya (000001F0548ADC08)
-[LOG] SoundI::release                          :  (000001F2291D1C18)
-[LOG] SoundI::release                          :     professionalnyiy-vzmah-dvumya-mechami (000001F0548AD728)
-[LOG] SoundI::release                          :  (000001F066A577A8)
-[LOG] SoundI::release                          :     metallicheskiy-svist-zamaha (000001F0548AD3E8)
-[LOG] Thread::callback                         : FMOD Studio update thread finished.
 [LOG] Thread::callback                         : FMOD Studio bank load thread finished.
-[LOG] Profile::disconnectAll                   : Profiler disconnecting all clients
 [LOG] Thread::callback                         : FMOD Studio sample load thread finished.
 [LOG] LiveUpdate::release                      : 
 [LOG] LiveUpdate::reset                        : Reset connection (reason Disconnected)
 [LOG] Thread::callback                         : FMOD stream thread finished.
 [LOG] Thread::callback                         : FMOD mixer thread finished.
-[LOG] Profile::disconnectAll                   : Profiler disconnecting all clients
 [LOG] SystemI::close                           : Closed.
-[ERR] assert                                   : assertion: 'gSystemInitCount == 0' failed
