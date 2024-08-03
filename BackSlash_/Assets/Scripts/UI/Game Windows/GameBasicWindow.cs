@@ -4,7 +4,6 @@ using Zenject;
 namespace RedMoonGames.Window
 {
     [RequireComponent(typeof(CanvasGroup))]
-
     public class GameBasicWindow : BasicWindow
     {
         protected CanvasGroup _canvasGroup;

@@ -12,20 +12,16 @@ namespace RedMoonGames.Window
         [SerializeField] private Button _continue;
         [SerializeField] private Button _settings;
         [SerializeField] private Button _exit;
+        [Header("Navigation Keys")]
+        [SerializeField] private Button _close;
 
-        private void OnEnable()
+        private void Awake()
         {
             _continue.Select();
             _continue.onClick.AddListener(ContinueClick);
             _settings.onClick.AddListener(SettingsClick);
             _exit.onClick.AddListener(ExitClick);
-        }
-
-        private void OnDisable()
-        {
-            _continue.onClick.RemoveListener(ContinueClick);
-            _settings.onClick.RemoveListener(SettingsClick);
-            _exit.onClick.RemoveListener(ExitClick);
+            _close.onClick.AddListener(ContinueClick);
         }
 
         private void ContinueClick()
@@ -54,6 +50,17 @@ namespace RedMoonGames.Window
         protected override void DisablePause()
         {
             _animationController.HideWindowAnimation(_canvasGroup, _pauseHandler);
+        }
+
+        protected override void OnDestroy()
+        {
+            _windowManager.OnUnpausing -= DisablePause;
+            _windowManager.OnPausing -= EnablePause;
+
+            _continue.onClick.RemoveListener(ContinueClick);
+            _settings.onClick.RemoveListener(SettingsClick);
+            _exit.onClick.RemoveListener(ExitClick);
+            _close.onClick.RemoveListener(ContinueClick);
         }
     }
 }

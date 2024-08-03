@@ -101,7 +101,6 @@ namespace RedMoonGames.Window
             _windowManager.OnUnpausing -= DisablePause;
             _windowManager.OnPausing -= EnablePause;
 
-            Debug.Log(2);
             _prevTabButton.onClick.RemoveListener(() => SelectingTab(-1));
             _nextTabButton.onClick.RemoveListener(() => SelectingTab(1));
             _gameplayButton.onClick.RemoveListener(() => SwitchActiveTab(_gameplayTab, 0));
