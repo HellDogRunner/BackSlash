@@ -15,7 +15,7 @@ namespace RedMoonGames.Window
 
         private WindowHandler _currentWindow;
 
-        public event Action OnUnpausing;
+        public event Action<WindowHandler> OnUnpausing;
         public event Action OnPausing;
 
         public event Action OnHUDHide;
@@ -56,7 +56,7 @@ namespace RedMoonGames.Window
             }
             else
             {
-                OnUnpausing?.Invoke();
+                OnUnpausing?.Invoke(_currentWindow);
                 OnHUDShow?.Invoke();
                 _currentWindow = _pauseWindowHandler;
 

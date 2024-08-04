@@ -45,6 +45,8 @@ namespace RedMoonGames.Window
     }
 }
 
+
+
 // Callback sequence
 
 //_sequence = DOTween.Sequence();

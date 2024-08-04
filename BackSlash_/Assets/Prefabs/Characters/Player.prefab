@@ -2876,7 +2876,7 @@ MonoBehaviour:
   _currentSpeed: 0
   _runSpeed: 5
   _sprintSpeed: 8
-  _groundDrag: 0
+  _groundDrag: 5
   _jumpForce: 8
   _dodgeForce: 10
   _dodgeCooldown: 1
@@ -2898,6 +2898,7 @@ MonoBehaviour:
   _weaponPivot: {fileID: 7108460016812821245}
   _weaponOnBeltPivot: {fileID: 7934484346377334542}
   _currentAttack: 0
+  _curentWeaponType: 0
 --- !u!114 &3831153863078339735
 MonoBehaviour:
   m_ObjectHideFlags: 0

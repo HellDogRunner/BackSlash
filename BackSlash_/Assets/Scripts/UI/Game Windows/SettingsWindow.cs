@@ -1,8 +1,5 @@
-using Scripts.Player;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace RedMoonGames.Window
 {
@@ -11,103 +8,54 @@ namespace RedMoonGames.Window
         [Header("Handlers")]
         [SerializeField] private WindowHandler _settingsHandler;
         [SerializeField] private WindowHandler _pauseHandler;
-
-        [Header("Tabs")]
-        [SerializeField] private GameObject _gameplayTab;
-        [SerializeField] private GameObject _managementTab;
-        [SerializeField] private GameObject _soundTab;
-        [SerializeField] private GameObject _videoTab;
+        [SerializeField] private WindowHandler _gameplayHandler;
+        [SerializeField] private WindowHandler _audioHandler;
+        [SerializeField] private WindowHandler _videoHandler;
+        [SerializeField] private WindowHandler _managementHandler;
 
         [Header("Buttons")]
-        [SerializeField] private Button _prevTabButton;
-        [SerializeField] private Button _nextTabButton;
-        [SerializeField] private Button _gameplayButton;
-        [SerializeField] private Button _managementButton;
-        [SerializeField] private Button _soundButton;
-        [SerializeField] private Button _videoButton;
-        [SerializeField] private Button _backButton;
-        [Space]
-        [SerializeField] private List<GameObject> _tabs = new List<GameObject>();
+        [SerializeField] private Button _gameplay;
+        [SerializeField] private Button _audio;
+        [SerializeField] private Button _video;
+        [SerializeField] private Button _management;
 
-        private UIController _controller;
-
-        private GameObject _currentTab;
-        private int _currentTabIndex;
-
-        [Inject]
-        private void Build(UIController controller)
-        {
-            _controller = controller;
-
-            _tabs.Add(_gameplayTab);
-            _tabs.Add(_managementTab);
-            _tabs.Add(_soundTab);
-            _tabs.Add(_videoTab);
-
-            foreach (var tab in _tabs)
-            {
-                tab.SetActive(false);
-            }
-
-            _currentTabIndex = 0; 
-            _currentTab = _tabs[_currentTabIndex];
-            _currentTab.SetActive(true);
-        }
+        [Header("Navigation Keys")]
+        [SerializeField] private Button _back;
+        [SerializeField] private Button _close;
 
         private void Awake()
         {
-            _controller.OnTabPressed += SelectingTab;
+            _gameplay.Select();
 
-            _prevTabButton.onClick.AddListener(() => SelectingTab(-1));
-            _nextTabButton.onClick.AddListener(() => SelectingTab(1));
-            _gameplayButton.onClick.AddListener(() => SwitchActiveTab(_gameplayTab, 0));
-            _managementButton.onClick.AddListener(() => SwitchActiveTab(_managementTab, 1));
-            _soundButton.onClick.AddListener(() => SwitchActiveTab(_soundTab, 2));
-            _videoButton.onClick.AddListener(() => SwitchActiveTab(_videoTab, 3));
-            _backButton.onClick.AddListener(CloseSettings);
+            _controller.OnBackKeyPressed += Back;
+            
+            _gameplay.onClick.AddListener(() => SwitchWindows(_settingsHandler, _gameplayHandler));
+            _audio.onClick.AddListener(() => SwitchWindows(_settingsHandler, _audioHandler));
+            _video.onClick.AddListener(() => SwitchWindows(_settingsHandler, _videoHandler));
+            _management.onClick.AddListener(() => SwitchWindows(_settingsHandler, _managementHandler));
+
+            _back.onClick.AddListener(() => SwitchWindows(_settingsHandler, _pauseHandler));
+            _close.onClick.AddListener(_windowManager.SwitchPause);
         }
 
-        private void SelectingTab(int navigate)
+        private void Back()
         {
-            int tabIndex;
-            tabIndex = (_currentTabIndex + navigate) % _tabs.Count;
-            if (tabIndex < 0) tabIndex = _tabs.Count - 1;
-            SwitchActiveTab(_tabs[tabIndex], tabIndex);
+            SwitchWindows(_settingsHandler, _pauseHandler);
         }
 
-        private void SwitchActiveTab(GameObject tab, int tabIndex)
+        private void OnDestroy()
         {
-            PlayClickSound();
-            _currentTabIndex = tabIndex;
-            _currentTab.SetActive(false);
-            _currentTab = tab;
-            _currentTab.SetActive(true);
-        }
-
-        private void CloseSettings()
-        {
-            _windowManager.CloseWindow(_settingsHandler);
-            _windowManager.OpenWindow(_pauseHandler);
-        }
-
-        protected override void DisablePause()
-        {
-            _animationController.HideWindowAnimation(_canvasGroup, _settingsHandler);
-        }
-
-        protected override void OnDestroy()
-        {
-            _controller.OnTabPressed -= SelectingTab;
             _windowManager.OnUnpausing -= DisablePause;
-            _windowManager.OnPausing -= EnablePause;
 
-            _prevTabButton.onClick.RemoveListener(() => SelectingTab(-1));
-            _nextTabButton.onClick.RemoveListener(() => SelectingTab(1));
-            _gameplayButton.onClick.RemoveListener(() => SwitchActiveTab(_gameplayTab, 0));
-            _managementButton.onClick.RemoveListener(() => SwitchActiveTab(_managementTab, 1));
-            _soundButton.onClick.RemoveListener(() => SwitchActiveTab(_soundTab, 2));
-            _videoButton.onClick.RemoveListener(() => SwitchActiveTab(_videoTab, 3));
-            _backButton.onClick.RemoveListener(CloseSettings);
+            _controller.OnBackKeyPressed -= Back;
+
+            _gameplay.onClick.RemoveAllListeners();
+            _audio.onClick.RemoveAllListeners();
+            _video.onClick.RemoveAllListeners();
+            _management.onClick.RemoveAllListeners();
+
+            _back.onClick.RemoveAllListeners();
+            _close.onClick.RemoveListener(_windowManager.SwitchPause);
         }
     }
 }

@@ -5,6 +5,7 @@ namespace RedMoonGames.Window
 {
     public class PauseWindow : GameBasicWindow
     {
+        [Header("Handlers")]
         [SerializeField] private WindowHandler _pauseHandler;
         [SerializeField] private WindowHandler _settingsHandler;
 
@@ -12,28 +13,23 @@ namespace RedMoonGames.Window
         [SerializeField] private Button _continue;
         [SerializeField] private Button _settings;
         [SerializeField] private Button _exit;
+
         [Header("Navigation Keys")]
         [SerializeField] private Button _close;
 
         private void Awake()
         {
             _continue.Select();
-            _continue.onClick.AddListener(ContinueClick);
-            _settings.onClick.AddListener(SettingsClick);
+
+            _controller.OnBackKeyPressed += _windowManager.SwitchPause;
+
+            _continue.onClick.AddListener(_windowManager.SwitchPause);
+            _settings.onClick.AddListener(() => SwitchWindows(_pauseHandler, _settingsHandler));
             _exit.onClick.AddListener(ExitClick);
-            _close.onClick.AddListener(ContinueClick);
-        }
 
-        private void ContinueClick()
-        {
-            _animationController.HideWindowAnimation(_canvasGroup, _pauseHandler);
-            _windowManager.SwitchPause();
-        }
+            _close.onClick.AddListener(_windowManager.SwitchPause);
 
-        private void SettingsClick()
-        {
-            _windowManager.CloseWindow(_pauseHandler);
-            _windowManager.OpenWindow(_settingsHandler);
+            _windowManager.OnPausing += EnablePause;
         }
 
         private void ExitClick()
@@ -42,25 +38,22 @@ namespace RedMoonGames.Window
             _sceneTransition.SwichToScene("StartMenu");
         }
 
-        protected override void EnablePause()
+        private void EnablePause()
         {
             _animationController.ShowWindowAnimation(_canvasGroup);
         }
 
-        protected override void DisablePause()
-        {
-            _animationController.HideWindowAnimation(_canvasGroup, _pauseHandler);
-        }
-
-        protected override void OnDestroy()
-        {
+        private void OnDestroy()
+        { 
             _windowManager.OnUnpausing -= DisablePause;
             _windowManager.OnPausing -= EnablePause;
 
-            _continue.onClick.RemoveListener(ContinueClick);
-            _settings.onClick.RemoveListener(SettingsClick);
+            _controller.OnBackKeyPressed -= _windowManager.SwitchPause;
+
+            _continue.onClick.RemoveListener(_windowManager.SwitchPause);
+            _settings.onClick.RemoveAllListeners();
             _exit.onClick.RemoveListener(ExitClick);
-            _close.onClick.RemoveListener(ContinueClick);
+            _close.onClick.RemoveListener(_windowManager.SwitchPause);
         }
     }
 }

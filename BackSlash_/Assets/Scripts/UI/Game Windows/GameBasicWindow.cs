@@ -1,4 +1,7 @@
+using Scripts.Player;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace RedMoonGames.Window
@@ -12,27 +15,35 @@ namespace RedMoonGames.Window
         protected UIAnimationController _animationController;
         protected SceneTransitionController _sceneTransition;
         protected AudioManager _audioManager;
+        protected UIController _controller;
 
         [Inject]
-        protected virtual void Construct(GameWindowsController windowController, UIAnimationController animationController, SceneTransitionController sceneTransition, AudioManager audioManager)
+        protected virtual void Construct(GameWindowsController windowController, UIAnimationController animationController, SceneTransitionController sceneTransition, AudioManager audioManager, UIController controller)
         {
-            _windowManager = windowController;
             _animationController = animationController;
             _sceneTransition = sceneTransition;
             _audioManager = audioManager;
 
+            _windowManager = windowController;
             _windowManager.OnUnpausing += DisablePause;
-            _windowManager.OnPausing += EnablePause; 
+
+            _controller = controller;
 
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        protected virtual void DisablePause()
+        protected void SwitchWindows(WindowHandler close, WindowHandler open)
         {
+            PlayClickSound();
+
+            _windowManager.CloseWindow(close);
+            _windowManager.OpenWindow(open);
         }
 
-        protected virtual void EnablePause()
+        protected void DisablePause(WindowHandler handler)
         {
+            PlayClickSound();
+            _animationController.HideWindowAnimation(_canvasGroup, handler);
         }
 
         protected void PlayClickSound()
@@ -40,11 +51,15 @@ namespace RedMoonGames.Window
             _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
         }
 
-        protected virtual void OnDestroy()
+        protected void PlayHoverSound()
         {
-            _windowManager.OnUnpausing -= DisablePause;
-            _windowManager.OnPausing -= EnablePause;
+            _audioManager.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
         }
 
+        protected void ChangeSliderValue(Slider slider, TMP_Text value, int multiplier)
+        {
+            PlayHoverSound();
+            value.text = (slider.value * multiplier).ToString();
+        }
     }
 }
