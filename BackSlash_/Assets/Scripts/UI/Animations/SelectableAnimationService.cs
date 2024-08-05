@@ -24,22 +24,21 @@ public class SelectableAnimationService : MonoBehaviour, IPointerEnterHandler, I
     [SerializeField] private Vector2 _maxStartAnchor = new Vector2(0.7f, 1);
     [SerializeField] private Color _textSelectedColor;
     [SerializeField] private Color _textDeselectedColor;
+
     [Header("Indicator Animation")]
     [SerializeField] private Vector2 _punch = new Vector2(-15f, 0);
     [SerializeField] private int _vibrato = 12;
 
     private Vector2 _pointPosition =new Vector2(-20, 0);
-    private Image _image;
     private RectTransform _frameRect;
     private RectTransform _pointRect;
     private CanvasGroup _frameCG;
     private CanvasGroup _indicatorCG;
 
-    [SerializeField] private List<Tween> _tweens = new List<Tween>();
+    private List<Tween> _tweens = new List<Tween>();
 
     private void Awake()
     {
-        _image = _frame.GetComponent<Image>();
         _frameRect = _frame.GetComponent<RectTransform>();
         _pointRect = _point.GetComponent<RectTransform>();
         _frameCG = _frame.GetComponent<CanvasGroup>();
@@ -48,19 +47,18 @@ public class SelectableAnimationService : MonoBehaviour, IPointerEnterHandler, I
         _frameCG.alpha = 0;
         _indicatorCG.alpha = 0;
 
+        GetComponent<Selectable>().OnSelectAsObservable().Subscribe(_ => { ShowFrame(); }).AddTo(this);
+    }
+
+    private void OnEnable()
+    {
+        HideFrame();
+
         if (_selectedOnEnable)
         {
             ShowFrame();
         }
-
-        this.GetComponent<Selectable>().OnSelectAsObservable().Subscribe(_ => { ShowFrame(); }).AddTo(this);
     }
-
-    private void OnDestroy()
-    {
-        KillTweens();
-    }
-
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -109,5 +107,10 @@ public class SelectableAnimationService : MonoBehaviour, IPointerEnterHandler, I
             }
         }
         _tweens.Clear();
+    }
+
+    private void OnDestroy()
+    {
+        KillTweens();
     }
 }

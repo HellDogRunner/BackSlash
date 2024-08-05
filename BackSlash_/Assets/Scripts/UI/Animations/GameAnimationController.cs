@@ -4,7 +4,7 @@ using Zenject;
 
 namespace RedMoonGames.Window
 {
-    public class UIAnimationController : MonoBehaviour
+    public class WindowAnimationService : MonoBehaviour
     {
         [Header("Animation Settings")]
         [SerializeField] private float _fadeDuration = 0.1f;

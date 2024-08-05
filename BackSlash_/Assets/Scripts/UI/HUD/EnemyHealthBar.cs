@@ -56,7 +56,8 @@ namespace Scripts.UI
 
         private void LateUpdate()
         {
-            _enemyCG.transform.LookAt(transform.position + _camera.transform.forward);
+            //_enemyCG.transform.LookAt(transform.position + _camera.transform.forward); <- âôò???
+            _enemyCG.transform.LookAt(_camera.transform.position);
         }
 
         private void ShowHealthBar(GameObject target)

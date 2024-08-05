@@ -12,13 +12,13 @@ namespace RedMoonGames.Window
         protected CanvasGroup _canvasGroup;
 
         protected GameWindowsController _windowManager;
-        protected UIAnimationController _animationController;
+        protected WindowAnimationService _animationController;
         protected SceneTransitionController _sceneTransition;
         protected AudioManager _audioManager;
         protected UIController _controller;
 
         [Inject]
-        protected virtual void Construct(GameWindowsController windowController, UIAnimationController animationController, SceneTransitionController sceneTransition, AudioManager audioManager, UIController controller)
+        protected virtual void Construct(GameWindowsController windowController, WindowAnimationService animationController, SceneTransitionController sceneTransition, AudioManager audioManager, UIController controller)
         {
             _animationController = animationController;
             _sceneTransition = sceneTransition;
