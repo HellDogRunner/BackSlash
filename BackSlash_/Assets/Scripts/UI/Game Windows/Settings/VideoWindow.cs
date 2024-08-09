@@ -33,13 +33,13 @@ namespace RedMoonGames.Window
             _currentTab = _displayTab;
             _currentTab.SetActive(true);
 
-            _controller.OnBackKeyPressed += Back;
-            _controller.OnTabPressed += OnTabPressed;
+            _uIController.OnBackKeyPressed += Back;
+            _uIController.OnTabPressed += OnTabPressed;
 
             _displayButton.onClick.AddListener(() => SwitchTab(_displayTab));
             _graphicsButton.onClick.AddListener(() => SwitchTab(_graphicsTab));
             _back.onClick.AddListener(() => SwitchWindows(_videoHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowManager.SwitchPause);
+            _close.onClick.AddListener(_windowsController.SwitchPause);
         }
 
         private void Back()
@@ -65,16 +65,8 @@ namespace RedMoonGames.Window
             {
                 PlayClickSound();
 
-                if (tab == _graphicsTab)
-                {
-                    _displayAnimation.DesableTab();
-                    _graphicsAnimation.EnableTab();
-                }
-                else
-                {
-                    _graphicsAnimation.DesableTab();
-                    _displayAnimation.EnableTab();
-                }
+                _displayAnimation.SwitchTab();
+                _graphicsAnimation.SwitchTab();
 
                 _currentTab.SetActive(false);
                 _currentTab = tab; 
@@ -84,10 +76,10 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _windowManager.OnUnpausing -= DisablePause;
+            _windowsController.OnUnpausing -= DisablePause;
 
-            _controller.OnBackKeyPressed -= Back;
-            _controller.OnTabPressed -= OnTabPressed;
+            _uIController.OnBackKeyPressed -= Back;
+            _uIController.OnTabPressed -= OnTabPressed;
 
             _displayButton.onClick.RemoveAllListeners();
             _graphicsButton.onClick.RemoveAllListeners();

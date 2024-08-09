@@ -12,9 +12,10 @@ namespace Scripts.Player
         public event Action OnEnterKeyPressed;
         public event Action OnEscapeKeyPressed;
         public event Action OnTabPressed;
-        public event Action<bool> OnAnyKeyPressed;
+        public event Action<bool> OnAnyUIKeyPressed;
         public event Action<bool> OnMousePoint;
         public event Action OnBackKeyPressed;
+        public event Action OnAnyKeyboardKeyPressed;
 
         [Inject]
         private void Construct()
@@ -27,9 +28,11 @@ namespace Scripts.Player
             _playerControls.UI.Point.performed += MousePointChange;
             _playerControls.UI.Back.performed += Back;
 
-            _playerControls.UI.Enter.performed += AnyKeyboard;
-            _playerControls.UI.Navigate.performed += AnyKeyboard;
-            _playerControls.UI.TabsNavigation.performed += AnyKeyboard;
+            _playerControls.UI.AnyInput.performed += AnyKeyboardKey;
+
+            _playerControls.UI.Enter.performed += AnyUIKey;
+            _playerControls.UI.Navigate.performed += AnyUIKey;
+            _playerControls.UI.TabsNavigation.performed += AnyUIKey;
         }
 
         private void Enter(InputAction.CallbackContext context)
@@ -47,9 +50,9 @@ namespace Scripts.Player
             OnTabPressed?.Invoke();
         }
 
-        private void AnyKeyboard(InputAction.CallbackContext context)
+        private void AnyUIKey(InputAction.CallbackContext context)
         {
-            OnAnyKeyPressed?.Invoke(true);
+            OnAnyUIKeyPressed?.Invoke(true);
         }
 
         private void MousePointChange(InputAction.CallbackContext context)
@@ -60,6 +63,11 @@ namespace Scripts.Player
         private void Back(InputAction.CallbackContext context)
         {
             OnBackKeyPressed?.Invoke();
+        }
+
+        private void AnyKeyboardKey(InputAction.CallbackContext context)
+        {
+            OnAnyKeyboardKeyPressed?.Invoke();
         }
 
         private void OnEnable()

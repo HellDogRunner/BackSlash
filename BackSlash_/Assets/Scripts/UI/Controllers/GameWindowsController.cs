@@ -7,7 +7,7 @@ namespace RedMoonGames.Window
 {
     public class GameWindowsController : MonoBehaviour
     {
-        [SerializeField] private WindowHandler _pauseWindowHandler;
+        [SerializeField] private WindowHandler _pauseHandler;
 
         private UIController _uiController;
         private InputController _controller;
@@ -16,7 +16,6 @@ namespace RedMoonGames.Window
         private WindowHandler _currentWindow;
 
         public event Action<WindowHandler> OnUnpausing;
-        public event Action OnPausing;
 
         public event Action OnHUDHide;
         public event Action OnHUDShow;
@@ -26,7 +25,7 @@ namespace RedMoonGames.Window
         {
             _uiController = uiController;
             _uiController.OnEscapeKeyPressed += SwitchPause;
-            _uiController.OnAnyKeyPressed += DisableCursor;
+            _uiController.OnAnyUIKeyPressed += DisableCursor;
             _uiController.OnMousePoint += EnableCursor;
             _uiController.enabled = false;
 
@@ -35,7 +34,7 @@ namespace RedMoonGames.Window
 
             _windowService = windowService;
 
-            _currentWindow = _pauseWindowHandler;
+            _currentWindow = _pauseHandler;
             DisableCursor(false);
         }
 
@@ -45,8 +44,7 @@ namespace RedMoonGames.Window
 
             if (currentWindow == null)
             {
-                OpenWindow(_pauseWindowHandler);
-                OnPausing?.Invoke();
+                OpenWindow(_pauseHandler);
                 OnHUDHide?.Invoke();
 
                 Time.timeScale = 0f;
@@ -58,7 +56,7 @@ namespace RedMoonGames.Window
             {
                 OnUnpausing?.Invoke(_currentWindow);
                 OnHUDShow?.Invoke();
-                _currentWindow = _pauseWindowHandler;
+                _currentWindow = _pauseHandler;
 
                 Time.timeScale = 1f;
                 DisableCursor(false);
@@ -101,7 +99,7 @@ namespace RedMoonGames.Window
         {
             _controller.OnMenuKeyPressed -= SwitchPause;
             _uiController.OnEscapeKeyPressed -= SwitchPause;
-            _uiController.OnAnyKeyPressed -= DisableCursor;
+            _uiController.OnAnyUIKeyPressed -= DisableCursor;
             _uiController.OnMousePoint -= EnableCursor;
         }
     }

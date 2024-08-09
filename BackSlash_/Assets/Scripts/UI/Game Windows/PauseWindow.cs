@@ -21,15 +21,14 @@ namespace RedMoonGames.Window
         {
             _continue.Select();
 
-            _controller.OnBackKeyPressed += _windowManager.SwitchPause;
+            _animationService.ShowWindowAnimation(_canvasGroup);
 
-            _continue.onClick.AddListener(_windowManager.SwitchPause);
+            _uIController.OnBackKeyPressed += _windowsController.SwitchPause;
+
+            _continue.onClick.AddListener(_windowsController.SwitchPause);
             _settings.onClick.AddListener(() => SwitchWindows(_pauseHandler, _settingsHandler));
             _exit.onClick.AddListener(ExitClick);
-
-            _close.onClick.AddListener(_windowManager.SwitchPause);
-
-            _windowManager.OnPausing += EnablePause;
+            _close.onClick.AddListener(_windowsController.SwitchPause);
         }
 
         private void ExitClick()
@@ -40,20 +39,19 @@ namespace RedMoonGames.Window
 
         private void EnablePause()
         {
-            _animationController.ShowWindowAnimation(_canvasGroup);
+            _animationService.ShowWindowAnimation(_canvasGroup);
         }
 
         private void OnDestroy()
         { 
-            _windowManager.OnUnpausing -= DisablePause;
-            _windowManager.OnPausing -= EnablePause;
+            _windowsController.OnUnpausing -= DisablePause;
 
-            _controller.OnBackKeyPressed -= _windowManager.SwitchPause;
+            _uIController.OnBackKeyPressed -= _windowsController.SwitchPause;
 
-            _continue.onClick.RemoveListener(_windowManager.SwitchPause);
+            _continue.onClick.RemoveAllListeners();
             _settings.onClick.RemoveAllListeners();
-            _exit.onClick.RemoveListener(ExitClick);
-            _close.onClick.RemoveListener(_windowManager.SwitchPause);
+            _exit.onClick.RemoveAllListeners();
+            _close.onClick.RemoveAllListeners();
         }
     }
 }

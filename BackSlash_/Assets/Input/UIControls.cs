@@ -116,6 +116,15 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AnyInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""e3d61707-eba1-470c-92fe-bf0e5ff146b1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -349,6 +358,17 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b3b281a1-7742-43e5-80b3-c433fac9d771"",
+                    ""path"": ""<Keyboard>/anyKey"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AnyInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -367,6 +387,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
+        m_UI_AnyInput = m_UI.FindAction("AnyInput", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -438,6 +459,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_MiddleClick;
     private readonly InputAction m_UI_RightClick;
     private readonly InputAction m_UI_Back;
+    private readonly InputAction m_UI_AnyInput;
     public struct UIActions
     {
         private @UIControls m_Wrapper;
@@ -452,6 +474,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         public InputAction @MiddleClick => m_Wrapper.m_UI_MiddleClick;
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
         public InputAction @Back => m_Wrapper.m_UI_Back;
+        public InputAction @AnyInput => m_Wrapper.m_UI_AnyInput;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -491,6 +514,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @Back.started += instance.OnBack;
             @Back.performed += instance.OnBack;
             @Back.canceled += instance.OnBack;
+            @AnyInput.started += instance.OnAnyInput;
+            @AnyInput.performed += instance.OnAnyInput;
+            @AnyInput.canceled += instance.OnAnyInput;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -525,6 +551,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @Back.started -= instance.OnBack;
             @Back.performed -= instance.OnBack;
             @Back.canceled -= instance.OnBack;
+            @AnyInput.started -= instance.OnAnyInput;
+            @AnyInput.performed -= instance.OnAnyInput;
+            @AnyInput.canceled -= instance.OnAnyInput;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -554,5 +583,6 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         void OnMiddleClick(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
         void OnBack(InputAction.CallbackContext context);
+        void OnAnyInput(InputAction.CallbackContext context);
     }
 }

@@ -10,10 +10,10 @@ public class ButtonAudioService : MonoBehaviour
     [SerializeField] private bool _soundOnClick;
 
     private Button _thisButton;
-    private AudioManager _audioManager;
+    private AudioController _audioManager;
 
     [Inject]
-    private void Construct(AudioManager audioManager)
+    private void Construct(AudioController audioManager)
     {
         _thisButton = GetComponent<Button>();
         _audioManager = audioManager;

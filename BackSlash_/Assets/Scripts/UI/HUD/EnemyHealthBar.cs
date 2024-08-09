@@ -35,6 +35,7 @@ namespace Scripts.UI
             _health = GetComponent<HealthController>();
             _camera = Camera.main;
 
+            _enemyCG.alpha = 0f;
             _maxHealth = _health.Health;
             _currentHealth = _maxHealth;
 
@@ -56,7 +57,6 @@ namespace Scripts.UI
 
         private void LateUpdate()
         {
-            //_enemyCG.transform.LookAt(transform.position + _camera.transform.forward); <- âôò???
             _enemyCG.transform.LookAt(_camera.transform.position);
         }
 

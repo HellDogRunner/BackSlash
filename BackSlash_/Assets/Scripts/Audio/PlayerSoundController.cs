@@ -7,7 +7,7 @@ using Zenject;
 public class PlayerSoundController : MonoBehaviour
 {
     private MovementController _movementController;
-    private AudioManager _audioManager;
+    private AudioController _audioManager;
     private InputController _inputController;
     private WeaponController _weaponController;
 
@@ -15,7 +15,7 @@ public class PlayerSoundController : MonoBehaviour
     private EventInstance _swordSlashSound;
 
     [Inject]
-    private void Construct(InputController inputController, AudioManager audioManager, MovementController movementController, WeaponController weaponController)
+    private void Construct(InputController inputController, AudioController audioManager, MovementController movementController, WeaponController weaponController)
     {
         _audioManager = audioManager;
 

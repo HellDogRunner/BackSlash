@@ -75,7 +75,7 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
         }
     }
 
-    public void EnableTab()
+    private void EnableTab()
     {
         SelectTab();
 
@@ -85,7 +85,7 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
         _image.color = _activeColor;
     }
 
-    public void DesableTab()
+    private void DesableTab()
     {
         KillTweens();
 
@@ -95,6 +95,18 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
         _rect.anchorMax = _maxStartAnchor;
         _text.color = _deselectColor;
         _image.color = _deselectColor;
+    }
+
+    public void SwitchTab()
+    {
+        if (_isActive)
+        {
+            DesableTab();
+        }
+        else
+        {
+            EnableTab();
+        }
     }
 
     private void KillTweens()

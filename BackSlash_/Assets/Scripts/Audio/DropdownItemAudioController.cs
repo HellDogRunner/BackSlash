@@ -10,10 +10,10 @@ using Zenject;
 public class DropdownItemAudioController : MonoBehaviour
 {
     private Toggle _toggle;
-    private AudioManager _audioManager;
+    private AudioController _audioManager;
 
     [Inject]
-    private void Construct(AudioManager audioManager)
+    private void Construct(AudioController audioManager)
     {
         _toggle = GetComponent<Toggle>();
         _audioManager = audioManager;

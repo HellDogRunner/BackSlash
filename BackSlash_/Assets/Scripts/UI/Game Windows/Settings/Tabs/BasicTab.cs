@@ -5,10 +5,10 @@ using Zenject;
 
 public class BasicTab : MonoBehaviour
 {
-    private AudioManager _audioManager;
+    private AudioController _audioManager;
 
     [Inject]
-    private void Construct(AudioManager audioManager)
+    private void Construct(AudioController audioManager)
     {
         _audioManager = audioManager;
     }
