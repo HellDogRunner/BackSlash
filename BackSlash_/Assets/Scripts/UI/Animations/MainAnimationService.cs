@@ -7,7 +7,7 @@ namespace RedMoonGames.Window
     public class MainAnimationService : MonoBehaviour
     {
         [Header("Animation Settings")]
-        [SerializeField] private float _fadeDuration = 1f;
+        [SerializeField] private float _fadeDuration = 0.1f;
 
         private bool _windowClosing;
 

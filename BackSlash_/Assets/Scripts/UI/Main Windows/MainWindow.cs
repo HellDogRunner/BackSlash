@@ -22,7 +22,7 @@ namespace RedMoonGames.Window
         {
             _start.Select();
 
-            _uIController.OnBackKeyPressed += Back;
+            _uIController.OnEscapeKeyPressed += Back;
 
             _start.onClick.AddListener(StartClick);
             _settings.onClick.AddListener(() => SwitchWindows(_mainHandler, _settingsHandler));
@@ -48,7 +48,7 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _uIController.OnBackKeyPressed -= Back;
+            _uIController.OnEscapeKeyPressed -= Back;
 
             _start.onClick.RemoveAllListeners();
             _settings.onClick.RemoveAllListeners();

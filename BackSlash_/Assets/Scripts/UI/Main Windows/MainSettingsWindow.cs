@@ -8,10 +8,10 @@ namespace RedMoonGames.Window
         [Header("Handlers")]
         [SerializeField] private WindowHandler _settingsHandler;
         [SerializeField] private WindowHandler _mainHandler;
-        //[SerializeField] private WindowHandler _gameplayHandler;
-        //[SerializeField] private WindowHandler _audioHandler;
-        //[SerializeField] private WindowHandler _videoHandler;
-        //[SerializeField] private WindowHandler _managementHandler;
+        [SerializeField] private WindowHandler _gameplayHandler;
+        [SerializeField] private WindowHandler _audioHandler;
+        [SerializeField] private WindowHandler _videoHandler;
+        [SerializeField] private WindowHandler _managementHandler;
 
         [Header("Buttons")]
         [SerializeField] private Button _gameplay;
@@ -28,10 +28,10 @@ namespace RedMoonGames.Window
 
             _uIController.OnBackKeyPressed += Back;
 
-            //_gameplay.onClick.AddListener(() => SwitchWindows(_settingsHandler, _gameplayHandler));
-            //_audio.onClick.AddListener(() => SwitchWindows(_settingsHandler, _audioHandler));
-            //_video.onClick.AddListener(() => SwitchWindows(_settingsHandler, _videoHandler));
-            //_management.onClick.AddListener(() => SwitchWindows(_settingsHandler, _managementHandler));
+            _gameplay.onClick.AddListener(() => SwitchWindows(_settingsHandler, _gameplayHandler));
+            _audio.onClick.AddListener(() => SwitchWindows(_settingsHandler, _audioHandler));
+            _video.onClick.AddListener(() => SwitchWindows(_settingsHandler, _videoHandler));
+            _management.onClick.AddListener(() => SwitchWindows(_settingsHandler, _managementHandler));
 
             _back.onClick.AddListener(() => SwitchWindows(_settingsHandler, _mainHandler));
         }

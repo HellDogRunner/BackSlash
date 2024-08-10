@@ -21,10 +21,8 @@ namespace RedMoonGames.Window
 
         public void ShowWindowAnimation(CanvasGroup cg)
         {
-
             cg.alpha = 0f;
             cg.DOFade(1f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true);
-
         }
 
         public void HideWindowAnimation(CanvasGroup cg, WindowHandler handler)

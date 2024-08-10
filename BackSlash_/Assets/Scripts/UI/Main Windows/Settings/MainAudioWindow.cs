@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace RedMoonGames.Window
 {
-    public class AudioWindow : GameBasicWindow
+    public class MainAudioWindow : MainBasicWindow
     {
         [Header("Handlers")]
         [SerializeField] private WindowHandler _audioHandler;
@@ -24,7 +24,6 @@ namespace RedMoonGames.Window
 
         [Header("Navigation Keys")]
         [SerializeField] private Button _back;
-        [SerializeField] private Button _close;
 
         private void Awake()
         {
@@ -38,7 +37,6 @@ namespace RedMoonGames.Window
             _sfxVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_sfxVolume, _sfxValue, 5));
 
             _back.onClick.AddListener(() => SwitchWindows(_audioHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowsController.SwitchPause);
         }
 
         private void Back()
@@ -48,8 +46,6 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _windowsController.OnUnpausing -= DisablePause;
-
             _uIController.OnBackKeyPressed -= Back;
 
             _masterVolume.onValueChanged.RemoveAllListeners();
@@ -58,7 +54,6 @@ namespace RedMoonGames.Window
             _sfxVolume.onValueChanged.RemoveAllListeners();
 
             _back.onClick.RemoveAllListeners();
-            _close.onClick.RemoveAllListeners();
         }
     }
 }

@@ -1,4 +1,3 @@
-using Scripts.Player;
 using UnityEngine;
 using Zenject;
 
@@ -8,15 +7,13 @@ namespace RedMoonGames.Window
     {
         [SerializeField] private WindowHandler _startHandler;
 
-        private UIController _uiController;
-        private WindowService _windowService;
-
         private WindowHandler _currentWindow;
 
+        private WindowService _windowService;
+
         [Inject]
-        private void Construct(UIController uiController, WindowService windowService)
+        private void Construct(WindowService windowService)
         {
-            _uiController = uiController;
             _windowService = windowService;
 
             OpenWindow(_startHandler);

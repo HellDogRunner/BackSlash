@@ -9,14 +9,13 @@ namespace RedMoonGames.Window
     {
         [SerializeField] private WindowHandler _pauseHandler;
 
-        private UIController _uiController;
-        private InputController _controller;
-        private WindowService _windowService;
-
         private WindowHandler _currentWindow;
 
-        public event Action<WindowHandler> OnUnpausing;
+        private WindowService _windowService;
+        private UIController _uiController;
+        private InputController _controller;
 
+        public event Action<WindowHandler> OnUnpausing;
         public event Action OnHUDHide;
         public event Action OnHUDShow;
 
