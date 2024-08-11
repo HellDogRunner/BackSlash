@@ -14,7 +14,7 @@ namespace Scripts.Player
         public event Action OnSprintKeyPressed;
         public event Action OnSprintKeyRealesed;
         public event Action OnJumpKeyPressed;
-        public event Action OnDogdeKeyPressed;
+        public event Action OnDodgeKeyPressed;
         public event Action OnAttackPressed;
         public event Action OnShowWeaponPressed;
         public event Action OnHideWeaponPressed;
@@ -87,7 +87,7 @@ namespace Scripts.Player
 
         private void Dodge(InputAction.CallbackContext context)
         {
-            OnDogdeKeyPressed?.Invoke();
+            OnDodgeKeyPressed?.Invoke();
         }
 
         private void AttackStarted(InputAction.CallbackContext contex)

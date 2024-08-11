@@ -120,4 +120,9 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
         }
         _tweens.Clear();
     }
+
+    private void OnDestroy()
+    {
+        KillTweens();
+    }
 }

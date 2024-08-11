@@ -11,6 +11,7 @@ namespace RedMoonGames.Window
         [SerializeField] private GameObject _background;
 
         [Header("Animation Settings")]
+        [SerializeField] private float _showDelay = 2f;
         [SerializeField] private float _scaleDuration = 1f;
         [SerializeField] private float _fadeDuration = 0.5f;
         [SerializeField] private float _endBackgroundScale = 1.5f;
@@ -19,8 +20,8 @@ namespace RedMoonGames.Window
 
         private Sequence _sequence;
 
-        private CanvasGroup _backgroundCG;
-        private Transform _backgroundTransform;
+        private CanvasGroup _canvasGroup;
+        private RectTransform _rect;
 
         [Inject]
         private void Construct(GameWindowsController windowsController)
@@ -29,42 +30,34 @@ namespace RedMoonGames.Window
 
             _windowsController.OnHUDShow += ShowHUD;
             _windowsController.OnHUDHide += HideHUD;
-        }
 
-        private void Awake()
-        {
-            _backgroundCG = _background.GetComponent<CanvasGroup>();
-            _backgroundTransform = _background.GetComponent<Transform>();
+            _canvasGroup = _background.GetComponent<CanvasGroup>();
+            _rect = _background.GetComponent<RectTransform>();
         }
 
         private void Start()
         {
-            StartCoroutine(ShowHUDDelay());
+            _canvasGroup.alpha = 0;
+            _rect.localScale = new Vector3(_endBackgroundScale, _endBackgroundScale, _endBackgroundScale);
+            StartCoroutine(HUDDelay());
         }
 
         private void ShowHUD()
         {
-            _sequence = DOTween.Sequence();
-            _sequence.AppendCallback(() =>
-            {
-                _backgroundCG.DOFade(1f, _fadeDuration).SetEase(Ease.InQuart).SetUpdate(true);
-                _backgroundTransform.DOScale(1f, _scaleDuration).SetEase(Ease.OutSine).SetUpdate(true);
-            }).SetUpdate(true);
+            _canvasGroup.alpha = 0;
+            _canvasGroup.DOFade(1f, _fadeDuration).SetEase(Ease.InQuart).SetUpdate(true);
+            _rect.DOScale(1f, _scaleDuration).SetEase(Ease.OutSine).SetUpdate(true);
         }
 
         private void HideHUD()
         {
-            _sequence = DOTween.Sequence();
-            _sequence.AppendCallback(() =>
-            {
-                _backgroundCG.DOFade(0f, _fadeDuration).SetEase(Ease.OutQuart).SetUpdate(true);
-                _backgroundTransform.DOScale(_endBackgroundScale, _scaleDuration).SetEase(Ease.InSine).SetUpdate(true);
-            }).SetUpdate(true);
+            _canvasGroup.DOFade(0f, _fadeDuration).SetEase(Ease.OutQuart).SetUpdate(true);
+            _rect.DOScale(_endBackgroundScale, _scaleDuration).SetEase(Ease.InSine).SetUpdate(true);
         }
 
-        IEnumerator ShowHUDDelay()
+        IEnumerator HUDDelay()
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(_showDelay);
             ShowHUD();
         }
 

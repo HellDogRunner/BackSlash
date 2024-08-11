@@ -53,7 +53,7 @@ namespace Scripts.Player
 
             _inputController = inputController;
             _inputController.OnJumpKeyPressed += Jump;
-            _inputController.OnDogdeKeyPressed += Dodge;
+            _inputController.OnDodgeKeyPressed += Dodge;
             _inputController.OnSprintKeyPressed += Sprint;
             _inputController.OnSprintKeyRealesed += Run;
 
@@ -66,7 +66,7 @@ namespace Scripts.Player
         private void OnDestroy()
         {
             _inputController.OnJumpKeyPressed -= Jump;
-            _inputController.OnDogdeKeyPressed -= Dodge;
+            _inputController.OnDodgeKeyPressed -= Dodge;
             _inputController.OnSprintKeyPressed -= Sprint;
             _inputController.OnSprintKeyRealesed -= Run;
         }
