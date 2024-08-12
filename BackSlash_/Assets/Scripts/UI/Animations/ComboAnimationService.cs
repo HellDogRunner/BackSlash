@@ -6,67 +6,89 @@ using UnityEngine.UI;
 public class ComboAnimationService : MonoBehaviour
 {
     [Header("Keyboard")]
-    [SerializeField] private GameObject _keyKB;
-    [SerializeField] private TMP_Text _textKB;
+    [SerializeField] private GameObject _keyboard;
+    [SerializeField] private TMP_Text _text;
     [Header("Mouse")]
     [SerializeField] private GameObject _mouse;
     [SerializeField] private Image _left;
     [SerializeField] private Image _right;
     [SerializeField] private Image _wheel;
 
-    private List<Transform> GetChilds(GameObject key)
+    private List<GameObject> GetChilds(GameObject key)
     {
-        List<Transform> images = new List<Transform>();
+        List<GameObject> images = new List<GameObject>();
 
         for (int t = 0; t < key.transform.childCount; t++)
         {
-            images.Add(key.transform.GetChild(t));
+            images.Add(key.transform.GetChild(t).gameObject);
         }
+
         return images;
     }
 
-    public void ManageAnimation(GameObject key, bool isKeyboard)
+    public void ManageAnimation(GameObject currentKey, GameObject nextKey, bool isKeyboard)
     {
-        var keyChilds = GetChilds(key);
-        SwitchBackground(keyChilds, true);
+        HideOtherKeys();
 
-        if (isKeyboard)
-        {
-            KeyboardAnimation(keyChilds[0]);
-        }
-        else
-        {
-            MouseAnimation(keyChilds[0]);
-        }
+        currentKey.SetActive(true);
+        var currentKeyChilds = GetChilds(currentKey);
+        SwitchBackground(currentKeyChilds, true);
+
+        if (nextKey == null) return;
+
+        nextKey.SetActive(false);
+        var nextKeyChilds = GetChilds(nextKey);
+        AnimateKey(nextKeyChilds[0], isKeyboard);
     }
 
-    public void SwitchBackground(List<Transform> images, bool isPressed)
+    public void SwitchBackground(List<GameObject> images, bool isPressed)
     {
         images[1].gameObject.SetActive(!isPressed);
         images[2].gameObject.SetActive(isPressed);
     }
 
-    public void SetDefaultState(List<GameObject> keys)
+    public void SetStartState(List<GameObject> keys, bool isKeyboard)
     {
         foreach (var key in keys)
         {
             SwitchBackground(GetChilds(key), false);
+            key.SetActive(true);
         }
-        KeyboardAnimation(keys[0].transform);
+
+        keys[0].SetActive(false);
+        AnimateKey(keys[0], isKeyboard);
     }
 
-    public void KeyboardAnimation(Transform key)
+    public void AnimateKey(GameObject key, bool isKeyboard)
     {
-        _keyKB.transform.position = key.position;
+        GameObject nextKey;
+
+        if (isKeyboard)
+        {
+            nextKey = _keyboard;
+        }
+        else
+        {
+            nextKey = _mouse;
+        }
+
+        nextKey.SetActive(true);
+        nextKey.transform.position = key.transform.position;
     }
 
-    public void MouseAnimation(Transform key)
+    private void HideOtherKeys()
     {
-        _mouse.transform.position = key.position;
+        _keyboard.SetActive(false);
+        _mouse.SetActive(false);
+    }
+
+    public void AnimateCancelCombo()
+    {
+        HideOtherKeys();
     }
 
     public void AnimateFinishCombo()
     {
-        Debug.Log("fin");
+
     }
 }

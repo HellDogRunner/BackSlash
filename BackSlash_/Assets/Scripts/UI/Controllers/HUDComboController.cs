@@ -9,6 +9,10 @@ public class HUDComboController : MonoBehaviour
 
     private List<Transform> _images;
     private int _currentKey = 0;
+    private bool isKeyboard;
+
+    //  заменить на нормальный импорт комбо из Scriptable Objects
+    private List<string> _combo = new List<string>() { "LightAttack", "LightAttack", "Dodge", "LightAttack" };
 
     private InputController _controller;
     private ComboAnimationService _comboAnimation;
@@ -17,33 +21,81 @@ public class HUDComboController : MonoBehaviour
     private void Construct(InputController controller, ComboAnimationService comboAnimation)
     {
         _comboAnimation = comboAnimation;
-        _comboAnimation.SetDefaultState(_keys);
+
+        if (_combo[0] == "LightAttack")
+        {
+            isKeyboard = false;
+        }
+        else
+        {
+            isKeyboard = true;
+        }
+
+        _comboAnimation.SetStartState(_keys, isKeyboard);
 
         _controller = controller;
-        _controller.OnAttackPressed += Attack;
+        _controller.OnAttackPressed += LightAttack;
         _controller.OnDodgeKeyPressed += Dodge;
     }
 
-    private void Attack() 
+    private void LightAttack()
     {
-        _comboAnimation.ManageAnimation(_keys[_currentKey], false);
-        CheckIndex();
+        ComboManager("LightAttack");
     }
 
     private void Dodge()
     {
-        _comboAnimation.ManageAnimation(_keys[_currentKey], true);
-        CheckIndex();
+        ComboManager("Dodge");
+    }
+
+    private void ComboManager(string item)
+    {
+        if (item == _combo[_currentKey])
+        {
+            if (_currentKey == _keys.Count - 1)
+            {
+                _comboAnimation.ManageAnimation(_keys[_currentKey], null, false);
+                CheckIndex();
+                return;
+            }
+
+            bool isKey;
+            if (_combo[_currentKey + 1] == "LightAttack")
+            {
+                isKey = false;
+            }
+            else
+            {
+                isKey = true;
+            }
+
+            _comboAnimation.ManageAnimation(_keys[_currentKey], _keys[_currentKey + 1], isKey);
+
+            CheckIndex();
+        }
+        else
+        {
+            _comboAnimation.AnimateCancelCombo();
+            _comboAnimation.SetStartState(_keys, isKeyboard);
+            _currentKey = 0;
+        }
     }
 
     private void CheckIndex()
     {
         _currentKey++;
-        if (_currentKey >= _keys.Count)
+
+        if (_currentKey == _keys.Count)
         {
             _currentKey = 0;
             _comboAnimation.AnimateFinishCombo();
-            _comboAnimation.SetDefaultState(_keys);
+            _comboAnimation.SetStartState(_keys, isKeyboard);
         }
+    }
+
+    private void OnDestroy()
+    {
+        _controller.OnAttackPressed -= LightAttack;
+        _controller.OnDodgeKeyPressed -= Dodge;
     }
 }
