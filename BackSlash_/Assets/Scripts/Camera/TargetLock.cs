@@ -130,10 +130,10 @@ public class TargetLock : MonoBehaviour
             ForceUnlock(_currentTarget);
         }
 
-        Vector3 viewPos = _mainCamera.WorldToViewportPoint(target.position);
-
+        Vector3 aimTarget = target.position + new Vector3(0, 1.3f, 0);
+        Vector3 viewPos = _mainCamera.WorldToViewportPoint(aimTarget);
         if (_aimIcon)
-            _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(new Vector3(target.position.x, 1 ,target.position.z));
+            _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(aimTarget);
 
         _mouseX = (viewPos.x - 0.5f + _targetLockOffset.x) * 3f;
         _mouseY = (viewPos.y - 0.5f + _targetLockOffset.y) * 3f;              

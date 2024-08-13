@@ -1,53 +1,56 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ComboAnimationService : MonoBehaviour
 {
-    [Header("Keyboard")]
+    [SerializeField] private RectTransform _keys;
+
+    [Header("KeysNeedToPress")]
     [SerializeField] private GameObject _keyboard;
-    [SerializeField] private TMP_Text _text;
-    [Header("Mouse")]
     [SerializeField] private GameObject _mouse;
-    [SerializeField] private Image _left;
-    [SerializeField] private Image _right;
-    [SerializeField] private Image _wheel;
+
+    [Header("Animation Components")]
+    [SerializeField] private CanvasGroup _canvasGroup;
+
+    private TMP_Text _text;
+    private List<GameObject> _mouseButtons;
+
+    public void InstantiateKeys()
+    {
+        _keyboard = Instantiate(_keyboard, _keys);
+        _text = _keyboard.GetComponentInChildren<TMP_Text>();
+
+        _mouse = Instantiate(_mouse, _keys);
+        _mouseButtons = GetChilds(_mouse);
+    }
 
     private List<GameObject> GetChilds(GameObject key)
     {
-        List<GameObject> images = new List<GameObject>();
+        List<GameObject> childs = new List<GameObject>();
 
-        for (int t = 0; t < key.transform.childCount; t++)
+        for (int index = 0; index < key.transform.childCount; index++)
         {
-            images.Add(key.transform.GetChild(t).gameObject);
+            childs.Add(key.transform.GetChild(index).gameObject);
         }
 
-        return images;
+        return childs;
     }
 
-    public void ManageAnimation(GameObject currentKey, GameObject nextKey, bool isKeyboard)
+    public void ManageAnimation(GameObject currentIndicator, GameObject nextIndicator, string nextKey, bool isKeyboard)
     {
         HideOtherKeys();
 
-        currentKey.SetActive(true);
-        var currentKeyChilds = GetChilds(currentKey);
+        currentIndicator.SetActive(true);
+        var currentKeyChilds = GetChilds(currentIndicator);
         SwitchBackground(currentKeyChilds, true);
 
-        if (nextKey == null) return;
+        if (nextIndicator == null) return;
 
-        nextKey.SetActive(false);
-        var nextKeyChilds = GetChilds(nextKey);
-        AnimateKey(nextKeyChilds[0], isKeyboard);
+        AnimateKey(nextIndicator, nextKey, isKeyboard);
     }
 
-    public void SwitchBackground(List<GameObject> images, bool isPressed)
-    {
-        images[1].gameObject.SetActive(!isPressed);
-        images[2].gameObject.SetActive(isPressed);
-    }
-
-    public void SetStartState(List<GameObject> keys, bool isKeyboard)
+    public void SetStartState(List<GameObject> keys, string nextButton, bool isKeyboard)
     {
         foreach (var key in keys)
         {
@@ -55,40 +58,64 @@ public class ComboAnimationService : MonoBehaviour
             key.SetActive(true);
         }
 
-        keys[0].SetActive(false);
-        AnimateKey(keys[0], isKeyboard);
+        AnimateKey(keys[0], nextButton, isKeyboard);
     }
 
-    public void AnimateKey(GameObject key, bool isKeyboard)
+    // Переключает клавишу комбо между уже нажатой и ещё не нажатой
+    public void SwitchBackground(List<GameObject> images, bool isPressed)
+    {
+        images[1].gameObject.SetActive(!isPressed);
+        images[2].gameObject.SetActive(isPressed);
+    }
+
+    // Анимация показа клавиши для продолжения комбо
+    public void AnimateKey(GameObject key, string nextButton, bool isKeyboard)
     {
         GameObject nextKey;
 
         if (isKeyboard)
         {
             nextKey = _keyboard;
+            _text.text = "CTRL";
         }
         else
         {
             nextKey = _mouse;
+
+            foreach(var button in _mouseButtons)
+            {
+                button.SetActive(false);
+            }
+            _mouseButtons[0].SetActive(true);
         }
 
+        key.SetActive(false);
         nextKey.SetActive(true);
         nextKey.transform.position = key.transform.position;
     }
 
+    // Скрывает все клавиши продолждения комбо
     private void HideOtherKeys()
     {
         _keyboard.SetActive(false);
         _mouse.SetActive(false);
     }
 
+    // Анимация прерванного комбо
     public void AnimateCancelCombo()
     {
         HideOtherKeys();
+        _canvasGroup.alpha = 0.15f;
     }
 
+    // Анимация законченного комбо
     public void AnimateFinishCombo()
     {
+        _canvasGroup.alpha = 1f;
+    }
 
+    public void FadeOff()
+    {
+        _canvasGroup.alpha = 1f;
     }
 }
