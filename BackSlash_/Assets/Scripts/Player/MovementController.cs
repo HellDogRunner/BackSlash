@@ -27,6 +27,7 @@ namespace Scripts.Player
         [SerializeField] private float _airMultiplier = 0.7f;
         [Header("SlopeAngle")]
         [SerializeField] private float _maxSlopeAngle;
+        [SerializeField] private float _slopeSpeed;
 
         private Vector3 _moveDirection;
 
@@ -123,7 +124,7 @@ namespace Scripts.Player
             else if (IsGrounded() && OnSlope())
             {
                 InAir?.Invoke(false);
-                _rigidbody.AddForce(SlopeMoveDirection() * _currentSpeed * 10f, ForceMode.Force);
+                _rigidbody.AddForce(SlopeMoveDirection() * _slopeSpeed * 10f, ForceMode.Force);
                 _rigidbody.velocity -= _slopeHit.normal * 0.5f;
             }
             else if (!IsGrounded())

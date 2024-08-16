@@ -13,7 +13,7 @@ namespace Scripts.Player.camera
 
         private InputController _inputService;
         private TargetLock _targetLock;
-        private WeaponController _weaponController;
+        private CombatSystem _combatSystem;
 
         private Vector3 _forwardDirection;
         private Transform _camera;
@@ -24,22 +24,21 @@ namespace Scripts.Player.camera
         private bool _isBlocking;
 
         [Inject]
-        private void Construct(InputController inputService, TargetLock targetLock, WeaponController weaponController)
+        private void Construct(InputController inputService, TargetLock targetLock, CombatSystem combatSystem)
         {
             _inputService = inputService;
             _targetLock = targetLock;
-            _weaponController = weaponController;
+            _combatSystem = combatSystem;
 
-            _weaponController.IsAttacking += OnAttack;
-            _weaponController.IsBlocking += OnBlock;
-
+            _combatSystem.IsAttacking += OnAttack;
+            _combatSystem.IsBlocking += OnBlock;
             _camera = Camera.main.transform;
         }
 
         private void OnDestroy()
         {
-            _weaponController.IsAttacking -= OnAttack;
-            _weaponController.IsBlocking -= OnBlock;
+            _combatSystem.IsAttacking -= OnAttack;
+            _combatSystem.IsBlocking -= OnBlock;
         }
 
         private void FixedUpdate()

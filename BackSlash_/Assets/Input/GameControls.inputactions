@@ -33,13 +33,22 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Attack",
+                    "name": "LightAttack",
                     "type": "Button",
                     "id": "65638328-091b-4310-9c8f-0a6723a4bbd3",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "HeavyAttack",
+                    "type": "Button",
+                    "id": "b3ef41d2-08fe-46e4-a5e5-010eda4e019e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Dodge",
@@ -79,7 +88,7 @@
                 },
                 {
                     "name": "Block",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "383a9525-7348-4f22-81f5-cb72d5b34aba",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -99,6 +108,15 @@
                     "name": "Escape",
                     "type": "Button",
                     "id": "3c02680a-2829-4e10-a795-056af6f95603",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "StartKeySequence",
+                    "type": "Button",
+                    "id": "cc92e7c0-92de-4477-8d6a-261213b7f48a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -198,10 +216,10 @@
                     "name": "",
                     "id": "31ed970c-7418-477e-81bb-ced7ccb751e6",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "Hold(duration=9999,pressPoint=0.2)",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "LightAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -241,8 +259,8 @@
                 {
                     "name": "",
                     "id": "3b844c81-1f4b-4ba9-8e5a-bf7c4052ec84",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "Hold(duration=9999,pressPoint=0.2)",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Block",
@@ -301,6 +319,96 @@
                     "processors": "",
                     "groups": "",
                     "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1be2235c-323d-4e07-8caa-2f3c675b6aa2",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StartKeySequence",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7ee045e2-fab5-464b-bf42-9bd5410d612f",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HeavyAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Combos",
+            "id": "e4dfa779-a317-45ec-80f4-69ee6261d3dd",
+            "actions": [
+                {
+                    "name": "special_1",
+                    "type": "Button",
+                    "id": "ea7aab35-3b5f-4884-82ec-f9d53fde4aee",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "special_2",
+                    "type": "Button",
+                    "id": "956d906a-2120-4999-bd8f-7c644764ff8e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "special_3",
+                    "type": "Button",
+                    "id": "de4aaca0-0f18-42e2-8e8a-433c55439d57",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "74f350cb-f682-4e16-b457-3fb5bfffc110",
+                    "path": "<SimulatedComboDevice>/special_1_comboButton0",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "special_1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9e768e9a-ff6c-480a-a1bb-6ce61c787711",
+                    "path": "<SimulatedComboDevice>/special_2_comboButton1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "special_2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "85fa4860-4ced-45d8-b9f1-e5b6c04503d4",
+                    "path": "<SimulatedComboDevice>/special_3_comboButton2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "special_3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

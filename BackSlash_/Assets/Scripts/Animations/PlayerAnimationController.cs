@@ -13,14 +13,16 @@ namespace Scripts.Animations
         [SerializeField] private AnimatorOverrideController _mainOverride;
 
         private InputController _inputController;
-        private WeaponController _weaponController;
+        private CombatSystem _combatSystem;
         private MovementController _movementController;
         private TargetLock _targetLock;
+        private WeaponController _weaponController;
 
         [Inject]
-        private void Construct(InputController inputController, WeaponController weaponController, MovementController movementController, TargetLock targetLock)
+        private void Construct(InputController inputController, CombatSystem combatSystem, MovementController movementController, TargetLock targetLock, WeaponController weaponController)
         {
             _targetLock = targetLock;
+            _weaponController = weaponController;
 
             _movementController = movementController;
             _movementController.OnJump += JumpAnimation;
@@ -34,10 +36,11 @@ namespace Scripts.Animations
             _inputController.OnHideWeaponPressed += HideWeaponAnimation;
             _inputController.OnAttackFinished += WeaponIdle;
 
-            _weaponController = weaponController;
-            _weaponController.OnAttack += AttackAnimation;
-            _weaponController.IsAttacking += RunAndAttackAnimation;
-            _weaponController.IsBlocking += BlockAnimation;
+            _combatSystem = combatSystem;
+            _combatSystem.OnPrimaryAttack += PrimaryAttackAnimation;
+            _combatSystem.IsBlocking += BlockAnimation;
+            _combatSystem.OnComboAttack += ComboAttackAnimation;
+            _combatSystem.OnJumpComboAttack += JumpComboAttackAnimation;
         }
 
         private void OnDestroy()
@@ -52,9 +55,10 @@ namespace Scripts.Animations
             _inputController.OnHideWeaponPressed -= HideWeaponAnimation;
             _inputController.OnAttackFinished -= WeaponIdle;
 
-            _weaponController.OnAttack -= AttackAnimation;
-            _weaponController.IsAttacking -= RunAndAttackAnimation;
-            _weaponController.IsBlocking -= BlockAnimation;
+            _combatSystem.OnPrimaryAttack -= PrimaryAttackAnimation;;
+            _combatSystem.IsBlocking -= BlockAnimation;
+            _combatSystem.OnComboAttack -= ComboAttackAnimation;
+            _combatSystem.OnJumpComboAttack -= JumpComboAttackAnimation;
         }
 
         private void Update()
@@ -120,12 +124,19 @@ namespace Scripts.Animations
             }
         }
 
-        private void AttackAnimation(int currentAttack)
+        private void PrimaryAttackAnimation()
         {
-            if (_weaponController.CurrentWeaponType == EWeaponType.Melee)
-            {
-                _animator.SetTrigger("Attack" + currentAttack);
-            }
+            _animator.SetTrigger("Attack1");
+        }
+
+        private void ComboAttackAnimation()
+        {
+            _animator.SetTrigger("Combo");
+        }
+
+        private void JumpComboAttackAnimation()
+        {
+            _animator.SetTrigger("JumpCombo");
         }
 
         private void BlockAnimation(bool isBlocking)

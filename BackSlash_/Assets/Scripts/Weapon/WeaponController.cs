@@ -11,23 +11,20 @@ namespace Scripts.Weapon
     {
         [SerializeField] private Transform _weaponPivot;
         [SerializeField] private Transform _weaponOnBeltPivot;
-        [SerializeField] private int _currentAttack = 0;
 
         private float _timeSinceAttack;
         private bool _isAttacking;
+        private bool _isBlocking;
 
         protected WeaponTypesDatabase _weaponTypesDatabase;
 
         private GameObject _currentWeapon;
         private InputController _inputController;
         private WeaponTypeModel _weaponTypeModel;
-        [SerializeField] private EWeaponType _curentWeaponType;
+        private EWeaponType _curentWeaponType;
 
         public EWeaponType CurrentWeaponType => _curentWeaponType;
 
-        public event Action<int> OnAttack;
-        public event Action<bool> IsAttacking;
-        public event Action<bool> IsBlocking;
         public event Action OnDrawWeapon;
         public event Action OnSneathWeapon;
 
@@ -38,9 +35,6 @@ namespace Scripts.Weapon
         {
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputController = inputController;
-            _inputController.OnAttackFinished += AttackFinished;
-            _inputController.OnAttackPressed += AttackPressed;
-            _inputController.OnBlockPressed += Block;
             _curentWeaponType = EWeaponType.None;
         }
 
@@ -50,67 +44,8 @@ namespace Scripts.Weapon
             _currentWeapon = _diContainer.InstantiatePrefab(_weaponTypeModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation, _weaponOnBeltPivot.transform);
         }
 
-        private void Update()
-        {
-            _timeSinceAttack += Time.deltaTime;
-            if (_curentWeaponType != EWeaponType.None && _isAttacking)
-            {
-                AttackCombo();
-            }         
-        }
-
-        private void AttackPressed()
-        {
-            if (_curentWeaponType != EWeaponType.None)
-            {
-                _isAttacking = true;
-                IsAttacking?.Invoke(true);
-            }
-        }
-
-        private void AttackFinished()
-        {
-            _isAttacking = false;
-            IsBlocking?.Invoke(false);
-        }
-
-        private void OnAttackAnimationEnd()
-        {
-            IsAttacking?.Invoke(_isAttacking);
-        }
-
-        private void AttackCombo()
-        {
-            if (_timeSinceAttack > 0.8f)
-            {
-                _currentAttack++;
-
-                if (_currentAttack > 3)
-                {
-                    _currentAttack = 1;
-                }
-
-                if (_timeSinceAttack > 1f)
-                {
-                    _currentAttack = 1;
-                }
-
-                OnAttack?.Invoke(_currentAttack);
-                _timeSinceAttack = 0;
-            }          
-        }
-
-        private void Block()
-        {
-            if (_curentWeaponType != EWeaponType.None)
-            {
-               IsBlocking?.Invoke(true);
-            }
-        }
-
         private void DrawWeapon() 
         {
-            //TODO: попытатся уйти от animation event чтобы анимация не проигрывала по 2 раза
             if (_currentWeapon == null)
             {
                 return;
@@ -136,13 +71,6 @@ namespace Scripts.Weapon
             _currentWeapon.transform.parent = target.transform;
             _currentWeapon.transform.position = target.position;
             _currentWeapon.transform.rotation = target.rotation;
-        }
-
-        private void OnDestroy()
-        {
-            _inputController.OnAttackFinished -= AttackFinished;
-            _inputController.OnAttackPressed -= AttackPressed;
-            _inputController.OnBlockPressed -= Block;
         }
     }
 }

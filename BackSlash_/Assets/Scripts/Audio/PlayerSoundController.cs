@@ -10,17 +10,17 @@ public class PlayerSoundController : MonoBehaviour
     private AudioController _audioManager;
     private InputController _inputController;
     private WeaponController _weaponController;
+    private CombatSystem _combatSystem;
 
     private EventInstance _playerFootsteps;
     private EventInstance _swordSlashSound;
 
     [Inject]
-    private void Construct(InputController inputController, AudioController audioManager, MovementController movementController, WeaponController weaponController)
+    private void Construct(InputController inputController, AudioController audioManager, MovementController movementController, WeaponController weaponController, CombatSystem combatSystem)
     {
         _audioManager = audioManager;
 
         _weaponController = weaponController;
-        _weaponController.OnAttack += PlaySwordSound;
         _weaponController.OnDrawWeapon += PlayDrawSwordSound;
         _weaponController.OnSneathWeapon += PlaySneathSwordSound;
 
@@ -31,11 +31,13 @@ public class PlayerSoundController : MonoBehaviour
         _movementController = movementController;
         _movementController.IsMoving += PlayFootstepsSound;
         _movementController.OnLanded += PlayLandingSound;
+        _combatSystem.OnPrimaryAttack += PlaySwordSound;
+
     }
 
     private void OnDestroy()
     {
-        _weaponController.OnAttack -= PlaySwordSound;
+        _combatSystem.OnPrimaryAttack -= PlaySwordSound;
         _weaponController.OnDrawWeapon -= PlayDrawSwordSound;
         _weaponController.OnSneathWeapon -= PlaySneathSwordSound;
 
@@ -79,10 +81,10 @@ public class PlayerSoundController : MonoBehaviour
         _audioManager.PlayGenericEvent(FMODEvents.instance.PlayerLanded);
     }
 
-    private void PlaySwordSound(int currentAttack)
+    private void PlaySwordSound()
     {
         _swordSlashSound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        _swordSlashSound.setParameterByName("Combo", currentAttack);
+        _swordSlashSound.setParameterByName("Combo", 1);
         _swordSlashSound.start();
     }
 

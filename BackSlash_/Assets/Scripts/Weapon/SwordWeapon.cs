@@ -11,14 +11,14 @@ public class SwordWeapon : MonoBehaviour
     private bool isHit;
 
     private WeaponTypesDatabase _weaponTypesDatabase;
-    private WeaponController _weaponController;
+    private CombatSystem _cobatSystem;
 
     [Inject]
-    private void Construct(WeaponTypesDatabase weaponTypesDatabase, WeaponController weaponController)
+    private void Construct(WeaponTypesDatabase weaponTypesDatabase, CombatSystem cobatSystem)
     {
         _weaponTypesDatabase = weaponTypesDatabase;
-        _weaponController = weaponController;
-        _weaponController.IsAttacking += DealDamage;
+        _cobatSystem = cobatSystem;
+        _cobatSystem.IsAttacking += DealDamage;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -28,7 +28,7 @@ public class SwordWeapon : MonoBehaviour
             var hitbox = other.GetComponent<HitBox>();
             if (hitbox)
             {
-                var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(_weaponController.CurrentWeaponType);
+                var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
                 var weaponDamage = weaponType.LightAttackDamage;
                 hitbox.OnSwordHit(weaponDamage);
             }
@@ -42,6 +42,6 @@ public class SwordWeapon : MonoBehaviour
 
     private void OnDestroy()
     {
-        _weaponController.IsAttacking -= DealDamage;
+        _cobatSystem.IsAttacking -= DealDamage;
     }
 }

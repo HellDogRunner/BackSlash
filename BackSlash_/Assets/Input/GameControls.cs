@@ -55,13 +55,22 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Attack"",
+                    ""name"": ""LightAttack"",
                     ""type"": ""Button"",
                     ""id"": ""65638328-091b-4310-9c8f-0a6723a4bbd3"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HeavyAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""b3ef41d2-08fe-46e4-a5e5-010eda4e019e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Dodge"",
@@ -101,7 +110,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Block"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""383a9525-7348-4f22-81f5-cb72d5b34aba"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -121,6 +130,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": ""Escape"",
                     ""type"": ""Button"",
                     ""id"": ""3c02680a-2829-4e10-a795-056af6f95603"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""StartKeySequence"",
+                    ""type"": ""Button"",
+                    ""id"": ""cc92e7c0-92de-4477-8d6a-261213b7f48a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -220,10 +238,10 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""31ed970c-7418-477e-81bb-ced7ccb751e6"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Hold(duration=9999,pressPoint=0.2)"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Attack"",
+                    ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -263,8 +281,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3b844c81-1f4b-4ba9-8e5a-bf7c4052ec84"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": ""Hold(duration=9999,pressPoint=0.2)"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Block"",
@@ -325,6 +343,96 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""Escape"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1be2235c-323d-4e07-8caa-2f3c675b6aa2"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StartKeySequence"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ee045e2-fab5-464b-bf42-9bd5410d612f"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HeavyAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Combos"",
+            ""id"": ""e4dfa779-a317-45ec-80f4-69ee6261d3dd"",
+            ""actions"": [
+                {
+                    ""name"": ""special_1"",
+                    ""type"": ""Button"",
+                    ""id"": ""ea7aab35-3b5f-4884-82ec-f9d53fde4aee"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""special_2"",
+                    ""type"": ""Button"",
+                    ""id"": ""956d906a-2120-4999-bd8f-7c644764ff8e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""special_3"",
+                    ""type"": ""Button"",
+                    ""id"": ""de4aaca0-0f18-42e2-8e8a-433c55439d57"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""74f350cb-f682-4e16-b457-3fb5bfffc110"",
+                    ""path"": ""<SimulatedComboDevice>/special_1_comboButton0"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""special_1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9e768e9a-ff6c-480a-a1bb-6ce61c787711"",
+                    ""path"": ""<SimulatedComboDevice>/special_2_comboButton1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""special_2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""85fa4860-4ced-45d8-b9f1-e5b6c04503d4"",
+                    ""path"": ""<SimulatedComboDevice>/special_3_comboButton2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""special_3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -336,7 +444,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Gameplay_WASD = m_Gameplay.FindAction("WASD", throwIfNotFound: true);
         m_Gameplay_Mouse = m_Gameplay.FindAction("Mouse", throwIfNotFound: true);
         m_Gameplay_Sprint = m_Gameplay.FindAction("Sprint", throwIfNotFound: true);
-        m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
+        m_Gameplay_LightAttack = m_Gameplay.FindAction("LightAttack", throwIfNotFound: true);
+        m_Gameplay_HeavyAttack = m_Gameplay.FindAction("HeavyAttack", throwIfNotFound: true);
         m_Gameplay_Dodge = m_Gameplay.FindAction("Dodge", throwIfNotFound: true);
         m_Gameplay_ShowWeapon = m_Gameplay.FindAction("ShowWeapon", throwIfNotFound: true);
         m_Gameplay_HideWeapon = m_Gameplay.FindAction("HideWeapon", throwIfNotFound: true);
@@ -344,6 +453,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Gameplay_Block = m_Gameplay.FindAction("Block", throwIfNotFound: true);
         m_Gameplay_TargetLock = m_Gameplay.FindAction("TargetLock", throwIfNotFound: true);
         m_Gameplay_Escape = m_Gameplay.FindAction("Escape", throwIfNotFound: true);
+        m_Gameplay_StartKeySequence = m_Gameplay.FindAction("StartKeySequence", throwIfNotFound: true);
+        // Combos
+        m_Combos = asset.FindActionMap("Combos", throwIfNotFound: true);
+        m_Combos_special_1 = m_Combos.FindAction("special_1", throwIfNotFound: true);
+        m_Combos_special_2 = m_Combos.FindAction("special_2", throwIfNotFound: true);
+        m_Combos_special_3 = m_Combos.FindAction("special_3", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -408,7 +523,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_WASD;
     private readonly InputAction m_Gameplay_Mouse;
     private readonly InputAction m_Gameplay_Sprint;
-    private readonly InputAction m_Gameplay_Attack;
+    private readonly InputAction m_Gameplay_LightAttack;
+    private readonly InputAction m_Gameplay_HeavyAttack;
     private readonly InputAction m_Gameplay_Dodge;
     private readonly InputAction m_Gameplay_ShowWeapon;
     private readonly InputAction m_Gameplay_HideWeapon;
@@ -416,6 +532,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Block;
     private readonly InputAction m_Gameplay_TargetLock;
     private readonly InputAction m_Gameplay_Escape;
+    private readonly InputAction m_Gameplay_StartKeySequence;
     public struct GameplayActions
     {
         private @GameControls m_Wrapper;
@@ -423,7 +540,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @WASD => m_Wrapper.m_Gameplay_WASD;
         public InputAction @Mouse => m_Wrapper.m_Gameplay_Mouse;
         public InputAction @Sprint => m_Wrapper.m_Gameplay_Sprint;
-        public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
+        public InputAction @LightAttack => m_Wrapper.m_Gameplay_LightAttack;
+        public InputAction @HeavyAttack => m_Wrapper.m_Gameplay_HeavyAttack;
         public InputAction @Dodge => m_Wrapper.m_Gameplay_Dodge;
         public InputAction @ShowWeapon => m_Wrapper.m_Gameplay_ShowWeapon;
         public InputAction @HideWeapon => m_Wrapper.m_Gameplay_HideWeapon;
@@ -431,6 +549,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Block => m_Wrapper.m_Gameplay_Block;
         public InputAction @TargetLock => m_Wrapper.m_Gameplay_TargetLock;
         public InputAction @Escape => m_Wrapper.m_Gameplay_Escape;
+        public InputAction @StartKeySequence => m_Wrapper.m_Gameplay_StartKeySequence;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -449,9 +568,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
-            @Attack.started += instance.OnAttack;
-            @Attack.performed += instance.OnAttack;
-            @Attack.canceled += instance.OnAttack;
+            @LightAttack.started += instance.OnLightAttack;
+            @LightAttack.performed += instance.OnLightAttack;
+            @LightAttack.canceled += instance.OnLightAttack;
+            @HeavyAttack.started += instance.OnHeavyAttack;
+            @HeavyAttack.performed += instance.OnHeavyAttack;
+            @HeavyAttack.canceled += instance.OnHeavyAttack;
             @Dodge.started += instance.OnDodge;
             @Dodge.performed += instance.OnDodge;
             @Dodge.canceled += instance.OnDodge;
@@ -473,6 +595,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Escape.started += instance.OnEscape;
             @Escape.performed += instance.OnEscape;
             @Escape.canceled += instance.OnEscape;
+            @StartKeySequence.started += instance.OnStartKeySequence;
+            @StartKeySequence.performed += instance.OnStartKeySequence;
+            @StartKeySequence.canceled += instance.OnStartKeySequence;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -486,9 +611,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
-            @Attack.started -= instance.OnAttack;
-            @Attack.performed -= instance.OnAttack;
-            @Attack.canceled -= instance.OnAttack;
+            @LightAttack.started -= instance.OnLightAttack;
+            @LightAttack.performed -= instance.OnLightAttack;
+            @LightAttack.canceled -= instance.OnLightAttack;
+            @HeavyAttack.started -= instance.OnHeavyAttack;
+            @HeavyAttack.performed -= instance.OnHeavyAttack;
+            @HeavyAttack.canceled -= instance.OnHeavyAttack;
             @Dodge.started -= instance.OnDodge;
             @Dodge.performed -= instance.OnDodge;
             @Dodge.canceled -= instance.OnDodge;
@@ -510,6 +638,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Escape.started -= instance.OnEscape;
             @Escape.performed -= instance.OnEscape;
             @Escape.canceled -= instance.OnEscape;
+            @StartKeySequence.started -= instance.OnStartKeySequence;
+            @StartKeySequence.performed -= instance.OnStartKeySequence;
+            @StartKeySequence.canceled -= instance.OnStartKeySequence;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -527,12 +658,75 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         }
     }
     public GameplayActions @Gameplay => new GameplayActions(this);
+
+    // Combos
+    private readonly InputActionMap m_Combos;
+    private List<ICombosActions> m_CombosActionsCallbackInterfaces = new List<ICombosActions>();
+    private readonly InputAction m_Combos_special_1;
+    private readonly InputAction m_Combos_special_2;
+    private readonly InputAction m_Combos_special_3;
+    public struct CombosActions
+    {
+        private @GameControls m_Wrapper;
+        public CombosActions(@GameControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @special_1 => m_Wrapper.m_Combos_special_1;
+        public InputAction @special_2 => m_Wrapper.m_Combos_special_2;
+        public InputAction @special_3 => m_Wrapper.m_Combos_special_3;
+        public InputActionMap Get() { return m_Wrapper.m_Combos; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CombosActions set) { return set.Get(); }
+        public void AddCallbacks(ICombosActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CombosActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CombosActionsCallbackInterfaces.Add(instance);
+            @special_1.started += instance.OnSpecial_1;
+            @special_1.performed += instance.OnSpecial_1;
+            @special_1.canceled += instance.OnSpecial_1;
+            @special_2.started += instance.OnSpecial_2;
+            @special_2.performed += instance.OnSpecial_2;
+            @special_2.canceled += instance.OnSpecial_2;
+            @special_3.started += instance.OnSpecial_3;
+            @special_3.performed += instance.OnSpecial_3;
+            @special_3.canceled += instance.OnSpecial_3;
+        }
+
+        private void UnregisterCallbacks(ICombosActions instance)
+        {
+            @special_1.started -= instance.OnSpecial_1;
+            @special_1.performed -= instance.OnSpecial_1;
+            @special_1.canceled -= instance.OnSpecial_1;
+            @special_2.started -= instance.OnSpecial_2;
+            @special_2.performed -= instance.OnSpecial_2;
+            @special_2.canceled -= instance.OnSpecial_2;
+            @special_3.started -= instance.OnSpecial_3;
+            @special_3.performed -= instance.OnSpecial_3;
+            @special_3.canceled -= instance.OnSpecial_3;
+        }
+
+        public void RemoveCallbacks(ICombosActions instance)
+        {
+            if (m_Wrapper.m_CombosActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICombosActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CombosActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CombosActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CombosActions @Combos => new CombosActions(this);
     public interface IGameplayActions
     {
         void OnWASD(InputAction.CallbackContext context);
         void OnMouse(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
-        void OnAttack(InputAction.CallbackContext context);
+        void OnLightAttack(InputAction.CallbackContext context);
+        void OnHeavyAttack(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
         void OnShowWeapon(InputAction.CallbackContext context);
         void OnHideWeapon(InputAction.CallbackContext context);
@@ -540,5 +734,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnBlock(InputAction.CallbackContext context);
         void OnTargetLock(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
+        void OnStartKeySequence(InputAction.CallbackContext context);
+    }
+    public interface ICombosActions
+    {
+        void OnSpecial_1(InputAction.CallbackContext context);
+        void OnSpecial_2(InputAction.CallbackContext context);
+        void OnSpecial_3(InputAction.CallbackContext context);
     }
 }

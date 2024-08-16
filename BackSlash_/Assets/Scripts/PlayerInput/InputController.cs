@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using Zenject;
 
 namespace Scripts.Player
@@ -22,36 +25,26 @@ namespace Scripts.Player
         public event Action OnAttackFinished;
         public event Action OnLockKeyPressed;
         public event Action OnMenuKeyPressed;
+
+        public event Action<int> OnMouseButtonsPressed;
         public Vector3 MoveDirection => _moveDirection;
 
-        [Inject]
-        private void Construct()
+
+        private void Awake()
         {
             _playerControls = new GameControls();
+        }
+        private void OnEnable()
+        {           
+            _playerControls.Enable();
+            SubscribeToActions();
+            _moveDirection = Vector3.zero;
+        }
 
-            _playerControls.Gameplay.WASD.performed += ChangeDirection;           
-            _playerControls.Gameplay.Dodge.performed += Dodge;
-
-            _playerControls.Gameplay.Attack.started += AttackStarted;
-            _playerControls.Gameplay.Attack.performed += AttackFinished;
-            _playerControls.Gameplay.Attack.canceled += AttackFinished;
-
-            _playerControls.Gameplay.Sprint.started += Sprint;
-            _playerControls.Gameplay.Sprint.performed += Run;
-            _playerControls.Gameplay.Sprint.canceled += Run;
-
-            _playerControls.Gameplay.Block.started += Block;
-            _playerControls.Gameplay.Block.performed += AttackFinished;
-            _playerControls.Gameplay.Block.canceled += AttackFinished;
-
-            _playerControls.Gameplay.Jump.performed += Jump;
-
-            _playerControls.Gameplay.ShowWeapon.performed += ShowWeapon;
-            _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
-
-            _playerControls.Gameplay.TargetLock.performed += Lock;
-
-            _playerControls.Gameplay.Escape.performed += PauseMenu;
+        private void OnDisable()
+        {
+            _playerControls.Disable();
+            UnsubscribeToActions();
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
@@ -90,50 +83,89 @@ namespace Scripts.Player
             OnDodgeKeyPressed?.Invoke();
         }
 
-        private void AttackStarted(InputAction.CallbackContext contex)
+        private void AttackPressed(InputAction.CallbackContext context)
         {
             OnAttackPressed?.Invoke();
+            OnMouseButtonsPressed?.Invoke(1);
         }
 
-        private void AttackFinished(InputAction.CallbackContext contex)
+        private void AttackFinished(InputAction.CallbackContext context)
         {
             OnAttackFinished?.Invoke();
         }
 
-        private void Jump(InputAction.CallbackContext contex)
+        private void Jump(InputAction.CallbackContext context)
         {
             OnJumpKeyPressed?.Invoke();
         }
 
-        private void Block(InputAction.CallbackContext contex)
+        private void BlockPressed(InputAction.CallbackContext context)
         {
             OnBlockPressed?.Invoke();
+            OnMouseButtonsPressed?.Invoke(2);
         }
-        private void Lock(InputAction.CallbackContext contex)
+        private void Lock(InputAction.CallbackContext context)
         {
             OnLockKeyPressed?.Invoke();
         }
 
-        private void PauseMenu(InputAction.CallbackContext contex)
+        private void PauseMenu(InputAction.CallbackContext context)
         {
             OnMenuKeyPressed?.Invoke();
         }
 
-        private void OnEnable()
+        private void SubscribeToActions() 
         {
-            _playerControls.Enable();
+            _playerControls.Gameplay.WASD.performed += ChangeDirection;
+            _playerControls.Gameplay.Dodge.performed += Dodge;
 
-            _moveDirection = Vector3.zero;
+            _playerControls.Gameplay.LightAttack.started += AttackPressed;
+            _playerControls.Gameplay.LightAttack.performed += AttackFinished;
+            _playerControls.Gameplay.LightAttack.canceled += AttackFinished;
+
+            _playerControls.Gameplay.Sprint.started += Sprint;
+            _playerControls.Gameplay.Sprint.performed += Run;
+            _playerControls.Gameplay.Sprint.canceled += Run;
+
+            _playerControls.Gameplay.Block.started += BlockPressed;
+            _playerControls.Gameplay.Block.performed += AttackFinished;
+            _playerControls.Gameplay.Block.canceled += AttackFinished;
+
+            _playerControls.Gameplay.Jump.performed += Jump;
+
+            _playerControls.Gameplay.ShowWeapon.performed += ShowWeapon;
+            _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
+
+            _playerControls.Gameplay.TargetLock.performed += Lock;
+
+            _playerControls.Gameplay.Escape.performed += PauseMenu;
         }
 
-        private void OnDisable()
+        private void UnsubscribeToActions() 
         {
-            _playerControls.Disable();
-        }
+            _playerControls.Gameplay.WASD.performed -= ChangeDirection;
+            _playerControls.Gameplay.Dodge.performed -= Dodge;
 
-        private void OnDestroy()
-        {
-            _playerControls.Disable();
+            _playerControls.Gameplay.LightAttack.started -= AttackPressed;
+            _playerControls.Gameplay.LightAttack.performed -= AttackFinished;
+            _playerControls.Gameplay.LightAttack.canceled -= AttackFinished;
+
+            _playerControls.Gameplay.Sprint.started -= Sprint;
+            _playerControls.Gameplay.Sprint.performed -= Run;
+            _playerControls.Gameplay.Sprint.canceled -= Run;
+
+            _playerControls.Gameplay.Block.started -= BlockPressed;
+            _playerControls.Gameplay.Block.performed -= AttackFinished;
+            _playerControls.Gameplay.Block.canceled -= AttackFinished;
+
+            _playerControls.Gameplay.Jump.performed -= Jump;
+
+            _playerControls.Gameplay.ShowWeapon.performed -= ShowWeapon;
+            _playerControls.Gameplay.HideWeapon.performed -= HideWeapon;
+
+            _playerControls.Gameplay.TargetLock.performed -= Lock;
+
+            _playerControls.Gameplay.Escape.performed -= PauseMenu;
         }
     }
 }
