@@ -7,11 +7,11 @@ public class SceneTransitionService : MonoBehaviour
 
     private AsyncOperation _loadingSceneOperation;
 
-    private SceneTransitionAnimationController _animationController;
+    private SceneTransitionAnimationService _animationController;
 
     private void Awake()
     {
-        _animationController = gameObject.GetComponent<SceneTransitionAnimationController>();
+        _animationController = gameObject.GetComponent<SceneTransitionAnimationService>();
     }
 
     private void Start()

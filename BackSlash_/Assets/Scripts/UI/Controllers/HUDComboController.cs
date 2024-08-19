@@ -1,128 +1,162 @@
 using Scripts.Player;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
 public class HUDComboController : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> _keys;
+    [SerializeField] private ComboAnimationService _animationService;
     [SerializeField] private List<string> _combo;
 
-    private List<Transform> _images;
+    [Header("Key Graphics")]
+    [SerializeField] private GameObject _control;
+    [SerializeField] private GameObject _leftMouse;
+    [SerializeField] private GameObject _rightMouse;
+    [SerializeField] private GameObject _wheelMouse;
+
+    [Header("Keys")]
+    [SerializeField] private GameObject _objectMouse;
+    [SerializeField] private GameObject _objectKB;
+    [SerializeField] private TMP_Text _textKB;
+
     private int _currentKey = 0;
-    private string _firstKey;
-    private bool _isKeyboard;
+    private float _currentFill;
 
     public event Action OnComboFinished;
     public event Action OnComboCanceled;
 
-    //  заменить на нормальный импорт комбо из Scriptable Objects
-    //private List<string> _combo = new List<string>() { "LightAttack", "LightAttack", "Dodge", "LightAttack" };
+    private Dictionary<string, GameObject> _keysGraphics = new Dictionary<string, GameObject>();
+    private Dictionary<string, string> _keysText = new Dictionary<string, string>();
+    private List<string> _keysName = new List<string>();
 
     private InputController _inputController;
-    private ComboAnimationService _comboAnimation;
 
     [Inject]
     private void Construct(InputController inputController)
     {
         _inputController = inputController;
-        SubscribeOnEvents();
+        _inputController.OnAttackPressed += LightAttack;
+        _inputController.OnDodgeKeyPressed += Dodge;
 
-        _comboAnimation = GetComponent<ComboAnimationService>();
+        _animationService.OnAnimationFinished += SetStartState;
+    }
 
-        if (_combo[0] == "LightAttack")
-        {
-            _isKeyboard = false;
-            _firstKey = "leftMouse";
-        }
-        else
-        {
-            _isKeyboard = true;
-            _firstKey = "control";
-        }
+    private void Awake()
+    {
+        _keysGraphics.Add("control", _control);
+        _keysGraphics.Add("leftMouse", _leftMouse);
+        _keysGraphics.Add("rightMouse", _rightMouse);
+        _keysGraphics.Add("wheelMouse", _wheelMouse);
 
-        _comboAnimation.InstantiateKeys();
-        _comboAnimation.SetStartState(_keys, _firstKey, _isKeyboard);
+        _keysText.Add("LightAttack", "leftMouse");
+        _keysText.Add("Dodge", "control");
+
+        _keysName.Add("leftMouse");
+        _keysName.Add("rightMouse");
+        _keysName.Add("wheelMouse");
+
+        SetStartState();
     }
 
     private void LightAttack()
     {
-        ComboManager("LightAttack", "leftMouse");
+        ComboManager("LightAttack");
     }
 
     private void Dodge()
     {
-        ComboManager("Dodge", "control");
+        ComboManager("Dodge");
     }
 
-    private void ComboManager(string segment, string key)
+    private void SetStartState()
     {
-        if (segment == _combo[_currentKey])
+        Tuple<GameObject, GameObject> keyElements = GetKeyElements(_combo[0]);
+        SwitchActiveGraphics(keyElements.Item1);
+        _animationService.ShowKey(keyElements.Item2);
+
+        _currentKey = 0;
+        _currentFill = 0;
+        _animationService.IndicatorPosition(_currentFill);
+        _animationService.AnimateStartCombo();
+    }
+
+    private void ComboManager(string element)
+    {
+        if (_currentKey == -1) return;
+
+        Tuple<GameObject, GameObject> keyElements = GetKeyElements(_combo[_currentKey]);
+        _animationService.HideKey(keyElements.Item2);
+
+        if (element == _combo[_currentKey])
         {
-            if (_currentKey == _keys.Count - 1)
+            _currentFill += 1.0f / _combo.Count;
+            _animationService.IndicatorPosition(_currentFill);
+
+            if (_currentKey == _combo.Count - 1)
             {
-                _comboAnimation.ManageAnimation(_keys[_currentKey], null, null, false);
-                CheckIndex();
+                _currentKey++;
+                FinishCombo();
                 return;
             }
 
-            bool isKey;
-            if (_combo[_currentKey + 1] == "LightAttack")
-            {
-                isKey = false;
-            }
-            else
-            {
-                isKey = true;
-            }
-
-            _comboAnimation.ManageAnimation(_keys[_currentKey], _keys[_currentKey + 1], key, isKey);
-
-            CheckIndex();
+            Tuple<GameObject, GameObject> nextKeyElements = GetKeyElements(_combo[_currentKey + 1]);
+            SwitchActiveGraphics(nextKeyElements.Item1);
+            _animationService.ShowKey(nextKeyElements.Item2);
+            _currentKey++;
         }
         else
         {
-            _comboAnimation.AnimateCancelCombo();
-            _comboAnimation.SetStartState(_keys, _firstKey, _isKeyboard);
-            _currentKey = 0;
+            _currentKey = -1;
+            _animationService.IndicatorPosition(0);
+            _animationService.AnimateCancelCombo();
             OnComboCanceled?.Invoke();
-            UnsubscribeOnEvents();
         }
     }
 
-    private void CheckIndex()
+    private void FinishCombo()
     {
-        _currentKey++;
+        _animationService.AnimateFinishCombo();
+        OnComboFinished?.Invoke();
+    }
 
-        if (_currentKey == _keys.Count)
+    private Tuple<GameObject, GameObject> GetKeyElements(string key)
+    {
+        string keyText;
+        GameObject keyGraphics;
+        GameObject keyObject;
+
+        _keysText.TryGetValue(key, out keyText);
+        _keysGraphics.TryGetValue(keyText, out keyGraphics);
+
+        if (_keysName.Contains(keyText))
         {
-            _currentKey = 0;
-            _comboAnimation.AnimateFinishCombo();
-            _comboAnimation.SetStartState(_keys, _firstKey, _isKeyboard);
-            OnComboFinished?.Invoke();
+            keyObject = _objectMouse;
         }
+        else
+        {
+            _textKB.text = keyText;
+            keyObject = _objectKB;
+        }
+
+        return Tuple.Create(keyGraphics, keyObject);
     }
 
-    public void SubscribeOnEvents()
+    private void SwitchActiveGraphics(GameObject graphics)
     {
-        _inputController.OnAttackPressed += LightAttack;
-        _inputController.OnDodgeKeyPressed += Dodge;
-    }
-
-    public void UnsubscribeOnEvents()
-    {
-        _inputController.OnAttackPressed -= LightAttack;
-        _inputController.OnDodgeKeyPressed -= Dodge;
-    }
-
-    public void DisableFade()
-    {
-        _comboAnimation.FadeOff();
+        foreach (KeyValuePair<string, GameObject> pair in _keysGraphics)
+        {
+            pair.Value.SetActive(false);
+        }
+        graphics.SetActive(true);
     }
 
     private void OnDestroy()
     {
-        UnsubscribeOnEvents();
+        _inputController.OnAttackPressed -= LightAttack;
+        _inputController.OnDodgeKeyPressed -= Dodge;
+
+        _animationService.OnAnimationFinished -= SetStartState;
     }
 }

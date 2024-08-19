@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 public class CurrentComboController : MonoBehaviour
@@ -17,9 +16,9 @@ public class CurrentComboController : MonoBehaviour
     private void Awake()
     {
         _combos.Add(_sequence1.GetComponent<HUDComboController>());
-        _combos.Add(_sequence2.GetComponent<HUDComboController>());
-        _combos.Add(_sequence3.GetComponent<HUDComboController>());
-        _combos.Add(_sequence4.GetComponent<HUDComboController>());
+        //_combos.Add(_sequence2.GetComponent<HUDComboController>());
+        //_combos.Add(_sequence3.GetComponent<HUDComboController>());
+        //_combos.Add(_sequence4.GetComponent<HUDComboController>());
 
         foreach (var combo in _combos)
         {
@@ -32,9 +31,7 @@ public class CurrentComboController : MonoBehaviour
     {
         foreach (var combo in _combos)
         {
-            combo.UnsubscribeOnEvents();
-            combo.SubscribeOnEvents();
-            combo.DisableFade();
+
         }
     }
 
@@ -46,8 +43,7 @@ public class CurrentComboController : MonoBehaviour
         {
             foreach (var combo in _combos)
             {
-                combo.UnsubscribeOnEvents();
-                combo.SubscribeOnEvents();
+
             }
             _cancelCounter = 0;
         }

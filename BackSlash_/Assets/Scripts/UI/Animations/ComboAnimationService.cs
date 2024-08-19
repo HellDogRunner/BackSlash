@@ -1,121 +1,98 @@
-using System.Collections.Generic;
-using TMPro;
+using DG.Tweening;
+using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ComboAnimationService : MonoBehaviour
 {
-    [SerializeField] private RectTransform _keys;
-
-    [Header("KeysNeedToPress")]
-    [SerializeField] private GameObject _keyboard;
-    [SerializeField] private GameObject _mouse;
+    [Header("Animation Settings")]
+    //[SerializeField] private Color _inactiveIndicator = new Color(0.1f, 0.19f, 0.27f, 1);
+    [SerializeField] private Color _fillIndicator = new Color(0.066f, 1, 1, 1);
+    [SerializeField] private float _duration = 1;
 
     [Header("Animation Components")]
     [SerializeField] private CanvasGroup _canvasGroup;
+    [Space]
+    [SerializeField] private Image _fillImage;
+    [SerializeField] private float _fillDuration = 0.5f;
+    [Space]
+    [SerializeField] private Image _frameImage;
+    [Space]
+    [SerializeField] private Image _flash;
 
-    private TMP_Text _text;
-    private List<GameObject> _mouseButtons;
 
-    public void InstantiateKeys()
+    private Sequence _sequence;
+
+    public event Action OnAnimationFinished;
+
+
+    // Заполняет индикатор прогресса комбо
+    public void IndicatorPosition(float value)
     {
-        _keyboard = Instantiate(_keyboard, _keys);
-        _text = _keyboard.GetComponentInChildren<TMP_Text>();
-
-        _mouse = Instantiate(_mouse, _keys);
-        _mouseButtons = GetChilds(_mouse);
-    }
-
-    private List<GameObject> GetChilds(GameObject key)
-    {
-        List<GameObject> childs = new List<GameObject>();
-
-        for (int index = 0; index < key.transform.childCount; index++)
+        //_fillImage.fillAmount += isProgress;
+        //ComboContinueFlash(_fillImage.fillAmount);
+        if (value == 0)
         {
-            childs.Add(key.transform.GetChild(index).gameObject);
-        }
-
-        return childs;
-    }
-
-    public void ManageAnimation(GameObject currentIndicator, GameObject nextIndicator, string nextKey, bool isKeyboard)
-    {
-        HideOtherKeys();
-
-        currentIndicator.SetActive(true);
-        var currentKeyChilds = GetChilds(currentIndicator);
-        SwitchBackground(currentKeyChilds, true);
-
-        if (nextIndicator == null) return;
-
-        AnimateKey(nextIndicator, nextKey, isKeyboard);
-    }
-
-    public void SetStartState(List<GameObject> keys, string nextButton, bool isKeyboard)
-    {
-        foreach (var key in keys)
-        {
-            SwitchBackground(GetChilds(key), false);
-            key.SetActive(true);
-        }
-
-        AnimateKey(keys[0], nextButton, isKeyboard);
-    }
-
-    // Переключает клавишу комбо между уже нажатой и ещё не нажатой
-    public void SwitchBackground(List<GameObject> images, bool isPressed)
-    {
-        images[1].gameObject.SetActive(!isPressed);
-        images[2].gameObject.SetActive(isPressed);
-    }
-
-    // Анимация показа клавиши для продолжения комбо
-    public void AnimateKey(GameObject key, string nextButton, bool isKeyboard)
-    {
-        GameObject nextKey;
-
-        if (isKeyboard)
-        {
-            nextKey = _keyboard;
-            _text.text = "CTRL";
+            _fillImage.fillAmount = 0;
         }
         else
         {
-            nextKey = _mouse;
-
-            foreach(var button in _mouseButtons)
-            {
-                button.SetActive(false);
-            }
-            _mouseButtons[0].SetActive(true);
+            _fillImage.DOFillAmount(value, _fillDuration).SetEase(Ease.OutExpo);
         }
-
-        key.SetActive(false);
-        nextKey.SetActive(true);
-        nextKey.transform.position = key.transform.position;
     }
 
-    // Скрывает все клавиши продолждения комбо
-    private void HideOtherKeys()
+    // Показывает клавишу для продолжения комбо
+    public void ShowKey(GameObject key)
     {
-        _keyboard.SetActive(false);
-        _mouse.SetActive(false);
+        key.SetActive(true);
     }
 
-    // Анимация прерванного комбо
+    // Скрывает клавишу для продолжения комбо
+    public void HideKey(GameObject key)
+    {
+        key.SetActive(false);
+    }
+
+    private void ComboContinueFlash(float value)
+    {
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(_flash.DOFade(value, 0.1f));
+        sequence.Append(_flash.DOFade(0, 0.01f));
+    }
+
+    private void FrameAnimation()
+    {
+        _sequence = DOTween.Sequence();
+        _sequence.AppendCallback(() =>
+        {
+            _frameImage.DOFade(0, _duration).SetEase(Ease.Flash);
+            _frameImage.transform.DOScale(0.75f, _duration).SetEase(Ease.Flash);
+        });
+        _sequence.AppendInterval(_duration + 0.03f);
+        _sequence.AppendCallback(() =>
+        {
+            _frameImage.color = _fillIndicator;
+            _frameImage.transform.localScale = Vector3.one;
+        });
+        _sequence.SetLoops(-1);
+    }
+
+    // Комбо прервано
     public void AnimateCancelCombo()
     {
-        HideOtherKeys();
-        _canvasGroup.alpha = 0.15f;
+        _canvasGroup.alpha = 1;
+        _canvasGroup.DOFade(0.7f, 0.5f).OnComplete(() => OnAnimationFinished?.Invoke());
     }
 
-    // Анимация законченного комбо
+    // Комбо закончено
     public void AnimateFinishCombo()
     {
-        _canvasGroup.alpha = 1f;
+        _canvasGroup.alpha = 0.7f;
+        _canvasGroup.DOFade(1, 0.5f).OnComplete(() => OnAnimationFinished?.Invoke());
     }
 
-    public void FadeOff()
+    public void AnimateStartCombo()
     {
-        _canvasGroup.alpha = 1f;
+        _canvasGroup.alpha = 1;
     }
 }

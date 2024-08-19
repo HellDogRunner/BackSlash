@@ -226,7 +226,7 @@ namespace UnityEngine.UI.Extensions
 #if UNITY_2020 || UNITY_2019
                             if (textureSheetAnimation.rowMode == ParticleSystemAnimationRowMode.Random)
 #else
-                            if (textureSheetAnimation.useRandomRow)
+                            if (textureSheetAnimation.rowMode == ParticleSystemAnimationRowMode.Random)
 #endif
                             { // FIXME - is this handled internally by rowIndex?
                                 row = Mathf.Abs((int)particle.randomSeed % textureSheetAnimation.numTilesY);
