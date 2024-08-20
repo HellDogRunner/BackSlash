@@ -5,94 +5,105 @@ using UnityEngine.UI;
 
 public class ComboAnimationService : MonoBehaviour
 {
-    [Header("Animation Settings")]
-    //[SerializeField] private Color _inactiveIndicator = new Color(0.1f, 0.19f, 0.27f, 1);
-    [SerializeField] private Color _fillIndicator = new Color(0.066f, 1, 1, 1);
-    [SerializeField] private float _duration = 1;
-
-    [Header("Animation Components")]
+    [Header("Components")]
     [SerializeField] private CanvasGroup _canvasGroup;
-    [Space]
+    [SerializeField] private CanvasGroup _backslashCG;
     [SerializeField] private Image _fillImage;
-    [SerializeField] private float _fillDuration = 0.5f;
-    [Space]
-    [SerializeField] private Image _frameImage;
-    [Space]
+    [SerializeField] private CanvasGroup _blinkCG;
+    [SerializeField] private Image _blinkImage;
     [SerializeField] private Image _flash;
 
+    [Header("Settings")]
+    [SerializeField] private float _fillDuration = 0.5f;
+    [SerializeField] private float _CancelDuration = 0.2f;
+    [SerializeField] private float _blinkDuration = 0.5f;
+    [SerializeField] private float _minBlinkFade = 0;
+    [SerializeField] private float _maxBlinkFade = 1;
+    [SerializeField] private Color _comboContinueColor = new Color(31, 52, 73, 1);
+    [SerializeField] private Color _comboCancelColor = new Color(192, 57, 43, 1);
+    [SerializeField] private Color _comboFinishColor = new Color(17, 255, 255, 1);
 
-    private Sequence _sequence;
+    private Sequence _blink;
+    private Sequence _finish;
 
     public event Action OnAnimationFinished;
 
-
-    // Заполняет индикатор прогресса комбо
-    public void IndicatorPosition(float value)
+    public void SetStartAnimations()
     {
-        //_fillImage.fillAmount += isProgress;
-        //ComboContinueFlash(_fillImage.fillAmount);
-        if (value == 0)
-        {
-            _fillImage.fillAmount = 0;
-        }
-        else
-        {
-            _fillImage.DOFillAmount(value, _fillDuration).SetEase(Ease.OutExpo);
-        }
+        _blink.Kill();
+        _blinkCG.transform.localScale = Vector3.one;
+        _blinkCG.alpha = 0f;
+
+        ChangeBlinkColor(_comboContinueColor);
+        HideCancelIndicator();
+        EmptyIndicator();
     }
 
-    // Показывает клавишу для продолжения комбо
+    public void FillIndicator(float value)
+    {
+        _fillImage.DOFillAmount(value, _fillDuration).SetEase(Ease.OutQuad);
+    }
+
+    public void EmptyIndicator()
+    {
+        _fillImage.fillAmount = 0;
+    }
+
     public void ShowKey(GameObject key)
     {
         key.SetActive(true);
     }
 
-    // Скрывает клавишу для продолжения комбо
     public void HideKey(GameObject key)
     {
         key.SetActive(false);
     }
 
-    private void ComboContinueFlash(float value)
+    public void HideCancelIndicator()
     {
-        Sequence sequence = DOTween.Sequence();
-        sequence.Append(_flash.DOFade(value, 0.1f));
-        sequence.Append(_flash.DOFade(0, 0.01f));
+        _backslashCG.alpha = 0;
     }
 
-    private void FrameAnimation()
+    public void AnimateBlinkBackground()
     {
-        _sequence = DOTween.Sequence();
-        _sequence.AppendCallback(() =>
+        if (!_blink.IsActive())
         {
-            _frameImage.DOFade(0, _duration).SetEase(Ease.Flash);
-            _frameImage.transform.DOScale(0.75f, _duration).SetEase(Ease.Flash);
-        });
-        _sequence.AppendInterval(_duration + 0.03f);
-        _sequence.AppendCallback(() =>
-        {
-            _frameImage.color = _fillIndicator;
-            _frameImage.transform.localScale = Vector3.one;
-        });
-        _sequence.SetLoops(-1);
+            _blinkCG.alpha = 1;
+
+            _blink = DOTween.Sequence();
+            _blink.Append(_blinkImage.DOFade(_minBlinkFade, _blinkDuration));
+            _blink.Append(_blinkImage.DOFade(_maxBlinkFade, _blinkDuration));
+            _blink.SetLoops(-1);
+        }
     }
 
-    // Комбо прервано
+    private void ChangeBlinkColor(Color color)
+    {
+        _blinkImage.color = color;
+    }
+
     public void AnimateCancelCombo()
     {
-        _canvasGroup.alpha = 1;
-        _canvasGroup.DOFade(0.7f, 0.5f).OnComplete(() => OnAnimationFinished?.Invoke());
+        EmptyIndicator();
+        ChangeBlinkColor(_comboCancelColor);
+        AnimateBlinkBackground();
+
+        Sequence sequence = DOTween.Sequence();
+        sequence.AppendCallback(() =>
+        {
+            _backslashCG.DOFade(1, _CancelDuration);
+            _backslashCG.transform.DOScale(1.5f, _CancelDuration);
+        });
+        sequence.AppendInterval(_CancelDuration);
+        sequence.Append(_backslashCG.transform.DOScale(1f, _CancelDuration));
     }
 
-    // Комбо закончено
     public void AnimateFinishCombo()
     {
-        _canvasGroup.alpha = 0.7f;
-        _canvasGroup.DOFade(1, 0.5f).OnComplete(() => OnAnimationFinished?.Invoke());
-    }
+        ChangeBlinkColor(_comboFinishColor);
 
-    public void AnimateStartCombo()
-    {
-        _canvasGroup.alpha = 1;
+        _finish = DOTween.Sequence();
+        _finish.Append(_blinkCG.transform.DOScale(1.3f, _blinkDuration));
+        _finish.Append(_blinkCG.transform.DOScale(0.8f, _blinkDuration)).OnComplete(() => OnAnimationFinished?.Invoke());
     }
 }

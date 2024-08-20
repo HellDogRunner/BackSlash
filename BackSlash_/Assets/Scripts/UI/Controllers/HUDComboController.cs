@@ -60,6 +60,14 @@ public class HUDComboController : MonoBehaviour
         SetStartState();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            SetStartState();
+        }
+    }
+
     private void LightAttack()
     {
         ComboManager("LightAttack");
@@ -72,14 +80,14 @@ public class HUDComboController : MonoBehaviour
 
     private void SetStartState()
     {
+        _currentKey = 0;
+        _currentFill = 0;
+
         Tuple<GameObject, GameObject> keyElements = GetKeyElements(_combo[0]);
         SwitchActiveGraphics(keyElements.Item1);
         _animationService.ShowKey(keyElements.Item2);
 
-        _currentKey = 0;
-        _currentFill = 0;
-        _animationService.IndicatorPosition(_currentFill);
-        _animationService.AnimateStartCombo();
+        _animationService.SetStartAnimations();
     }
 
     private void ComboManager(string element)
@@ -92,7 +100,8 @@ public class HUDComboController : MonoBehaviour
         if (element == _combo[_currentKey])
         {
             _currentFill += 1.0f / _combo.Count;
-            _animationService.IndicatorPosition(_currentFill);
+            _animationService.FillIndicator(_currentFill);
+            _animationService.AnimateBlinkBackground();
 
             if (_currentKey == _combo.Count - 1)
             {
@@ -109,7 +118,6 @@ public class HUDComboController : MonoBehaviour
         else
         {
             _currentKey = -1;
-            _animationService.IndicatorPosition(0);
             _animationService.AnimateCancelCombo();
             OnComboCanceled?.Invoke();
         }
