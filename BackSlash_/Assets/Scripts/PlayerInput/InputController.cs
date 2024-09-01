@@ -24,7 +24,8 @@ namespace Scripts.Player
         public event Action OnBlockPressed;
         public event Action OnAttackFinished;
         public event Action OnLockKeyPressed;
-        public event Action OnMenuKeyPressed;
+        public event Action OnPauseKeyPressed;
+        public event Action OnInventoryKeyPressed;
 
         public event Action<int> OnMouseButtonsPressed;
         public Vector3 MoveDirection => _moveDirection;
@@ -111,7 +112,12 @@ namespace Scripts.Player
 
         private void PauseMenu(InputAction.CallbackContext context)
         {
-            OnMenuKeyPressed?.Invoke();
+            OnPauseKeyPressed?.Invoke();
+        }
+
+        private void Inventory(InputAction.CallbackContext context)
+        {
+            OnInventoryKeyPressed?.Invoke();
         }
 
         private void SubscribeToActions() 
@@ -139,6 +145,8 @@ namespace Scripts.Player
             _playerControls.Gameplay.TargetLock.performed += Lock;
 
             _playerControls.Gameplay.Escape.performed += PauseMenu;
+
+            _playerControls.Gameplay.Inventory.performed += Inventory;
         }
 
         private void UnsubscribeToActions() 
@@ -166,6 +174,8 @@ namespace Scripts.Player
             _playerControls.Gameplay.TargetLock.performed -= Lock;
 
             _playerControls.Gameplay.Escape.performed -= PauseMenu;
+
+            _playerControls.Gameplay.Inventory.performed -= Inventory;
         }
     }
 }

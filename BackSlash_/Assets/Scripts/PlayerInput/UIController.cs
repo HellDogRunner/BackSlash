@@ -16,6 +16,7 @@ namespace Scripts.Player
         public event Action<bool> OnMousePoint;
         public event Action OnBackKeyPressed;
         public event Action OnAnyKeyboardKeyPressed;
+        public event Action OnInventoryKeyPressed;
 
         [Inject]
         private void Construct()
@@ -33,6 +34,8 @@ namespace Scripts.Player
             _playerControls.UI.Enter.performed += AnyUIKey;
             _playerControls.UI.Navigate.performed += AnyUIKey;
             _playerControls.UI.TabsNavigation.performed += AnyUIKey;
+
+            _playerControls.UI.Inventory.performed += Inventory;
         }
 
         private void Enter(InputAction.CallbackContext context)
@@ -68,6 +71,11 @@ namespace Scripts.Player
         private void AnyKeyboardKey(InputAction.CallbackContext context)
         {
             OnAnyKeyboardKeyPressed?.Invoke();
+        }
+
+        private void Inventory(InputAction.CallbackContext context)
+        {
+            OnInventoryKeyPressed?.Invoke();
         }
 
         private void OnEnable()

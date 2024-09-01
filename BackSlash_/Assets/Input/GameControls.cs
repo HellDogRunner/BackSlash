@@ -136,6 +136,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Inventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""d9c234fc-c775-44a0-8b15-bc0fcd3e6403"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""StartKeySequence"",
                     ""type"": ""Button"",
                     ""id"": ""cc92e7c0-92de-4477-8d6a-261213b7f48a"",
@@ -365,6 +374,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""HeavyAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""92820643-6068-40cc-8fcd-98843e08dff3"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -453,6 +473,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Gameplay_Block = m_Gameplay.FindAction("Block", throwIfNotFound: true);
         m_Gameplay_TargetLock = m_Gameplay.FindAction("TargetLock", throwIfNotFound: true);
         m_Gameplay_Escape = m_Gameplay.FindAction("Escape", throwIfNotFound: true);
+        m_Gameplay_Inventory = m_Gameplay.FindAction("Inventory", throwIfNotFound: true);
         m_Gameplay_StartKeySequence = m_Gameplay.FindAction("StartKeySequence", throwIfNotFound: true);
         // Combos
         m_Combos = asset.FindActionMap("Combos", throwIfNotFound: true);
@@ -532,6 +553,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Block;
     private readonly InputAction m_Gameplay_TargetLock;
     private readonly InputAction m_Gameplay_Escape;
+    private readonly InputAction m_Gameplay_Inventory;
     private readonly InputAction m_Gameplay_StartKeySequence;
     public struct GameplayActions
     {
@@ -549,6 +571,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Block => m_Wrapper.m_Gameplay_Block;
         public InputAction @TargetLock => m_Wrapper.m_Gameplay_TargetLock;
         public InputAction @Escape => m_Wrapper.m_Gameplay_Escape;
+        public InputAction @Inventory => m_Wrapper.m_Gameplay_Inventory;
         public InputAction @StartKeySequence => m_Wrapper.m_Gameplay_StartKeySequence;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
@@ -595,6 +618,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Escape.started += instance.OnEscape;
             @Escape.performed += instance.OnEscape;
             @Escape.canceled += instance.OnEscape;
+            @Inventory.started += instance.OnInventory;
+            @Inventory.performed += instance.OnInventory;
+            @Inventory.canceled += instance.OnInventory;
             @StartKeySequence.started += instance.OnStartKeySequence;
             @StartKeySequence.performed += instance.OnStartKeySequence;
             @StartKeySequence.canceled += instance.OnStartKeySequence;
@@ -638,6 +664,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Escape.started -= instance.OnEscape;
             @Escape.performed -= instance.OnEscape;
             @Escape.canceled -= instance.OnEscape;
+            @Inventory.started -= instance.OnInventory;
+            @Inventory.performed -= instance.OnInventory;
+            @Inventory.canceled -= instance.OnInventory;
             @StartKeySequence.started -= instance.OnStartKeySequence;
             @StartKeySequence.performed -= instance.OnStartKeySequence;
             @StartKeySequence.canceled -= instance.OnStartKeySequence;
@@ -734,6 +763,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnBlock(InputAction.CallbackContext context);
         void OnTargetLock(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
+        void OnInventory(InputAction.CallbackContext context);
         void OnStartKeySequence(InputAction.CallbackContext context);
     }
     public interface ICombosActions

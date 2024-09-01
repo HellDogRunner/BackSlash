@@ -21,15 +21,14 @@ namespace RedMoonGames.Window
         [SerializeField] private Button _back;
         [SerializeField] private Button _close;
 
+        [Header("Tabs Animation")]
+        [SerializeField] private TabAnimationService _displayAnimation;
+        [SerializeField] private TabAnimationService _graphicsAnimation;
+
         private GameObject _currentTab;
-        private TabAnimationService _displayAnimation;
-        private TabAnimationService _graphicsAnimation;
 
         private void Awake()
         {
-            _displayAnimation = _displayButton.GetComponent<TabAnimationService>();
-            _graphicsAnimation = _graphicsButton.GetComponent<TabAnimationService>();
-
             _currentTab = _displayTab;
             _currentTab.SetActive(true);
 

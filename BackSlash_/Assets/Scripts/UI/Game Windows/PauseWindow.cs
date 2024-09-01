@@ -37,11 +37,6 @@ namespace RedMoonGames.Window
             _sceneTransition.SwichToScene("StartMenu");
         }
 
-        private void EnablePause()
-        {
-            _animationService.ShowWindowAnimation(_canvasGroup);
-        }
-
         private void OnDestroy()
         { 
             _windowsController.OnUnpausing -= DisablePause;

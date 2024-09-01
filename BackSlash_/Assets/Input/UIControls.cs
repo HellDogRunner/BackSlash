@@ -125,6 +125,15 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Inventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""0075e92f-69e3-4cd6-81e4-ad99d0fafdd6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -369,6 +378,17 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""action"": ""AnyInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""39c50a67-f710-4cb2-ba01-1f3c42905bc7"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -388,6 +408,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
         m_UI_AnyInput = m_UI.FindAction("AnyInput", throwIfNotFound: true);
+        m_UI_Inventory = m_UI.FindAction("Inventory", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -460,6 +481,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_RightClick;
     private readonly InputAction m_UI_Back;
     private readonly InputAction m_UI_AnyInput;
+    private readonly InputAction m_UI_Inventory;
     public struct UIActions
     {
         private @UIControls m_Wrapper;
@@ -475,6 +497,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
         public InputAction @Back => m_Wrapper.m_UI_Back;
         public InputAction @AnyInput => m_Wrapper.m_UI_AnyInput;
+        public InputAction @Inventory => m_Wrapper.m_UI_Inventory;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -517,6 +540,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @AnyInput.started += instance.OnAnyInput;
             @AnyInput.performed += instance.OnAnyInput;
             @AnyInput.canceled += instance.OnAnyInput;
+            @Inventory.started += instance.OnInventory;
+            @Inventory.performed += instance.OnInventory;
+            @Inventory.canceled += instance.OnInventory;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -554,6 +580,9 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             @AnyInput.started -= instance.OnAnyInput;
             @AnyInput.performed -= instance.OnAnyInput;
             @AnyInput.canceled -= instance.OnAnyInput;
+            @Inventory.started -= instance.OnInventory;
+            @Inventory.performed -= instance.OnInventory;
+            @Inventory.canceled -= instance.OnInventory;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -584,5 +613,6 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnBack(InputAction.CallbackContext context);
         void OnAnyInput(InputAction.CallbackContext context);
+        void OnInventory(InputAction.CallbackContext context);
     }
 }
