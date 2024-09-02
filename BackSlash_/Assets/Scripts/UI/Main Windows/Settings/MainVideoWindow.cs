@@ -19,6 +19,7 @@ namespace RedMoonGames.Window
 
         [Header("Navigation Keys")]
         [SerializeField] private Button _back;
+        [SerializeField] private Button _switch;
 
         private GameObject _currentTab;
         private TabAnimationService _displayAnimation;
@@ -37,6 +38,7 @@ namespace RedMoonGames.Window
 
             _displayButton.onClick.AddListener(() => SwitchTab(_displayTab));
             _graphicsButton.onClick.AddListener(() => SwitchTab(_graphicsTab));
+            _switch.onClick.AddListener(OnTabPressed);
             _back.onClick.AddListener(() => SwitchWindows(_videoHandler, _settingsHandler));
         }
 
@@ -79,6 +81,7 @@ namespace RedMoonGames.Window
 
             _displayButton.onClick.RemoveAllListeners();
             _graphicsButton.onClick.RemoveAllListeners();
+            _switch.onClick.RemoveAllListeners();
             _back.onClick.RemoveAllListeners();
         }
     }
