@@ -38,7 +38,7 @@ namespace RedMoonGames.Window
             _sfxVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_sfxVolume, _sfxValue, 5));
 
             _back.onClick.AddListener(() => SwitchWindows(_audioHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowsController.SwitchPause);
+            _close.onClick.AddListener(_windowsController.PausePressed);
         }
 
         private void Back()

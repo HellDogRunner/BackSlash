@@ -8,7 +8,6 @@ namespace RedMoonGames.Window
     public class GameWindowsController : MonoBehaviour
     {
         [SerializeField] private WindowHandler _pauseHandler;
-        [SerializeField] private WindowHandler _playerMenuHandler;
 
         [SerializeField] private WindowHandler _currentWindow;
 
@@ -17,6 +16,7 @@ namespace RedMoonGames.Window
         private InputController _controller;
 
         public event Action<WindowHandler> OnUnpausing;
+        public event Action OnPausing;
         public event Action OnHUDHide;
         public event Action OnHUDShow;
 
@@ -24,52 +24,55 @@ namespace RedMoonGames.Window
         private void Construct(UIController uiController, InputController inputController, WindowService windowService)
         {
             _uiController = uiController;
-            _uiController.OnEscapeKeyPressed += SwitchPause;
+            _uiController.OnEscapeKeyPressed += PausePressed;
             _uiController.OnAnyUIKeyPressed += DisableCursor;
             _uiController.OnMousePoint += EnableCursor;
             _uiController.enabled = false;
 
             _controller = inputController;
             _controller.OnPauseKeyPressed += PausePressed;
-            _controller.OnInventoryKeyPressed += InventoryPressed;
 
             _windowService = windowService;
+        }
 
+        private void Awake()
+        {
+            _currentWindow = _pauseHandler;
             DisableCursor(false);
         }
 
-        private void InventoryPressed()
-        {
-            _currentWindow = _playerMenuHandler;
-            SwitchPause();
-        }
-
-        private void PausePressed()
-        {
-            _currentWindow = _pauseHandler;
-            SwitchPause();
-        }
-
-        public void SwitchPause()
+        public void PausePressed()
         {
             var currentWindow = _windowService.ReturnWindow(_currentWindow);
 
             if (currentWindow == null)
             {
                 OpenWindow(_currentWindow);
+                OnPausing?.Invoke();
                 OnHUDHide?.Invoke();
 
-                Time.timeScale = 0f;
-                EnableCursor(false);
-                _controller.enabled = false;
-                _uiController.enabled = true;
+                SwitchPause(true);
             }
             else
             {
                 OnUnpausing?.Invoke(_currentWindow);
                 OnHUDShow?.Invoke();
-                //_currentWindow = _pauseHandler;
+                _currentWindow = _pauseHandler;
 
+                SwitchPause(false);
+            }
+        }
+
+        public void SwitchPause(bool isPausing)
+        {
+            if (isPausing)
+            {
+                Time.timeScale = 0f;
+                EnableCursor(false);
+                _controller.enabled = false;
+            }
+            else
+            {
                 Time.timeScale = 1f;
                 DisableCursor(false);
                 _controller.enabled = true;
@@ -109,12 +112,10 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _uiController.OnInventoryKeyPressed += InventoryPressed;
-            _uiController.OnEscapeKeyPressed -= SwitchPause;
+            _controller.OnPauseKeyPressed -= PausePressed;
+            _uiController.OnEscapeKeyPressed -= PausePressed;
             _uiController.OnAnyUIKeyPressed -= DisableCursor;
             _uiController.OnMousePoint -= EnableCursor;
-
-            _controller.OnPauseKeyPressed -= SwitchPause;
         }
     }
 }

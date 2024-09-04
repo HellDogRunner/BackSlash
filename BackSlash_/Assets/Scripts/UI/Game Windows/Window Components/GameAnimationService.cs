@@ -42,13 +42,3 @@ namespace RedMoonGames.Window
         }
     }
 }
-
-
-
-// Callback sequence
-
-//_sequence = DOTween.Sequence();
-//_sequence.AppendCallback(() =>
-//{
-//    cg.DOFade(0f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true).OnComplete(CloseHandle);
-//}).SetUpdate(true);

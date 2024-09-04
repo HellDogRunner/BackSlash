@@ -25,8 +25,6 @@ namespace Scripts.Player
         public event Action OnAttackFinished;
         public event Action OnLockKeyPressed;
         public event Action OnPauseKeyPressed;
-        public event Action OnInventoryKeyPressed;
-
         public event Action<int> OnMouseButtonsPressed;
         public Vector3 MoveDirection => _moveDirection;
 
@@ -115,11 +113,6 @@ namespace Scripts.Player
             OnPauseKeyPressed?.Invoke();
         }
 
-        private void Inventory(InputAction.CallbackContext context)
-        {
-            OnInventoryKeyPressed?.Invoke();
-        }
-
         private void SubscribeToActions() 
         {
             _playerControls.Gameplay.WASD.performed += ChangeDirection;
@@ -145,8 +138,6 @@ namespace Scripts.Player
             _playerControls.Gameplay.TargetLock.performed += Lock;
 
             _playerControls.Gameplay.Escape.performed += PauseMenu;
-
-            _playerControls.Gameplay.Inventory.performed += Inventory;
         }
 
         private void UnsubscribeToActions() 
@@ -174,8 +165,6 @@ namespace Scripts.Player
             _playerControls.Gameplay.TargetLock.performed -= Lock;
 
             _playerControls.Gameplay.Escape.performed -= PauseMenu;
-
-            _playerControls.Gameplay.Inventory.performed -= Inventory;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace RedMoonGames.Window
             _uIController.OnBackKeyPressed += Back;
 
             _back.onClick.AddListener(() => SwitchWindows(_gameplayHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowsController.SwitchPause);
+            _close.onClick.AddListener(_windowsController.PausePressed);
         }
 
         private void Back()

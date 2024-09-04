@@ -35,7 +35,7 @@ namespace RedMoonGames.Window
             _management.onClick.AddListener(() => SwitchWindows(_settingsHandler, _managementHandler));
 
             _back.onClick.AddListener(() => SwitchWindows(_settingsHandler, _pauseHandler));
-            _close.onClick.AddListener(_windowsController.SwitchPause);
+            _close.onClick.AddListener(_windowsController.PausePressed);
         }
 
         private void Back()
@@ -55,7 +55,7 @@ namespace RedMoonGames.Window
             _management.onClick.RemoveAllListeners();
 
             _back.onClick.RemoveAllListeners();
-            _close.onClick.RemoveListener(_windowsController.SwitchPause);
+            _close.onClick.RemoveListener(_windowsController.PausePressed);
         }
     }
 }

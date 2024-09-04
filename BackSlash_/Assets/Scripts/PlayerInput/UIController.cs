@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Zenject;
 
 namespace Scripts.Player
 {
@@ -16,26 +15,10 @@ namespace Scripts.Player
         public event Action<bool> OnMousePoint;
         public event Action OnBackKeyPressed;
         public event Action OnAnyKeyboardKeyPressed;
-        public event Action OnInventoryKeyPressed;
 
-        [Inject]
-        private void Construct()
+        private void Awake()
         {
             _playerControls = new UIControls();
-
-            _playerControls.UI.Enter.performed += Enter;
-            _playerControls.UI.Escape.performed += Escape;
-            _playerControls.UI.TabsNavigation.performed += TabsNavigation;
-            _playerControls.UI.Point.performed += MousePointChange;
-            _playerControls.UI.Back.performed += Back;
-
-            _playerControls.UI.AnyInput.performed += AnyKeyboardKey;
-
-            _playerControls.UI.Enter.performed += AnyUIKey;
-            _playerControls.UI.Navigate.performed += AnyUIKey;
-            _playerControls.UI.TabsNavigation.performed += AnyUIKey;
-
-            _playerControls.UI.Inventory.performed += Inventory;
         }
 
         private void Enter(InputAction.CallbackContext context)
@@ -73,19 +56,46 @@ namespace Scripts.Player
             OnAnyKeyboardKeyPressed?.Invoke();
         }
 
-        private void Inventory(InputAction.CallbackContext context)
+        private void SubscribeToActions()
         {
-            OnInventoryKeyPressed?.Invoke();
+            _playerControls.UI.Enter.performed += Enter;
+            _playerControls.UI.Escape.performed += Escape;
+            _playerControls.UI.TabsNavigation.performed += TabsNavigation;
+            _playerControls.UI.Point.performed += MousePointChange;
+            _playerControls.UI.Back.performed += Back;
+
+            _playerControls.UI.AnyInput.performed += AnyKeyboardKey;
+
+            _playerControls.UI.Enter.performed += AnyUIKey;
+            _playerControls.UI.Navigate.performed += AnyUIKey;
+            _playerControls.UI.TabsNavigation.performed += AnyUIKey;
+        }
+
+        private void UnsubscribeToActions()
+        {
+            _playerControls.UI.Enter.performed -= Enter;
+            _playerControls.UI.Escape.performed -= Escape;
+            _playerControls.UI.TabsNavigation.performed -= TabsNavigation;
+            _playerControls.UI.Point.performed -= MousePointChange;
+            _playerControls.UI.Back.performed -= Back;
+
+            _playerControls.UI.AnyInput.performed -= AnyKeyboardKey;
+
+            _playerControls.UI.Enter.performed -= AnyUIKey;
+            _playerControls.UI.Navigate.performed -= AnyUIKey;
+            _playerControls.UI.TabsNavigation.performed -= AnyUIKey;
         }
 
         private void OnEnable()
         {
             _playerControls.Enable();
+            SubscribeToActions();
         }
 
         private void OnDisable()
         {
             _playerControls.Disable();
+            UnsubscribeToActions();
         }
     }
 }

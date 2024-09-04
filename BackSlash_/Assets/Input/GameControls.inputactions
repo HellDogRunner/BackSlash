@@ -114,15 +114,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Inventory",
-                    "type": "Button",
-                    "id": "d9c234fc-c775-44a0-8b15-bc0fcd3e6403",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "StartKeySequence",
                     "type": "Button",
                     "id": "cc92e7c0-92de-4477-8d6a-261213b7f48a",
@@ -311,34 +302,12 @@
                 },
                 {
                     "name": "",
-                    "id": "241d2fcd-3f11-4039-a19c-1f84a3e8e9f7",
-                    "path": "<Keyboard>/p",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Escape",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "e61f919d-3a9b-47d3-a3ad-ee707da667f2",
                     "path": "<Mouse>/backButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Escape",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1be2235c-323d-4e07-8caa-2f3c675b6aa2",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartKeySequence",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -355,12 +324,12 @@
                 },
                 {
                     "name": "",
-                    "id": "92820643-6068-40cc-8fcd-98843e08dff3",
-                    "path": "<Keyboard>/i",
+                    "id": "1be2235c-323d-4e07-8caa-2f3c675b6aa2",
+                    "path": "",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory",
+                    "action": "StartKeySequence",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

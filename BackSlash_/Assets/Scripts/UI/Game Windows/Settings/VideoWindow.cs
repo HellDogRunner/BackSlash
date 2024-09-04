@@ -40,7 +40,7 @@ namespace RedMoonGames.Window
             _graphicsButton.onClick.AddListener(() => SwitchTab(_graphicsTab));
             _switch.onClick.AddListener(OnTabPressed);
             _back.onClick.AddListener(() => SwitchWindows(_videoHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowsController.SwitchPause);
+            _close.onClick.AddListener(_windowsController.PausePressed);
         }
 
         private void Back()
