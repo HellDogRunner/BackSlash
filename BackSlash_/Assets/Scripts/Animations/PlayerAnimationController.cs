@@ -19,7 +19,7 @@ namespace Scripts.Animations
         private WeaponController _weaponController;
 
         [Inject]
-        private void Construct(InputController inputController, CombatSystem combatSystem, MovementController movementController, TargetLock targetLock, WeaponController weaponController)
+        private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController)
         {
             _targetLock = targetLock;
             _weaponController = weaponController;
@@ -34,13 +34,8 @@ namespace Scripts.Animations
             _inputController.OnSprintKeyRealesed += RunAnimation;
             _inputController.OnShowWeaponPressed += ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed += HideWeaponAnimation;
-            _inputController.OnAttackFinished += WeaponIdle;
+            _inputController.OnLightAttackFinished += WeaponIdle;
 
-            _combatSystem = combatSystem;
-            _combatSystem.OnPrimaryAttack += PrimaryAttackAnimation;
-            _combatSystem.IsBlocking += BlockAnimation;
-            _combatSystem.OnComboAttack += ComboAttackAnimation;
-            _combatSystem.OnJumpComboAttack += JumpComboAttackAnimation;
         }
 
         private void OnDestroy()
@@ -53,12 +48,8 @@ namespace Scripts.Animations
             _inputController.OnSprintKeyRealesed -= RunAnimation;
             _inputController.OnShowWeaponPressed -= ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed -= HideWeaponAnimation;
-            _inputController.OnAttackFinished -= WeaponIdle;
+            _inputController.OnLightAttackFinished -= WeaponIdle;
 
-            _combatSystem.OnPrimaryAttack -= PrimaryAttackAnimation;;
-            _combatSystem.IsBlocking -= BlockAnimation;
-            _combatSystem.OnComboAttack -= ComboAttackAnimation;
-            _combatSystem.OnJumpComboAttack -= JumpComboAttackAnimation;
         }
 
         private void Update()
@@ -124,9 +115,10 @@ namespace Scripts.Animations
             }
         }
 
-        private void PrimaryAttackAnimation()
+        private void PrimaryAttackAnimation(bool isAttacking)
         {
-            _animator.SetTrigger("Attack1");
+           // _animator.SetTrigger("Attack1");
+            _animator.SetBool("Attacking", isAttacking);
         }
 
         private void ComboAttackAnimation()

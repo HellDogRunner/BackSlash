@@ -18,14 +18,16 @@ namespace Scripts.Player
         public event Action OnSprintKeyRealesed;
         public event Action OnJumpKeyPressed;
         public event Action OnDodgeKeyPressed;
-        public event Action OnAttackPressed;
+        public event Action OnLightAttackStarted;
+        public event Action OnLightAttackFinished;
+        public event Action OnHeavyAtttackStarted;
+        public event Action OnHeavyAttackFinished;
         public event Action OnShowWeaponPressed;
         public event Action OnHideWeaponPressed;
         public event Action OnBlockPressed;
-        public event Action OnAttackFinished;
         public event Action OnLockKeyPressed;
         public event Action OnPauseKeyPressed;
-        public event Action<int> OnMouseButtonsPressed;
+
         public Vector3 MoveDirection => _moveDirection;
 
 
@@ -82,15 +84,24 @@ namespace Scripts.Player
             OnDodgeKeyPressed?.Invoke();
         }
 
-        private void AttackPressed(InputAction.CallbackContext context)
+        private void LightAttackPressed(InputAction.CallbackContext context)
         {
-            OnAttackPressed?.Invoke();
-            OnMouseButtonsPressed?.Invoke(1);
+            OnLightAttackStarted?.Invoke();
         }
 
-        private void AttackFinished(InputAction.CallbackContext context)
+        private void LightAttackFinished(InputAction.CallbackContext context)
         {
-            OnAttackFinished?.Invoke();
+            OnLightAttackFinished?.Invoke();
+        }
+
+        private void HeavyAttackPressed(InputAction.CallbackContext context)
+        {
+            OnHeavyAtttackStarted?.Invoke();
+        }
+
+        private void HeavytAttackFinished(InputAction.CallbackContext context)
+        {
+            OnHeavyAttackFinished?.Invoke();
         }
 
         private void Jump(InputAction.CallbackContext context)
@@ -101,7 +112,6 @@ namespace Scripts.Player
         private void BlockPressed(InputAction.CallbackContext context)
         {
             OnBlockPressed?.Invoke();
-            OnMouseButtonsPressed?.Invoke(2);
         }
         private void Lock(InputAction.CallbackContext context)
         {
@@ -118,17 +128,19 @@ namespace Scripts.Player
             _playerControls.Gameplay.WASD.performed += ChangeDirection;
             _playerControls.Gameplay.Dodge.performed += Dodge;
 
-            _playerControls.Gameplay.LightAttack.started += AttackPressed;
-            _playerControls.Gameplay.LightAttack.performed += AttackFinished;
-            _playerControls.Gameplay.LightAttack.canceled += AttackFinished;
+            _playerControls.Gameplay.LightAttack.started += LightAttackPressed;
+            _playerControls.Gameplay.LightAttack.performed += LightAttackFinished;
+            _playerControls.Gameplay.LightAttack.canceled += LightAttackFinished;
+
+            _playerControls.Gameplay.HeavyAttack.started += HeavyAttackPressed;
 
             _playerControls.Gameplay.Sprint.started += Sprint;
             _playerControls.Gameplay.Sprint.performed += Run;
             _playerControls.Gameplay.Sprint.canceled += Run;
 
             _playerControls.Gameplay.Block.started += BlockPressed;
-            _playerControls.Gameplay.Block.performed += AttackFinished;
-            _playerControls.Gameplay.Block.canceled += AttackFinished;
+            _playerControls.Gameplay.Block.performed += LightAttackFinished;
+            _playerControls.Gameplay.Block.canceled += LightAttackFinished;
 
             _playerControls.Gameplay.Jump.performed += Jump;
 
@@ -145,17 +157,19 @@ namespace Scripts.Player
             _playerControls.Gameplay.WASD.performed -= ChangeDirection;
             _playerControls.Gameplay.Dodge.performed -= Dodge;
 
-            _playerControls.Gameplay.LightAttack.started -= AttackPressed;
-            _playerControls.Gameplay.LightAttack.performed -= AttackFinished;
-            _playerControls.Gameplay.LightAttack.canceled -= AttackFinished;
+            _playerControls.Gameplay.LightAttack.started -= LightAttackPressed;
+            _playerControls.Gameplay.LightAttack.performed -= LightAttackFinished;
+            _playerControls.Gameplay.LightAttack.canceled -= LightAttackFinished;
+
+            _playerControls.Gameplay.HeavyAttack.started -= HeavyAttackPressed;
 
             _playerControls.Gameplay.Sprint.started -= Sprint;
             _playerControls.Gameplay.Sprint.performed -= Run;
             _playerControls.Gameplay.Sprint.canceled -= Run;
 
             _playerControls.Gameplay.Block.started -= BlockPressed;
-            _playerControls.Gameplay.Block.performed -= AttackFinished;
-            _playerControls.Gameplay.Block.canceled -= AttackFinished;
+            _playerControls.Gameplay.Block.performed -= LightAttackFinished;
+            _playerControls.Gameplay.Block.canceled -= LightAttackFinished;
 
             _playerControls.Gameplay.Jump.performed -= Jump;
 

@@ -14,11 +14,10 @@ public class SwordWeapon : MonoBehaviour
     private CombatSystem _cobatSystem;
 
     [Inject]
-    private void Construct(WeaponTypesDatabase weaponTypesDatabase, CombatSystem cobatSystem)
+    private void Construct(WeaponTypesDatabase weaponTypesDatabase)
     {
         _weaponTypesDatabase = weaponTypesDatabase;
-        _cobatSystem = cobatSystem;
-        _cobatSystem.IsAttacking += DealDamage;
+        //event += dealdamage
     }
 
     private void OnTriggerEnter(Collider other)
@@ -42,6 +41,6 @@ public class SwordWeapon : MonoBehaviour
 
     private void OnDestroy()
     {
-        _cobatSystem.IsAttacking -= DealDamage;
+        ///
     }
 }

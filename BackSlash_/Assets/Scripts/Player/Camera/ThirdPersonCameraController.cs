@@ -1,4 +1,5 @@
 using Scripts.Weapon;
+using System.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -13,10 +14,11 @@ namespace Scripts.Player.camera
 
         private InputController _inputService;
         private TargetLock _targetLock;
-        private CombatSystem _combatSystem;
+        private ComboSystem _comboSystem;
 
         private Vector3 _forwardDirection;
         private Transform _camera;
+        private Coroutine _currentAttackRoutine;
         public Vector3 ForwardDirection => _forwardDirection;
 
 
@@ -24,21 +26,14 @@ namespace Scripts.Player.camera
         private bool _isBlocking;
 
         [Inject]
-        private void Construct(InputController inputService, TargetLock targetLock, CombatSystem combatSystem)
+        private void Construct(InputController inputService, TargetLock targetLock, ComboSystem comboSystem)
         {
             _inputService = inputService;
             _targetLock = targetLock;
-            _combatSystem = combatSystem;
+            _comboSystem = comboSystem;
+            _comboSystem.IsAttacking += OnAttack;
 
-            _combatSystem.IsAttacking += OnAttack;
-            _combatSystem.IsBlocking += OnBlock;
             _camera = Camera.main.transform;
-        }
-
-        private void OnDestroy()
-        {
-            _combatSystem.IsAttacking -= OnAttack;
-            _combatSystem.IsBlocking -= OnBlock;
         }
 
         private void FixedUpdate()
@@ -55,7 +50,9 @@ namespace Scripts.Player.camera
                     RotatePlayerForward();
                 }
                 else
-                RotatePlayer();
+                {
+                    RotatePlayer();
+                }
             }
         }
 
@@ -90,6 +87,7 @@ namespace Scripts.Player.camera
         private void OnAttack(bool attack) 
         {
             _isAttaking = attack;
+
         }
 
         private void OnBlock(bool block)
@@ -107,6 +105,11 @@ namespace Scripts.Player.camera
             Vector3 rightRealtiveVerticalInput = direction.x * right;
 
             _forwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
+        }
+
+        private void OnDestroy()
+        {
+            _comboSystem.IsAttacking -= OnAttack;
         }
     }
 }

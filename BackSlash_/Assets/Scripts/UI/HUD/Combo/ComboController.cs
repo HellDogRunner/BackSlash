@@ -37,7 +37,7 @@ public class ComboController : MonoBehaviour
     private void Construct(InputController inputController)
     {
         _inputController = inputController;
-        _inputController.OnAttackPressed += LightAttack;
+        _inputController.OnLightAttackStarted += LightAttack;
         _inputController.OnDodgeKeyPressed += Dodge;
 
         _animationService.OnAnimationFinished += SetStartState;
@@ -162,7 +162,7 @@ public class ComboController : MonoBehaviour
 
     private void OnDestroy()
     {
-        _inputController.OnAttackPressed -= LightAttack;
+        _inputController.OnLightAttackStarted -= LightAttack;
         _inputController.OnDodgeKeyPressed -= Dodge;
 
         _animationService.OnAnimationFinished -= SetStartState;

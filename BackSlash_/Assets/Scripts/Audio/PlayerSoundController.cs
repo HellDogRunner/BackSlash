@@ -16,7 +16,7 @@ public class PlayerSoundController : MonoBehaviour
     private EventInstance _swordSlashSound;
 
     [Inject]
-    private void Construct(InputController inputController, AudioController audioManager, MovementController movementController, WeaponController weaponController, CombatSystem combatSystem)
+    private void Construct(InputController inputController, AudioController audioManager, MovementController movementController, WeaponController weaponController)
     {
         _audioManager = audioManager;
 
@@ -31,13 +31,10 @@ public class PlayerSoundController : MonoBehaviour
         _movementController = movementController;
         _movementController.IsMoving += PlayFootstepsSound;
         _movementController.OnLanded += PlayLandingSound;
-        _combatSystem.OnPrimaryAttack += PlaySwordSound;
-
     }
 
     private void OnDestroy()
     {
-        _combatSystem.OnPrimaryAttack -= PlaySwordSound;
         _weaponController.OnDrawWeapon -= PlayDrawSwordSound;
         _weaponController.OnSneathWeapon -= PlaySneathSwordSound;
 

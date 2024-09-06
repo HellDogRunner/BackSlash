@@ -6,6 +6,8 @@ using System;
 
 public class CombatSystem : MonoBehaviour
 {
+
+
     private InputController _inputController;
     private WeaponController _weaponController;
 
@@ -21,6 +23,7 @@ public class CombatSystem : MonoBehaviour
         _inputController = inputController;
 
         _weaponController = weaponController;
+
     }
 
     private void Update()
@@ -33,10 +36,15 @@ public class CombatSystem : MonoBehaviour
         {
             OnPrimaryAttack?.Invoke();
             IsAttacking?.Invoke(true);
-            Debug.Log("Standart attack");
         }
     }
-     
+
+
+    private void ResetCounter()
+    {
+        IsAttacking?.Invoke(false);
+    }
+
     private void OnSpecial_1()
     {
         if (_weaponController.CurrentWeaponType != EWeaponType.None)
