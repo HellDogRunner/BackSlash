@@ -13,8 +13,9 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
     [SerializeField] private bool _selectedOnEnable;
 
     [Header("Animation Components")]
-    [SerializeField] private Image _image;
     [SerializeField] private RectTransform _rect;
+    [SerializeField] private Image _image;
+    [SerializeField] private CanvasGroup _backgroundCG;
     [SerializeField] private TMP_Text _text;
 
     [Header("Animation Settings")]
@@ -34,6 +35,7 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
     {
         _rect.anchorMin = _minStartAnchor;
         _rect.anchorMax = _maxStartAnchor;
+        _backgroundCG.alpha = 0f;
 
         if (_selectedOnEnable)
         {
@@ -83,6 +85,7 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
 
         _text.color = _activeColor;
         _image.color = _activeColor;
+        _backgroundCG.alpha = 1;
     }
 
     private void DesableTab()
@@ -95,6 +98,7 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
         _rect.anchorMax = _maxStartAnchor;
         _text.color = _deselectColor;
         _image.color = _deselectColor;
+        _backgroundCG.alpha = 0;
     }
 
     public void SwitchTab()

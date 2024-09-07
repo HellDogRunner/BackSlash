@@ -27,23 +27,34 @@ namespace RedMoonGames.Window
         [SerializeField] private Button _mapButton;
 
         [Header("Navigation Keys")]
-        [SerializeField] private Button _backKey;
+        [SerializeField] private Button _prevKey;
         [SerializeField] private Button _nextKey;
         [SerializeField] private Button _selectButton;
+        [SerializeField] private Button _backButton;
         [SerializeField] private Button _closeButton;
 
-        private List<GameObject> _tabs = new List<GameObject>();
-        private int _currentTabIndex;
+        [Header("Tabs Animation")]
+        [SerializeField] private TabAnimationService _inventotyAnimation;
+        [SerializeField] private TabAnimationService _combosAnimation;
+        [SerializeField] private TabAnimationService _abilitiesAnimation;
+        [SerializeField] private TabAnimationService _skillsAnimation;
+        [SerializeField] private TabAnimationService _journalAnimation;
+        [SerializeField] private TabAnimationService _mapAnimation;
 
-        private MenuActions _inputController;
+        private List<GameObject> _tabs = new List<GameObject>();
+        private List<TabAnimationService> _animations = new List<TabAnimationService>();
+        private int _index;
+        private int _animationIndex;
+
+        private UIMenuInputs _inputController;
         private GameWindowsController _windowsController;
         private PlayerMenuAnimationService _animationService;
         private AudioController _audioController;
 
         [Inject]
-        private void Binding(MenuActions inputController, GameWindowsController windowsController, PlayerMenuAnimationService animationService, AudioController audioController)
+        private void Binding(UIMenuInputs inputController, GameWindowsController windowsController, PlayerMenuAnimationService animationService, AudioController audioController)
         {
-            _windowsController = windowsController; 
+            _windowsController = windowsController;
             _animationService = animationService;
             _audioController = audioController;
 
@@ -58,6 +69,8 @@ namespace RedMoonGames.Window
 
         private void Awake()
         {
+            _animationIndex = -1;
+
             _canvasGroup.alpha = 0;
 
             _tabs.Add(_inventoryTab);
@@ -66,6 +79,13 @@ namespace RedMoonGames.Window
             _tabs.Add(_skillsTab);
             _tabs.Add(_journalTab);
             _tabs.Add(_mapTab);
+
+            _animations.Add(_inventotyAnimation);
+            _animations.Add(_combosAnimation);
+            _animations.Add(_abilitiesAnimation);
+            _animations.Add(_skillsAnimation);
+            _animations.Add(_journalAnimation);
+            _animations.Add(_mapAnimation);
         }
 
         private void ShowPlayerMenu(int index)
@@ -74,11 +94,10 @@ namespace RedMoonGames.Window
             {
                 SubscribeToActions();
                 _animationService.AnimateMenuShow(_canvasGroup);
+                _windowsController.SwitchPause(true);
             }
-            
-            OpenTab(index);
 
-            _windowsController.SwitchPause(true);
+            OpenTab(index);
         }
 
         private void HidePlayerMenu()
@@ -86,7 +105,7 @@ namespace RedMoonGames.Window
             if (_canvasGroup.alpha == 1)
             {
                 UnsubscribeToActions();
-                HideAllTabs();
+                CloseAllTabs();
 
                 _animationService.AnimateMenuHide(_canvasGroup);
 
@@ -94,44 +113,43 @@ namespace RedMoonGames.Window
             }
         }
 
-        private void NextTab()
-        {
-            OpenTab(_currentTabIndex + 1);
-        }
-
-        private void PreviousTab()
-        {
-            OpenTab(_currentTabIndex - 1);
-        }
-
-        private void InventoryPressed()
-        {
-            OpenTab(0);
-        }
-
         private void SwitchTab(int index)
         {
-            OpenTab(_currentTabIndex + index);
+            OpenTab(_index + index);
         }
 
         private void OpenTab(int index)
         {
-            index = index % _tabs.Count;
-            if (index < 0) index = _tabs.Count - 1;
-
-            if (_tabs[index].activeSelf)
+            _index = index % _tabs.Count;
+            if (_index < 0)
+            {
+                _index = _tabs.Count - 1;
+            }
+            if (_tabs[_index].activeSelf)
             {
                 return;
             }
 
-            HideAllTabs();
+            CloseAllTabs();
 
-            _currentTabIndex = index;
+            ShowTab();
+
             _audioController.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
-            _tabs[_currentTabIndex].SetActive(true);
+            _tabs[_index].SetActive(true);
         }
 
-        private void HideAllTabs()
+        private void ShowTab()
+        {
+            if (_animationIndex > -1)
+            {
+                _animations[_animationIndex].SwitchTab();
+            }
+
+            _animationIndex = _index;
+            _animations[_index].SwitchTab();
+        }
+
+        private void CloseAllTabs()
         {
             foreach (var _tab in _tabs)
             {
@@ -154,14 +172,16 @@ namespace RedMoonGames.Window
             _mapButton.onClick.AddListener(() => OpenTab(5));
 
             _inputController.OnEscapePressed += HidePlayerMenu;
-            _inputController.OnBackPressed += PreviousTab;
-            _inputController.OnNextPressed += NextTab;
+            _inputController.OnBackPressed += HidePlayerMenu;
+            _inputController.OnPrevPressed += SwitchTab;
+            _inputController.OnNextPressed += SwitchTab;
             _inputController.OnAnyActionPressed += ShowCursor;
             _inputController.OnMousePointChange += ShowCursor;
 
-            _backKey.onClick.AddListener(() => SwitchTab(-1));
+            _prevKey.onClick.AddListener(() => SwitchTab(-1));
             _nextKey.onClick.AddListener(() => SwitchTab(+1));
 
+            _backButton.onClick.AddListener(HidePlayerMenu);
             _closeButton.onClick.AddListener(HidePlayerMenu);
         }
 
@@ -175,14 +195,16 @@ namespace RedMoonGames.Window
             _mapButton.onClick.RemoveAllListeners();
 
             _inputController.OnEscapePressed -= HidePlayerMenu;
-            _inputController.OnBackPressed -= PreviousTab;
-            _inputController.OnNextPressed -= NextTab;
+            _inputController.OnBackPressed -= HidePlayerMenu;
+            _inputController.OnPrevPressed -= SwitchTab;
+            _inputController.OnNextPressed -= SwitchTab;
             _inputController.OnAnyActionPressed -= ShowCursor;
             _inputController.OnMousePointChange -= ShowCursor;
 
-            _backKey.onClick.RemoveAllListeners();
+            _prevKey.onClick.RemoveAllListeners();
             _nextKey.onClick.RemoveAllListeners();
 
+            _backButton.onClick.RemoveAllListeners();
             _closeButton.onClick.RemoveAllListeners();
         }
 

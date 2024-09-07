@@ -24,76 +24,13 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
     ""name"": ""UIControls"",
     ""maps"": [
         {
-            ""name"": ""UI"",
-            ""id"": ""2b7b0773-4eaa-4585-9c58-b147a4b44405"",
+            ""name"": ""Common"",
+            ""id"": ""5910d16c-c19b-4417-8326-4642e68a3b67"",
             ""actions"": [
                 {
-                    ""name"": ""Enter"",
+                    ""name"": ""Back"",
                     ""type"": ""Button"",
-                    ""id"": ""de1dd895-8fbb-41eb-b024-80f5f7786516"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Navigate"",
-                    ""type"": ""Button"",
-                    ""id"": ""f72e4f94-da68-4c9d-ac2b-e79e50de14b0"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""TabsNavigation"",
-                    ""type"": ""Button"",
-                    ""id"": ""d4515c22-4d7d-411c-b45d-83f822aeebb1"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Escape"",
-                    ""type"": ""Button"",
-                    ""id"": ""5c0f5901-dfa9-451f-8e29-8b1ba2a44b04"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Point"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""9fd70c54-e72e-4890-865d-0ac261cb5f02"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Click"",
-                    ""type"": ""Button"",
-                    ""id"": ""c692f3e1-8307-45d1-9e27-409f4481b671"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ScrollWheel"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""14c3e8f9-9a43-49f8-b486-7746f8ed1de2"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""MiddleClick"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""f9fe3a30-256a-42e5-a650-638e560e1294"",
+                    ""id"": ""c95145a5-650c-4c16-84c6-e3995251e38c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -102,25 +39,70 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""RightClick"",
                     ""type"": ""Button"",
-                    ""id"": ""7c2aef99-3ae0-4f45-bbe8-af1deb55b38d"",
+                    ""id"": ""4c6b60de-1811-4fe6-b017-a221ab764b91"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Back"",
-                    ""type"": ""Button"",
-                    ""id"": ""e22abb4d-9ab2-49b6-945a-1cd79efeb6b3"",
+                    ""name"": ""MiddleClick"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""e75ed79c-1200-4817-96fc-1fb23ad5b214"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""AnyInput"",
+                    ""name"": ""ScrollWheel"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""fe3df216-2302-4d64-b4c6-262b2ec70513"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Click"",
                     ""type"": ""Button"",
-                    ""id"": ""e3d61707-eba1-470c-92fe-bf0e5ff146b1"",
+                    ""id"": ""dae3bb4c-6b2f-448b-8c32-2ff04fb30f20"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Point"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""6f8ca032-96a3-4539-b360-518b31976aac"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Escape"",
+                    ""type"": ""Button"",
+                    ""id"": ""c32d5a9e-4de6-4922-b8ce-f9802f01ab3a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Enter"",
+                    ""type"": ""Button"",
+                    ""id"": ""182bdf64-93d2-421a-b459-938a1264999d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Navigate"",
+                    ""type"": ""Button"",
+                    ""id"": ""a4d14717-3d4c-49bf-81b2-68effa8d1411"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -129,30 +111,8 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""f2953fdf-237b-4406-a6ae-468abf68e544"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard/Mouse"",
-                    ""action"": ""Enter"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""df8b0d21-74af-4925-a9f6-7af51bd44cfe"",
-                    ""path"": ""<Keyboard>/enter"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Enter"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
                     ""name"": ""2D Vector"",
-                    ""id"": ""d6dd4d7e-af84-47b7-ad6c-779726713e0f"",
+                    ""id"": ""f787ae4f-b7b5-406a-a7d7-8ab0b849c33b"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -163,7 +123,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""ff9da2bb-a4c2-4927-9650-847e4aace156"",
+                    ""id"": ""528a2c8e-152b-4cbf-b5e9-dd0c6d6b58ca"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -174,7 +134,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""89cf5d31-875e-4273-a91c-3ec2a302a504"",
+                    ""id"": ""04b694c7-9eee-4744-8794-18360b64e89b"",
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -185,7 +145,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""2090fde6-1f84-484b-87ab-f21c0c12508c"",
+                    ""id"": ""fdca2f81-5322-477d-9d2f-4e23e729d2b8"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -196,7 +156,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""d6dbc717-851d-4775-867c-8c33279482d8"",
+                    ""id"": ""88e55247-70f8-4509-a250-fcb8b2b3a8ea"",
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -207,7 +167,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""20131e5e-a179-4ae1-ad11-bb8de4ab6645"",
+                    ""id"": ""46b3a3f7-1da4-430a-983d-8b88f93fe5c3"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -218,7 +178,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""fb497782-ba72-4b7f-9fac-50b8ec7daf2c"",
+                    ""id"": ""0351bb61-3f3d-4e12-92fb-10683ff0a8ec"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -229,7 +189,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""3ecbf96b-28a5-4646-95ad-b09e5b8ab3da"",
+                    ""id"": ""aca0fcda-032d-4c83-884d-78c9cae3a85c"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -240,7 +200,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""5ae6c80a-3f8d-47c4-b288-2ad9e191d665"",
+                    ""id"": ""4ed543c4-dc90-4f6f-a5fd-8952e9981173"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -251,62 +211,29 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b7befcbf-e926-43eb-bc03-1711481ae72b"",
-                    ""path"": ""<Mouse>/position"",
+                    ""id"": ""76892897-c03b-49cb-a7a4-ca739c650bc3"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Point"",
+                    ""action"": ""Enter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""837964fe-6883-475c-9bcc-ac4851e65356"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""id"": ""046d38e0-2511-4c2b-ab9d-bc9bfa376e37"",
+                    ""path"": ""<Keyboard>/enter"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Click"",
+                    ""action"": ""Enter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c0679635-e0d9-4b26-845e-a95c36d7dd80"",
-                    ""path"": ""<Mouse>/scroll"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ScrollWheel"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b514fc3a-e295-40ce-9b5c-26a10ba02072"",
-                    ""path"": ""<Mouse>/middleButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MiddleClick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3328f6d9-aa5c-4a9f-83a1-388bdbbd13d3"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RightClick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e4e2ff2a-6d63-4ea2-9c46-c90e98b87b12"",
+                    ""id"": ""d1d6c3a2-0f3f-445e-b619-c3c1f90a9d00"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -317,7 +244,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""4027b039-77ef-4671-9c45-ab3e5d798d7d"",
+                    ""id"": ""6bb4690b-d6ef-4ca1-8b9e-0e7cefb04116"",
                     ""path"": ""<Mouse>/backButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -328,7 +255,7 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d12e8ad0-41c1-4cc9-81fd-33119ab72380"",
+                    ""id"": ""c2d6c24a-60f0-4701-9598-8289e6291f69"",
                     ""path"": ""<Keyboard>/p"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -339,18 +266,62 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""22945722-e8df-4e8e-96ed-14581f209745"",
-                    ""path"": ""<Keyboard>/tab"",
+                    ""id"": ""4d6406d7-3b58-4338-87a1-ca7a18be27e2"",
+                    ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""TabsNavigation"",
+                    ""action"": ""Point"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""10ba12f2-f0b0-456d-957d-26ddeb889162"",
+                    ""id"": ""725b2172-6574-4fbc-b5ce-ead417abf128"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a3b7b63c-97a0-48a7-a1b6-0aff2b7da911"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollWheel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e4fe7e8-1617-435c-9457-0532ca611ad0"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MiddleClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0721b91b-4d1c-430f-a5b6-10da083cf220"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""836f7482-0368-4f9d-82d9-c899e4a7bd5b"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -358,10 +329,47 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Pause"",
+            ""id"": ""2e89912c-eb22-47c1-bc18-7f2ee7287e7c"",
+            ""actions"": [
+                {
+                    ""name"": ""SwitchTab"",
+                    ""type"": ""Button"",
+                    ""id"": ""4c16a8a6-a42f-4dbe-9051-dfb758f29d9f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AnyInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""752aaa82-0d8f-4556-abee-31a53e6fd08f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""9759708e-5201-4fda-b250-8c05cc6e05d5"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchTab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b3b281a1-7742-43e5-80b3-c433fac9d771"",
+                    ""id"": ""c8cba21f-eeaf-4b79-8c9a-c9d13a718d09"",
                     ""path"": ""<Keyboard>/anyKey"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -371,23 +379,203 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Menu"",
+            ""id"": ""8f821c7e-e36f-442a-b632-2602e75aa06c"",
+            ""actions"": [
+                {
+                    ""name"": ""Map"",
+                    ""type"": ""Button"",
+                    ""id"": ""d8831012-6cbe-4d40-8f33-fe9fba4728b4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Journal"",
+                    ""type"": ""Button"",
+                    ""id"": ""915802bb-bd80-4469-b37f-3eef5da1e1d9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skills"",
+                    ""type"": ""Button"",
+                    ""id"": ""021b1ba1-cacd-4f9c-aea0-5a2fbf6dcf45"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Abilities"",
+                    ""type"": ""Button"",
+                    ""id"": ""2a90799e-4022-411e-a963-198e7e600c10"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Combos"",
+                    ""type"": ""Button"",
+                    ""id"": ""8c068ad2-fe47-48d4-9733-12737e8b5f45"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Inventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""59350927-b1ff-46bb-a55a-a76c59933ff3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Next"",
+                    ""type"": ""Button"",
+                    ""id"": ""34463bc2-4234-4c18-b9bc-1096d172245e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Prev"",
+                    ""type"": ""Button"",
+                    ""id"": ""5ff89a07-f555-481c-9843-39405e0f97c3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""326a07e6-821a-40ba-a854-5291066859ff"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Prev"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fcd01983-a599-4398-8a97-db7f05a7ec33"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Next"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd8c142f-660e-4bc6-b202-6452e42ed1c8"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Inventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc641232-7d84-43c3-9e4c-981f1c137170"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Combos"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f0b85af-dea3-4cca-ac70-3da6e5deaba2"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Abilities"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c5f445e3-3084-4dfe-aba9-4ea47f2fb2b9"",
+                    ""path"": ""<Keyboard>/n"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skills"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""96257fe0-e1a8-4e90-8699-240001a506bf"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Journal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""16751d8c-8af1-4274-b40d-cdb893fb34e6"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Map"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // UI
-        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
-        m_UI_Enter = m_UI.FindAction("Enter", throwIfNotFound: true);
-        m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
-        m_UI_TabsNavigation = m_UI.FindAction("TabsNavigation", throwIfNotFound: true);
-        m_UI_Escape = m_UI.FindAction("Escape", throwIfNotFound: true);
-        m_UI_Point = m_UI.FindAction("Point", throwIfNotFound: true);
-        m_UI_Click = m_UI.FindAction("Click", throwIfNotFound: true);
-        m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
-        m_UI_MiddleClick = m_UI.FindAction("MiddleClick", throwIfNotFound: true);
-        m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
-        m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
-        m_UI_AnyInput = m_UI.FindAction("AnyInput", throwIfNotFound: true);
+        // Common
+        m_Common = asset.FindActionMap("Common", throwIfNotFound: true);
+        m_Common_Back = m_Common.FindAction("Back", throwIfNotFound: true);
+        m_Common_RightClick = m_Common.FindAction("RightClick", throwIfNotFound: true);
+        m_Common_MiddleClick = m_Common.FindAction("MiddleClick", throwIfNotFound: true);
+        m_Common_ScrollWheel = m_Common.FindAction("ScrollWheel", throwIfNotFound: true);
+        m_Common_Click = m_Common.FindAction("Click", throwIfNotFound: true);
+        m_Common_Point = m_Common.FindAction("Point", throwIfNotFound: true);
+        m_Common_Escape = m_Common.FindAction("Escape", throwIfNotFound: true);
+        m_Common_Enter = m_Common.FindAction("Enter", throwIfNotFound: true);
+        m_Common_Navigate = m_Common.FindAction("Navigate", throwIfNotFound: true);
+        // Pause
+        m_Pause = asset.FindActionMap("Pause", throwIfNotFound: true);
+        m_Pause_SwitchTab = m_Pause.FindAction("SwitchTab", throwIfNotFound: true);
+        m_Pause_AnyInput = m_Pause.FindAction("AnyInput", throwIfNotFound: true);
+        // Menu
+        m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
+        m_Menu_Map = m_Menu.FindAction("Map", throwIfNotFound: true);
+        m_Menu_Journal = m_Menu.FindAction("Journal", throwIfNotFound: true);
+        m_Menu_Skills = m_Menu.FindAction("Skills", throwIfNotFound: true);
+        m_Menu_Abilities = m_Menu.FindAction("Abilities", throwIfNotFound: true);
+        m_Menu_Combos = m_Menu.FindAction("Combos", throwIfNotFound: true);
+        m_Menu_Inventory = m_Menu.FindAction("Inventory", throwIfNotFound: true);
+        m_Menu_Next = m_Menu.FindAction("Next", throwIfNotFound: true);
+        m_Menu_Prev = m_Menu.FindAction("Prev", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -446,143 +634,297 @@ public partial class @UIControls: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // UI
-    private readonly InputActionMap m_UI;
-    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
-    private readonly InputAction m_UI_Enter;
-    private readonly InputAction m_UI_Navigate;
-    private readonly InputAction m_UI_TabsNavigation;
-    private readonly InputAction m_UI_Escape;
-    private readonly InputAction m_UI_Point;
-    private readonly InputAction m_UI_Click;
-    private readonly InputAction m_UI_ScrollWheel;
-    private readonly InputAction m_UI_MiddleClick;
-    private readonly InputAction m_UI_RightClick;
-    private readonly InputAction m_UI_Back;
-    private readonly InputAction m_UI_AnyInput;
-    public struct UIActions
+    // Common
+    private readonly InputActionMap m_Common;
+    private List<ICommonActions> m_CommonActionsCallbackInterfaces = new List<ICommonActions>();
+    private readonly InputAction m_Common_Back;
+    private readonly InputAction m_Common_RightClick;
+    private readonly InputAction m_Common_MiddleClick;
+    private readonly InputAction m_Common_ScrollWheel;
+    private readonly InputAction m_Common_Click;
+    private readonly InputAction m_Common_Point;
+    private readonly InputAction m_Common_Escape;
+    private readonly InputAction m_Common_Enter;
+    private readonly InputAction m_Common_Navigate;
+    public struct CommonActions
     {
         private @UIControls m_Wrapper;
-        public UIActions(@UIControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Enter => m_Wrapper.m_UI_Enter;
-        public InputAction @Navigate => m_Wrapper.m_UI_Navigate;
-        public InputAction @TabsNavigation => m_Wrapper.m_UI_TabsNavigation;
-        public InputAction @Escape => m_Wrapper.m_UI_Escape;
-        public InputAction @Point => m_Wrapper.m_UI_Point;
-        public InputAction @Click => m_Wrapper.m_UI_Click;
-        public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
-        public InputAction @MiddleClick => m_Wrapper.m_UI_MiddleClick;
-        public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
-        public InputAction @Back => m_Wrapper.m_UI_Back;
-        public InputAction @AnyInput => m_Wrapper.m_UI_AnyInput;
-        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public CommonActions(@UIControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Back => m_Wrapper.m_Common_Back;
+        public InputAction @RightClick => m_Wrapper.m_Common_RightClick;
+        public InputAction @MiddleClick => m_Wrapper.m_Common_MiddleClick;
+        public InputAction @ScrollWheel => m_Wrapper.m_Common_ScrollWheel;
+        public InputAction @Click => m_Wrapper.m_Common_Click;
+        public InputAction @Point => m_Wrapper.m_Common_Point;
+        public InputAction @Escape => m_Wrapper.m_Common_Escape;
+        public InputAction @Enter => m_Wrapper.m_Common_Enter;
+        public InputAction @Navigate => m_Wrapper.m_Common_Navigate;
+        public InputActionMap Get() { return m_Wrapper.m_Common; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
-        public void AddCallbacks(IUIActions instance)
+        public static implicit operator InputActionMap(CommonActions set) { return set.Get(); }
+        public void AddCallbacks(ICommonActions instance)
         {
-            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_CommonActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CommonActionsCallbackInterfaces.Add(instance);
+            @Back.started += instance.OnBack;
+            @Back.performed += instance.OnBack;
+            @Back.canceled += instance.OnBack;
+            @RightClick.started += instance.OnRightClick;
+            @RightClick.performed += instance.OnRightClick;
+            @RightClick.canceled += instance.OnRightClick;
+            @MiddleClick.started += instance.OnMiddleClick;
+            @MiddleClick.performed += instance.OnMiddleClick;
+            @MiddleClick.canceled += instance.OnMiddleClick;
+            @ScrollWheel.started += instance.OnScrollWheel;
+            @ScrollWheel.performed += instance.OnScrollWheel;
+            @ScrollWheel.canceled += instance.OnScrollWheel;
+            @Click.started += instance.OnClick;
+            @Click.performed += instance.OnClick;
+            @Click.canceled += instance.OnClick;
+            @Point.started += instance.OnPoint;
+            @Point.performed += instance.OnPoint;
+            @Point.canceled += instance.OnPoint;
+            @Escape.started += instance.OnEscape;
+            @Escape.performed += instance.OnEscape;
+            @Escape.canceled += instance.OnEscape;
             @Enter.started += instance.OnEnter;
             @Enter.performed += instance.OnEnter;
             @Enter.canceled += instance.OnEnter;
             @Navigate.started += instance.OnNavigate;
             @Navigate.performed += instance.OnNavigate;
             @Navigate.canceled += instance.OnNavigate;
-            @TabsNavigation.started += instance.OnTabsNavigation;
-            @TabsNavigation.performed += instance.OnTabsNavigation;
-            @TabsNavigation.canceled += instance.OnTabsNavigation;
-            @Escape.started += instance.OnEscape;
-            @Escape.performed += instance.OnEscape;
-            @Escape.canceled += instance.OnEscape;
-            @Point.started += instance.OnPoint;
-            @Point.performed += instance.OnPoint;
-            @Point.canceled += instance.OnPoint;
-            @Click.started += instance.OnClick;
-            @Click.performed += instance.OnClick;
-            @Click.canceled += instance.OnClick;
-            @ScrollWheel.started += instance.OnScrollWheel;
-            @ScrollWheel.performed += instance.OnScrollWheel;
-            @ScrollWheel.canceled += instance.OnScrollWheel;
-            @MiddleClick.started += instance.OnMiddleClick;
-            @MiddleClick.performed += instance.OnMiddleClick;
-            @MiddleClick.canceled += instance.OnMiddleClick;
-            @RightClick.started += instance.OnRightClick;
-            @RightClick.performed += instance.OnRightClick;
-            @RightClick.canceled += instance.OnRightClick;
-            @Back.started += instance.OnBack;
-            @Back.performed += instance.OnBack;
-            @Back.canceled += instance.OnBack;
-            @AnyInput.started += instance.OnAnyInput;
-            @AnyInput.performed += instance.OnAnyInput;
-            @AnyInput.canceled += instance.OnAnyInput;
         }
 
-        private void UnregisterCallbacks(IUIActions instance)
+        private void UnregisterCallbacks(ICommonActions instance)
         {
+            @Back.started -= instance.OnBack;
+            @Back.performed -= instance.OnBack;
+            @Back.canceled -= instance.OnBack;
+            @RightClick.started -= instance.OnRightClick;
+            @RightClick.performed -= instance.OnRightClick;
+            @RightClick.canceled -= instance.OnRightClick;
+            @MiddleClick.started -= instance.OnMiddleClick;
+            @MiddleClick.performed -= instance.OnMiddleClick;
+            @MiddleClick.canceled -= instance.OnMiddleClick;
+            @ScrollWheel.started -= instance.OnScrollWheel;
+            @ScrollWheel.performed -= instance.OnScrollWheel;
+            @ScrollWheel.canceled -= instance.OnScrollWheel;
+            @Click.started -= instance.OnClick;
+            @Click.performed -= instance.OnClick;
+            @Click.canceled -= instance.OnClick;
+            @Point.started -= instance.OnPoint;
+            @Point.performed -= instance.OnPoint;
+            @Point.canceled -= instance.OnPoint;
+            @Escape.started -= instance.OnEscape;
+            @Escape.performed -= instance.OnEscape;
+            @Escape.canceled -= instance.OnEscape;
             @Enter.started -= instance.OnEnter;
             @Enter.performed -= instance.OnEnter;
             @Enter.canceled -= instance.OnEnter;
             @Navigate.started -= instance.OnNavigate;
             @Navigate.performed -= instance.OnNavigate;
             @Navigate.canceled -= instance.OnNavigate;
-            @TabsNavigation.started -= instance.OnTabsNavigation;
-            @TabsNavigation.performed -= instance.OnTabsNavigation;
-            @TabsNavigation.canceled -= instance.OnTabsNavigation;
-            @Escape.started -= instance.OnEscape;
-            @Escape.performed -= instance.OnEscape;
-            @Escape.canceled -= instance.OnEscape;
-            @Point.started -= instance.OnPoint;
-            @Point.performed -= instance.OnPoint;
-            @Point.canceled -= instance.OnPoint;
-            @Click.started -= instance.OnClick;
-            @Click.performed -= instance.OnClick;
-            @Click.canceled -= instance.OnClick;
-            @ScrollWheel.started -= instance.OnScrollWheel;
-            @ScrollWheel.performed -= instance.OnScrollWheel;
-            @ScrollWheel.canceled -= instance.OnScrollWheel;
-            @MiddleClick.started -= instance.OnMiddleClick;
-            @MiddleClick.performed -= instance.OnMiddleClick;
-            @MiddleClick.canceled -= instance.OnMiddleClick;
-            @RightClick.started -= instance.OnRightClick;
-            @RightClick.performed -= instance.OnRightClick;
-            @RightClick.canceled -= instance.OnRightClick;
-            @Back.started -= instance.OnBack;
-            @Back.performed -= instance.OnBack;
-            @Back.canceled -= instance.OnBack;
+        }
+
+        public void RemoveCallbacks(ICommonActions instance)
+        {
+            if (m_Wrapper.m_CommonActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICommonActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CommonActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CommonActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CommonActions @Common => new CommonActions(this);
+
+    // Pause
+    private readonly InputActionMap m_Pause;
+    private List<IPauseActions> m_PauseActionsCallbackInterfaces = new List<IPauseActions>();
+    private readonly InputAction m_Pause_SwitchTab;
+    private readonly InputAction m_Pause_AnyInput;
+    public struct PauseActions
+    {
+        private @UIControls m_Wrapper;
+        public PauseActions(@UIControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @SwitchTab => m_Wrapper.m_Pause_SwitchTab;
+        public InputAction @AnyInput => m_Wrapper.m_Pause_AnyInput;
+        public InputActionMap Get() { return m_Wrapper.m_Pause; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PauseActions set) { return set.Get(); }
+        public void AddCallbacks(IPauseActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PauseActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PauseActionsCallbackInterfaces.Add(instance);
+            @SwitchTab.started += instance.OnSwitchTab;
+            @SwitchTab.performed += instance.OnSwitchTab;
+            @SwitchTab.canceled += instance.OnSwitchTab;
+            @AnyInput.started += instance.OnAnyInput;
+            @AnyInput.performed += instance.OnAnyInput;
+            @AnyInput.canceled += instance.OnAnyInput;
+        }
+
+        private void UnregisterCallbacks(IPauseActions instance)
+        {
+            @SwitchTab.started -= instance.OnSwitchTab;
+            @SwitchTab.performed -= instance.OnSwitchTab;
+            @SwitchTab.canceled -= instance.OnSwitchTab;
             @AnyInput.started -= instance.OnAnyInput;
             @AnyInput.performed -= instance.OnAnyInput;
             @AnyInput.canceled -= instance.OnAnyInput;
         }
 
-        public void RemoveCallbacks(IUIActions instance)
+        public void RemoveCallbacks(IPauseActions instance)
         {
-            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_PauseActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IUIActions instance)
+        public void SetCallbacks(IPauseActions instance)
         {
-            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_PauseActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_PauseActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public UIActions @UI => new UIActions(this);
-    public interface IUIActions
+    public PauseActions @Pause => new PauseActions(this);
+
+    // Menu
+    private readonly InputActionMap m_Menu;
+    private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
+    private readonly InputAction m_Menu_Map;
+    private readonly InputAction m_Menu_Journal;
+    private readonly InputAction m_Menu_Skills;
+    private readonly InputAction m_Menu_Abilities;
+    private readonly InputAction m_Menu_Combos;
+    private readonly InputAction m_Menu_Inventory;
+    private readonly InputAction m_Menu_Next;
+    private readonly InputAction m_Menu_Prev;
+    public struct MenuActions
     {
+        private @UIControls m_Wrapper;
+        public MenuActions(@UIControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Map => m_Wrapper.m_Menu_Map;
+        public InputAction @Journal => m_Wrapper.m_Menu_Journal;
+        public InputAction @Skills => m_Wrapper.m_Menu_Skills;
+        public InputAction @Abilities => m_Wrapper.m_Menu_Abilities;
+        public InputAction @Combos => m_Wrapper.m_Menu_Combos;
+        public InputAction @Inventory => m_Wrapper.m_Menu_Inventory;
+        public InputAction @Next => m_Wrapper.m_Menu_Next;
+        public InputAction @Prev => m_Wrapper.m_Menu_Prev;
+        public InputActionMap Get() { return m_Wrapper.m_Menu; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
+        public void AddCallbacks(IMenuActions instance)
+        {
+            if (instance == null || m_Wrapper.m_MenuActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_MenuActionsCallbackInterfaces.Add(instance);
+            @Map.started += instance.OnMap;
+            @Map.performed += instance.OnMap;
+            @Map.canceled += instance.OnMap;
+            @Journal.started += instance.OnJournal;
+            @Journal.performed += instance.OnJournal;
+            @Journal.canceled += instance.OnJournal;
+            @Skills.started += instance.OnSkills;
+            @Skills.performed += instance.OnSkills;
+            @Skills.canceled += instance.OnSkills;
+            @Abilities.started += instance.OnAbilities;
+            @Abilities.performed += instance.OnAbilities;
+            @Abilities.canceled += instance.OnAbilities;
+            @Combos.started += instance.OnCombos;
+            @Combos.performed += instance.OnCombos;
+            @Combos.canceled += instance.OnCombos;
+            @Inventory.started += instance.OnInventory;
+            @Inventory.performed += instance.OnInventory;
+            @Inventory.canceled += instance.OnInventory;
+            @Next.started += instance.OnNext;
+            @Next.performed += instance.OnNext;
+            @Next.canceled += instance.OnNext;
+            @Prev.started += instance.OnPrev;
+            @Prev.performed += instance.OnPrev;
+            @Prev.canceled += instance.OnPrev;
+        }
+
+        private void UnregisterCallbacks(IMenuActions instance)
+        {
+            @Map.started -= instance.OnMap;
+            @Map.performed -= instance.OnMap;
+            @Map.canceled -= instance.OnMap;
+            @Journal.started -= instance.OnJournal;
+            @Journal.performed -= instance.OnJournal;
+            @Journal.canceled -= instance.OnJournal;
+            @Skills.started -= instance.OnSkills;
+            @Skills.performed -= instance.OnSkills;
+            @Skills.canceled -= instance.OnSkills;
+            @Abilities.started -= instance.OnAbilities;
+            @Abilities.performed -= instance.OnAbilities;
+            @Abilities.canceled -= instance.OnAbilities;
+            @Combos.started -= instance.OnCombos;
+            @Combos.performed -= instance.OnCombos;
+            @Combos.canceled -= instance.OnCombos;
+            @Inventory.started -= instance.OnInventory;
+            @Inventory.performed -= instance.OnInventory;
+            @Inventory.canceled -= instance.OnInventory;
+            @Next.started -= instance.OnNext;
+            @Next.performed -= instance.OnNext;
+            @Next.canceled -= instance.OnNext;
+            @Prev.started -= instance.OnPrev;
+            @Prev.performed -= instance.OnPrev;
+            @Prev.canceled -= instance.OnPrev;
+        }
+
+        public void RemoveCallbacks(IMenuActions instance)
+        {
+            if (m_Wrapper.m_MenuActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IMenuActions instance)
+        {
+            foreach (var item in m_Wrapper.m_MenuActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_MenuActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public MenuActions @Menu => new MenuActions(this);
+    public interface ICommonActions
+    {
+        void OnBack(InputAction.CallbackContext context);
+        void OnRightClick(InputAction.CallbackContext context);
+        void OnMiddleClick(InputAction.CallbackContext context);
+        void OnScrollWheel(InputAction.CallbackContext context);
+        void OnClick(InputAction.CallbackContext context);
+        void OnPoint(InputAction.CallbackContext context);
+        void OnEscape(InputAction.CallbackContext context);
         void OnEnter(InputAction.CallbackContext context);
         void OnNavigate(InputAction.CallbackContext context);
-        void OnTabsNavigation(InputAction.CallbackContext context);
-        void OnEscape(InputAction.CallbackContext context);
-        void OnPoint(InputAction.CallbackContext context);
-        void OnClick(InputAction.CallbackContext context);
-        void OnScrollWheel(InputAction.CallbackContext context);
-        void OnMiddleClick(InputAction.CallbackContext context);
-        void OnRightClick(InputAction.CallbackContext context);
-        void OnBack(InputAction.CallbackContext context);
+    }
+    public interface IPauseActions
+    {
+        void OnSwitchTab(InputAction.CallbackContext context);
         void OnAnyInput(InputAction.CallbackContext context);
+    }
+    public interface IMenuActions
+    {
+        void OnMap(InputAction.CallbackContext context);
+        void OnJournal(InputAction.CallbackContext context);
+        void OnSkills(InputAction.CallbackContext context);
+        void OnAbilities(InputAction.CallbackContext context);
+        void OnCombos(InputAction.CallbackContext context);
+        void OnInventory(InputAction.CallbackContext context);
+        void OnNext(InputAction.CallbackContext context);
+        void OnPrev(InputAction.CallbackContext context);
     }
 }

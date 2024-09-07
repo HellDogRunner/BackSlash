@@ -13,13 +13,13 @@ namespace RedMoonGames.Window
         protected WindowAnimationService _animationService;
         protected SceneTransitionService _sceneTransition;
         protected AudioController _audioController;
-        protected UIController _uIController;
-        protected MenuActions _menuActions;
+        protected UIPauseInputs _uIController;
+        protected UIMenuInputs _menuActions;
 
         protected CanvasGroup _canvasGroup;
 
         [Inject]
-        protected virtual void Construct(MenuActions menuActions, GameWindowsController windowController, WindowAnimationService animationController, SceneTransitionService sceneTransition, AudioController audioManager, UIController controller)
+        protected virtual void Construct(UIMenuInputs menuActions, GameWindowsController windowController, WindowAnimationService animationController, SceneTransitionService sceneTransition, AudioController audioManager, UIPauseInputs controller)
         {
             _animationService = animationController;
             _sceneTransition = sceneTransition;

@@ -12,7 +12,7 @@ namespace RedMoonGames.Window
         [SerializeField] private WindowHandler _currentWindow;
 
         private WindowService _windowService;
-        private UIController _uiController;
+        private UIPauseInputs _uIPause;
         private InputController _controller;
 
         public event Action<WindowHandler> OnUnpausing;
@@ -21,13 +21,13 @@ namespace RedMoonGames.Window
         public event Action OnHUDShow;
 
         [Inject]
-        private void Construct(UIController uiController, InputController inputController, WindowService windowService)
+        private void Construct(UIPauseInputs uIPause, InputController inputController, WindowService windowService)
         {
-            _uiController = uiController;
-            _uiController.OnEscapeKeyPressed += PausePressed;
-            _uiController.OnAnyUIKeyPressed += DisableCursor;
-            _uiController.OnMousePoint += EnableCursor;
-            _uiController.enabled = false;
+            _uIPause = uIPause;
+            _uIPause.OnEscapeKeyPressed += PausePressed;
+            _uIPause.OnAnyUIKeyPressed += DisableCursor;
+            _uIPause.OnMousePoint += EnableCursor;
+            _uIPause.enabled = false;
 
             _controller = inputController;
             _controller.OnPauseKeyPressed += PausePressed;
@@ -76,7 +76,7 @@ namespace RedMoonGames.Window
                 Time.timeScale = 1f;
                 DisableCursor(false);
                 _controller.enabled = true;
-                _uiController.enabled = false;
+                _uIPause.enabled = false;
             }
         }
 
@@ -113,9 +113,9 @@ namespace RedMoonGames.Window
         private void OnDestroy()
         {
             _controller.OnPauseKeyPressed -= PausePressed;
-            _uiController.OnEscapeKeyPressed -= PausePressed;
-            _uiController.OnAnyUIKeyPressed -= DisableCursor;
-            _uiController.OnMousePoint -= EnableCursor;
+            _uIPause.OnEscapeKeyPressed -= PausePressed;
+            _uIPause.OnAnyUIKeyPressed -= DisableCursor;
+            _uIPause.OnMousePoint -= EnableCursor;
         }
     }
 }
