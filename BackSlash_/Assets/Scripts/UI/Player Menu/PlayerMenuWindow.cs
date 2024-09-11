@@ -34,15 +34,15 @@ namespace RedMoonGames.Window
         [SerializeField] private Button _closeButton;
 
         [Header("Tabs Animation")]
-        [SerializeField] private TabAnimationService _inventotyAnimation;
-        [SerializeField] private TabAnimationService _combosAnimation;
-        [SerializeField] private TabAnimationService _abilitiesAnimation;
-        [SerializeField] private TabAnimationService _skillsAnimation;
-        [SerializeField] private TabAnimationService _journalAnimation;
-        [SerializeField] private TabAnimationService _mapAnimation;
+        [SerializeField] private MenuTabAnimationService _inventotyAnimation;
+        [SerializeField] private MenuTabAnimationService _combosAnimation;
+        [SerializeField] private MenuTabAnimationService _abilitiesAnimation;
+        [SerializeField] private MenuTabAnimationService _skillsAnimation;
+        [SerializeField] private MenuTabAnimationService _journalAnimation;
+        [SerializeField] private MenuTabAnimationService _mapAnimation;
 
         private List<GameObject> _tabs = new List<GameObject>();
-        private List<TabAnimationService> _animations = new List<TabAnimationService>();
+        private List<MenuTabAnimationService> _animations = new List<MenuTabAnimationService>();
         private int _index;
         private int _animationIndex;
 
@@ -108,7 +108,6 @@ namespace RedMoonGames.Window
                 CloseAllTabs();
 
                 _animationService.AnimateMenuHide(_canvasGroup);
-
                 _windowsController.SwitchPause(false);
             }
         }
@@ -132,21 +131,21 @@ namespace RedMoonGames.Window
 
             CloseAllTabs();
 
-            ShowTab();
+            ShowActiveTab();
 
             _audioController.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
             _tabs[_index].SetActive(true);
         }
 
-        private void ShowTab()
+        private void ShowActiveTab()
         {
             if (_animationIndex > -1)
             {
-                _animations[_animationIndex].SwitchTab();
+                _animations[_animationIndex].DisableTab();
             }
 
             _animationIndex = _index;
-            _animations[_index].SwitchTab();
+            _animations[_index].EnableTab();
         }
 
         private void CloseAllTabs()

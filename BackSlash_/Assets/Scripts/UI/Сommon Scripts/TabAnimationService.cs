@@ -88,7 +88,7 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
         _backgroundCG.alpha = 1;
     }
 
-    private void DesableTab()
+    private void DisableTab()
     {
         KillTweens();
 
@@ -105,7 +105,7 @@ public class TabAnimationService : MonoBehaviour, IPointerEnterHandler, IDeselec
     {
         if (_isActive)
         {
-            DesableTab();
+            DisableTab();
         }
         else
         {
