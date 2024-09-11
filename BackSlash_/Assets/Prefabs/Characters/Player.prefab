@@ -2820,6 +2820,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9154375475347445579}
   - component: {fileID: 9087614315155568461}
+  - component: {fileID: 1177957657704111061}
   - component: {fileID: 5530042786574198228}
   - component: {fileID: 3831153863078339735}
   - component: {fileID: 4003745565070631084}
@@ -2827,12 +2828,10 @@ GameObject:
   - component: {fileID: 5300293899505624239}
   - component: {fileID: 1417933816927670133}
   - component: {fileID: 1945681995266547424}
-  - component: {fileID: 8826828113266788931}
   - component: {fileID: 6843714413104379186}
   - component: {fileID: 7192937150158336365}
   - component: {fileID: 1259562901829629793}
   - component: {fileID: 8507639596095695501}
-  - component: {fileID: 1177957657704111061}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -2886,6 +2885,22 @@ MonoBehaviour:
   _airMultiplier: 0.2
   _maxSlopeAngle: 40
   _slopeSpeed: 0
+--- !u!114 &1177957657704111061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579ea157c21de1e4da6b2f1250b8abe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inputBufferTime: 1
+  _comboDelay: 0.3
+  _moveDelay: 0.3
+  _inputBuffer: []
 --- !u!114 &5530042786574198228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2987,18 +3002,6 @@ MonoBehaviour:
   _targetLockOffset: {x: 0, y: 0}
   _maxDistance: 20
   isTargeting: 0
---- !u!114 &8826828113266788931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540106101222958762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1125c3530c0278349b2e15b227493fc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!136 &6843714413104379186
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3091,27 +3094,11 @@ MonoBehaviour:
   - {fileID: 4003745565070631084}
   - {fileID: 1945681995266547424}
   - {fileID: 5300293899505624239}
-  - {fileID: 8826828113266788931}
   - {fileID: 1177957657704111061}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}
   _bindType: 0
---- !u!114 &1177957657704111061
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540106101222958762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 579ea157c21de1e4da6b2f1250b8abe1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ComboDatabase: {fileID: 11400000, guid: 7327b95b7b24a574f95644585aeff735, type: 2}
-  _inputBufferTime: 1
-  _inputBuffer: []
 --- !u!1 &8541310659857842121
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,13 +10,14 @@ public class PlayerSoundController : MonoBehaviour
     private AudioController _audioManager;
     private InputController _inputController;
     private WeaponController _weaponController;
-    private CombatSystem _combatSystem;
+    private ComboSystem _comboSystem;
 
     private EventInstance _playerFootsteps;
     private EventInstance _swordSlashSound;
 
     [Inject]
-    private void Construct(InputController inputController, AudioController audioManager, MovementController movementController, WeaponController weaponController)
+    private void Construct(InputController inputController, AudioController audioManager, MovementController movementController,
+        WeaponController weaponController, ComboSystem comboSystem)
     {
         _audioManager = audioManager;
 
@@ -31,6 +32,10 @@ public class PlayerSoundController : MonoBehaviour
         _movementController = movementController;
         _movementController.IsMoving += PlayFootstepsSound;
         _movementController.OnLanded += PlayLandingSound;
+
+        _comboSystem = comboSystem;
+        _comboSystem.OnAttack += PlaySwordSound;
+        _comboSystem.OnCombo += PlayComboSound;
     }
 
     private void OnDestroy()
@@ -43,6 +48,9 @@ public class PlayerSoundController : MonoBehaviour
 
         _movementController.IsMoving -= PlayFootstepsSound;
         _movementController.OnLanded -= PlayLandingSound;
+
+        _comboSystem.OnAttack -= PlaySwordSound;
+        _comboSystem.OnCombo -= PlayComboSound;
     }
 
     private void Start()
@@ -78,10 +86,17 @@ public class PlayerSoundController : MonoBehaviour
         _audioManager.PlayGenericEvent(FMODEvents.instance.PlayerLanded);
     }
 
-    private void PlaySwordSound()
+    private void PlaySwordSound(string attackName)
     {
         _swordSlashSound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         _swordSlashSound.setParameterByName("Combo", 1);
+        _swordSlashSound.start();
+    }
+
+    private void PlayComboSound(string comboName)
+    {
+        _swordSlashSound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        _swordSlashSound.setParameterByName("Combo", 2);
         _swordSlashSound.start();
     }
 

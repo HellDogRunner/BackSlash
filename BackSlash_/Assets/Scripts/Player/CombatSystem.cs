@@ -6,10 +6,9 @@ using System;
 
 public class CombatSystem : MonoBehaviour
 {
-
-
     private InputController _inputController;
     private WeaponController _weaponController;
+    private ComboSystem _comboSystem;
 
     public event Action OnPrimaryAttack;
     public event Action OnComboAttack;
@@ -18,11 +17,11 @@ public class CombatSystem : MonoBehaviour
     public event Action<bool> IsAttacking;
 
     [Inject]
-    private void Construct(InputController inputController, WeaponController weaponController)
+    private void Construct(InputController inputController, WeaponController weaponController, ComboSystem comboSystem)
     {
         _inputController = inputController;
-
         _weaponController = weaponController;
+        _comboSystem = comboSystem;
 
     }
 
@@ -30,9 +29,9 @@ public class CombatSystem : MonoBehaviour
     {
     }
 
-    private void OnLightAttack()
+    private void OnLightAttack(bool isAttaking)
     {
-        if (_weaponController.CurrentWeaponType != EWeaponType.None)
+        if (_weaponController.CurrentWeaponType != EWeaponType.None && isAttaking)
         {
             OnPrimaryAttack?.Invoke();
             IsAttacking?.Invoke(true);

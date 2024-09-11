@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
-using Zenject;
 
 namespace Scripts.Player
 {

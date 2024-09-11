@@ -3,15 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
-using static ComboDatabase;
+using Zenject;
+using Scripts.Combo.Models;
 
 public class ComboSystem : MonoBehaviour
 {
-
-    [Header("Combos")]
-    public ComboDatabase ComboDatabase;
-
     [Header("Settings")]
     [SerializeField] private float _inputBufferTime = 1f; 
     [SerializeField] private float _comboDelay = 0.3f;
@@ -19,13 +15,27 @@ public class ComboSystem : MonoBehaviour
 
     [SerializeField] private List<InputActionReference> _inputBuffer = new List<InputActionReference>();
 
-    private float _lastInputTime;
     private Animator _animator;
     private Coroutine _currentAttackRoutine;
+    private ComboDatabase _comboData;
 
+    private float _lastInputTime;
     private bool _isAttacking = false;
 
     public event Action<bool> IsAttacking;
+    public event Action <string> OnAttack;
+    public event Action <string> OnCombo;
+
+    public event Action OnInputBufferAdded;
+    public event Action OnInputBufferCleared;
+
+    public List<InputActionReference> InputBuffer => _inputBuffer;
+
+    [Inject]
+    private void Construct(ComboDatabase comboDatabase)
+    {
+        _comboData = comboDatabase;
+    }
 
     private void Awake()
     {
@@ -34,7 +44,7 @@ public class ComboSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        var inputActions = ComboDatabase.GetAllUsedActionReferences();
+        var inputActions = _comboData.GetAllUsedActionReferences();
         foreach (var inputAction in inputActions)
         {
             inputAction.action.Enable();
@@ -44,7 +54,7 @@ public class ComboSystem : MonoBehaviour
 
     private void OnDestroy()
     {
-        var inputActions = ComboDatabase.GetAllUsedActionReferences();
+        var inputActions = _comboData.GetAllUsedActionReferences();
         foreach (var inputAction in inputActions)
         {
             inputAction.action.Disable();
@@ -56,11 +66,11 @@ public class ComboSystem : MonoBehaviour
     {
         if (_inputBuffer.Count > 0 && Time.time - _lastInputTime > _inputBufferTime)
         {
-            _inputBuffer.Clear();
+            ClearInputBuffer();
         }
         if (_inputBuffer.Count > 3)
         {
-            _inputBuffer.Clear();
+            ClearInputBuffer();
         }
         IsAttacking?.Invoke(_isAttacking);
     }
@@ -69,8 +79,9 @@ public class ComboSystem : MonoBehaviour
     {
         _lastInputTime = Time.time;
         _inputBuffer.Add(attackInput);
+        OnInputBufferAdded?.Invoke();
 
-        Sequence matchedCombo = DetectCombo();
+        ComboTypeModel matchedCombo = DetectCombo();
 
         if (!_isAttacking)
         {
@@ -85,19 +96,19 @@ public class ComboSystem : MonoBehaviour
         }
     }
 
-    private Sequence DetectCombo()
+    private ComboTypeModel DetectCombo()
     {
-        foreach (var combo in ComboDatabase.GetSequences())
+        foreach (var combo in _comboData.GetData())
         {
-            if (_inputBuffer.Count == combo.inputActions.Length)
+            if (_inputBuffer.Count == combo.InputActions.Length)
             {
                 bool isMatch = true;
-                int comboStartIndex = _inputBuffer.Count - combo.inputActions.Length;
+                int comboStartIndex = _inputBuffer.Count - combo.InputActions.Length;
 
-                for (int i = 0; i < combo.inputActions.Length; i++)
+                for (int i = 0; i < combo.InputActions.Length; i++)
                 {
                     var bufferedAttack = _inputBuffer[comboStartIndex + i];
-                    var comboAttack = combo.inputActions[i];
+                    var comboAttack = combo.InputActions[i];
 
                     if (bufferedAttack.action != comboAttack.action)
                     {
@@ -108,7 +119,7 @@ public class ComboSystem : MonoBehaviour
 
                 if (isMatch)
                 {
-                    _inputBuffer.Clear();
+                    ClearInputBuffer();
                     return combo;
                 }
             }
@@ -116,11 +127,11 @@ public class ComboSystem : MonoBehaviour
         return null;
     }
 
-    private IEnumerator PerformCombo(Sequence combo)
+    private IEnumerator PerformCombo(ComboTypeModel combo)
     {
         _isAttacking = true;    
-        _animator.SetTrigger(combo.animationTrigger);
-        // Debug.Log($"Performing combo: {combo.name}");
+        _animator.SetTrigger(combo.AnimationTrigger);
+        OnCombo.Invoke(combo.ComboName);
         yield return new WaitForSeconds(_comboDelay);
 
         _isAttacking = false;
@@ -132,12 +143,17 @@ public class ComboSystem : MonoBehaviour
         {
             _isAttacking = true;
             _animator.SetTrigger(input.action.name);
+            OnAttack.Invoke(input.action.name);
         }
-
-        //Debug.Log($"Performing move: {input.action.name}");
         yield return new WaitForSeconds(_moveDelay);
 
         _isAttacking = false;
+    }
+
+    private void ClearInputBuffer()
+    {
+        _inputBuffer.Clear();
+        OnInputBufferCleared?.Invoke();
     }
 
     //ѕроверка анимационного клипа очистить если в дальнейшем не пригодитс€

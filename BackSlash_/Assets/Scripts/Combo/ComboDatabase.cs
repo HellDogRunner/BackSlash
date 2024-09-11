@@ -1,43 +1,38 @@
+using RedMoonGames.Database;
+using RedMoonGames.Basics;
 using System.Collections.Generic;
-using UnityEngine;
-using static ComboSystem;
-using UnityEngine.InputSystem;
-using System;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
-[CreateAssetMenu(fileName = "ComboDatabase", menuName = "[RMG] Scriptable/Combo/ComboDatabase", order = 1)]
-public class ComboDatabase : ScriptableObject
+namespace Scripts.Combo.Models
 {
-    public InputActionAsset inputActionAsset;
-
-    [Serializable]
-    public class Sequence
+    [CreateAssetMenu(fileName = "ComboTypesDatabase", menuName = "[RMG] Scriptable/Combo/ComboTypesDatabase", order = 1)]
+    public class ComboDatabase : ScriptableDatabase<ComboTypeModel>
     {
-        public string name;
-        public InputActionReference[] inputActions;
-        public float maxInputTime;         
-        public string animationTrigger;
-    }
-
-    [SerializeField] private Sequence[] sequences;
-
-    public Sequence[] GetSequences() 
-    {
-        return sequences;
-    }
-
-    public IEnumerable<InputActionReference> GetAllUsedActionReferences()
-    {
-        List<InputActionReference> filteredInputActions = new List<InputActionReference>();
-
-        foreach (var sequence in sequences)
+        public ComboTypeModel GetComboTypeByName(string comboName)
         {
-            foreach (var inputAction in sequence.inputActions)
+            if (comboName == "")
             {
-                filteredInputActions.Add(inputAction);
+                return null;
             }
+
+            return _data.GetBy(comboModel => comboModel.ComboName == comboName);
         }
-        var result = filteredInputActions.Distinct();
-        return result;
+
+        public IEnumerable<InputActionReference> GetAllUsedActionReferences()
+        {
+            List<InputActionReference> filteredInputActions = new List<InputActionReference>();
+
+            foreach (var sequence in _data)
+            {
+                foreach (var inputAction in sequence.InputActions)
+                {
+                    filteredInputActions.Add(inputAction);
+                }
+            }
+            var result = filteredInputActions.Distinct();
+            return result;
+        }
     }
 }

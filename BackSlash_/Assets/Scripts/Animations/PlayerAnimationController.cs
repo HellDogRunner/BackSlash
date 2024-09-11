@@ -2,6 +2,7 @@ using Scripts.Player;
 using UnityEngine;
 using Zenject;
 using Scripts.Weapon;
+using Scripts.Player.camera;
 
 namespace Scripts.Animations
 {
@@ -17,9 +18,10 @@ namespace Scripts.Animations
         private MovementController _movementController;
         private TargetLock _targetLock;
         private WeaponController _weaponController;
+        private ThirdPersonCameraController _thirdPersonController;
 
         [Inject]
-        private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController)
+        private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
         {
             _targetLock = targetLock;
             _weaponController = weaponController;
@@ -36,6 +38,8 @@ namespace Scripts.Animations
             _inputController.OnHideWeaponPressed += HideWeaponAnimation;
             _inputController.OnLightAttackFinished += WeaponIdle;
 
+            _thirdPersonController = thirdPersonController;
+            _thirdPersonController.IsAttacking += PrimaryAttackAnimation;
         }
 
         private void OnDestroy()
@@ -50,6 +54,7 @@ namespace Scripts.Animations
             _inputController.OnHideWeaponPressed -= HideWeaponAnimation;
             _inputController.OnLightAttackFinished -= WeaponIdle;
 
+            _thirdPersonController.IsAttacking -= PrimaryAttackAnimation;
         }
 
         private void Update()
@@ -117,7 +122,6 @@ namespace Scripts.Animations
 
         private void PrimaryAttackAnimation(bool isAttacking)
         {
-           // _animator.SetTrigger("Attack1");
             _animator.SetBool("Attacking", isAttacking);
         }
 
