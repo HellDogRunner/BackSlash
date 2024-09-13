@@ -31,13 +31,13 @@ namespace RedMoonGames.Window
 
         private void Awake()
         {
-            _canvasGroup.alpha = 0;
+            //_canvasGroup.alpha = 0;
         }
 
         private void ShowHUD(float health)
         {
             _canvasGroup.DOFade(1f, _fadeDuration).SetEase(Ease.InQuart);
-            StartCoroutine(HideDelay());
+            //StartCoroutine(HideDelay());
         }
 
         private void HideHUD()
@@ -45,7 +45,7 @@ namespace RedMoonGames.Window
             _canvasGroup.DOFade(0f, _fadeDuration).SetEase(Ease.InQuart);
         }
 
-        IEnumerator HideDelay()
+        private IEnumerator HideDelay()
         {
             yield return new WaitForSeconds(_hideDelay);
             HideHUD();

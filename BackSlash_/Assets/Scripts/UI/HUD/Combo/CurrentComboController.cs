@@ -11,19 +11,19 @@ public class CurrentComboController : MonoBehaviour
 
     private int _cancelCounter;
 
-    private List<ComboController> _combos = new List<ComboController>();
+    private List<HUDComboHandler> _combos = new List<HUDComboHandler>();
 
     private void Awake()
     {
-        _combos.Add(_sequence1.GetComponent<ComboController>());
+        _combos.Add(_sequence1.GetComponent<HUDComboHandler>());
         //_combos.Add(_sequence2.GetComponent<HUDComboController>());
         //_combos.Add(_sequence3.GetComponent<HUDComboController>());
         //_combos.Add(_sequence4.GetComponent<HUDComboController>());
 
         foreach (var combo in _combos)
         {
-            combo.OnComboFinished += OnComboFinished;
-            combo.OnComboCanceled += CancelCounter;
+            //combo.OnComboFinished += OnComboFinished;
+            //combo.OnComboCanceled += CancelCounter;
         }
     }
 
@@ -53,8 +53,8 @@ public class CurrentComboController : MonoBehaviour
     {
         foreach (var combo in _combos)
         {
-            combo.OnComboFinished -= OnComboFinished;
-            combo.OnComboCanceled -= CancelCounter;
+            //combo.OnComboFinished -= OnComboFinished;
+            //combo.OnComboCanceled -= CancelCounter;
         }
     }
 }
