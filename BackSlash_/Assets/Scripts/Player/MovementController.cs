@@ -1,4 +1,3 @@
-using Scripts.Animations;
 using Scripts.Player.camera;
 using System;
 using System.Collections;
@@ -9,37 +8,29 @@ namespace Scripts.Player
 {
     public class MovementController : MonoBehaviour
     {
-        [SerializeField] private Rigidbody _rigidbody;
-        [SerializeField] private CapsuleCollider _playerCollider;
-        [Header("IsGround settings")]
-        [SerializeField] private float _maxDistanse;
-        [SerializeField] private float _sphereRadius;
+        [SerializeField] private CharacterController _characterController;
         [Header("Monitoring")]
         [SerializeField] private float _currentSpeed;
-        [Header("Movement")]
+        [Header("Movement settings")]
         [SerializeField] private float _runSpeed;
         [SerializeField] private float _sprintSpeed;
-        [SerializeField] private float _groundDrag;
         [SerializeField] private float _jumpForce;
+        [SerializeField] private float _jumpCooldown;
         [SerializeField] private float _dodgeForce;
         [SerializeField] private float _dodgeCooldown;
-        [SerializeField] private float _jumpCooldown;
-        [SerializeField] private float _airMultiplier = 0.7f;
         [Header("SlopeAngle")]
         [SerializeField] private float _maxSlopeAngle;
-        [SerializeField] private float _slopeSpeed;
+
+        private bool _isJump;
+        private bool _isDodge;
+        private float _ySpeed;
+        private float _airTime;
 
         private Vector3 _moveDirection;
-
         private RaycastHit _slopeHit;
-        private LayerMask _hitboxLayer;
+
         private InputController _inputController;
         private ThirdPersonCameraController _thirdPersonCam;
-        private PlayerAnimationController _playerAnimationController;
-
-        private bool isJump = true;
-        private bool isDodge = true;
-        private bool _wasGrounded = true;
 
         public event Action<bool> InAir;
         public event Action<bool> IsMoving;
@@ -59,9 +50,6 @@ namespace Scripts.Player
             _inputController.OnSprintKeyRealesed += Run;
 
             _currentSpeed = _runSpeed;
-
-            _hitboxLayer = 1 << 7;
-            _hitboxLayer = ~_hitboxLayer;
         }
 
         private void OnDestroy()
@@ -72,26 +60,85 @@ namespace Scripts.Player
             _inputController.OnSprintKeyRealesed -= Run;
         }
 
+        private void Update()
+        {
+            CheckLand();
+            CheckAirTime();
+            MovePlayer();
+            IsMovingOnGround();
+        }
+
+        private void MovePlayer()
+        {
+            _moveDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
+
+            _ySpeed += Physics.gravity.y * Time.deltaTime;
+
+            if (_characterController.isGrounded)
+            {
+                _ySpeed = -0.5f;
+
+                if (_isJump)
+                {
+                    _ySpeed = _jumpForce;
+                }
+
+                if (OnSlope() && !_isJump)
+                {
+                    _ySpeed = -10f;
+                }
+            }
+            _moveDirection = _moveDirection * _currentSpeed;
+            _moveDirection.y = _ySpeed;
+
+            _characterController.Move(_moveDirection * Time.deltaTime);
+        }
+
+        private bool OnSlope()
+        {
+            if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, _characterController.height * 0.5f + 1.5f))
+            {
+                float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
+                if (angle > _maxSlopeAngle)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void Jump()
         {
-            if (IsGrounded() && isJump)
+            if (!_isJump)
             {
-                _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+                _isJump = true;
                 StartCoroutine(JumpCooldown(_jumpCooldown));
-                isJump = false;
                 OnJump?.Invoke();
             }
         }
 
         private void Dodge()
         {
-            if (IsGrounded() && (_moveDirection != Vector3.zero) && isDodge)
+            if (_characterController.isGrounded && !_isDodge)
             {
-                _rigidbody.AddForce(_moveDirection * _dodgeForce, ForceMode.VelocityChange);
+                _currentSpeed = _currentSpeed + _dodgeForce;
                 StartCoroutine(DodgeCooldown(_dodgeCooldown));
-                isDodge = false;
+                _isDodge = true;
                 OnDodge?.Invoke();
             }
+        }
+
+        private IEnumerator JumpCooldown(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            _isJump = false;
+        }
+
+        private IEnumerator DodgeCooldown(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            _currentSpeed = _runSpeed;
+            _isDodge = false;
         }
 
         private void Sprint()
@@ -104,87 +151,37 @@ namespace Scripts.Player
             _currentSpeed = _runSpeed;
         }
 
-        private void FixedUpdate()
+        private void CheckAirTime()
         {
-            MovePlayer();
-            SpeedControl();
-            IsGroundedAndMoving();
-            IsPlayerLanded();
-            _wasGrounded = IsGrounded();
-        }
-
-        private void MovePlayer()
-        {
-            if (IsGrounded() && !OnSlope())
+            if (_characterController.isGrounded)
             {
-                InAir?.Invoke(false);
-                _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f, ForceMode.Force);
-                _rigidbody.drag = _groundDrag;
+                _airTime = 0f;
             }
-            else if (IsGrounded() && OnSlope())
+            else
             {
-                InAir?.Invoke(false);
-                _rigidbody.AddForce(SlopeMoveDirection() * _slopeSpeed * 10f, ForceMode.Force);
-                _rigidbody.velocity -= _slopeHit.normal * 0.5f;
-            }
-            else if (!IsGrounded())
-            {
-                InAir?.Invoke(true);
-                _rigidbody.AddForce(MoveDiretion() * _currentSpeed * 10f * _airMultiplier, ForceMode.Force);
-                _rigidbody.drag = 0;
-            }
-        }
-
-        private void SpeedControl()
-        {
-            Vector3 playerSpeed = new Vector3(_rigidbody.velocity.x, 0f, _rigidbody.velocity.z);
-            if (playerSpeed.magnitude > _currentSpeed)
-            {
-                Vector3 limitedSpeed = playerSpeed.normalized * _currentSpeed;
-                _rigidbody.velocity = new Vector3(limitedSpeed.x, _rigidbody.velocity.y, limitedSpeed.z);
-            }
-        }
-
-        private bool IsGrounded()
-        {
-            RaycastHit hitInfo;
-            Vector3 directionDown = transform.TransformDirection(Vector3.down);
-
-            if (Physics.SphereCast(gameObject.transform.position + Vector3.up, _sphereRadius, directionDown, out hitInfo, _maxDistanse, _hitboxLayer, QueryTriggerInteraction.Ignore))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private bool IsPlayerLanded() 
-        {
-            if (IsGrounded() && !_wasGrounded)
-            {
-                OnLanded?.Invoke();
-                return true;
-            }
-            return false;
-        }
-
-        private bool OnSlope()
-        {
-            if (!IsGrounded()) return false;
-
-            if (Physics.Raycast(transform.position, Vector3.down, out _slopeHit, _playerCollider.height * 0.5f + 1.5f))
-            {
-                float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);            
-                if (angle < _maxSlopeAngle)
+                _airTime += Time.deltaTime;
+                if (_airTime > 0.2f)
                 {
-                    return true;
+                    InAir?.Invoke(true);
                 }
             }
-            return false;
         }
 
-        private void IsGroundedAndMoving()
+        private void CheckLand()
         {
-            if (IsGrounded() && MoveDiretion() != Vector3.zero)
+            if (_airTime > 0.2f)
+            {
+                if (_characterController.isGrounded)
+                {
+                    OnLanded?.Invoke();
+                    InAir?.Invoke(false);
+                }
+            }
+        }
+
+        private void IsMovingOnGround()
+        {
+            if ((_moveDirection.x != 0 || _moveDirection.z != 0) && _characterController.isGrounded && !_isDodge)
             {
                 IsMoving?.Invoke(true);
             }
@@ -192,33 +189,6 @@ namespace Scripts.Player
             {
                 IsMoving?.Invoke(false);
             }
-        }
-
-        private Vector3 MoveDiretion()
-        {
-            _moveDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-            if (_moveDirection != Vector3.zero)
-            {
-                return _moveDirection;
-            }
-            return Vector3.zero;
-        }
-
-        private Vector3 SlopeMoveDirection()
-        {
-            return Vector3.ProjectOnPlane(MoveDiretion(), _slopeHit.normal).normalized;
-        }
-
-        private IEnumerator JumpCooldown(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-            isJump = true;
-        }
-
-        private IEnumerator DodgeCooldown(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-            isDodge = true;
         }
     }
 }
