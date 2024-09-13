@@ -2828,9 +2828,8 @@ GameObject:
   - component: {fileID: 5300293899505624239}
   - component: {fileID: 1417933816927670133}
   - component: {fileID: 1945681995266547424}
-  - component: {fileID: 6843714413104379186}
-  - component: {fileID: 7192937150158336365}
   - component: {fileID: 1259562901829629793}
+  - component: {fileID: 3184469423278028609}
   - component: {fileID: 8507639596095695501}
   m_Layer: 6
   m_Name: Player
@@ -2848,7 +2847,7 @@ Transform:
   m_GameObject: {fileID: 8540106101222958762}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0, z: -3.05}
+  m_LocalPosition: {x: 10, y: 0, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2870,21 +2869,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e6f79e03fbed57499499ead94a1a2a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rigidbody: {fileID: 7192937150158336365}
-  _playerCollider: {fileID: 6843714413104379186}
-  _maxDistanse: 0.8
-  _sphereRadius: 0.25
+  _characterController: {fileID: 3184469423278028609}
   _currentSpeed: 0
   _runSpeed: 5
-  _sprintSpeed: 8
-  _groundDrag: 5
-  _jumpForce: 8
-  _dodgeForce: 10
-  _dodgeCooldown: 1
+  _sprintSpeed: 7
+  _jumpForce: 3
   _jumpCooldown: 0.5
-  _airMultiplier: 0.2
-  _maxSlopeAngle: 40
-  _slopeSpeed: 0
+  _dodgeForce: 0.5
+  _dodgeCooldown: 1
+  _maxSlopeAngle: 30
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2944,8 +2937,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _baseOrientation: {fileID: 655372459109497677}
-  _rotationTime: 30
-  _turnSpeed: 30
+  _rotationTime: 40
+  _turnSpeed: 40
+  _delayRotationTime: 5
 --- !u!114 &4037733144099541882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3002,56 +2996,7 @@ MonoBehaviour:
   _targetLockOffset: {x: 0, y: 0}
   _maxDistance: 20
   isTargeting: 0
---- !u!136 &6843714413104379186
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540106101222958762}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.3
-  m_Height: 1.8
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.93, z: 0}
---- !u!54 &7192937150158336365
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540106101222958762}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
+  _targets: []
 --- !u!95 &1259562901829629793
 Animator:
   serializedVersion: 5
@@ -3073,6 +3018,32 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!143 &3184469423278028609
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.3
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.0001
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &8507639596095695501
 MonoBehaviour:
   m_ObjectHideFlags: 0

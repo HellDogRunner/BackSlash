@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using Scripts.Player;
 using Zenject;
 using System;
+using UniRx.Triggers;
+using UniRx;
 
 public class TargetLock : MonoBehaviour
 {
@@ -33,7 +35,7 @@ public class TargetLock : MonoBehaviour
     private float _mouseX;
     private float _mouseY;
 
-    private List<Target> _targets = new List<Target>();
+    [SerializeField] private List<Target> _targets = new List<Target>();
 
     private InputController _inputService;
 
@@ -53,22 +55,33 @@ public class TargetLock : MonoBehaviour
         _triggerCollider.radius = _maxDistance;
         _cinemachineFreeLook.m_XAxis.m_InputAxisName = "";
         _cinemachineFreeLook.m_YAxis.m_InputAxisName = "";
+
+        _triggerCollider.OnTriggerEnterAsObservable()
+           .Subscribe(other =>
+           {
+               AddTargets(other);
+           }).AddTo(this);
+
+        _triggerCollider.OnTriggerExitAsObservable()
+           .Subscribe(other =>
+           {
+               RemoveTargets(other);
+           }).AddTo(this);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void AddTargets(Collider other) 
     {
         if (!other.TryGetComponent<Target>(out Target target)) { return; }
-
         _targets.Add(target);
         target.OnTargetDeath += ForceUnlock;
     }
 
-    private void OnTriggerExit(Collider other)
+    private void RemoveTargets(Collider other)
     {
         if (!other.TryGetComponent<Target>(out Target target)) { return; }
+
         _targets.Remove(target);
     }
-
 
     private void OnDestroy()
     {
@@ -145,12 +158,12 @@ public class TargetLock : MonoBehaviour
         {
             _currentTargetTransform = null;
             _targets.Remove(target);
-            target.OnTargetDeath -= ForceUnlock;
             if (isTargeting)
             {
                 isTargeting = false;
                 AssignTarget();
             }
+            target.OnTargetDeath -= ForceUnlock;
         }
     }
 
