@@ -7,6 +7,9 @@ public class HUDComboHandler : MonoBehaviour
 {
     [SerializeField] private ComboAnimationService _animationService;
     [SerializeField] private string _comboName;
+    [SerializeField] private float _beforeAttackInteval;
+    [SerializeField] private float _canAttackInteval;
+    [SerializeField] private float _afterComboInterval;
 
     private ComboTypeModel _combo;
 
@@ -20,6 +23,9 @@ public class HUDComboHandler : MonoBehaviour
     {
         _comboData = comboDatabase;
         _combo = _comboData.GetComboTypeByName(_comboName);
+        _beforeAttackInteval = _combo.BeforeAttackInteval;
+        _canAttackInteval = _combo.CanAttackInteval;
+        _afterComboInterval = _combo.AfterComboInterval;
 
         _comboSystem = comboSystem;
         _comboSystem.OnComboFinished += ComboFinished;  

@@ -9,7 +9,9 @@ namespace Scripts.Combo.Models
     {
         public string ComboName;
         public InputActionReference[] InputActions;
-        public float MaxInputTime;
+        public float BeforeAttackInteval;
+        public float CanAttackInteval;
+        public float AfterComboInterval;
         public string AnimationTrigger;
 
         public string PrimaryKey => ComboName;

@@ -9,8 +9,6 @@ using Zenject;
 public class ComboSystem : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float _inputBufferTime = 1f;
-    [SerializeField] private float _comboDelay = 0.3f;
     [SerializeField] private float _moveDelay = 0.3f;
     [SerializeField] private float _cancelDelay = 1f;
 
@@ -20,11 +18,12 @@ public class ComboSystem : MonoBehaviour
 
     private Animator _animator;
     private Coroutine _currentAttackRoutine;
+    private Coroutine _attackInterval;
     private ComboDatabase _comboData;
 
     private float _lastInputTime;
-    private bool _isAttacking = false;
     private bool _isCanceling = false;
+    private bool _canAttack = true;
 
     public event Action<bool> IsAttacking;
     public event Action<string> OnAttack;
@@ -70,26 +69,10 @@ public class ComboSystem : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (_inputBuffer.Count > 0 && Time.time - _lastInputTime > _inputBufferTime)
-        {
-            ClearInputBuffer();
-            _currentAttackRoutine = StartCoroutine(CancelCombo());
-        }
-        if (_inputBuffer.Count > 5)
-        {
-            ClearInputBuffer();
-            _currentAttackRoutine = StartCoroutine(CancelCombo());
-        }
-        IsAttacking?.Invoke(_isAttacking);
-    }
-
     private void RegisterInput(InputActionReference attackInput)
     {
-        if (!_isAttacking)
+        if (_canAttack)
         {
-            _lastInputTime = Time.time;
             _inputBuffer.Add(attackInput);
             ComboTypeModel matchedCombo = DetectCombo();
 
@@ -123,14 +106,17 @@ public class ComboSystem : MonoBehaviour
 
             if (action == _inputBuffer[attackIndex].action && _matchingCombos.Contains(combo))
             {
+                if (_attackInterval != null) StopCoroutine(_attackInterval);
+                _attackInterval = StartCoroutine(ВufferCannotExpand(combo));
+
                 OnAttackMatched?.Invoke(combo, action);
 
                 TryGetNextAttack(combo, attackCount);
 
-                if (_inputBuffer.Count == combo.InputActions.Length && _matchingCombos.Contains(combo))
+                if (_inputBuffer.Count == combo.InputActions.Length)
                 {
-                    ClearInputBuffer();
                     OnComboFinished?.Invoke(combo, action);
+                    StopCoroutine(_attackInterval);
                     return combo;
                 }
             }
@@ -180,53 +166,76 @@ public class ComboSystem : MonoBehaviour
 
     private IEnumerator PerformCombo(ComboTypeModel combo)
     {
-        _isAttacking = true;
+        IsAttacking?.Invoke(true);
+
         _animator.SetTrigger(combo.AnimationTrigger);
         OnCombo.Invoke(combo.ComboName);
-        yield return new WaitForSeconds(_comboDelay);
 
-        OnStopAllCombos?.Invoke();
-        TryGetNextAttack(null, 0);
+        yield return new WaitForSeconds(combo.AfterComboInterval);
 
-        _isAttacking = false;
+        ClearInputBuffer();
     }
 
     private IEnumerator PerformSimpleMove(InputActionReference input)
     {
         if (input.action.name.Contains("Attack"))
         {
-            _isAttacking = true;
+            IsAttacking?.Invoke(true);
             _animator.SetTrigger(input.action.name);
             OnAttack.Invoke(input.action.name);
         }
         yield return new WaitForSeconds(_moveDelay);
 
-        _isAttacking = false;
+        IsAttacking?.Invoke(false);
     }
 
     private IEnumerator CancelCombo()
     {
         if (!_isCanceling)
         {
+            Debug.Log("cancel");
             _isCanceling = true;
-            OnComboCancelled?.Invoke();
 
-            // Тут можно оставить ивент на анимацию отменённого комбо
+            OnComboCancelled?.Invoke();
 
             yield return new WaitForSeconds(_cancelDelay);
 
-            OnStopAllCombos?.Invoke();
-            TryGetNextAttack(null, 0);
+            ClearInputBuffer();
 
-            _isAttacking = false;
             _isCanceling = false;
         }
     }
 
+    private IEnumerator ВufferCannotExpand(ComboTypeModel combo)
+    {
+        _canAttack = false;
+
+        yield return new WaitForSeconds(combo.BeforeAttackInteval);
+
+        _attackInterval = StartCoroutine(ВufferCanExpand(combo));
+    }
+
+    private IEnumerator ВufferCanExpand(ComboTypeModel combo)
+    {
+        _canAttack = true;
+
+        yield return new WaitForSeconds(combo.CanAttackInteval);
+
+        _canAttack = false;
+
+        _currentAttackRoutine = StartCoroutine(CancelCombo());
+    }
+
     private void ClearInputBuffer()
     {
+        OnStopAllCombos?.Invoke();
+
+        TryGetNextAttack(null, 0);
         _inputBuffer.Clear();
         FillComboList();
+
+        IsAttacking?.Invoke(false);
+        _canAttack = true;
     }
 
     //Проверка анимационного клипа очистить если в дальнейшем не пригодится
