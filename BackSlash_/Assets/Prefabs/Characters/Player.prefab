@@ -2873,11 +2873,13 @@ MonoBehaviour:
   _currentSpeed: 0
   _runSpeed: 5
   _sprintSpeed: 7
-  _jumpForce: 3
+  _jumpForce: 7
   _jumpCooldown: 0.5
   _dodgeForce: 0.5
   _dodgeCooldown: 1
   _maxSlopeAngle: 30
+  _maxCastDistance: 1.1
+  _sphereCastRadius: 0.25
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2890,9 +2892,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 579ea157c21de1e4da6b2f1250b8abe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputBufferTime: 1
-  _comboDelay: 0.3
-  _moveDelay: 0.3
+  _moveDelay: 0.5
+  _cancelDelay: 1.5
   _inputBuffer: []
 --- !u!114 &5530042786574198228
 MonoBehaviour:
@@ -3010,7 +3011,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: eab2d03db87485d4ebdce3e6acb17700, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 

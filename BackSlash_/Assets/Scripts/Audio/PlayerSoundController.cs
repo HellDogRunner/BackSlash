@@ -30,7 +30,7 @@ public class PlayerSoundController : MonoBehaviour
         _inputController.OnSprintKeyRealesed += IsRunning;
 
         _movementController = movementController;
-        _movementController.IsMoving += PlayFootstepsSound;
+        _movementController.PlaySteps += PlayFootstepsSound;
         _movementController.OnLanded += PlayLandingSound;
 
         _comboSystem = comboSystem;
@@ -46,7 +46,7 @@ public class PlayerSoundController : MonoBehaviour
         _inputController.OnSprintKeyPressed -= IsSptrinting;
         _inputController.OnSprintKeyRealesed -= IsRunning;
 
-        _movementController.IsMoving -= PlayFootstepsSound;
+        _movementController.PlaySteps -= PlayFootstepsSound;
         _movementController.OnLanded -= PlayLandingSound;
 
         _comboSystem.OnAttack -= PlaySwordSound;

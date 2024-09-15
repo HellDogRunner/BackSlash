@@ -15,23 +15,21 @@ namespace Scripts.Player.camera
 
         private float _timeToRotate;
 
-        private InputController _inputService;
+        private InputController _inputController;
         private TargetLock _targetLock;
         private ComboSystem _comboSystem;
 
-        private Vector3 _forwardDirection;
         private Transform _camera;
         private Coroutine _currentDelayRoutine;
 
         private bool _isAttacking;
-        public Vector3 ForwardDirection => _forwardDirection;
 
         public event Action<bool> IsAttacking;
 
         [Inject]
         private void Construct(InputController inputService, TargetLock targetLock, ComboSystem comboSystem)
         {
-            _inputService = inputService;
+            _inputController = inputService;
             _targetLock = targetLock;
             _comboSystem = comboSystem;
             _comboSystem.IsAttacking += OnAttack;
@@ -47,8 +45,6 @@ namespace Scripts.Player.camera
                 _timeToRotate = 0;
                 _isAttacking = false;
             }
-
-            CalculateForwardDirection();
 
             if (_targetLock.CurrentTargetTransform != null)
             {
@@ -70,8 +66,8 @@ namespace Scripts.Player.camera
 
         private void RotatePlayer()
         {
-            var direction = _inputService.MoveDirection;
-            Vector3 ViewDir = gameObject.transform.position - new Vector3(_camera.transform.position.x, gameObject.transform.position.y, _camera.transform.position.z);
+            var direction = _inputController.MoveDirection;
+            Vector3 ViewDir = gameObject.transform.position - new Vector3(_camera.position.x, gameObject.transform.position.y, _camera.position.z);
             _baseOrientation.forward = ViewDir.normalized;
 
             Vector3 inputDir = _baseOrientation.forward * direction.z + _baseOrientation.right * direction.x;
@@ -92,7 +88,7 @@ namespace Scripts.Player.camera
 
         private void RotatePlayerForward()
         {
-            float cameraYaw = _camera.transform.eulerAngles.y;
+            float cameraYaw = _camera.eulerAngles.y;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), _turnSpeed * Time.deltaTime);
         }
 
@@ -103,18 +99,6 @@ namespace Scripts.Player.camera
                 _isAttacking = true;
                 _timeToRotate = 0;
             }
-        }
-
-        public void CalculateForwardDirection()
-        {
-            var direction = _inputService.MoveDirection;
-            Vector3 forward = _camera.transform.forward;
-            Vector3 right = _camera.transform.right;
-
-            Vector3 forwardRealtiveVerticalInput = direction.z * forward;
-            Vector3 rightRealtiveVerticalInput = direction.x * right;
-
-            _forwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
         }
 
         private IEnumerator DelayRotation(float delaySecounds)

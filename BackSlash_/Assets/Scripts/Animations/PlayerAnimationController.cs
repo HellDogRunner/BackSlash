@@ -95,6 +95,7 @@ namespace Scripts.Animations
         private void JumpAnimation(bool isInAir)
         {
             _animator.SetBool("InAir", isInAir);
+            _animator.applyRootMotion = !isInAir;
         }
 
         private void DodgeAnimation()

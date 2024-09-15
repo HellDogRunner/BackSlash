@@ -20,29 +20,37 @@ namespace Scripts.Player
         [SerializeField] private float _dodgeCooldown;
         [Header("SlopeAngle")]
         [SerializeField] private float _maxSlopeAngle;
+        [Header("IsGround settings")]
+        [SerializeField] private float _maxCastDistance;
+        [SerializeField] private float _sphereCastRadius;
 
         private bool _isJump;
         private bool _isDodge;
+        private bool _isAttackGoing;
         private float _ySpeed;
         private float _airTime;
 
         private Vector3 _moveDirection;
+        private Vector3 _forwardDirection;
         private RaycastHit _slopeHit;
+        private LayerMask _hitboxLayer;
 
         private InputController _inputController;
-        private ThirdPersonCameraController _thirdPersonCam;
+        private ComboSystem _comboSystem;
+        private Transform _camera;
 
         public event Action<bool> InAir;
-        public event Action<bool> IsMoving;
+        public event Action<bool> PlaySteps;
         public event Action OnLanded;
         public event Action OnDodge;
         public event Action OnJump;
 
-        [Inject]
-        private void Construct(InputController inputController, ThirdPersonCameraController thirdPersonCam)
-        {
-            _thirdPersonCam = thirdPersonCam;
+        //debug gizmo parameter delete later
+        private float currenthitdisance;
 
+        [Inject]
+        private void Construct(InputController inputController, ComboSystem comboSystem)
+        {
             _inputController = inputController;
             _inputController.OnJumpKeyPressed += Jump;
             _inputController.OnDodgeKeyPressed += Dodge;
@@ -50,6 +58,16 @@ namespace Scripts.Player
             _inputController.OnSprintKeyRealesed += Run;
 
             _currentSpeed = _runSpeed;
+            _hitboxLayer = 1 << 7;
+            _hitboxLayer = ~_hitboxLayer;
+
+            _comboSystem = comboSystem;
+            _comboSystem.IsAttacking += IsAttacking;
+        }
+
+        private void Awake()
+        {
+            _camera = Camera.main.transform;
         }
 
         private void OnDestroy()
@@ -58,39 +76,56 @@ namespace Scripts.Player
             _inputController.OnDodgeKeyPressed -= Dodge;
             _inputController.OnSprintKeyPressed -= Sprint;
             _inputController.OnSprintKeyRealesed -= Run;
+            _comboSystem.IsAttacking -= IsAttacking;
         }
 
         private void Update()
         {
+            CalculateForwardDirection();
             CheckLand();
             CheckAirTime();
             MovePlayer();
-            IsMovingOnGround();
+            InvokeSteps();            
+        }
+
+        public void CalculateForwardDirection()
+        {
+            var direction = _inputController.MoveDirection;
+
+            Vector3 forwardRealtiveVerticalInput = direction.z * _camera.forward;
+            Vector3 rightRealtiveVerticalInput = direction.x * _camera.right;
+
+            _forwardDirection = forwardRealtiveVerticalInput + rightRealtiveVerticalInput;
         }
 
         private void MovePlayer()
         {
-            _moveDirection = new Vector3(_thirdPersonCam.ForwardDirection.x, 0, _thirdPersonCam.ForwardDirection.z).normalized;
-
             _ySpeed += Physics.gravity.y * Time.deltaTime;
 
-            if (_characterController.isGrounded)
+            if (_isAttackGoing)
             {
-                _ySpeed = -0.5f;
-
-                if (_isJump)
-                {
-                    _ySpeed = _jumpForce;
-                }
-
-                if (OnSlope() && !_isJump)
-                {
-                    _ySpeed = -10f;
-                }
+                _moveDirection = Vector3.zero;
             }
-            _moveDirection = _moveDirection * _currentSpeed;
-            _moveDirection.y = _ySpeed;
+            else 
+            {
+                _moveDirection = new Vector3(_forwardDirection.x, 0, _forwardDirection.z).normalized;
+                if (IsGrounded())
+                {
+                    _ySpeed = -0.5f;
 
+                    if (_isJump)
+                    {
+                        _ySpeed = _jumpForce;
+                    }
+
+                    if (OnSlope() && !_isJump)
+                    {
+                        _ySpeed = -10f;
+                    }
+                }
+                _moveDirection = _moveDirection * _currentSpeed;
+            }
+            _moveDirection.y = _ySpeed;
             _characterController.Move(_moveDirection * Time.deltaTime);
         }
 
@@ -119,7 +154,7 @@ namespace Scripts.Player
 
         private void Dodge()
         {
-            if (_characterController.isGrounded && !_isDodge)
+            if (IsGrounded() && !_isDodge)
             {
                 _currentSpeed = _currentSpeed + _dodgeForce;
                 StartCoroutine(DodgeCooldown(_dodgeCooldown));
@@ -153,14 +188,14 @@ namespace Scripts.Player
 
         private void CheckAirTime()
         {
-            if (_characterController.isGrounded)
+            if (IsGrounded())
             {
                 _airTime = 0f;
             }
             else
             {
                 _airTime += Time.deltaTime;
-                if (_airTime > 0.2f)
+                if (_airTime > 0f)
                 {
                     InAir?.Invoke(true);
                 }
@@ -169,9 +204,9 @@ namespace Scripts.Player
 
         private void CheckLand()
         {
-            if (_airTime > 0.2f)
+            if (_airTime > 0f)
             {
-                if (_characterController.isGrounded)
+                if (IsGrounded())
                 {
                     OnLanded?.Invoke();
                     InAir?.Invoke(false);
@@ -179,16 +214,50 @@ namespace Scripts.Player
             }
         }
 
-        private void IsMovingOnGround()
+        private void InvokeSteps()
         {
-            if ((_moveDirection.x != 0 || _moveDirection.z != 0) && _characterController.isGrounded && !_isDodge)
+            if ((_forwardDirection.x != 0 || _forwardDirection.z != 0) && IsGrounded() && !_isDodge)
             {
-                IsMoving?.Invoke(true);
+                PlaySteps?.Invoke(true);
             }
             else
             {
-                IsMoving?.Invoke(false);
+                PlaySteps?.Invoke(false);
             }
+        }
+
+        private bool IsGrounded()
+        {
+            RaycastHit hitInfo;
+            Vector3 directionDown = transform.TransformDirection(Vector3.down);
+
+            if (Physics.SphereCast(gameObject.transform.position + _characterController.center + (Vector3.up * 0.1f),
+                _sphereCastRadius,
+                Vector3.down, out hitInfo,
+                _maxCastDistance,
+                _hitboxLayer,
+                QueryTriggerInteraction.UseGlobal))
+            {
+                currenthitdisance = hitInfo.distance;
+                return true;
+            }
+            else
+            {
+                currenthitdisance = _maxCastDistance;
+                return false;
+            }
+        }
+
+        private void IsAttacking(bool isAttacking)
+        {
+            _isAttackGoing = isAttacking;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Debug.DrawLine(gameObject.transform.position + _characterController.center + (Vector3.up * 0.1f), gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * currenthitdisance,Color.yellow);
+            Gizmos.DrawWireSphere(gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * currenthitdisance, _sphereCastRadius);
         }
     }
 }
