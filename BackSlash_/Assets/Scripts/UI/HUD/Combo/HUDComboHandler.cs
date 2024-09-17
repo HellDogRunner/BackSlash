@@ -1,12 +1,19 @@
 using Scripts.Combo.Models;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using Zenject;
 
 public class HUDComboHandler : MonoBehaviour
 {
-    [SerializeField] private ComboAnimationService _animationService;
     [SerializeField] private string _comboName;
+
+    [Header("Initialization")] 
+    [SerializeField] private ComboAnimationService _animationService;
+    [SerializeField] private Image _iconImage;
+    [SerializeField] private Image _frameImage;
+
+    [Header("Intervals")]
     [SerializeField] private float _beforeAttackInteval;
     [SerializeField] private float _canAttackInteval;
     [SerializeField] private float _afterComboInterval;
@@ -23,9 +30,12 @@ public class HUDComboHandler : MonoBehaviour
     {
         _comboData = comboDatabase;
         _combo = _comboData.GetComboTypeByName(_comboName);
-        _beforeAttackInteval = _combo.BeforeAttackInteval;
+
         _canAttackInteval = _combo.CanAttackInteval;
         _afterComboInterval = _combo.AfterComboInterval;
+
+        _iconImage.sprite = _combo.IconSprite;
+        _frameImage.sprite = _combo.FrameSprite;
 
         _comboSystem = comboSystem;
         _comboSystem.OnComboFinished += ComboFinished;  
@@ -34,6 +44,7 @@ public class HUDComboHandler : MonoBehaviour
         _comboSystem.OnNextAttackMatched += NextComboAttack;
         _comboSystem.OnComboCancelled += CancelAllCombo;
         _comboSystem.OnStopAllCombos += SetStartState;
+        _comboSystem.OnCanAttack += CanAttack;
     }
 
     private void Awake()
@@ -41,6 +52,13 @@ public class HUDComboHandler : MonoBehaviour
         SetStartState();
 
         _animationService.SetFillVolume(_combo.InputActions.Length);
+    }
+
+    private void CanAttack(ComboTypeModel combo, bool canAttack)
+    {
+        if (!CheckThisCombo(combo)) return;
+
+        _animationService.AnimateCanAttack(canAttack);
     }
 
     private bool CheckThisCombo(ComboTypeModel combo)
@@ -56,6 +74,7 @@ public class HUDComboHandler : MonoBehaviour
     {
         _isActive = true;
         _animationService.SetStartAnimations();
+        _animationService.AnimateCanAttack(true);
     }
 
     private void NextComboAttack(ComboTypeModel combo, InputAction action)
@@ -68,7 +87,7 @@ public class HUDComboHandler : MonoBehaviour
         }
     }
 
-    private void ComboProgress(ComboTypeModel combo, InputAction action)
+    private void ComboProgress(ComboTypeModel combo)
     {
         if (!CheckThisCombo(combo)) return;
 
@@ -82,25 +101,29 @@ public class HUDComboHandler : MonoBehaviour
     {
         if (_isActive)
         {
+            _animationService.AnimateCanAttack(false);
             _animationService.AnimateCancelCombo();
             _isActive = false;
         }
     }
 
-    private void ComboCanceled(ComboTypeModel combo, InputAction action)
+    private void ComboCanceled(ComboTypeModel combo)
     {
         if (!CheckThisCombo(combo)) return;
 
         if (_isActive)
         {
+            _animationService.AnimateCanAttack(false);
             _animationService.AnimateCancelCombo();
             _isActive = false;
         }
     }
 
-    private void ComboFinished(ComboTypeModel combo, InputAction action)
+    private void ComboFinished(ComboTypeModel combo)
     {
         if (!CheckThisCombo(combo)) return;
+
+        _animationService.AnimateCanAttack(true);
         _animationService.AnimateFinishCombo();
     }
 
@@ -110,7 +133,8 @@ public class HUDComboHandler : MonoBehaviour
         _comboSystem.OnAttackMatched -= ComboProgress;
         _comboSystem.OnAttackNotMatched -= ComboCanceled;
         _comboSystem.OnNextAttackMatched -= NextComboAttack;
-        _comboSystem.OnComboCancelled += CancelAllCombo;
+        _comboSystem.OnComboCancelled -= CancelAllCombo;
         _comboSystem.OnStopAllCombos -= SetStartState;
+        _comboSystem.OnCanAttack -= CanAttack;
     }
 }

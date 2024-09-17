@@ -14,6 +14,7 @@ public class ComboAnimationService : MonoBehaviour
     [SerializeField] private CanvasGroup _cancelCG;
     [SerializeField] private Image _fillImage;
     [SerializeField] private Image _blinkImage;
+    [SerializeField] private Image _canAttack;
 
     [Header("Mouse")]
     [SerializeField] private GameObject _mouse;
@@ -73,6 +74,18 @@ public class ComboAnimationService : MonoBehaviour
     public void SetFillVolume(int indicatorsCount)
     {
         _fillValue = 1f / indicatorsCount;
+    }
+
+    public void AnimateCanAttack(bool canAttack)
+    {
+        if (canAttack)
+        {
+            _canAttack.color = Color.green;
+        }
+        else
+        {
+            _canAttack.color = Color.red;
+        }
     }
 
     public void ShowNextComboKey(InputAction action)
