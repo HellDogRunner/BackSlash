@@ -21,7 +21,7 @@ public class ComboSystem : MonoBehaviour
 
     private Animator _animator;
     private ComboDatabase _comboData;
-    private InputDatabase _inputData;
+    private ComboInputsDatabase _inputData;
 
     private bool _ñomboProgress = false;
     private bool _isCanceling = false;
@@ -36,14 +36,13 @@ public class ComboSystem : MonoBehaviour
     public event Action<ComboTypeModel> OnComboFinished;
     public event Action OnComboCancelled;
     public event Action OnStopAllCombos;
-    public event Action<InputTypeModel> OnCanAttack;
+    public event Action<ComboInputTypeModel> OnCanAttack;
     public event Action OnCannotAttack;
-
 
     public float CancelDelay => _cancelDelay;
 
     [Inject]
-    private void Construct(ComboDatabase comboDatabase, InputDatabase inputData)
+    private void Construct(ComboDatabase comboDatabase, ComboInputsDatabase inputData)
     {
         _comboData = comboDatabase;
         _inputData = inputData;
@@ -117,6 +116,7 @@ public class ComboSystem : MonoBehaviour
 
             if (action == _inputBuffer[attackIndex].action && _matchingCombos.Contains(combo))
             {
+                if (_currentAttackRoutine != null) StopCoroutine(_currentAttackRoutine);
                 if (_attackInterval != null) StopCoroutine(_attackInterval);
                 _attackInterval = StartCoroutine(ÂufferCannotExpand(combo, _inputBuffer[attackIndex]));
 
@@ -152,11 +152,12 @@ public class ComboSystem : MonoBehaviour
     {
         _ñomboProgress = true;
         IsAttacking?.Invoke(true);
-
         _animator.SetTrigger(combo.AnimationTrigger);
         OnCombo.Invoke(combo.ComboName);
 
         yield return new WaitForSeconds(combo.AfterComboInterval);
+
+        IsAttacking?.Invoke(false);
 
         ClearInputBuffer();
     }
@@ -166,10 +167,11 @@ public class ComboSystem : MonoBehaviour
         // Ïðûæîê áëî÷èòñÿ â íà÷àëå àíèìàöèè
 
         string inputName = inputReference.action.name;
-        InputTypeModel input = _inputData.GetAnimationTypeByName(inputName);
+        ComboInputTypeModel input = _inputData.GetAnimationTypeByName(inputName);
 
         IsAttacking?.Invoke(true);
         _animator.SetTrigger(inputName);
+    
         OnAttack.Invoke(inputName);
 
         //if (input.action.name.Contains("Attack"))
@@ -180,7 +182,6 @@ public class ComboSystem : MonoBehaviour
         //}
 
         yield return new WaitForSeconds(input.Length);
-
         IsAttacking?.Invoke(false);
     }
 
@@ -203,16 +204,15 @@ public class ComboSystem : MonoBehaviour
 
     private IEnumerator ÂufferCannotExpand(ComboTypeModel combo, InputActionReference inputReference)
     {
-        InputTypeModel input = _inputData.GetAnimationTypeByName(inputReference.action.name);
+        ComboInputTypeModel input = _inputData.GetAnimationTypeByName(inputReference.action.name);
 
         _canAttack = false;
-        //OnCannotAttack?.Invoke(input);
         yield return new WaitForSeconds(input.BeforeAttackTime);
 
         _attackInterval = StartCoroutine(ÂufferCanExpand(input));
     }
 
-    private IEnumerator ÂufferCanExpand(InputTypeModel input)
+    private IEnumerator ÂufferCanExpand(ComboInputTypeModel input)
     {
         _canAttack = true;
         OnCanAttack?.Invoke(input);
@@ -259,8 +259,6 @@ public class ComboSystem : MonoBehaviour
         TryGetNextAttack(null, 0);
         _inputBuffer.Clear();
         FillComboList();
-
-        IsAttacking?.Invoke(false);
         _canAttack = true;
         _ñomboProgress = false;
     }

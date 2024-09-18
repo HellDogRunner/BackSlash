@@ -4,7 +4,7 @@ using System;
 namespace Scripts.InputReference.Models
 {
     [Serializable]
-    public class InputTypeModel : IDatabaseModelPrimaryKey<string>
+    public class ComboInputTypeModel : IDatabaseModelPrimaryKey<string>
     {
         public string InputName;
         public float Length;

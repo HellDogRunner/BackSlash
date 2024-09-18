@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Scripts.InputReference.Models
 {
-    [CreateAssetMenu(fileName = "InputTypesDatabase", menuName = "[RMG] Scriptable/Combo/InputTypesDatabase", order = 1)]
-    public class InputDatabase : ScriptableDatabase<InputTypeModel>
+    [CreateAssetMenu(fileName = "ComboInputsDatabase", menuName = "[RMG] Scriptable/Combo/ComboInputsDatabase", order = 1)]
+    public class ComboInputsDatabase : ScriptableDatabase<ComboInputTypeModel>
     {
-        public InputTypeModel GetAnimationTypeByName(string inputName)
+        public ComboInputTypeModel GetAnimationTypeByName(string inputName)
         {
             if (inputName == "")
             {

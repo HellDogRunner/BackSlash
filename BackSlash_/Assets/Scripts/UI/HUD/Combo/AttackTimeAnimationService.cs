@@ -26,7 +26,7 @@ public class AttackTimeAnimationService : MonoBehaviour
         SetDefaultState();
     }
 
-    private void AnimateCanAttackTime(InputTypeModel input)
+    private void AnimateCanAttackTime(ComboInputTypeModel input)
     {
         _intervalImage.gameObject.SetActive(true);
         _fill = _intervalImage.DOFillAmount(0, input.CanAttackTime).SetEase(Ease.Flash);
