@@ -1,4 +1,5 @@
 using Scripts.Combo.Models;
+using Scripts.InputReference.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,12 +19,10 @@ public class ComboSystem : MonoBehaviour
     private Coroutine _currentAttackRoutine;
     private Coroutine _attackInterval;
 
-    private AnimationClip[] _clips;
-
     private Animator _animator;
     private ComboDatabase _comboData;
+    private InputDatabase _inputData;
 
-    private float _attackDelay;
     private bool _ñomboProgress = false;
     private bool _isCanceling = false;
     private bool _canAttack = true;
@@ -37,18 +36,22 @@ public class ComboSystem : MonoBehaviour
     public event Action<ComboTypeModel> OnComboFinished;
     public event Action OnComboCancelled;
     public event Action OnStopAllCombos;
-    public event Action<ComboTypeModel, bool> OnCanAttack;
+    public event Action<InputTypeModel> OnCanAttack;
+    public event Action OnCannotAttack;
+
+
+    public float CancelDelay => _cancelDelay;
 
     [Inject]
-    private void Construct(ComboDatabase comboDatabase)
+    private void Construct(ComboDatabase comboDatabase, InputDatabase inputData)
     {
         _comboData = comboDatabase;
+        _inputData = inputData;
     }
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        _clips = _animator.runtimeAnimatorController.animationClips;
 
         FillComboList();
         TryGetNextAttack(null, 0);
@@ -80,7 +83,6 @@ public class ComboSystem : MonoBehaviour
 
         if (_canAttack)
         {
-            string clipName = GetClipName(attackInput);
             _inputBuffer.Add(attackInput);
             ComboTypeModel matchedCombo = DetectCombo();
 
@@ -90,7 +92,7 @@ public class ComboSystem : MonoBehaviour
             }
             else
             {
-                _currentAttackRoutine = StartCoroutine(PerformSimpleMove(clipName));
+                _currentAttackRoutine = StartCoroutine(PerformSimpleMove(attackInput));
             }
         }
         else
@@ -116,7 +118,9 @@ public class ComboSystem : MonoBehaviour
             if (action == _inputBuffer[attackIndex].action && _matchingCombos.Contains(combo))
             {
                 if (_attackInterval != null) StopCoroutine(_attackInterval);
-                _attackInterval = StartCoroutine(ÂufferCannotExpand(combo));
+                _attackInterval = StartCoroutine(ÂufferCannotExpand(combo, _inputBuffer[attackIndex]));
+
+                OnCannotAttack?.Invoke();
                 OnAttackMatched?.Invoke(combo);
                 TryGetNextAttack(combo, attackCount);
 
@@ -144,46 +148,6 @@ public class ComboSystem : MonoBehaviour
         else OnAttackNotMatched?.Invoke(combo);
     }
 
-    private void TryGetNextAttack(ComboTypeModel combo, int attackCount)
-    {
-        if (combo == null)
-        {
-            foreach (var cmb in _comboData.GetData())
-            {
-                OnNextAttackMatched?.Invoke(cmb, cmb.InputActions[0]);
-            }
-            return;
-        }
-
-        if (attackCount < combo.InputActions.Length)
-        {
-            OnNextAttackMatched?.Invoke(combo, combo.InputActions[attackCount]);
-        }
-    }
-
-    private void FillComboList()
-    {
-        _matchingCombos.Clear();
-
-        foreach (var combo in _comboData.GetData())
-        {
-            _matchingCombos.Add(combo);
-        }
-    }
-
-    private string GetClipName(InputActionReference input)
-    {
-        foreach (var clip in _clips)
-        {
-            if (input.action.name.Contains(clip.name))
-            {
-                _attackDelay = clip.length;
-            }
-        }
-
-        return input.action.name;
-    }
-
     private IEnumerator PerformCombo(ComboTypeModel combo)
     {
         _ñomboProgress = true;
@@ -197,9 +161,13 @@ public class ComboSystem : MonoBehaviour
         ClearInputBuffer();
     }
 
-    private IEnumerator PerformSimpleMove(string inputName)
+    private IEnumerator PerformSimpleMove(InputActionReference inputReference)
     {
         // Ïðûæîê áëî÷èòñÿ â íà÷àëå àíèìàöèè
+
+        string inputName = inputReference.action.name;
+        InputTypeModel input = _inputData.GetAnimationTypeByName(inputName);
+
         IsAttacking?.Invoke(true);
         _animator.SetTrigger(inputName);
         OnAttack.Invoke(inputName);
@@ -211,7 +179,7 @@ public class ComboSystem : MonoBehaviour
         //    OnAttack.Invoke(input.action.name);
         //}
 
-        yield return new WaitForSeconds(_attackDelay);
+        yield return new WaitForSeconds(input.Length);
 
         IsAttacking?.Invoke(false);
     }
@@ -233,24 +201,55 @@ public class ComboSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator ÂufferCannotExpand(ComboTypeModel combo)
+    private IEnumerator ÂufferCannotExpand(ComboTypeModel combo, InputActionReference inputReference)
     {
-        _canAttack = false;
-        OnCanAttack?.Invoke(combo, false);
-        yield return new WaitForSeconds(_attackDelay);
+        InputTypeModel input = _inputData.GetAnimationTypeByName(inputReference.action.name);
 
-        _attackInterval = StartCoroutine(ÂufferCanExpand(combo));
+        _canAttack = false;
+        //OnCannotAttack?.Invoke(input);
+        yield return new WaitForSeconds(input.BeforeAttackTime);
+
+        _attackInterval = StartCoroutine(ÂufferCanExpand(input));
     }
 
-    private IEnumerator ÂufferCanExpand(ComboTypeModel combo)
+    private IEnumerator ÂufferCanExpand(InputTypeModel input)
     {
         _canAttack = true;
-        OnCanAttack?.Invoke(combo, true);
-        yield return new WaitForSeconds(combo.CanAttackInteval);
+        OnCanAttack?.Invoke(input);
+
+        yield return new WaitForSeconds(input.CanAttackTime);
 
         _canAttack = false;
+        OnCannotAttack?.Invoke();
 
-        AttackNotMatched(combo);
+        StartCoroutine(CancelCombo());
+    }
+
+    private void TryGetNextAttack(ComboTypeModel combo, int attackCount)
+    {
+        if (combo == null)
+        {
+            foreach (var _combo in _comboData.GetData())
+            {
+                OnNextAttackMatched?.Invoke(_combo, _combo.InputActions[0]);
+            }
+            return;
+        }
+
+        if (attackCount < combo.InputActions.Length)
+        {
+            OnNextAttackMatched?.Invoke(combo, combo.InputActions[attackCount]);
+        }
+    }
+
+    private void FillComboList()
+    {
+        _matchingCombos.Clear();
+
+        foreach (var combo in _comboData.GetData())
+        {
+            _matchingCombos.Add(combo);
+        }
     }
 
     private void ClearInputBuffer()

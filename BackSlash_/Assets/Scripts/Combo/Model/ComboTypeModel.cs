@@ -10,8 +10,6 @@ namespace Scripts.Combo.Models
     {
         public string ComboName;
         public InputActionReference[] InputActions;
-        //public float BeforeAttackInteval;
-        public float CanAttackInteval;
         public float AfterComboInterval;
         public string AnimationTrigger;
         public Sprite FrameSprite;

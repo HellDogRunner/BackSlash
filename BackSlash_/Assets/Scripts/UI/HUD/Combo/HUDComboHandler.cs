@@ -9,14 +9,15 @@ public class HUDComboHandler : MonoBehaviour
     [SerializeField] private string _comboName;
 
     [Header("Initialization")] 
-    [SerializeField] private ComboAnimationService _animationService;
+    [SerializeField] private ComboAnimationService _comboAnimation;
     [SerializeField] private Image _iconImage;
     [SerializeField] private Image _frameImage;
 
     [Header("Intervals")]
-    [SerializeField] private float _beforeAttackInteval;
-    [SerializeField] private float _canAttackInteval;
+    [SerializeField] private float _beforeAttackTime;
+    [SerializeField] private float _canAttackTime;
     [SerializeField] private float _afterComboInterval;
+    [SerializeField] private float _cancelDelay;
 
     private ComboTypeModel _combo;
 
@@ -31,34 +32,26 @@ public class HUDComboHandler : MonoBehaviour
         _comboData = comboDatabase;
         _combo = _comboData.GetComboTypeByName(_comboName);
 
-        _canAttackInteval = _combo.CanAttackInteval;
         _afterComboInterval = _combo.AfterComboInterval;
-
         _iconImage.sprite = _combo.IconSprite;
         _frameImage.sprite = _combo.FrameSprite;
 
         _comboSystem = comboSystem;
+        _cancelDelay = _comboSystem.CancelDelay;
+
         _comboSystem.OnComboFinished += ComboFinished;  
         _comboSystem.OnAttackMatched += ComboProgress;
         _comboSystem.OnAttackNotMatched += ComboCanceled;
         _comboSystem.OnNextAttackMatched += NextComboAttack;
         _comboSystem.OnComboCancelled += CancelAllCombo;
         _comboSystem.OnStopAllCombos += SetStartState;
-        _comboSystem.OnCanAttack += CanAttack;
     }
 
     private void Awake()
     {
         SetStartState();
 
-        _animationService.SetFillVolume(_combo.InputActions.Length);
-    }
-
-    private void CanAttack(ComboTypeModel combo, bool canAttack)
-    {
-        if (!CheckThisCombo(combo)) return;
-
-        _animationService.AnimateCanAttack(canAttack);
+        _comboAnimation.SetFillVolume(_combo.InputActions.Length);
     }
 
     private bool CheckThisCombo(ComboTypeModel combo)
@@ -73,8 +66,7 @@ public class HUDComboHandler : MonoBehaviour
     private void SetStartState()
     {
         _isActive = true;
-        _animationService.SetStartAnimations();
-        _animationService.AnimateCanAttack(true);
+        _comboAnimation.SetStartAnimations();
     }
 
     private void NextComboAttack(ComboTypeModel combo, InputAction action)
@@ -83,7 +75,7 @@ public class HUDComboHandler : MonoBehaviour
 
         if (_isActive)
         {
-            _animationService.ShowNextComboKey(action);
+            _comboAnimation.ShowNextComboKey(action);
         }
     }
 
@@ -93,7 +85,7 @@ public class HUDComboHandler : MonoBehaviour
 
         if (_isActive)
         {
-            _animationService.AnimateProgressCombo();
+            _comboAnimation.AnimateProgressCombo();
         }
     }
 
@@ -101,8 +93,7 @@ public class HUDComboHandler : MonoBehaviour
     {
         if (_isActive)
         {
-            _animationService.AnimateCanAttack(false);
-            _animationService.AnimateCancelCombo();
+            _comboAnimation.AnimateCancelCombo();
             _isActive = false;
         }
     }
@@ -113,8 +104,7 @@ public class HUDComboHandler : MonoBehaviour
 
         if (_isActive)
         {
-            _animationService.AnimateCanAttack(false);
-            _animationService.AnimateCancelCombo();
+            _comboAnimation.AnimateCancelCombo();
             _isActive = false;
         }
     }
@@ -123,8 +113,7 @@ public class HUDComboHandler : MonoBehaviour
     {
         if (!CheckThisCombo(combo)) return;
 
-        _animationService.AnimateCanAttack(true);
-        _animationService.AnimateFinishCombo();
+        _comboAnimation.AnimateFinishCombo();
     }
 
     private void OnDestroy()
@@ -135,6 +124,5 @@ public class HUDComboHandler : MonoBehaviour
         _comboSystem.OnNextAttackMatched -= NextComboAttack;
         _comboSystem.OnComboCancelled -= CancelAllCombo;
         _comboSystem.OnStopAllCombos -= SetStartState;
-        _comboSystem.OnCanAttack -= CanAttack;
     }
 }
