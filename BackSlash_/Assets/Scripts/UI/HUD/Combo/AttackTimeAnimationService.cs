@@ -1,8 +1,8 @@
 using DG.Tweening;
-using Scripts.InputReference.Models;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using static Scripts.Combo.Models.ComboDatabase;
 
 public class AttackTimeAnimationService : MonoBehaviour
 {
@@ -26,7 +26,7 @@ public class AttackTimeAnimationService : MonoBehaviour
         SetDefaultState();
     }
 
-    private void AnimateCanAttackTime(ComboInputTypeModel input)
+    private void AnimateCanAttackTime(InputActionSettings input)
     {
         _intervalImage.gameObject.SetActive(true);
         _fill = _intervalImage.DOFillAmount(0, input.CanAttackTime).SetEase(Ease.Flash);

@@ -1,4 +1,3 @@
-using Scripts.Player.camera;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -30,7 +29,7 @@ namespace Scripts.Player
         private float _ySpeed;
         private float _airTime;
 
-        private Vector3 _moveDirection;
+        [SerializeField] private Vector3 _moveDirection;
         private Vector3 _forwardDirection;
         private RaycastHit _slopeHit;
         private LayerMask _hitboxLayer;
@@ -85,7 +84,7 @@ namespace Scripts.Player
             CheckLand();
             CheckAirTime();
             MovePlayer();
-            InvokeSteps();            
+            InvokeSteps();
         }
 
         public void CalculateForwardDirection()
@@ -100,33 +99,32 @@ namespace Scripts.Player
 
         private void MovePlayer()
         {
-            _ySpeed += Physics.gravity.y * Time.deltaTime;
+            if (!IsGrounded())
+            {
+                _ySpeed += Physics.gravity.y * Time.deltaTime;
+            }
+            else
+            {
+                _ySpeed = -0.5f;
 
+                if (_isJump)
+                {
+                    _ySpeed = _jumpForce;
+                }
+
+                if (OnSlope() && !_isJump)
+                {
+                    _ySpeed = -10f;
+                }
+            }
+            var moveDir = new Vector3(_forwardDirection.x, 0, _forwardDirection.z).normalized;
             if (_isAttackGoing)
             {
-                _moveDirection = Vector3.zero;
+                moveDir = Vector3.zero;
             }
-            else 
-            {
-                _moveDirection = new Vector3(_forwardDirection.x, 0, _forwardDirection.z).normalized;
-                if (IsGrounded())
-                {
-                    _ySpeed = -0.5f;
-
-                    if (_isJump)
-                    {
-                        _ySpeed = _jumpForce;
-                    }
-
-                    if (OnSlope() && !_isJump)
-                    {
-                        _ySpeed = -10f;
-                    }
-                }
-                _moveDirection = _moveDirection * _currentSpeed;
-            }
-            _moveDirection.y = _ySpeed;
-            _characterController.Move(_moveDirection * Time.deltaTime);
+            moveDir *= _currentSpeed;
+            moveDir.y = _ySpeed;
+            _characterController.Move(moveDir * Time.deltaTime);
         }
 
         private bool OnSlope()
@@ -256,7 +254,7 @@ namespace Scripts.Player
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            Debug.DrawLine(gameObject.transform.position + _characterController.center + (Vector3.up * 0.1f), gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * currenthitdisance,Color.yellow);
+            Debug.DrawLine(gameObject.transform.position + _characterController.center + (Vector3.up * 0.1f), gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * currenthitdisance, Color.yellow);
             Gizmos.DrawWireSphere(gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * currenthitdisance, _sphereCastRadius);
         }
     }
