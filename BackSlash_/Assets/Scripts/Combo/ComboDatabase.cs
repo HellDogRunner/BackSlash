@@ -1,48 +1,35 @@
 using RedMoonGames.Basics;
 using RedMoonGames.Database;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Scripts.Combo.Models
 {
     [CreateAssetMenu(fileName = "ComboTypesDatabase", menuName = "[RMG] Scriptable/Combo/ComboTypesDatabase", order = 1)]
-    public class ComboDatabase : ScriptableDatabase<ComboTypeModel>
+    public class ComboDatabase : ComboScriptableDatabase<ComboTypeModel, ComboInputSettingsModel>
     {
-        [Serializable]
-        public struct InputActionSettings
-        {
-            public InputActionReference InputAction;
-            public float Length;
-            public float BeforeAttackTime;
-            public float CanAttackTime;
-        }
-
-        [SerializeField] private List<InputActionSettings> _inputActionsSettings;
-
-        public ComboTypeModel GetComboTypeByName(string comboName)
+        public ComboTypeModel GetSequenceByName(string comboName)
         {
             if (comboName == "")
             {
                 return null;
             }
 
-            return _data.GetBy(comboModel => comboModel.ComboName == comboName);
+            return _sequences.GetBy(comboModel => comboModel.ComboName == comboName);
         }
 
-        public InputActionSettings GetInputActionSettingByName(string inputName)
+        public ComboInputSettingsModel GetInputActionSettingByName(string inputName)
         {
-            return _inputActionsSettings.GetBy(InputSettings => InputSettings.InputAction.action.name == inputName);
+            return _inputActionSettings.GetBy(InputSettings => InputSettings.InputAction.action.name == inputName);
         }
 
         public List<InputActionReference> GetAllUsedActionReferences()
         {
             List<InputActionReference> filteredInputActions = new List<InputActionReference>();
 
-            foreach (var sequence in _data)
+            foreach (var sequence in _sequences)
             {
                 foreach (var inputAction in sequence.InputActions)
                 {
@@ -53,32 +40,18 @@ namespace Scripts.Combo.Models
             return result;
         }
 
+        [ContextMenu("Init all unique inputs")]
         private void InitAllUniqueInputs()
         {
-            _inputActionsSettings.Clear();
+            _inputActionSettings.Clear();
 
             var filteredInputActions = GetAllUsedActionReferences();
 
             foreach (var inputAction in filteredInputActions)
             {
-                InputActionSettings newInputSetting = new InputActionSettings();
+                ComboInputSettingsModel newInputSetting = new ComboInputSettingsModel();
                 newInputSetting.InputAction = inputAction;
-                _inputActionsSettings.Add(newInputSetting);
-            }
-        }
-
-        [CustomEditor(typeof(ComboDatabase))]
-        public class ComboDatabaseButton : Editor
-        {
-            public override void OnInspectorGUI()
-            {
-                base.OnInspectorGUI();
-                ComboDatabase _comboDatabase = (ComboDatabase)target;
-
-                if (GUILayout.Button("Init unique inputs"))
-                {
-                    _comboDatabase.InitAllUniqueInputs();
-                }
+                _inputActionSettings.Add(newInputSetting);
             }
         }
     }

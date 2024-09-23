@@ -5,14 +5,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
-using static Scripts.Combo.Models.ComboDatabase;
 
 public class ComboSystem : MonoBehaviour
 {
-    [Header("Settings")]
-    [SerializeField] private float _cancelDelay = 1f;
-
     [SerializeField] private List<InputActionReference> _inputBuffer = new List<InputActionReference>();
+
+    private float _cancelDelay;
 
     private List<ComboTypeModel> _matchingCombos = new List<ComboTypeModel>();
 
@@ -35,10 +33,8 @@ public class ComboSystem : MonoBehaviour
     public event Action<ComboTypeModel> OnComboFinished;
     public event Action OnComboCancelled;
     public event Action OnStopAllCombos;
-    public event Action<InputActionSettings> OnCanAttack;
+    public event Action<ComboInputSettingsModel> OnCanAttack;
     public event Action OnCannotAttack;
-
-    public float CancelDelay => _cancelDelay;
 
     [Inject]
     private void Construct(ComboDatabase comboDatabase)
@@ -48,6 +44,7 @@ public class ComboSystem : MonoBehaviour
 
     private void Awake()
     {
+        _cancelDelay = _comboData.GetCancelDelay();
         _animator = GetComponent<Animator>();
 
         FillComboList();
@@ -106,7 +103,7 @@ public class ComboSystem : MonoBehaviour
 
         if (attackIndex < 0) return null;
 
-        foreach (var combo in _comboData.GetData())
+        foreach (var combo in _comboData.GetSequenceData())
         {
             if (attackCount > combo.InputActions.Length) continue;
 
@@ -165,11 +162,11 @@ public class ComboSystem : MonoBehaviour
         // Ïðûæîê áëî÷èòñÿ â íà÷àëå àíèìàöèè
 
         string inputName = inputReference.action.name;
-        InputActionSettings input = _comboData.GetInputActionSettingByName(inputName);
+        ComboInputSettingsModel input = _comboData.GetInputActionSettingByName(inputName);
 
         IsAttacking?.Invoke(true);
         _animator.SetTrigger(inputName);
-    
+
         OnAttack.Invoke(inputName);
 
         //if (input.action.name.Contains("Attack"))
@@ -202,7 +199,7 @@ public class ComboSystem : MonoBehaviour
 
     private IEnumerator ÂufferCannotExpand(ComboTypeModel combo, InputActionReference inputReference)
     {
-        InputActionSettings input = _comboData.GetInputActionSettingByName(inputReference.action.name);
+        ComboInputSettingsModel input = _comboData.GetInputActionSettingByName(inputReference.action.name);
 
 
         _canAttack = false;
@@ -211,7 +208,7 @@ public class ComboSystem : MonoBehaviour
         _attackInterval = StartCoroutine(ÂufferCanExpand(input));
     }
 
-    private IEnumerator ÂufferCanExpand(InputActionSettings input)
+    private IEnumerator ÂufferCanExpand(ComboInputSettingsModel input)
     {
         _canAttack = true;
         OnCanAttack?.Invoke(input);
@@ -228,7 +225,7 @@ public class ComboSystem : MonoBehaviour
     {
         if (combo == null)
         {
-            foreach (var _combo in _comboData.GetData())
+            foreach (var _combo in _comboData.GetSequenceData())
             {
                 OnNextAttackMatched?.Invoke(_combo, _combo.InputActions[0]);
             }
@@ -245,7 +242,7 @@ public class ComboSystem : MonoBehaviour
     {
         _matchingCombos.Clear();
 
-        foreach (var combo in _comboData.GetData())
+        foreach (var combo in _comboData.GetSequenceData())
         {
             _matchingCombos.Add(combo);
         }

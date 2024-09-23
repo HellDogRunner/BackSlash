@@ -1,11 +1,10 @@
 using Scripts.Player;
 using Scripts.Weapon.Models;
-using System.Collections;
+using System;
 using UnityEngine;
 using Zenject;
-using System;
 
-namespace Scripts.Weapon 
+namespace Scripts.Weapon
 {
     public class WeaponController : MonoBehaviour
     {
@@ -44,7 +43,7 @@ namespace Scripts.Weapon
             _currentWeapon = _diContainer.InstantiatePrefab(_weaponTypeModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation, _weaponOnBeltPivot.transform);
         }
 
-        private void DrawWeapon() 
+        private void DrawWeapon()
         {
             if (_currentWeapon == null)
             {
