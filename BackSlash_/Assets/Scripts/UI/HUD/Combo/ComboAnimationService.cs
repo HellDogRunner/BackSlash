@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ComboAnimationService : MonoBehaviour
 {
     [Header("Components")]
-    [SerializeField] private GameObject _indivator;
+    [SerializeField] private GameObject _indicator;
     [SerializeField] private RectTransform _cross;
     [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private CanvasGroup _cancelCG;
@@ -42,7 +42,7 @@ public class ComboAnimationService : MonoBehaviour
     {
         _canvasGroup.alpha = 1f;
 
-        _indivator.SetActive(true);
+        _indicator.SetActive(true);
         _fill.fillAmount = 0;
 
         _cancelCG.gameObject.SetActive(false);
@@ -113,7 +113,7 @@ public class ComboAnimationService : MonoBehaviour
         HideAllKeys();
 
         _cancelCG.gameObject.SetActive(true);
-        _indivator.SetActive(false);
+        _indicator.SetActive(false);
 
         _cancel = DOTween.Sequence();
         _cancel.AppendCallback(() =>
@@ -137,7 +137,7 @@ public class ComboAnimationService : MonoBehaviour
     {
         HideAllKeys();
 
-        _indivator.SetActive(false);
+        _indicator.SetActive(false);
 
         _finishFrameCG.gameObject.SetActive(true);
         _finishFrameCG.DOFade(_finishFade, _finishDuration).SetEase(Ease.Flash);

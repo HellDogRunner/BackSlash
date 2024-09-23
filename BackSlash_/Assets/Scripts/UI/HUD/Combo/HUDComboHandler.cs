@@ -30,6 +30,7 @@ public class HUDComboHandler : MonoBehaviour
     private void Construct(ComboSystem comboSystem, ComboDatabase comboDatabase)
     {
         _comboData = comboDatabase;
+        _comboModel = _comboData.GetSequenceByName(_comboName);
 
         _comboSystem = comboSystem;
 
@@ -44,7 +45,6 @@ public class HUDComboHandler : MonoBehaviour
     private void Awake()
     {
         _cancelDelay = _comboData.GetCancelDelay();
-        _comboModel = _comboData.GetSequenceByName(_comboName);
 
         _afterComboInterval = _comboModel.AfterComboInterval;
         _iconImage.sprite = _comboModel.IconSprite;
