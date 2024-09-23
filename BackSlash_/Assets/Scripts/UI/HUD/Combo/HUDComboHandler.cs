@@ -19,7 +19,7 @@ public class HUDComboHandler : MonoBehaviour
     [SerializeField] private float _afterComboInterval;
     [SerializeField] private float _cancelDelay;
 
-    private ComboTypeModel _combo;
+    private ComboTypeModel _comboModel;
 
     private bool _isActive = true;
 
@@ -30,14 +30,8 @@ public class HUDComboHandler : MonoBehaviour
     private void Construct(ComboSystem comboSystem, ComboDatabase comboDatabase)
     {
         _comboData = comboDatabase;
-        _combo = _comboData.GetComboTypeByName(_comboName);
-
-        _afterComboInterval = _combo.AfterComboInterval;
-        _iconImage.sprite = _combo.IconSprite;
-        _frameImage.sprite = _combo.FrameSprite;
 
         _comboSystem = comboSystem;
-        _cancelDelay = _comboSystem.CancelDelay;
 
         _comboSystem.OnComboFinished += ComboFinished;  
         _comboSystem.OnAttackMatched += ComboProgress;
@@ -49,14 +43,21 @@ public class HUDComboHandler : MonoBehaviour
 
     private void Awake()
     {
+        _cancelDelay = _comboData.GetCancelDelay();
+        _comboModel = _comboData.GetSequenceByName(_comboName);
+
+        _afterComboInterval = _comboModel.AfterComboInterval;
+        _iconImage.sprite = _comboModel.IconSprite;
+        _frameImage.sprite = _comboModel.FrameSprite;
+
         SetStartState();
 
-        _comboAnimation.SetFillVolume(_combo.InputActions.Length);
+        _comboAnimation.SetFillVolume(_comboModel.InputActions.Length);
     }
 
     private bool CheckThisCombo(ComboTypeModel combo)
     {
-        if (_combo == combo)
+        if (_comboModel == combo)
         {
             return true;
         }

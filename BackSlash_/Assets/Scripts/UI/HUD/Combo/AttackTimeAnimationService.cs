@@ -1,8 +1,8 @@
 using DG.Tweening;
+using Scripts.Combo.Models;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using static Scripts.Combo.Models.ComboDatabase;
 
 public class AttackTimeAnimationService : MonoBehaviour
 {
@@ -26,7 +26,7 @@ public class AttackTimeAnimationService : MonoBehaviour
         SetDefaultState();
     }
 
-    private void AnimateCanAttackTime(InputActionSettings input)
+    private void AnimateCanAttackTime(ComboInputSettingsModel input)
     {
         _intervalImage.gameObject.SetActive(true);
         _fill = _intervalImage.DOFillAmount(0, input.CanAttackTime).SetEase(Ease.Flash);
@@ -35,7 +35,7 @@ public class AttackTimeAnimationService : MonoBehaviour
     private void HideStrip()
     {
         _fill.Kill();
-        SetDefaultState();  
+        SetDefaultState();
     }
 
     private void SetDefaultState()

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2253df61f76c23c40af94531d1ca9ad6, type: 3}
   m_Name: ComboTypesDatabase
   m_EditorClassIdentifier: 
-  _data:
+  _sequences:
   - ComboName: Sequence
     InputActions:
     - {fileID: -71205190416808581, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
@@ -22,52 +22,30 @@ MonoBehaviour:
     AfterComboInterval: 1
     AnimationTrigger: special
     FrameSprite: {fileID: 21300000, guid: 870241afb7533e848acb24854c44e8eb, type: 3}
-    IconSprite: {fileID: 21300000, guid: beedd6f7229e83843bf10fd82df0d5c6, type: 3}
+    IconSprite: {fileID: 21300000, guid: 1580ca2540dfb8c448a145fcd8c9d845, type: 3}
   - ComboName: JumpCombo
     InputActions:
-    - {fileID: -71205190416808581, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
+    - {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
     - {fileID: 3675310142723151741, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
     - {fileID: -71205190416808581, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
     AfterComboInterval: 1
-    AnimationTrigger: special
+    AnimationTrigger: JumpCombo
     FrameSprite: {fileID: 21300000, guid: ca02b174fbc8d56449aeb7b6e5cc5b9d, type: 3}
-    IconSprite: {fileID: 21300000, guid: 04263bfbd0678164c8d61b193d1f1e97, type: 3}
-  - ComboName: HeavyCombo
-    InputActions:
-    - {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: -71205190416808581, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    AfterComboInterval: 1
-    AnimationTrigger: special
-    FrameSprite: {fileID: 21300000, guid: ff5fd7000c4820f458ee0fb408c53df1, type: 3}
-    IconSprite: {fileID: 21300000, guid: 2969d90b86698124696637a6df64a112, type: 3}
-  - ComboName: MixedCombo
-    InputActions:
-    - {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: -71205190416808581, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: -71205190416808581, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    - {fileID: -71205190416808581, guid: 50ad486b04b6a2f4891b55073b0f9803, type: 3}
-    AfterComboInterval: 1
-    AnimationTrigger: special
-    FrameSprite: {fileID: 21300000, guid: c30de62c564af4b45811ad10c9823bd4, type: 3}
-    IconSprite: {fileID: 21300000, guid: af1f1b45fa6b5e64894c04ceb8a592f7, type: 3}
-  _inputActionsSettings:
+    IconSprite: {fileID: 21300000, guid: 1580ca2540dfb8c448a145fcd8c9d845, type: 3}
+  _inputActionSettings:
   - InputAction: {fileID: -71205190416808581, guid: 50ad486b04b6a2f4891b55073b0f9803,
       type: 3}
     Length: 1.16
-    BeforeAttackTime: 0
-    CanAttackTime: 0.5
+    BeforeAttackTime: 0.25
+    CanAttackTime: 1
   - InputAction: {fileID: 641551489376425212, guid: 50ad486b04b6a2f4891b55073b0f9803,
       type: 3}
     Length: 1.16
-    BeforeAttackTime: 0
-    CanAttackTime: 0.5
+    BeforeAttackTime: 0.25
+    CanAttackTime: 1
   - InputAction: {fileID: 3675310142723151741, guid: 50ad486b04b6a2f4891b55073b0f9803,
       type: 3}
     Length: 0.4
     BeforeAttackTime: 0.2
     CanAttackTime: 1
+  _cancelDelay: 1
