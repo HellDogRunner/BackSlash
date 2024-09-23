@@ -3,7 +3,6 @@ using RedMoonGames.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -53,6 +52,7 @@ namespace Scripts.Combo.Models
             return result;
         }
 
+        [ContextMenu("Init all uniqe inputs")]
         private void InitAllUniqueInputs()
         {
             _inputActionsSettings.Clear();
@@ -64,21 +64,6 @@ namespace Scripts.Combo.Models
                 InputActionSettings newInputSetting = new InputActionSettings();
                 newInputSetting.InputAction = inputAction;
                 _inputActionsSettings.Add(newInputSetting);
-            }
-        }
-
-        [CustomEditor(typeof(ComboDatabase))]
-        public class ComboDatabaseButton : Editor
-        {
-            public override void OnInspectorGUI()
-            {
-                base.OnInspectorGUI();
-                ComboDatabase _comboDatabase = (ComboDatabase)target;
-
-                if (GUILayout.Button("Init unique inputs"))
-                {
-                    _comboDatabase.InitAllUniqueInputs();
-                }
             }
         }
     }
