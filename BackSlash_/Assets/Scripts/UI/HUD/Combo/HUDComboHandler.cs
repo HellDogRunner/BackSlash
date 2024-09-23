@@ -85,7 +85,7 @@ public class HUDComboHandler : MonoBehaviour
 
         if (_isActive)
         {
-            _comboAnimation.AnimateProgressCombo();
+            _comboAnimation.FillIndicator();
         }
     }
 

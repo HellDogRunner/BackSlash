@@ -1,5 +1,4 @@
 using DG.Tweening;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -7,14 +6,13 @@ using UnityEngine.UI;
 
 public class ComboAnimationService : MonoBehaviour
 {
-    [SerializeField] private KeysStash _keys;
-
     [Header("Components")]
+    [SerializeField] private GameObject _indivator;
+    [SerializeField] private RectTransform _cross;
     [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private CanvasGroup _cancelCG;
-    [SerializeField] private Image _fillImage;
-    [SerializeField] private Image _blinkImage;
-    [SerializeField] private Image _canAttack;
+    [SerializeField] private CanvasGroup _finishFrameCG;
+    [SerializeField] private Image _fill;
 
     [Header("Mouse")]
     [SerializeField] private GameObject _mouse;
@@ -24,51 +22,41 @@ public class ComboAnimationService : MonoBehaviour
 
     [Header("Keyboard")]
     [SerializeField] private GameObject _keyboard;
-    [SerializeField] private RectTransform _background;
     [SerializeField] private TMP_Text _text;
 
     [Header("Settings")]
-    [SerializeField] private float _fillDuration = 0.5f;
-    [SerializeField] private float _CancelDuration = 0.2f;
-    [SerializeField] private float _blinkDuration = 0.5f;
-    [SerializeField] private float _minBlinkFade = 0;
-    [SerializeField] private float _maxBlinkFade = 1;
-    [SerializeField] private float _blinkScale = 1.1f;
+    [SerializeField] private float _cancelScale = 1.5f;
+    [SerializeField] private float _cancelDuration = 0.2f;
 
-    [Header("Colors")]
-    [SerializeField] private Color _comboContinueColor = new Color(31, 52, 73, 1);
-    [SerializeField] private Color _comboCancelColor = new Color(192, 57, 43, 1);
-    [SerializeField] private Color _comboFinishColor = new Color(17, 255, 255, 1);
+    [SerializeField] private float _InactiveFade = 0.3f;
+
+    [SerializeField] private float _finishFade = 0.5f;
+    [SerializeField] private float _finishDuration = 0.2f;
 
     private float _fillValue;
 
-    private Sequence _blink;
     private Sequence _finish;
-    private Tween _fill;
+    private Sequence _cancel;
 
     public void SetStartAnimations()
     {
-        _blink.Kill();
+        _canvasGroup.alpha = 1f;
 
-        _blinkImage.transform.localScale = Vector3.one;
-        _blinkImage.gameObject.SetActive(false);
-        _blinkImage.DOColor(_comboContinueColor, _fillDuration);
+        _indivator.SetActive(true);
+        _fill.fillAmount = 0;
 
         _cancelCG.gameObject.SetActive(false);
         _cancelCG.alpha = 0;
 
-        _fillImage.fillAmount = 0;
-    }
+        _cross.localScale = Vector3.one;
 
-    public void AnimateProgressCombo()
-    {
-        FillIndicator();
-        AnimateBlinkBackground();
+        _finishFrameCG.gameObject.SetActive(false);
+        _finishFrameCG.alpha = 0;
     }
 
     public void FillIndicator()
     {
-        _fill =  _fillImage.DOFillAmount(_fillImage.fillAmount + _fillValue, _fillDuration).SetEase(Ease.OutQuad);
+        _fill.fillAmount += _fillValue;
     }
 
     public void SetFillVolume(int indicatorsCount)
@@ -81,38 +69,34 @@ public class ComboAnimationService : MonoBehaviour
         HideAllKeys();
 
         string actionBind = action.GetBindingDisplayString(0);
-        List<string> mouseBinds = new List<string>();
-        _keys.KeysInputs.TryGetValue("Mouse", out mouseBinds);
 
-        if (mouseBinds.Contains(actionBind))
+        if (action.bindings[0].path.Contains("Mouse"))
         {
-            int index;
-            _keys.MouseButtons.TryGetValue(actionBind, out index);
-
-            switch (index)
-            {
-                case 0:
-                    _leftButton.SetActive(true);
-                    break;
-                case 1:
-                    _middleButton.SetActive(true);
-                    break;
-                case 2:
-                    _rightButton.SetActive(true);
-                    break;
-            }
-
-            _mouse.SetActive(true);
+            ShowMouseButton(actionBind);
         }
         else
         {
-            string keyText;
-            _keys.KeysText.TryGetValue(actionBind, out keyText);
-
-            _background.sizeDelta = _keys.Frames[keyText.Length - 1];
-            _text.text = keyText;
+            _text.text = actionBind;
             _keyboard.SetActive(true);
         }
+    }
+
+    private void ShowMouseButton(string actionBind)
+    {
+        switch (actionBind)
+        {
+            case "LMB":
+                _leftButton.SetActive(true);
+                break;
+            case "MMB":
+                _middleButton.SetActive(true);
+                break;
+            case "RMB":
+                _rightButton.SetActive(true);
+                break;
+        }
+
+        _mouse.SetActive(true);
     }
 
     private void HideAllKeys()
@@ -124,48 +108,38 @@ public class ComboAnimationService : MonoBehaviour
         _keyboard.SetActive(false);
     }
 
-    public void AnimateBlinkBackground()
-    {
-        if (!_blink.IsActive())
-        {
-            _blinkImage.gameObject.SetActive(true);
-
-            _blink = DOTween.Sequence();
-            _blink.Append(_blinkImage.DOFade(_minBlinkFade, _blinkDuration));
-            _blink.Append(_blinkImage.DOFade(_maxBlinkFade, _blinkDuration));
-            _blink.SetLoops(-1);
-        }
-    }
-
     public void AnimateCancelCombo()
     {
-        AnimateBlinkBackground();
         HideAllKeys();
 
-        _fill.Kill();
-        _fillImage.fillAmount = 0;
-
-        _blinkImage.DOColor(_comboCancelColor, _fillDuration);
         _cancelCG.gameObject.SetActive(true);
+        _indivator.SetActive(false);
 
-        Sequence sequence = DOTween.Sequence();
-        sequence.AppendCallback(() =>
+        _cancel = DOTween.Sequence();
+        _cancel.AppendCallback(() =>
         {
-            _cancelCG.DOFade(1, _CancelDuration);
-            _cancelCG.transform.DOScale(1.5f, _CancelDuration);
+            _cancelCG.DOFade(1, _cancelDuration / 2).SetEase(Ease.Flash);
+            _cross.DOScale(_cancelScale, _cancelDuration);
         });
-        sequence.AppendInterval(_CancelDuration);
-        sequence.Append(_cancelCG.transform.DOScale(1f, _CancelDuration));
+        _cancel.AppendInterval(_cancelDuration);
+        _cancel.Append(_cross.DOScale(1f, _cancelDuration));
+        _cancel.AppendInterval(_cancelDuration).OnComplete(() => AnimateInactive());
+    }
+
+    private void AnimateInactive()
+    {
+        _cancelCG.gameObject.SetActive(false);
+
+        _canvasGroup.DOFade(_InactiveFade, _cancelDuration).SetEase(Ease.Flash);
     }
 
     public void AnimateFinishCombo()
     {
         HideAllKeys();
 
-        _blinkImage.DOColor(_comboFinishColor, _fillDuration);
+        _indivator.SetActive(false);
 
-        _finish = DOTween.Sequence();
-        _finish.Append(_blinkImage.transform.DOScale(_blinkScale, _blinkDuration));
-        _finish.Append(_blinkImage.transform.DOScale(0.8f, _blinkDuration)).OnComplete(() => _blinkImage.gameObject.SetActive(false));
+        _finishFrameCG.gameObject.SetActive(true);
+        _finishFrameCG.DOFade(_finishFade, _finishDuration).SetEase(Ease.Flash);
     }
 }
