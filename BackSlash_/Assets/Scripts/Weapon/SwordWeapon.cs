@@ -1,29 +1,28 @@
 using Scripts.Weapon;
 using Scripts.Weapon.Models;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
 using Zenject;
 
 public class SwordWeapon : MonoBehaviour
 {
-    private bool isHit;
+    [SerializeField] private ParticleSystem _swordTrails;
 
     private WeaponTypesDatabase _weaponTypesDatabase;
     private ComboSystem _comboSystem;
+    private bool _isAttacking;
 
     [Inject]
     private void Construct(WeaponTypesDatabase weaponTypesDatabase, ComboSystem comboSystem)
     {
         _weaponTypesDatabase = weaponTypesDatabase;
         _comboSystem = comboSystem;
-        _comboSystem.IsAttacking += DealDamage;
+        _comboSystem.IsAttacking += AttackFlag;
+        _comboSystem.IsAttacking += ShowParticles;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Enemy" && isHit)
+        if (other.gameObject.tag == "Enemy" && _isAttacking)
         {
             var hitbox = other.GetComponent<HitBox>();
             if (hitbox)
@@ -35,13 +34,26 @@ public class SwordWeapon : MonoBehaviour
         }
     }
 
-    private void DealDamage(bool isAble)
+    private void AttackFlag(bool isAttacking)
     {
-        isHit = isAble;
+        _isAttacking = isAttacking;
+    }
+
+    private void ShowParticles(bool isAttacking)
+    {
+        if (isAttacking)
+        {
+            _swordTrails.Play();
+        }
+        else
+        {
+            _swordTrails.Stop();
+        }
     }
 
     private void OnDestroy()
     {
-        _comboSystem.IsAttacking -= DealDamage;
+        _comboSystem.IsAttacking -= AttackFlag;
+        _comboSystem.IsAttacking -= ShowParticles;
     }
 }

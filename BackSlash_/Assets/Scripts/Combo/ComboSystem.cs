@@ -1,4 +1,5 @@
 using Scripts.Combo.Models;
+using Scripts.Weapon;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,27 +20,29 @@ public class ComboSystem : MonoBehaviour
 
     private Animator _animator;
     private ComboDatabase _comboData;
+    private WeaponController _weaponController;
 
     private bool _сomboProgress = false;
     private bool _isCanceling = false;
     private bool _canAttack = true;
 
     public event Action<bool> IsAttacking;
-    public event Action<string> OnAttack;
-    public event Action<string> OnCombo;
+    public event Action OnAttackSound;
+    public event Action OnComboSound;
     public event Action<ComboTypeModel, InputAction> OnNextAttackMatched;
     public event Action<ComboTypeModel> OnAttackMatched;
     public event Action<ComboTypeModel> OnAttackNotMatched;
     public event Action<ComboTypeModel> OnComboFinished;
+    public event Action<ComboInputSettingsModel> OnCanAttack;
     public event Action OnComboCancelled;
     public event Action OnStopAllCombos;
-    public event Action<ComboInputSettingsModel> OnCanAttack;
     public event Action OnCannotAttack;
 
     [Inject]
-    private void Construct(ComboDatabase comboDatabase)
+    private void Construct(ComboDatabase comboDatabase, WeaponController weaponController)
     {
         _comboData = comboDatabase;
+        _weaponController = weaponController;
     }
 
     private void Awake()
@@ -73,25 +76,28 @@ public class ComboSystem : MonoBehaviour
 
     private void RegisterInput(InputActionReference attackInput)
     {
-        if (_attackInterval != null) StopCoroutine(_attackInterval);
-
-        if (_canAttack)
+        if (_weaponController.CurrentWeaponType != EWeaponType.None)
         {
-            _inputBuffer.Add(attackInput);
-            ComboTypeModel matchedCombo = DetectCombo();
+            if (_attackInterval != null) StopCoroutine(_attackInterval);
 
-            if (matchedCombo != null)
+            if (_canAttack)
             {
-                _currentAttackRoutine = StartCoroutine(PerformCombo(matchedCombo));
+                _inputBuffer.Add(attackInput);
+                ComboTypeModel matchedCombo = DetectCombo();
+
+                if (matchedCombo != null)
+                {
+                    _currentAttackRoutine = StartCoroutine(PerformCombo(matchedCombo));
+                }
+                else
+                {
+                    _currentAttackRoutine = StartCoroutine(PerformSimpleMove(attackInput));
+                }
             }
             else
             {
-                _currentAttackRoutine = StartCoroutine(PerformSimpleMove(attackInput));
+                StartCoroutine(CancelCombo());
             }
-        }
-        else
-        {
-            StartCoroutine(CancelCombo());
         }
     }
 
@@ -148,7 +154,7 @@ public class ComboSystem : MonoBehaviour
         _сomboProgress = true;
         IsAttacking?.Invoke(true);
         _animator.SetTrigger(combo.AnimationTrigger);
-        OnCombo.Invoke(combo.ComboName);
+        OnComboSound.Invoke();
 
         yield return new WaitForSeconds(combo.AfterComboInterval);
 
@@ -159,22 +165,16 @@ public class ComboSystem : MonoBehaviour
 
     private IEnumerator PerformSimpleMove(InputActionReference inputReference)
     {
-        // Прыжок блочится в начале анимации
-
         string inputName = inputReference.action.name;
         ComboInputSettingsModel input = _comboData.GetInputActionSettingByName(inputName);
 
-        IsAttacking?.Invoke(true);
-        _animator.SetTrigger(inputName);
+        if (!input.MovementRalated)
+        {
+            IsAttacking?.Invoke(true);
+            _animator.SetTrigger(inputName);
 
-        OnAttack.Invoke(inputName);
-
-        //if (input.action.name.Contains("Attack"))
-        //{
-        //    IsAttacking?.Invoke(true);
-        //    _animator.SetTrigger(input.action.name);
-        //    OnAttack.Invoke(input.action.name);
-        //}
+            OnAttackSound.Invoke();
+        }
 
         yield return new WaitForSeconds(input.Length);
         IsAttacking?.Invoke(false);
@@ -258,18 +258,4 @@ public class ComboSystem : MonoBehaviour
         _canAttack = true;
         _сomboProgress = false;
     }
-
-    //Проверка анимационного клипа очистить если в дальнейшем не пригодится
-    //private float GetAnimationLength(string animationTrigger)
-    //{
-    //    AnimationClip[] clips = _animator.runtimeAnimatorController.animationClips;
-    //    foreach (var clip in clips)
-    //    {
-    //        if (clip.name == animationTrigger)
-    //        {
-    //            return clip.length;
-    //        }
-    //    }
-    //    return 0.5f;
-    //}
 }

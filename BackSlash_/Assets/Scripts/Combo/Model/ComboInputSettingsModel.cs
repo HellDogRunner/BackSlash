@@ -11,7 +11,7 @@ namespace Scripts.Combo.Models
         public float Length;
         public float BeforeAttackTime;
         public float CanAttackTime;
-
+        public bool MovementRalated;
         public string PrimaryKey => InputAction.action.name;
     }
 }

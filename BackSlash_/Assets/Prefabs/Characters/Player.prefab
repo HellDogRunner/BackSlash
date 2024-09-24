@@ -2871,8 +2871,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterController: {fileID: 3184469423278028609}
   _currentSpeed: 0
-  _runSpeed: 5
-  _sprintSpeed: 7
+  _runSpeed: 7
+  _sprintSpeed: 9
   _jumpForce: 7
   _jumpCooldown: 0.5
   _dodgeForce: 0.5
@@ -2880,6 +2880,7 @@ MonoBehaviour:
   _maxSlopeAngle: 30
   _maxCastDistance: 1.1
   _sphereCastRadius: 0.25
+  _moveDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2892,7 +2893,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 579ea157c21de1e4da6b2f1250b8abe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cancelDelay: 1
   _inputBuffer: []
 --- !u!114 &5530042786574198228
 MonoBehaviour:

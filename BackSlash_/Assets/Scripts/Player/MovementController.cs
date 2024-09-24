@@ -10,6 +10,7 @@ namespace Scripts.Player
         [SerializeField] private CharacterController _characterController;
         [Header("Monitoring")]
         [SerializeField] private float _currentSpeed;
+        [SerializeField] private Vector3 _moveDirection;
         [Header("Movement settings")]
         [SerializeField] private float _runSpeed;
         [SerializeField] private float _sprintSpeed;
@@ -29,7 +30,6 @@ namespace Scripts.Player
         private float _ySpeed;
         private float _airTime;
 
-        [SerializeField] private Vector3 _moveDirection;
         private Vector3 _forwardDirection;
         private RaycastHit _slopeHit;
         private LayerMask _hitboxLayer;
@@ -105,7 +105,7 @@ namespace Scripts.Player
             }
             else
             {
-                _ySpeed = -0.5f;
+                _ySpeed = -1f;
 
                 if (_isJump)
                 {
@@ -117,14 +117,14 @@ namespace Scripts.Player
                     _ySpeed = -10f;
                 }
             }
-            var moveDir = new Vector3(_forwardDirection.x, 0, _forwardDirection.z).normalized;
+            _moveDirection = new Vector3(_forwardDirection.x, _ySpeed, _forwardDirection.z).normalized;
             if (_isAttackGoing)
             {
-                moveDir = Vector3.zero;
+                _moveDirection = Vector3.zero;
             }
-            moveDir *= _currentSpeed;
-            moveDir.y = _ySpeed;
-            _characterController.Move(moveDir * Time.deltaTime);
+            _moveDirection *= _currentSpeed;
+            _moveDirection.y = _ySpeed;
+            _characterController.Move(_moveDirection * Time.deltaTime);
         }
 
         private bool OnSlope()
@@ -214,7 +214,7 @@ namespace Scripts.Player
 
         private void InvokeSteps()
         {
-            if ((_forwardDirection.x != 0 || _forwardDirection.z != 0) && IsGrounded() && !_isDodge)
+            if ((_forwardDirection.x != 0 || _forwardDirection.z != 0) && IsGrounded() && !_isDodge && !_isAttackGoing)
             {
                 PlaySteps?.Invoke(true);
             }
@@ -227,7 +227,6 @@ namespace Scripts.Player
         private bool IsGrounded()
         {
             RaycastHit hitInfo;
-            Vector3 directionDown = transform.TransformDirection(Vector3.down);
 
             if (Physics.SphereCast(gameObject.transform.position + _characterController.center + (Vector3.up * 0.1f),
                 _sphereCastRadius,

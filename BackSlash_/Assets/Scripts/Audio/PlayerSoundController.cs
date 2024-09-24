@@ -34,8 +34,8 @@ public class PlayerSoundController : MonoBehaviour
         _movementController.OnLanded += PlayLandingSound;
 
         _comboSystem = comboSystem;
-        _comboSystem.OnAttack += PlaySwordSound;
-        _comboSystem.OnCombo += PlayComboSound;
+        _comboSystem.OnAttackSound += PlaySwordSound;
+        _comboSystem.OnComboSound += PlayComboSound;
     }
 
     private void OnDestroy()
@@ -49,8 +49,8 @@ public class PlayerSoundController : MonoBehaviour
         _movementController.PlaySteps -= PlayFootstepsSound;
         _movementController.OnLanded -= PlayLandingSound;
 
-        _comboSystem.OnAttack -= PlaySwordSound;
-        _comboSystem.OnCombo -= PlayComboSound;
+        _comboSystem.OnAttackSound -= PlaySwordSound;
+        _comboSystem.OnComboSound -= PlayComboSound;
     }
 
     private void Start()
@@ -86,14 +86,14 @@ public class PlayerSoundController : MonoBehaviour
         _audioManager.PlayGenericEvent(FMODEvents.instance.PlayerLanded);
     }
 
-    private void PlaySwordSound(string attackName)
+    private void PlaySwordSound()
     {
         _swordSlashSound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         _swordSlashSound.setParameterByName("Combo", 1);
         _swordSlashSound.start();
     }
 
-    private void PlayComboSound(string comboName)
+    private void PlayComboSound()
     {
         _swordSlashSound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         _swordSlashSound.setParameterByName("Combo", 2);
