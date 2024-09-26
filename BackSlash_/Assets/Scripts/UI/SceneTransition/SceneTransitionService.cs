@@ -3,52 +3,39 @@ using UnityEngine.SceneManagement;
 
 public class SceneTransitionService : MonoBehaviour
 {
-    private static bool shouoldPlayOpeningAnimation = false;
+    [SerializeField] private SceneTransitionAnimationService _animationController;
 
-    private AsyncOperation _loadingSceneOperation;
+    private static bool _needPlayOpening = false;
 
-    private SceneTransitionAnimationService _animationController;
-
-    private void Awake()
-    {
-        _animationController = gameObject.GetComponent<SceneTransitionAnimationService>();
-    }
+    private AsyncOperation _loadingScene;
 
     private void Start()
     {
-        if (shouoldPlayOpeningAnimation)
+        if (_needPlayOpening)
         {
             Time.timeScale = 1f;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.Confined;
-            shouoldPlayOpeningAnimation = false;
 
-            _animationController.PlayOpeningAnimation();
+            _needPlayOpening = false;
+
+            _animationController.AnimateOpening();
         }
     }
-
+    
     public void SwichToScene(string sceneName)
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        _animationController.PlayClosingAnimation();
-        _loadingSceneOperation = SceneManager.LoadSceneAsync(sceneName);
-        _loadingSceneOperation.allowSceneActivation = false;
+        _animationController.AnimateClosing();
+        _loadingScene = SceneManager.LoadSceneAsync(sceneName);
+        _loadingScene.allowSceneActivation = false;
     }
 
-    public void CheckSceneLoaded()
+    public void ChangeScene()
     {
-        if (_loadingSceneOperation.progress == 0.9f)
-        {
-            _animationController.KillSequense();
-            ChangeScene();
-        }
-    }
-
-    private void ChangeScene()
-    {
-        shouoldPlayOpeningAnimation = true;
-        _loadingSceneOperation.allowSceneActivation = true;
+        _needPlayOpening = true;
+        _loadingScene.allowSceneActivation = true;
     }
 }

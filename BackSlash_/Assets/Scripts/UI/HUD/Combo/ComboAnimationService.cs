@@ -35,11 +35,14 @@ public class ComboAnimationService : MonoBehaviour
 
     private float _fillValue;
 
-    private Sequence _finish;
     private Sequence _cancel;
+    private Tween _finish;
+    private Tween _inactive;
 
     public void SetStartAnimations()
     {
+        KillAnimations();
+
         _canvasGroup.alpha = 1f;
 
         _indicator.SetActive(true);
@@ -130,7 +133,7 @@ public class ComboAnimationService : MonoBehaviour
     {
         _cancelCG.gameObject.SetActive(false);
 
-        _canvasGroup.DOFade(_InactiveFade, _cancelDuration).SetEase(Ease.Flash);
+        _inactive = _canvasGroup.DOFade(_InactiveFade, _cancelDuration).SetEase(Ease.Flash);
     }
 
     public void AnimateFinishCombo()
@@ -138,8 +141,20 @@ public class ComboAnimationService : MonoBehaviour
         HideAllKeys();
 
         _indicator.SetActive(false);
-
         _finishFrameCG.gameObject.SetActive(true);
-        _finishFrameCG.DOFade(_finishFade, _finishDuration).SetEase(Ease.Flash);
+
+        _finish = _finishFrameCG.DOFade(_finishFade, _finishDuration).SetEase(Ease.Flash);
+    }
+
+    private void KillAnimations()
+    {
+        if (_cancel != null) _cancel.Kill();
+        if (_finish != null) _finish.Kill();
+        if (_inactive != null) _inactive.Kill();
+    }
+
+    private void OnDestroy()
+    {
+        KillAnimations();
     }
 }

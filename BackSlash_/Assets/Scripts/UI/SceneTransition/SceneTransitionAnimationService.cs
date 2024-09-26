@@ -1,88 +1,64 @@
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SceneTransitionAnimationService : MonoBehaviour
 {
+    [SerializeField] private SceneTransitionService _transitionService;
+
     [Header("Components")]
     [SerializeField] private CanvasGroup _canvasGroup;
-    [SerializeField] private Image _loadingImage;
-    [SerializeField] private TMP_Text _loadingText;
+    [SerializeField] private Image _fill;
+    [SerializeField] private Image _glow;
 
     [Header("Animation Settings")]
-    [SerializeField] private float _fadeDuration = 1f;
-    [SerializeField] private float _loadingImageDuration = 1f;
+    [SerializeField] private float _transitionDuration = 1f;
+    [SerializeField] private float _fillDuration = 3f;
 
-    public Sequence _sequence;
+    public Sequence _loading;
+    public Sequence _transition;
 
-    private bool _isClockwise;
-
-    private SceneTransitionService _transitionManager;
-
-    private void Awake()
+    public void AnimateLoading()
     {
-        _transitionManager = gameObject.GetComponent<SceneTransitionService>();
-
-        _isClockwise = true;
-    }
-
-    public void PlayOpeningAnimation()
-    {
-        _canvasGroup.alpha = 1f;
-        _loadingText.alpha = 1f;
-
-        _sequence = DOTween.Sequence();
-        _sequence.AppendCallback(() =>
+        _loading = DOTween.Sequence();
+        _loading.AppendCallback(() =>
         {
-            _loadingText.DOFade(0f, _fadeDuration);
-            _loadingImage.DOFade(0f, _fadeDuration);
+            _fill.DOFillAmount(1, _fillDuration).SetUpdate(true).SetEase(Ease.Flash);
+            _glow.DOFillAmount(1, _fillDuration).SetUpdate(true).SetEase(Ease.Flash);
         });
-        _sequence.AppendInterval(_fadeDuration);
-        _sequence.Append(_canvasGroup.DOFade(0f, _fadeDuration).SetEase(Ease.InExpo));
-    }
-
-    public void PlayClosingAnimation()
-    {
-        _canvasGroup.alpha = 0f;
-        _loadingText.alpha = 0f;
-
-        _sequence = DOTween.Sequence();
-        _sequence.Append(_canvasGroup.DOFade(1f, _fadeDuration)).SetEase(Ease.OutExpo).SetUpdate(true);
-        _sequence.AppendInterval(_fadeDuration);
-        _sequence.AppendCallback(() =>
-        {
-            _loadingText.DOFade(1f, _fadeDuration).SetUpdate(true);
-            _loadingImage.DOFade(1f, _fadeDuration).SetUpdate(true).OnComplete(LoadingAnimation);
+        _loading.AppendInterval(_fillDuration + 0.05f);
+        _loading.SetUpdate(true).OnComplete(() => 
+        { 
+            _transitionService.ChangeScene();
         });
     }
 
-    private void LoadingAnimation()
+    public void AnimateOpening()
     {
-        _sequence = DOTween.Sequence();
-        _sequence.Append(_loadingImage.DOFillAmount(1f, _loadingImageDuration)).SetEase(Ease.Flash).SetUpdate(true);
-        _sequence.AppendCallback(LoadingImageRotate).SetUpdate(true);
-        _sequence.Append(_loadingImage.DOFillAmount(0f, _loadingImageDuration)).SetEase(Ease.Flash).SetUpdate(true);
-        _sequence.AppendCallback(LoadingImageRotate).SetUpdate(true);
-        _sequence.AppendCallback(_transitionManager.CheckSceneLoaded).SetUpdate(true);
-        _sequence.SetLoops(-1);
+        _canvasGroup.alpha = 1;
+        _glow.fillAmount = 1;
+        _fill.fillAmount = 1;
+
+        _transition = DOTween.Sequence();
+        _transition.AppendInterval(_transitionDuration);
+        _transition.Append(_canvasGroup.DOFade(0, _transitionDuration));
+        _transition.SetUpdate(true);
     }
 
-    private void LoadingImageRotate()
+    public void AnimateClosing()
     {
-        if (_isClockwise)
-        {
-            _isClockwise = false;
-        }
-        else
-        {
-            _isClockwise = true;
-        }
-        _loadingImage.fillClockwise = _isClockwise;
+        _canvasGroup.alpha = 0;
+        _glow.fillAmount = 0;
+        _fill.fillAmount = 0;
+
+        _transition = DOTween.Sequence();
+        _transition.Append(_canvasGroup.DOFade(1, _transitionDuration));
+        _transition.AppendInterval(_transitionDuration);
+        _transition.SetUpdate(true).OnComplete(() => AnimateLoading());
     }
 
-    public void KillSequense()
+    private void OnDestroy()
     {
-        _sequence.Kill();
+        if (_loading.IsActive()) _loading.Kill();
     }
 }

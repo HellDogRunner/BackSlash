@@ -6062,6 +6062,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1436564195840998315, guid: 93420fe667c8f5b4abc4f507a4519f11,
+        type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2163864065173948574, guid: 93420fe667c8f5b4abc4f507a4519f11,
         type: 3}
       propertyPath: m_Pivot.x
@@ -6166,6 +6171,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Scene Transition
+      objectReference: {fileID: 0}
+    - target: {fileID: 6245692603679428361, guid: 93420fe667c8f5b4abc4f507a4519f11,
+        type: 3}
+      propertyPath: _fillDuration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6245692603679428361, guid: 93420fe667c8f5b4abc4f507a4519f11,
+        type: 3}
+      propertyPath: _transitionDuration
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
