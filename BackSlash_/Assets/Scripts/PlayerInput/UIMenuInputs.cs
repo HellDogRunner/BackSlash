@@ -6,7 +6,7 @@ namespace Scripts.Player
 {
     public class UIMenuInputs : MonoBehaviour
     {
-        private UIControls _playerControls;
+        private UIControls _menuControls;
 
         public event Action OnEnterPressed;
         public event Action OnBackPressed;
@@ -19,12 +19,11 @@ namespace Scripts.Player
         public event Action<int> OnSkillsPressed;
         public event Action<int> OnJournalPressed;
         public event Action<int> OnMapPressed;
-        public event Action<bool> OnAnyActionPressed;
-        public event Action<bool> OnMousePointChange;
+        public event Action<bool> OnHideCursor;
 
         private void Awake()
         {
-            _playerControls = new UIControls();
+            _menuControls = new UIControls();
         }
 
         private void Enter(InputAction.CallbackContext context)
@@ -84,70 +83,70 @@ namespace Scripts.Player
 
         private void AnyAction(InputAction.CallbackContext context)
         {
-            OnAnyActionPressed?.Invoke(false);
+            OnHideCursor?.Invoke(false);
         }
 
         private void MousePositionChanged(InputAction.CallbackContext context)
         {
-            OnMousePointChange?.Invoke(true);
+            OnHideCursor?.Invoke(true);
         }
 
         private void OnEnable()
         {
-            _playerControls.Enable();
+            _menuControls.Enable();
             SubscribeToActions();
         }
 
         private void OnDisable()
         {
-            _playerControls.Disable();
+            _menuControls.Disable();
             UnsubscribeToActions();
         }
 
         private void SubscribeToActions()
         {
-            _playerControls.Common.Enter.performed += Enter;
-            _playerControls.Common.Back.performed += Back;
-            _playerControls.Common.Escape.performed += Escape;
+            _menuControls.Common.Enter.performed += Enter;
+            _menuControls.Common.Back.performed += Back;
+            _menuControls.Common.Escape.performed += Escape;
 
-            _playerControls.Common.Point.performed += MousePositionChanged;
-            _playerControls.Common.Navigate.performed += AnyAction;
-            _playerControls.Common.Enter.performed += AnyAction;
-            _playerControls.Common.Back.performed += AnyAction;
-            _playerControls.Menu.Prev.performed += AnyAction;
-            _playerControls.Menu.Next.performed += AnyAction;
+            _menuControls.Common.Point.performed += MousePositionChanged;
+            _menuControls.Common.Navigate.performed += AnyAction;
+            _menuControls.Common.Enter.performed += AnyAction;
+            _menuControls.Common.Back.performed += AnyAction;
+            _menuControls.Menu.Prev.performed += AnyAction;
+            _menuControls.Menu.Next.performed += AnyAction;
 
-            _playerControls.Menu.Prev.performed += Prev;
-            _playerControls.Menu.Next.performed += Next;
-            _playerControls.Menu.Inventory.performed += Inventory;
-            _playerControls.Menu.Combos.performed += Combos;
-            _playerControls.Menu.Abilities.performed += Abilities;
-            _playerControls.Menu.Skills.performed += Skills;
-            _playerControls.Menu.Journal.performed += Journal;
-            _playerControls.Menu.Map.performed += Map;
+            _menuControls.Menu.Prev.performed += Prev;
+            _menuControls.Menu.Next.performed += Next;
+            _menuControls.Menu.Inventory.performed += Inventory;
+            _menuControls.Menu.Combos.performed += Combos;
+            _menuControls.Menu.Abilities.performed += Abilities;
+            _menuControls.Menu.Skills.performed += Skills;
+            _menuControls.Menu.Journal.performed += Journal;
+            _menuControls.Menu.Map.performed += Map;
         }
 
         private void UnsubscribeToActions()
         {
-            _playerControls.Common.Enter.performed -= Enter;
-            _playerControls.Common.Back.performed -= Back;
-            _playerControls.Common.Escape.performed -= Escape;
+            _menuControls.Common.Enter.performed -= Enter;
+            _menuControls.Common.Back.performed -= Back;
+            _menuControls.Common.Escape.performed -= Escape;
 
-            _playerControls.Common.Point.performed -= MousePositionChanged;
-            _playerControls.Common.Navigate.performed -= AnyAction;
-            _playerControls.Common.Enter.performed -= AnyAction;
-            _playerControls.Common.Back.performed -= AnyAction;
-            _playerControls.Menu.Prev.performed -= AnyAction;
-            _playerControls.Menu.Next.performed -= AnyAction;
+            _menuControls.Common.Point.performed -= MousePositionChanged;
+            _menuControls.Common.Navigate.performed -= AnyAction;
+            _menuControls.Common.Enter.performed -= AnyAction;
+            _menuControls.Common.Back.performed -= AnyAction;
+            _menuControls.Menu.Prev.performed -= AnyAction;
+            _menuControls.Menu.Next.performed -= AnyAction;
 
-            _playerControls.Menu.Prev.performed -= Prev;
-            _playerControls.Menu.Next.performed -= Next;
-            _playerControls.Menu.Inventory.performed -= Inventory;
-            _playerControls.Menu.Combos.performed -= Combos;
-            _playerControls.Menu.Abilities.performed -= Abilities;
-            _playerControls.Menu.Skills.performed -= Skills;
-            _playerControls.Menu.Journal.performed -= Journal;
-            _playerControls.Menu.Map.performed -= Map;
+            _menuControls.Menu.Prev.performed -= Prev;
+            _menuControls.Menu.Next.performed -= Next;
+            _menuControls.Menu.Inventory.performed -= Inventory;
+            _menuControls.Menu.Combos.performed -= Combos;
+            _menuControls.Menu.Abilities.performed -= Abilities;
+            _menuControls.Menu.Skills.performed -= Skills;
+            _menuControls.Menu.Journal.performed -= Journal;
+            _menuControls.Menu.Map.performed -= Map;
         }
     }
 }

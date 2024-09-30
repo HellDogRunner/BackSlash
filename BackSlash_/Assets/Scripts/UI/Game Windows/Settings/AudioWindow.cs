@@ -30,7 +30,7 @@ namespace RedMoonGames.Window
         {
             _masterVolume.Select();
 
-            _uIController.OnBackKeyPressed += Back;
+            _pauseInput.OnBackKeyPressed += Back;
 
             _masterVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_masterVolume, _masterValue, 5));
             _musicVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_musicVolume, _musicValue, 5));
@@ -38,7 +38,7 @@ namespace RedMoonGames.Window
             _sfxVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_sfxVolume, _sfxValue, 5));
 
             _back.onClick.AddListener(() => SwitchWindows(_audioHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowsController.PausePressed);
+            _close.onClick.AddListener(_windowsController.Unpause);
         }
 
         private void Back()
@@ -50,7 +50,7 @@ namespace RedMoonGames.Window
         {
             _windowsController.OnUnpausing -= DisablePause;
 
-            _uIController.OnBackKeyPressed -= Back;
+            _pauseInput.OnBackKeyPressed -= Back;
 
             _masterVolume.onValueChanged.RemoveAllListeners();
             _musicVolume.onValueChanged.RemoveAllListeners();

@@ -11,8 +11,7 @@ namespace Scripts.Player
         public event Action OnEnterKeyPressed;
         public event Action OnEscapeKeyPressed;
         public event Action OnTabPressed;
-        public event Action<bool> OnAnyUIKeyPressed;
-        public event Action<bool> OnMousePoint;
+        public event Action<bool> OnHideCursor;
         public event Action OnBackKeyPressed;
         public event Action OnAnyKeyboardKeyPressed;
 
@@ -38,12 +37,12 @@ namespace Scripts.Player
 
         private void AnyUIKey(InputAction.CallbackContext context)
         {
-            OnAnyUIKeyPressed?.Invoke(true);
+            OnHideCursor?.Invoke(false);
         }
 
         private void MousePointChange(InputAction.CallbackContext context)
         {
-            OnMousePoint?.Invoke(true);
+            OnHideCursor?.Invoke(true);
         }
 
         private void Back(InputAction.CallbackContext context)

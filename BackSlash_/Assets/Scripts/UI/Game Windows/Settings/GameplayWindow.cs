@@ -15,10 +15,10 @@ namespace RedMoonGames.Window
 
         private void Awake()
         {
-            _uIController.OnBackKeyPressed += Back;
+            _pauseInput.OnBackKeyPressed += Back;
 
             _back.onClick.AddListener(() => SwitchWindows(_gameplayHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowsController.PausePressed);
+            _close.onClick.AddListener(_windowsController.Unpause);
         }
 
         private void Back()
@@ -30,7 +30,7 @@ namespace RedMoonGames.Window
         {
             _windowsController.OnUnpausing -= DisablePause;
 
-            _uIController.OnBackKeyPressed -= Back;
+            _pauseInput.OnBackKeyPressed -= Back;
 
             _back.onClick.RemoveAllListeners();
             _close.onClick.RemoveAllListeners();

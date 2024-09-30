@@ -6,6 +6,7 @@ using Zenject;
 
 namespace RedMoonGames.Window
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class MainBasicWindow : BasicWindow
     {
         protected MainWindowsController _windowsController;

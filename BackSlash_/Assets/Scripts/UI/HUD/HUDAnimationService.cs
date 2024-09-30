@@ -1,13 +1,12 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
-using Zenject;
 
 namespace RedMoonGames.Window
 {
     public class HUDAnimationService : MonoBehaviour
     {
-        [SerializeField] private GameObject _player;
+        [SerializeField] private HealthController _playerHealth;
         [Header("Animation Components")]
         [SerializeField] private CanvasGroup _canvasGroup;
 
@@ -15,22 +14,10 @@ namespace RedMoonGames.Window
         [SerializeField] private float _hideDelay = 2f;
         [SerializeField] private float _fadeDuration = 0.5f;
 
-        private GameWindowsController _windowsController;
-        private HealthController _healthController;
-
-        [Inject]
-        private void Construct(GameWindowsController windowsController)
-        {
-            _windowsController = windowsController;
-            _windowsController.OnHUDShow += SetUnpause;
-            _windowsController.OnHUDHide += SetPause;
-
-            _healthController = _player.GetComponent<HealthController>();
-            _healthController.OnHealthChanged += ShowHUD;
-        }
-
         private void Awake()
         {
+            _playerHealth.OnHealthChanged += ShowHUD;
+            _canvasGroup.gameObject.SetActive(true);
             //_canvasGroup.alpha = 0;
         }
 
@@ -51,22 +38,19 @@ namespace RedMoonGames.Window
             HideHUD();
         }
 
-        private void SetPause()
+        public void HideOnPause()
         {
             _canvasGroup.gameObject.SetActive(false);
         }
 
-        private void SetUnpause()
+        public void ShowOnUnpause()
         {
             _canvasGroup.gameObject.SetActive(true);
         }
 
-        protected virtual void OnDestroy()
+        private void OnDestroy()
         {
-            _windowsController.OnHUDShow -= SetUnpause;
-            _windowsController.OnHUDHide -= SetPause;
-
-            _healthController.OnHealthChanged -= ShowHUD;
+            _playerHealth.OnHealthChanged -= ShowHUD;
         }
     }
 }

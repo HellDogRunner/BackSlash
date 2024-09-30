@@ -15,22 +15,12 @@ public class SceneTransitionAnimationService : MonoBehaviour
     [SerializeField] private float _transitionDuration = 1f;
     [SerializeField] private float _fillDuration = 3f;
 
-    public Sequence _loading;
-    public Sequence _transition;
-
     public void AnimateLoading()
     {
-        _loading = DOTween.Sequence();
-        _loading.AppendCallback(() =>
-        {
-            _fill.DOFillAmount(1, _fillDuration).SetUpdate(true).SetEase(Ease.Flash);
-            _glow.DOFillAmount(1, _fillDuration).SetUpdate(true).SetEase(Ease.Flash);
-        });
-        _loading.AppendInterval(_fillDuration + 0.05f);
-        _loading.SetUpdate(true).OnComplete(() => 
-        { 
-            _transitionService.ChangeScene();
-        });
+
+        _fill.DOFillAmount(1, _fillDuration).SetUpdate(true).SetEase(Ease.Flash);
+        _glow.DOFillAmount(1, _fillDuration).SetUpdate(true).SetEase(Ease.Flash).
+            OnComplete(() => _transitionService.ChangeScene());
     }
 
     public void AnimateOpening()
@@ -39,26 +29,22 @@ public class SceneTransitionAnimationService : MonoBehaviour
         _glow.fillAmount = 1;
         _fill.fillAmount = 1;
 
-        _transition = DOTween.Sequence();
-        _transition.AppendInterval(_transitionDuration);
-        _transition.Append(_canvasGroup.DOFade(0, _transitionDuration));
-        _transition.SetUpdate(true);
+        Sequence sequence = DOTween.Sequence();
+        sequence.AppendInterval(_transitionDuration);
+        sequence.Append(_canvasGroup.DOFade(0, _transitionDuration));
     }
 
-    public void AnimateClosing()
+    public void AnimateClosing(string sceneName)
     {
         _canvasGroup.alpha = 0;
         _glow.fillAmount = 0;
         _fill.fillAmount = 0;
 
-        _transition = DOTween.Sequence();
-        _transition.Append(_canvasGroup.DOFade(1, _transitionDuration));
-        _transition.AppendInterval(_transitionDuration);
-        _transition.SetUpdate(true).OnComplete(() => AnimateLoading());
-    }
-
-    private void OnDestroy()
-    {
-        if (_loading.IsActive()) _loading.Kill();
+        _canvasGroup.DOFade(1, _transitionDuration).SetUpdate(true).
+            OnComplete(() =>
+            {
+                _transitionService.LoadScene(sceneName);
+                AnimateLoading();
+            });
     }
 }

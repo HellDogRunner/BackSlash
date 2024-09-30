@@ -1,4 +1,3 @@
-using Scripts.Player;
 using System;
 using UnityEngine;
 using Zenject;
@@ -9,75 +8,39 @@ namespace RedMoonGames.Window
     {
         [SerializeField] private WindowHandler _pauseHandler;
 
-        [SerializeField] private WindowHandler _currentWindow;
+        private WindowHandler _currentWindow;
 
         private WindowService _windowService;
-        private UIPauseInputs _uIPause;
-        private InputController _controller;
 
         public event Action<WindowHandler> OnUnpausing;
         public event Action OnPausing;
-        public event Action OnHUDHide;
-        public event Action OnHUDShow;
+        public event Action OnPauseHide;
 
         [Inject]
-        private void Construct(UIPauseInputs uIPause, InputController inputController, WindowService windowService)
+        private void Construct(WindowService windowService)
         {
-            _uIPause = uIPause;
-            _uIPause.OnEscapeKeyPressed += PausePressed;
-            _uIPause.OnAnyUIKeyPressed += DisableCursor;
-            _uIPause.OnMousePoint += EnableCursor;
-            _uIPause.enabled = false;
-
-            _controller = inputController;
-            _controller.OnPauseKeyPressed += PausePressed;
-
             _windowService = windowService;
         }
 
         private void Awake()
         {
             _currentWindow = _pauseHandler;
-            DisableCursor(false);
         }
 
-        public void PausePressed()
+        public void Unpause()
         {
-            var currentWindow = _windowService.ReturnWindow(_currentWindow);
-
-            if (currentWindow == null)
-            {
-                OpenWindow(_currentWindow);
-                OnPausing?.Invoke();
-                OnHUDHide?.Invoke();
-
-                SwitchPause(true);
-            }
-            else
-            {
-                OnUnpausing?.Invoke(_currentWindow);
-                OnHUDShow?.Invoke();
-                _currentWindow = _pauseHandler;
-
-                SwitchPause(false);
-            }
+            OnPauseHide?.Invoke();
         }
 
-        public void SwitchPause(bool isPausing)
+        public void ShowPauseMenu()
         {
-            if (isPausing)
-            {
-                Time.timeScale = 0f;
-                EnableCursor(false);
-                _controller.enabled = false;
-            }
-            else
-            {
-                Time.timeScale = 1f;
-                DisableCursor(false);
-                _controller.enabled = true;
-                _uIPause.enabled = false;
-            }
+            OpenWindow(_currentWindow);
+            OnPausing?.Invoke();
+        }
+
+        public void HidePauseMenu()
+        {
+            OnUnpausing?.Invoke(_currentWindow);
         }
 
         public void OpenWindow(WindowHandler handler)
@@ -90,32 +53,7 @@ namespace RedMoonGames.Window
         {
             var currentWindow = _windowService.ReturnWindow(handler);
             currentWindow?.Close();
-        }
-
-        private void DisableCursor(bool isEvent)
-        {
-            if (!isEvent)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-            Cursor.visible = false;
-        }
-
-        private void EnableCursor(bool isEvent)
-        {
-            if (!isEvent)
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-            }
-            Cursor.visible = true;
-        }
-
-        private void OnDestroy()
-        {
-            _controller.OnPauseKeyPressed -= PausePressed;
-            _uIPause.OnEscapeKeyPressed -= PausePressed;
-            _uIPause.OnAnyUIKeyPressed -= DisableCursor;
-            _uIPause.OnMousePoint -= EnableCursor;
+            _currentWindow = _pauseHandler;
         }
     }
 }

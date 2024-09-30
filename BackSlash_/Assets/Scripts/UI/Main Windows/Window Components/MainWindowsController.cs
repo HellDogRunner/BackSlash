@@ -1,3 +1,4 @@
+using Scripts.Player;
 using UnityEngine;
 using Zenject;
 
@@ -9,13 +10,22 @@ namespace RedMoonGames.Window
 
         private WindowHandler _currentWindow;
 
+        private SceneTransitionService _sceneTransition;
         private WindowService _windowService;
+        private UIPauseInputs _inputs;
 
         [Inject]
-        private void Construct(WindowService windowService)
+        private void Construct(WindowService windowService, SceneTransitionService sceneTransition, UIPauseInputs inputs)
         {
             _windowService = windowService;
 
+            _sceneTransition = sceneTransition;
+            _sceneTransition.OnLoading += DisableInput;
+            _inputs = inputs;
+        }
+
+        private void Start()
+        {
             OpenWindow(_startHandler);
         }
 
@@ -35,6 +45,11 @@ namespace RedMoonGames.Window
         {
             var currentWindow = _windowService.ReturnWindow(handler);
             currentWindow?.Close();
+        }
+
+        private void DisableInput()
+        {
+            _inputs.enabled = false;
         }
     }
 }

@@ -13,19 +13,17 @@ namespace RedMoonGames.Window
         protected WindowAnimationService _animationService;
         protected SceneTransitionService _sceneTransition;
         protected AudioController _audioController;
-        protected UIPauseInputs _uIController;
-        protected UIMenuInputs _menuActions;
+        protected UIPauseInputs _pauseInput;
 
         protected CanvasGroup _canvasGroup;
 
         [Inject]
-        protected virtual void Construct(UIMenuInputs menuActions, GameWindowsController windowController, WindowAnimationService animationController, SceneTransitionService sceneTransition, AudioController audioManager, UIPauseInputs controller)
+        protected virtual void Construct(GameWindowsController windowController, WindowAnimationService animationController, SceneTransitionService sceneTransition, AudioController audioManager, UIPauseInputs pauseInput)
         {
             _animationService = animationController;
             _sceneTransition = sceneTransition;
             _audioController = audioManager;
-            _uIController = controller;
-            _menuActions = menuActions;
+            _pauseInput = pauseInput;
 
             _windowsController = windowController;
             _windowsController.OnUnpausing += DisablePause;
@@ -46,7 +44,6 @@ namespace RedMoonGames.Window
         {
             PlayClickSound();
             _animationService.HideWindowAnimation(_canvasGroup, handler);
-            _menuActions.enabled = true;
         }
 
         protected virtual void EnablePause()

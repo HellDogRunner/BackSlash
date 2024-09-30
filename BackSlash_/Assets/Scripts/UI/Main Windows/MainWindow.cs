@@ -31,8 +31,7 @@ namespace RedMoonGames.Window
 
         private void StartClick()
         {
-            Cursor.visible = false;
-            _animationService.HideWindowAnimation(_canvasGroup, _mainHandler, null);
+            _windowsController.CloseWindow(_mainHandler);
             _sceneTransition.SwichToScene("FirstLocation");
         }
 

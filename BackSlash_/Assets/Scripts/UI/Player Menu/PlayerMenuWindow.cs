@@ -46,25 +46,18 @@ namespace RedMoonGames.Window
         private int _index;
         private int _animationIndex;
 
-        private UIMenuInputs _inputController;
-        private GameWindowsController _windowsController;
+        private bool _menuActive;
+
+        private UIMenuInputs _menuController;
         private PlayerMenuAnimationService _animationService;
         private AudioController _audioController;
 
         [Inject]
-        private void Binding(UIMenuInputs inputController, GameWindowsController windowsController, PlayerMenuAnimationService animationService, AudioController audioController)
+        private void Construct(UIMenuInputs menuController, PlayerMenuAnimationService animationService, AudioController audioController)
         {
-            _windowsController = windowsController;
             _animationService = animationService;
             _audioController = audioController;
-
-            _inputController = inputController;
-            _inputController.OnInventoryPressed += ShowPlayerMenu;
-            _inputController.OnCombosPressed += ShowPlayerMenu;
-            _inputController.OnAbilitiesPressed += ShowPlayerMenu;
-            _inputController.OnSkillsPressed += ShowPlayerMenu;
-            _inputController.OnJournalPressed += ShowPlayerMenu;
-            _inputController.OnMapPressed += ShowPlayerMenu;
+            _menuController = menuController;
         }
 
         private void Awake()
@@ -88,27 +81,27 @@ namespace RedMoonGames.Window
             _animations.Add(_mapAnimation);
         }
 
-        private void ShowPlayerMenu(int index)
+        public void ShowPlayerMenu(int index)
         {
-            if (_canvasGroup.alpha == 0)
+            if (!_menuActive)
             {
+                _menuActive = true;
                 SubscribeToActions();
                 _animationService.AnimateMenuShow(_canvasGroup);
-                _windowsController.SwitchPause(true);
             }
 
             OpenTab(index);
         }
 
-        private void HidePlayerMenu()
+        public void HidePlayerMenu()
         {
-            if (_canvasGroup.alpha == 1)
+            if (_menuActive)
             {
+                _menuActive = false;
                 UnsubscribeToActions();
                 CloseAllTabs();
 
                 _animationService.AnimateMenuHide(_canvasGroup);
-                _windowsController.SwitchPause(false);
             }
         }
 
@@ -170,12 +163,8 @@ namespace RedMoonGames.Window
             _journalButton.onClick.AddListener(() => OpenTab(4));
             _mapButton.onClick.AddListener(() => OpenTab(5));
 
-            _inputController.OnEscapePressed += HidePlayerMenu;
-            _inputController.OnBackPressed += HidePlayerMenu;
-            _inputController.OnPrevPressed += SwitchTab;
-            _inputController.OnNextPressed += SwitchTab;
-            _inputController.OnAnyActionPressed += ShowCursor;
-            _inputController.OnMousePointChange += ShowCursor;
+            _menuController.OnPrevPressed += SwitchTab;
+            _menuController.OnNextPressed += SwitchTab;
 
             _prevKey.onClick.AddListener(() => SwitchTab(-1));
             _nextKey.onClick.AddListener(() => SwitchTab(+1));
@@ -193,12 +182,8 @@ namespace RedMoonGames.Window
             _journalButton.onClick.RemoveAllListeners();
             _mapButton.onClick.RemoveAllListeners();
 
-            _inputController.OnEscapePressed -= HidePlayerMenu;
-            _inputController.OnBackPressed -= HidePlayerMenu;
-            _inputController.OnPrevPressed -= SwitchTab;
-            _inputController.OnNextPressed -= SwitchTab;
-            _inputController.OnAnyActionPressed -= ShowCursor;
-            _inputController.OnMousePointChange -= ShowCursor;
+            _menuController.OnPrevPressed -= SwitchTab;
+            _menuController.OnNextPressed -= SwitchTab;
 
             _prevKey.onClick.RemoveAllListeners();
             _nextKey.onClick.RemoveAllListeners();
@@ -209,13 +194,6 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _inputController.OnInventoryPressed -= ShowPlayerMenu;
-            _inputController.OnCombosPressed -= ShowPlayerMenu;
-            _inputController.OnAbilitiesPressed -= ShowPlayerMenu;
-            _inputController.OnSkillsPressed -= ShowPlayerMenu;
-            _inputController.OnJournalPressed -= ShowPlayerMenu;
-            _inputController.OnMapPressed -= ShowPlayerMenu;
-
             UnsubscribeToActions();
         }
     }

@@ -27,7 +27,7 @@ namespace RedMoonGames.Window
         {
             _gameplay.Select();
 
-            _uIController.OnBackKeyPressed += Back;
+            _pauseInput.OnBackKeyPressed += Back;
             
             _gameplay.onClick.AddListener(() => SwitchWindows(_settingsHandler, _gameplayHandler));
             _audio.onClick.AddListener(() => SwitchWindows(_settingsHandler, _audioHandler));
@@ -35,7 +35,7 @@ namespace RedMoonGames.Window
             _management.onClick.AddListener(() => SwitchWindows(_settingsHandler, _managementHandler));
 
             _back.onClick.AddListener(() => SwitchWindows(_settingsHandler, _pauseHandler));
-            _close.onClick.AddListener(_windowsController.PausePressed);
+            _close.onClick.AddListener(_windowsController.Unpause);
         }
 
         private void Back()
@@ -47,7 +47,7 @@ namespace RedMoonGames.Window
         {
             _windowsController.OnUnpausing -= DisablePause;
 
-            _uIController.OnBackKeyPressed -= Back;
+            _pauseInput.OnBackKeyPressed -= Back;
 
             _gameplay.onClick.RemoveAllListeners();
             _audio.onClick.RemoveAllListeners();
@@ -55,7 +55,7 @@ namespace RedMoonGames.Window
             _management.onClick.RemoveAllListeners();
 
             _back.onClick.RemoveAllListeners();
-            _close.onClick.RemoveListener(_windowsController.PausePressed);
+            _close.onClick.RemoveListener(_windowsController.Unpause);
         }
     }
 }

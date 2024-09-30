@@ -21,19 +21,17 @@ namespace RedMoonGames.Window
         {
             _continue.Select();
 
-            _menuActions.enabled = false;
-            _uIController.enabled = true;
-            _uIController.OnBackKeyPressed += _windowsController.PausePressed;
+            _pauseInput.OnBackKeyPressed += _windowsController.Unpause;
 
-            _continue.onClick.AddListener(_windowsController.PausePressed);
+            _continue.onClick.AddListener(_windowsController.Unpause);
             _settings.onClick.AddListener(() => SwitchWindows(_pauseHandler, _settingsHandler));
             _exit.onClick.AddListener(ExitClick);
-            _close.onClick.AddListener(_windowsController.PausePressed);
+            _close.onClick.AddListener(_windowsController.Unpause);
         }
 
         private void ExitClick()
         {
-            Cursor.visible = false;
+            _windowsController.Unpause();
             _sceneTransition.SwichToScene("StartMenu");
         }
 
@@ -47,7 +45,7 @@ namespace RedMoonGames.Window
             _windowsController.OnUnpausing -= DisablePause;
             _windowsController.OnPausing -= EnablePause;
 
-            _uIController.OnBackKeyPressed -= _windowsController.PausePressed;
+            _pauseInput.OnBackKeyPressed -= _windowsController.Unpause;
 
             _continue.onClick.RemoveAllListeners();
             _settings.onClick.RemoveAllListeners();
