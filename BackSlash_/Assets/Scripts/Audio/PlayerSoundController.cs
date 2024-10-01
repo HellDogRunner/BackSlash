@@ -27,7 +27,6 @@ public class PlayerSoundController : MonoBehaviour
 
         _inputController = inputController;
         _inputController.OnSprintKeyPressed += IsSptrinting;
-        _inputController.OnSprintKeyRealesed += IsRunning;
 
         _movementController = movementController;
         _movementController.PlaySteps += PlayFootstepsSound;
@@ -44,7 +43,6 @@ public class PlayerSoundController : MonoBehaviour
         _weaponController.OnSneathWeapon -= PlaySneathSwordSound;
 
         _inputController.OnSprintKeyPressed -= IsSptrinting;
-        _inputController.OnSprintKeyRealesed -= IsRunning;
 
         _movementController.PlaySteps -= PlayFootstepsSound;
         _movementController.OnLanded -= PlayLandingSound;
@@ -110,17 +108,20 @@ public class PlayerSoundController : MonoBehaviour
         _audioManager.PlayGenericEvent(FMODEvents.instance.SneathSword);
     }
 
-    private void IsSptrinting()
+    private void IsSptrinting(bool isPressed)
     {
-        ChangeFootStepsFrequency(1);
+        if (isPressed)
+        {
+            ChangeFootStepsFrequency(1);
+
+        }
+        else 
+        { 
+            ChangeFootStepsFrequency(0);
+        }
     }
 
-    private void IsRunning()
-    {
-        ChangeFootStepsFrequency(0);
-    }
-
-    private void ChangeFootStepsFrequency(int parameterValue) 
+    private void ChangeFootStepsFrequency(int parameterValue)
     {
         _playerFootsteps.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         _playerFootsteps.setParameterByName("RunSprint", parameterValue);

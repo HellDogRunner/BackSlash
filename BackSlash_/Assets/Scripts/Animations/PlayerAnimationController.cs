@@ -33,7 +33,6 @@ namespace Scripts.Animations
 
             _inputController = inputController;
             _inputController.OnSprintKeyPressed += SprintAnimation;
-            _inputController.OnSprintKeyRealesed += RunAnimation;
             _inputController.OnShowWeaponPressed += ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed += HideWeaponAnimation;
             _inputController.OnLightAttackFinished += WeaponIdle;
@@ -49,7 +48,6 @@ namespace Scripts.Animations
             _movementController.OnDodge -= DodgeAnimation;
 
             _inputController.OnSprintKeyPressed -= SprintAnimation;
-            _inputController.OnSprintKeyRealesed -= RunAnimation;
             _inputController.OnShowWeaponPressed -= ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed -= HideWeaponAnimation;
             _inputController.OnLightAttackFinished -= WeaponIdle;
@@ -72,14 +70,9 @@ namespace Scripts.Animations
             }
         }
 
-        private void SprintAnimation()
-        {
-            _animator.SetBool("IsSprint", true);
-        }
-
-        private void RunAnimation()
-        {
-            _animator.SetBool("IsSprint", false);
+        private void SprintAnimation(bool isPressed)
+        {       
+            _animator.SetBool("IsSprint", isPressed);
         }
 
         private void RunAndAttackAnimation(bool isAttacking) 

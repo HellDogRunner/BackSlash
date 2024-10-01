@@ -54,7 +54,6 @@ namespace Scripts.Player
             _inputController.OnJumpKeyPressed += Jump;
             _inputController.OnDodgeKeyPressed += Dodge;
             _inputController.OnSprintKeyPressed += Sprint;
-            _inputController.OnSprintKeyRealesed += Run;
 
             _currentSpeed = _runSpeed;
             _hitboxLayer = 1 << 7;
@@ -74,7 +73,6 @@ namespace Scripts.Player
             _inputController.OnJumpKeyPressed -= Jump;
             _inputController.OnDodgeKeyPressed -= Dodge;
             _inputController.OnSprintKeyPressed -= Sprint;
-            _inputController.OnSprintKeyRealesed -= Run;
             _comboSystem.IsAttacking -= IsAttacking;
         }
 
@@ -174,14 +172,16 @@ namespace Scripts.Player
             _isDodge = false;
         }
 
-        private void Sprint()
+        private void Sprint(bool isPressed)
         {
-            _currentSpeed = _sprintSpeed;
-        }
-
-        private void Run()
-        {
-            _currentSpeed = _runSpeed;
+            if (isPressed)
+            {
+                _currentSpeed = _sprintSpeed;
+            }
+            else
+            {
+                _currentSpeed = _runSpeed;
+            }
         }
 
         private void CheckAirTime()

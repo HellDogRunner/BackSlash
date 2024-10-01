@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "name": "WASD",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "b45ec9ac-511e-4c78-8f5f-c5b0f6a4a6f0",
                     "expectedControlType": "",
                     "processors": "",
@@ -18,16 +18,16 @@
                     "name": "Mouse",
                     "type": "Button",
                     "id": "75335dca-0260-4155-91ea-d0f072a4e3c8",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
                     "name": "Sprint",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "648f3bfc-c011-4d8b-941f-01b855caa686",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -36,7 +36,7 @@
                     "name": "LightAttack",
                     "type": "Button",
                     "id": "65638328-091b-4310-9c8f-0a6723a4bbd3",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -45,7 +45,7 @@
                     "name": "HeavyAttack",
                     "type": "Button",
                     "id": "b3ef41d2-08fe-46e4-a5e5-010eda4e019e",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -63,7 +63,7 @@
                     "name": "ShowWeapon",
                     "type": "Button",
                     "id": "66351d25-1992-4538-a908-dc7d821867a8",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -72,7 +72,7 @@
                     "name": "HideWeapon",
                     "type": "Button",
                     "id": "dfceaf67-c5b0-4083-8094-8c0d6780bdd9",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -81,7 +81,7 @@
                     "name": "Jump",
                     "type": "Button",
                     "id": "bca16aa9-8df2-4b94-9f0a-3b2c428313b4",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -90,7 +90,7 @@
                     "name": "Block",
                     "type": "Button",
                     "id": "383a9525-7348-4f22-81f5-cb72d5b34aba",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -99,7 +99,7 @@
                     "name": "TargetLock",
                     "type": "Button",
                     "id": "f7bd86bb-c072-4606-8950-9daad62bf9bf",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -108,7 +108,7 @@
                     "name": "Escape",
                     "type": "Button",
                     "id": "3c02680a-2829-4e10-a795-056af6f95603",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -117,7 +117,7 @@
                     "name": "StartKeySequence",
                     "type": "Button",
                     "id": "cc92e7c0-92de-4477-8d6a-261213b7f48a",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -194,7 +194,7 @@
                     "name": "",
                     "id": "fcaf5830-c5bb-4704-83cb-8450a35f93e0",
                     "path": "<Keyboard>/leftShift",
-                    "interactions": "Hold(duration=9999,pressPoint=0.2)",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Sprint",

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine.UI;
 using Scripts.Player;
 using Zenject;
@@ -53,6 +53,7 @@ public class TargetLock : MonoBehaviour
         _mainCamera = Camera.main;
         _maxAngle = 90f;
         _triggerCollider.radius = _maxDistance;
+
         _cinemachineFreeLook.m_XAxis.m_InputAxisName = "";
         _cinemachineFreeLook.m_YAxis.m_InputAxisName = "";
 
@@ -94,7 +95,6 @@ public class TargetLock : MonoBehaviour
         {
             _mouseX = Input.GetAxis("Mouse X");
             _mouseY = Input.GetAxis("Mouse Y");
-
         }
         else
         {

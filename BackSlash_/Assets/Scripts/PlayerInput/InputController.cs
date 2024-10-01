@@ -10,8 +10,7 @@ namespace Scripts.Player
 
         private Vector3 _moveDirection;
 
-        public event Action OnSprintKeyPressed;
-        public event Action OnSprintKeyRealesed;
+        public event Action<bool> OnSprintKeyPressed;
         public event Action OnJumpKeyPressed;
         public event Action OnDodgeKeyPressed;
         public event Action OnLightAttackStarted;
@@ -31,6 +30,7 @@ namespace Scripts.Player
         {
             _playerControls = new GameControls();
         }
+
         private void OnEnable()
         {           
             _playerControls.Enable();
@@ -48,11 +48,6 @@ namespace Scripts.Player
         {
             var direction = _playerControls.Gameplay.WASD.ReadValue<Vector3>();
             _moveDirection = new Vector3(direction.x, direction.z, direction.y);
-
-            if (_moveDirection.y > 0)
-            {           
-                OnJumpKeyPressed?.Invoke();
-            }
         }
 
         private void ShowWeapon(InputAction.CallbackContext context) 
@@ -65,14 +60,10 @@ namespace Scripts.Player
             OnHideWeaponPressed?.Invoke();
         }
 
-        private void Run(InputAction.CallbackContext context)
-        {
-            OnSprintKeyRealesed?.Invoke();
-        }
-
         private void Sprint(InputAction.CallbackContext context)
         {
-            OnSprintKeyPressed?.Invoke();
+            var isPressed = _playerControls.Gameplay.Sprint.IsPressed();
+            OnSprintKeyPressed?.Invoke(isPressed);
         }
 
         private void Dodge(InputAction.CallbackContext context)
@@ -130,9 +121,7 @@ namespace Scripts.Player
 
             _playerControls.Gameplay.HeavyAttack.started += HeavyAttackPressed;
 
-            _playerControls.Gameplay.Sprint.started += Sprint;
-            _playerControls.Gameplay.Sprint.performed += Run;
-            _playerControls.Gameplay.Sprint.canceled += Run;
+            _playerControls.Gameplay.Sprint.performed += Sprint;
 
             _playerControls.Gameplay.Block.started += BlockPressed;
             _playerControls.Gameplay.Block.performed += LightAttackFinished;
@@ -159,9 +148,7 @@ namespace Scripts.Player
 
             _playerControls.Gameplay.HeavyAttack.started -= HeavyAttackPressed;
 
-            _playerControls.Gameplay.Sprint.started -= Sprint;
-            _playerControls.Gameplay.Sprint.performed -= Run;
-            _playerControls.Gameplay.Sprint.canceled -= Run;
+            _playerControls.Gameplay.Sprint.performed -= Sprint;
 
             _playerControls.Gameplay.Block.started -= BlockPressed;
             _playerControls.Gameplay.Block.performed -= LightAttackFinished;
