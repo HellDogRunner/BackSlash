@@ -35,7 +35,7 @@ namespace Scripts.Animations
             _inputController.OnSprintKeyPressed += SprintAnimation;
             _inputController.OnShowWeaponPressed += ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed += HideWeaponAnimation;
-            _inputController.OnLightAttackFinished += WeaponIdle;
+            _inputController.OnBlockPressed += BlockAnimation;
 
             _thirdPersonController = thirdPersonController;
             _thirdPersonController.IsAttacking += PrimaryAttackAnimation;
@@ -50,16 +50,16 @@ namespace Scripts.Animations
             _inputController.OnSprintKeyPressed -= SprintAnimation;
             _inputController.OnShowWeaponPressed -= ShowWeaponAnimation;
             _inputController.OnHideWeaponPressed -= HideWeaponAnimation;
-            _inputController.OnLightAttackFinished -= WeaponIdle;
+            _inputController.OnBlockPressed -= BlockAnimation;
 
             _thirdPersonController.IsAttacking -= PrimaryAttackAnimation;
         }
 
         private void Update()
         {
-            var dir = _inputController.MoveDirection;
-            _animator.SetFloat("InputX", dir.x, _smoothBlend, Time.deltaTime);
-            _animator.SetFloat("InputY", dir.z, _smoothBlend, Time.deltaTime);
+            var direction = _inputController.MoveDirection;
+            _animator.SetFloat("InputX", direction.x, _smoothBlend, Time.deltaTime);
+            _animator.SetFloat("InputY", direction.z, _smoothBlend, Time.deltaTime);
             if (_targetLock.CurrentTargetTransform != null)
             {
                 _animator.SetBool("TargetLock", true);
@@ -73,11 +73,6 @@ namespace Scripts.Animations
         private void SprintAnimation(bool isPressed)
         {       
             _animator.SetBool("IsSprint", isPressed);
-        }
-
-        private void RunAndAttackAnimation(bool isAttacking) 
-        {
-            _animator.SetBool("Attacking", isAttacking);
         }
 
         private void JumpAnimation()
@@ -134,9 +129,9 @@ namespace Scripts.Animations
             _animator.SetBool("Block", isBlocking);
         }
 
-        private void WeaponIdle()
+        public void TriggerAnimationByName(string name)
         {
-            _animator.SetBool("Block", false);
+            _animator.SetTrigger(name);
         }
     }
 }

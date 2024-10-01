@@ -25,7 +25,7 @@
                 },
                 {
                     "name": "Sprint",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "648f3bfc-c011-4d8b-941f-01b855caa686",
                     "expectedControlType": "",
                     "processors": "",
@@ -39,7 +39,7 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "HeavyAttack",
@@ -48,7 +48,7 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Dodge",
@@ -88,7 +88,7 @@
                 },
                 {
                     "name": "Block",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "383a9525-7348-4f22-81f5-cb72d5b34aba",
                     "expectedControlType": "",
                     "processors": "",

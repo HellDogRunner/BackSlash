@@ -47,7 +47,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Sprint"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""648f3bfc-c011-4d8b-941f-01b855caa686"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -61,7 +61,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""HeavyAttack"",
@@ -70,7 +70,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Dodge"",
@@ -110,7 +110,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Block"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""383a9525-7348-4f22-81f5-cb72d5b34aba"",
                     ""expectedControlType"": """",
                     ""processors"": """",

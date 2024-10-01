@@ -1,3 +1,4 @@
+using Scripts.Animations;
 using Scripts.Combo.Models;
 using Scripts.Weapon;
 using System;
@@ -18,9 +19,9 @@ public class ComboSystem : MonoBehaviour
     private Coroutine _currentAttackRoutine;
     private Coroutine _attackInterval;
 
-    private Animator _animator;
     private ComboDatabase _comboData;
     private WeaponController _weaponController;
+    private PlayerAnimationController _playerAnimationController;
 
     private bool _ñomboProgress = false;
     private bool _isCanceling = false;
@@ -41,16 +42,16 @@ public class ComboSystem : MonoBehaviour
     public event Action OnCannotAttack;
 
     [Inject]
-    private void Construct(ComboDatabase comboDatabase, WeaponController weaponController)
+    private void Construct(ComboDatabase comboDatabase, WeaponController weaponController, PlayerAnimationController playerAnimationController)
     {
         _comboData = comboDatabase;
         _weaponController = weaponController;
+        _playerAnimationController = playerAnimationController;
     }
 
     private void Awake()
     {
         _cancelDelay = _comboData.GetCancelDelay();
-        _animator = GetComponent<Animator>();
 
         FillComboList();
         TryGetNextAttack(null, 0);
@@ -156,7 +157,7 @@ public class ComboSystem : MonoBehaviour
     {
         _ñomboProgress = true;
         IsAttacking?.Invoke(true);
-        _animator.SetTrigger(combo.AnimationTrigger);
+        _playerAnimationController.TriggerAnimationByName(combo.AnimationTrigger);
         OnComboSound.Invoke();
 
         yield return new WaitForSeconds(combo.AfterComboInterval);
@@ -174,8 +175,7 @@ public class ComboSystem : MonoBehaviour
         if (!input.MovementRalated)
         {
             IsAttacking?.Invoke(true);
-            _animator.SetTrigger(inputName);
-
+            _playerAnimationController.TriggerAnimationByName(inputName);
             OnAttackSound.Invoke();
         }
 
