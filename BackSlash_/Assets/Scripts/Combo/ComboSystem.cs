@@ -15,7 +15,7 @@ public class ComboSystem : MonoBehaviour
     private float _cancelDelay;
 
     private List<ComboTypeModel> _matchingCombos = new List<ComboTypeModel>();
-
+    private Dictionary<InputActionReference, Action<InputAction.CallbackContext>> _callbackInputContexts = new Dictionary<InputActionReference, Action<InputAction.CallbackContext>>();
     private Coroutine _currentAttackRoutine;
     private Coroutine _attackInterval;
 
@@ -63,7 +63,9 @@ public class ComboSystem : MonoBehaviour
         foreach (var inputAction in inputActions)
         {
             inputAction.action.Enable();
-            inputAction.action.performed += _ => RegisterInput(inputAction);
+            Action<InputAction.CallbackContext> registerAction = _ => RegisterInput(inputAction);
+            inputAction.action.performed += registerAction.Invoke;
+            _callbackInputContexts.Add(inputAction, registerAction);
         }
     }
 
@@ -73,8 +75,12 @@ public class ComboSystem : MonoBehaviour
         foreach (var inputAction in inputActions)
         {
             inputAction.action.Disable();
-            inputAction.action.performed -= _ => RegisterInput(inputAction);
+            if (_callbackInputContexts.TryGetValue(inputAction, out var actionProccesor))
+            {
+                inputAction.action.performed -= actionProccesor.Invoke;
+            }
         }
+        _callbackInputContexts.Clear();
     }
 
     private void RegisterInput(InputActionReference attackInput)
@@ -178,7 +184,6 @@ public class ComboSystem : MonoBehaviour
             _playerAnimationController.TriggerAnimationByName(inputName);
             OnAttackSound.Invoke();
         }
-
         yield return new WaitForSeconds(input.Length);
         IsAttacking?.Invoke(false);
     }
@@ -203,7 +208,6 @@ public class ComboSystem : MonoBehaviour
     private IEnumerator ÂufferCannotExpand(ComboTypeModel combo, InputActionReference inputReference)
     {
         ComboInputSettingsModel input = _comboData.GetInputActionSettingByName(inputReference.action.name);
-
 
         _canAttack = false;
         yield return new WaitForSeconds(input.BeforeAttackTime);
