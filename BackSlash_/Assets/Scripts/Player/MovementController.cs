@@ -115,7 +115,7 @@ namespace Scripts.Player
                     _ySpeed = -10f;
                 }
             }
-            _moveDirection = new Vector3(_forwardDirection.x, _ySpeed, _forwardDirection.z).normalized;
+            _moveDirection = new Vector3(_forwardDirection.x, 0, _forwardDirection.z).normalized;
             if (_isAttackGoing)
             {
                 _moveDirection = Vector3.zero;

@@ -47,7 +47,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Sprint"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""648f3bfc-c011-4d8b-941f-01b855caa686"",
                     ""expectedControlType"": """",
                     ""processors"": """",
