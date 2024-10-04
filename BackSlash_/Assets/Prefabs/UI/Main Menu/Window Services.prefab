@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5401053155189870336}
   - component: {fileID: 6866414192283661775}
-  - component: {fileID: 1364804234357960489}
-  - component: {fileID: 6099681073985406472}
+  - component: {fileID: 215599807193822779}
+  - component: {fileID: 3508688594615002127}
   - component: {fileID: 2190777401817641778}
   m_Layer: 0
   m_Name: Window Services
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 858e3fe0319fbe34ea53bdb10868c615, type: 2}
   windowsRoot: {fileID: 0}
---- !u!114 &1364804234357960489
+--- !u!114 &215599807193822779
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -58,11 +58,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4711571066658931590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5430325d5b80934eac517d8f0396252, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ad60252f16a2824cb2a7556c2840935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startHandler: {fileID: 11400000, guid: a895f7e52c720bb4aa5b3f561a6765b3, type: 2}
---- !u!114 &6099681073985406472
+  _startWindow: {fileID: 11400000, guid: a895f7e52c720bb4aa5b3f561a6765b3, type: 2}
+  _mainWindow: {fileID: 11400000, guid: 2c745b6d1b5c003458675efd3866d72d, type: 2}
+  _inputDelay: 0.2
+--- !u!114 &3508688594615002127
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,10 +73,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4711571066658931590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b136b4f49050254d98cc6c17ec97e35, type: 3}
+  m_Script: {fileID: 11500000, guid: eabab924b9e9c6d48bd00d57387c4dcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fadeDuration: 0.1
+  _fadeDuration: 0.2
 --- !u!114 &2190777401817641778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -89,8 +91,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _components:
   - {fileID: 6866414192283661775}
-  - {fileID: 1364804234357960489}
-  - {fileID: 6099681073985406472}
+  - {fileID: 3508688594615002127}
+  - {fileID: 215599807193822779}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}

@@ -33,7 +33,6 @@ public class HUDComboHandler : MonoBehaviour
         _comboModel = _comboData.GetSequenceByName(_comboName);
 
         _comboSystem = comboSystem;
-
         _comboSystem.OnComboFinished += ComboFinished;  
         _comboSystem.OnAttackMatched += ComboProgress;
         _comboSystem.OnAttackNotMatched += ComboCanceled;

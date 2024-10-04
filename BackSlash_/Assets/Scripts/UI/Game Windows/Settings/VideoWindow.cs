@@ -18,9 +18,9 @@ namespace RedMoonGames.Window
         [SerializeField] private GameObject _graphicsTab;
 
         [Header("Navigation Keys")]
+        [SerializeField] private Button _switch;
         [SerializeField] private Button _back;
         [SerializeField] private Button _close;
-        [SerializeField] private Button _switch;
 
         [Header("Tabs Animation")]
         [SerializeField] private TabAnimationService _displayAnimation;
@@ -33,14 +33,15 @@ namespace RedMoonGames.Window
             _currentTab = _displayTab;
             _currentTab.SetActive(true);
 
-            _pauseInput.OnBackKeyPressed += Back;
-            _pauseInput.OnTabPressed += OnTabPressed;
+            _pauseInputs.OnBackKeyPressed += Back;
+            _pauseInputs.OnTabPressed += OnTabPressed;
 
             _displayButton.onClick.AddListener(() => SwitchTab(_displayTab));
             _graphicsButton.onClick.AddListener(() => SwitchTab(_graphicsTab));
+            
             _switch.onClick.AddListener(OnTabPressed);
             _back.onClick.AddListener(() => SwitchWindows(_videoHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowsController.Unpause);
+            if (!_IsMainMenu) _close.onClick.AddListener(_windowService.Unpause);
         }
 
         private void Back()
@@ -77,16 +78,16 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _windowsController.OnUnpausing -= DisablePause;
-
-            _pauseInput.OnBackKeyPressed -= Back;
-            _pauseInput.OnTabPressed -= OnTabPressed;
+            _windowService.OnHideWindow -= DisablePause;
+            _pauseInputs.OnBackKeyPressed -= Back;
+            _pauseInputs.OnTabPressed -= OnTabPressed;
 
             _displayButton.onClick.RemoveAllListeners();
             _graphicsButton.onClick.RemoveAllListeners();
+            
             _switch.onClick.RemoveAllListeners();
             _back.onClick.RemoveAllListeners();
-            _close.onClick.RemoveAllListeners();
+            if (!_IsMainMenu) _close.onClick.RemoveListener(_windowService.Unpause);
         }
     }
 }

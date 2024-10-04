@@ -9,13 +9,14 @@ namespace RedMoonGames.Window
     [RequireComponent(typeof(CanvasGroup))]
     public class MainBasicWindow : BasicWindow
     {
+        protected CanvasGroup _canvasGroup;
+
         protected MainWindowsController _windowsController;
         protected SceneTransitionService _sceneTransition;
         protected MainAnimationService _animationService;
         protected AudioController _audioController;
         protected UIPauseInputs _uIController;
 
-        protected CanvasGroup _canvasGroup;
 
         [Inject]
         protected virtual void Construct(MainWindowsController windowController, MainAnimationService animationService, SceneTransitionService sceneTransition, AudioController audioController, UIPauseInputs uIController)

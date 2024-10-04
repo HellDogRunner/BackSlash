@@ -9,45 +9,43 @@ namespace RedMoonGames.Window
     [RequireComponent(typeof(CanvasGroup))]
     public class GameBasicWindow : BasicWindow
     {
-        protected GameWindowsController _windowsController;
-        protected WindowAnimationService _animationService;
-        protected SceneTransitionService _sceneTransition;
-        protected AudioController _audioController;
-        protected UIPauseInputs _pauseInput;
+        [SerializeField] protected bool _IsMainMenu;
 
         protected CanvasGroup _canvasGroup;
 
+        protected WindowService _windowService;
+        protected WindowAnimationService _animationService;
+        protected AudioController _audioController;
+        protected UIPauseInputs _pauseInputs;
+
         [Inject]
-        protected virtual void Construct(GameWindowsController windowController, WindowAnimationService animationController, SceneTransitionService sceneTransition, AudioController audioManager, UIPauseInputs pauseInput)
+        protected virtual void Construct(WindowService windowService, WindowAnimationService animationService, AudioController audioController, UIPauseInputs pauseInputs)
         {
-            _animationService = animationController;
-            _sceneTransition = sceneTransition;
-            _audioController = audioManager;
-            _pauseInput = pauseInput;
-
-            _windowsController = windowController;
-            _windowsController.OnUnpausing += DisablePause;
-            _windowsController.OnPausing += EnablePause;
-
             _canvasGroup = GetComponent<CanvasGroup>();
+
+            _animationService = animationService;
+            _audioController = audioController;
+            _pauseInputs = pauseInputs;
+
+            _windowService = windowService;
+            _windowService.OnHideWindow += DisablePause;
+            _windowService.OnShowWindow += EnablePause;
         }
 
-        protected void SwitchWindows(WindowHandler close, WindowHandler open)
-        {
-            PlayClickSound();
+        protected virtual void EnablePause() { }
 
-            _windowsController.CloseWindow(close);
-            _windowsController.OpenWindow(open);
-        }
-
-        protected void DisablePause(WindowHandler handler)
+        protected virtual void DisablePause(WindowHandler handler)
         {
             PlayClickSound();
             _animationService.HideWindowAnimation(_canvasGroup, handler);
         }
 
-        protected virtual void EnablePause()
+        public void SwitchWindows(WindowHandler close, WindowHandler open)
         {
+            PlayClickSound();
+
+            _windowService.CloseWindow(close);
+            _windowService.OpenWindow(open);
         }
 
         protected void PlayClickSound()

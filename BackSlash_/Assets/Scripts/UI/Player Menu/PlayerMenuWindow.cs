@@ -6,10 +6,9 @@ using Zenject;
 
 namespace RedMoonGames.Window
 {
-    public class PlayerMenuWindow : MonoBehaviour
+    [RequireComponent(typeof(CanvasGroup))]
+    public class PlayerMenuWindow : BasicWindow
     {
-        [SerializeField] private CanvasGroup _canvasGroup;
-
         [Header("Tabs")]
         [SerializeField] private GameObject _inventoryTab;
         [SerializeField] private GameObject _combosTab;
@@ -41,6 +40,8 @@ namespace RedMoonGames.Window
         [SerializeField] private MenuTabAnimationService _journalAnimation;
         [SerializeField] private MenuTabAnimationService _mapAnimation;
 
+        private CanvasGroup _canvasGroup;
+
         private List<GameObject> _tabs = new List<GameObject>();
         private List<MenuTabAnimationService> _animations = new List<MenuTabAnimationService>();
         private int _index;
@@ -48,16 +49,23 @@ namespace RedMoonGames.Window
 
         private bool _menuActive;
 
-        private UIMenuInputs _menuController;
-        private PlayerMenuAnimationService _animationService;
+        private WindowService _windowService;
+        private UIMenuInputs _menuInput;
+        private WindowAnimationService _animationService;
         private AudioController _audioController;
 
         [Inject]
-        private void Construct(UIMenuInputs menuController, PlayerMenuAnimationService animationService, AudioController audioController)
+        private void Construct(WindowService windowService, UIMenuInputs menuInput, WindowAnimationService animationService, AudioController audioController)
         {
             _animationService = animationService;
             _audioController = audioController;
-            _menuController = menuController;
+            _menuInput = menuInput;
+
+            _windowService = windowService;
+            _windowService.OnHideWindow += DisablePause;
+            _windowService.OnShowWindow += EnablePause;
+
+            _canvasGroup = GetComponent<CanvasGroup>();
         }
 
         private void Awake()
@@ -81,28 +89,24 @@ namespace RedMoonGames.Window
             _animations.Add(_mapAnimation);
         }
 
-        public void ShowPlayerMenu(int index)
+        private void OnEnable()
         {
-            if (!_menuActive)
-            {
-                _menuActive = true;
-                SubscribeToActions();
-                _animationService.AnimateMenuShow(_canvasGroup);
-            }
-
-            OpenTab(index);
+            OpenTab(0);
         }
 
-        public void HidePlayerMenu()
+        private void EnablePause()
         {
-            if (_menuActive)
-            {
-                _menuActive = false;
-                UnsubscribeToActions();
-                CloseAllTabs();
+            PlayClickSound();
+            _animationService.ShowWindowAnimation(_canvasGroup);
+            SubscribeToActions();
+            CloseAllTabs();
+        }
 
-                _animationService.AnimateMenuHide(_canvasGroup);
-            }
+        private void DisablePause(WindowHandler handler)
+        {
+            PlayClickSound();
+            _animationService.HideWindowAnimation(_canvasGroup, handler);
+            UnsubscribeToActions();
         }
 
         private void SwitchTab(int index)
@@ -110,7 +114,7 @@ namespace RedMoonGames.Window
             OpenTab(_index + index);
         }
 
-        private void OpenTab(int index)
+        public void OpenTab(int index)
         {
             _index = index % _tabs.Count;
             if (_index < 0)
@@ -125,7 +129,7 @@ namespace RedMoonGames.Window
             CloseAllTabs();
 
             ShowActiveTab();
-
+             
             _audioController.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
             _tabs[_index].SetActive(true);
         }
@@ -154,6 +158,16 @@ namespace RedMoonGames.Window
             Cursor.visible = _;
         }
 
+        private void PlayClickSound()
+        {
+            _audioController.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
+        }
+
+        private void PlayHoverSound()
+        {
+            _audioController.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
+        }
+
         private void SubscribeToActions()
         {
             _inventoryButton.onClick.AddListener(() => OpenTab(0));
@@ -163,14 +177,14 @@ namespace RedMoonGames.Window
             _journalButton.onClick.AddListener(() => OpenTab(4));
             _mapButton.onClick.AddListener(() => OpenTab(5));
 
-            _menuController.OnPrevPressed += SwitchTab;
-            _menuController.OnNextPressed += SwitchTab;
+            _menuInput.OnPrevPressed += SwitchTab;
+            _menuInput.OnNextPressed += SwitchTab;
 
             _prevKey.onClick.AddListener(() => SwitchTab(-1));
             _nextKey.onClick.AddListener(() => SwitchTab(+1));
 
-            _backButton.onClick.AddListener(HidePlayerMenu);
-            _closeButton.onClick.AddListener(HidePlayerMenu);
+            _backButton.onClick.AddListener(_windowService.Unpause);
+            _closeButton.onClick.AddListener(_windowService.Unpause);
         }
 
         private void UnsubscribeToActions()
@@ -182,8 +196,8 @@ namespace RedMoonGames.Window
             _journalButton.onClick.RemoveAllListeners();
             _mapButton.onClick.RemoveAllListeners();
 
-            _menuController.OnPrevPressed -= SwitchTab;
-            _menuController.OnNextPressed -= SwitchTab;
+            _menuInput.OnPrevPressed -= SwitchTab;
+            _menuInput.OnNextPressed -= SwitchTab;
 
             _prevKey.onClick.RemoveAllListeners();
             _nextKey.onClick.RemoveAllListeners();
@@ -195,6 +209,9 @@ namespace RedMoonGames.Window
         private void OnDestroy()
         {
             UnsubscribeToActions();
+
+            _windowService.OnHideWindow -= DisablePause;
+            _windowService.OnShowWindow -= EnablePause;
         }
     }
 }

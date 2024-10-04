@@ -1,10 +1,11 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Zenject;
 
 public class WeaponPartAnimation : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    [SerializeField] private MenuWeaponAnimation _weaponAnimation;
+    [Space]
     [SerializeField] private RectTransform _object;
     [SerializeField] private RectTransform _parts;
     [SerializeField] private GameObject _pointer;
@@ -19,14 +20,6 @@ public class WeaponPartAnimation : MonoBehaviour, IPointerEnterHandler, IPointer
     [SerializeField] private Vector2 _partsClosedSize;
 
     private bool _isActive;
-
-    private MenuWeaponAnimation _weaponAnimation;
-
-    [Inject]
-    private void Construct(MenuWeaponAnimation weaponAnimation)
-    {
-        _weaponAnimation = weaponAnimation;
-    }
 
     private void OnEnable()
     {

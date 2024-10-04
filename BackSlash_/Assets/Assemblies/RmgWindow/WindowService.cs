@@ -1,6 +1,7 @@
-using UnityEngine;
 using RedMoonGames.Basics;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Zenject;
 
 namespace RedMoonGames.Window
@@ -13,24 +14,63 @@ namespace RedMoonGames.Window
 
         [Inject] private DiContainer _diContainer;
 
+        private WindowHandler _activeWindow;
+
         protected readonly Dictionary<IWindow, WindowHandler> _createdWindows = new Dictionary<IWindow, WindowHandler>();
+
+        public event Action<WindowHandler> OnHideWindow;
+        public event Action OnShowWindow;
+        public event Action OnUnpause;
+        public event Action<string> OnChangeScene;
+
+        public void ChangeScene(string SceneName)
+        {
+            OnChangeScene?.Invoke(SceneName);
+        }
+
+        public void Unpause()
+        {
+            OnUnpause?.Invoke();
+        }
+
+        public void ShowWindow(WindowHandler window)
+        {
+            OpenWindow(window);
+            OnShowWindow?.Invoke();
+        }
+
+        public void HideWindow()
+        {
+            OnHideWindow?.Invoke(_activeWindow);
+        }
+
+        public void OpenWindow(WindowHandler window)
+        {
+            TryShowWindow(window);
+            _activeWindow = window;
+        }
+
+        public void CloseWindow(WindowHandler window)
+        {
+            ReturnWindow(window)?.Close();
+        }
 
         public TryResult TryShowWindow(WindowHandler window, WindowModel model = null)
         {
-            if(settings == null)
+            if (settings == null)
             {
                 return TryResult.Fail;
             }
 
-            if(!settings.TryGetWindowSettings(window, out var windowSettings) || windowSettings.WindowPrefab == null)
+            if (!settings.TryGetWindowSettings(window, out var windowSettings) || windowSettings.WindowPrefab == null)
             {
                 return TryResult.Fail;
             }
 
-            if(!_createdWindows.TrySearchKeyByValue(window, out var openedWindow) || !windowSettings.IsSingle)
+            if (!_createdWindows.TrySearchKeyByValue(window, out var openedWindow) || !windowSettings.IsSingle)
             {
                 openedWindow = CreateWindow(windowSettings.WindowPrefab, window);
-                if(openedWindow == null)
+                if (openedWindow == null)
                 {
                     return TryResult.Fail;
                 }
@@ -93,7 +133,7 @@ namespace RedMoonGames.Window
         private void WindowShow(IWindow window)
         {
             var windowCachedBehaviour = window as CachedBehaviour;
-            if(windowCachedBehaviour == null)
+            if (windowCachedBehaviour == null)
             {
                 return;
             }

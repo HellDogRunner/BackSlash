@@ -51,14 +51,15 @@ public class MenuWeaponAnimation : MonoBehaviour
         _isChoosing = _;
     }
 
+    // Реализовать без энейбла
     private void OnEnable()
     {
-        _menuInputs.OnHideCursor += AnimateLookAtMouse;
+        //_menuInputs.OnHideCursor += AnimateLookAtMouse;
     }
 
     private void OnDisable()
     {
-        _menuInputs.OnHideCursor -= AnimateLookAtMouse;
+        //_menuInputs.OnHideCursor -= AnimateLookAtMouse;
     }
 
 }

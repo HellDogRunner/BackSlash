@@ -1,6 +1,8 @@
+using RedMoonGames.Window;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 public class SceneTransitionService : MonoBehaviour
 {
@@ -12,7 +14,16 @@ public class SceneTransitionService : MonoBehaviour
 
     private AsyncOperation _loadingScene;
 
+    private WindowService _windowService;
+
     public event Action OnLoading;
+
+    [Inject]
+    private void Construct(WindowService windowService)
+    {
+        _windowService = windowService;
+        _windowService.OnChangeScene += SwichToScene;
+    }
 
     private void Start()
     {

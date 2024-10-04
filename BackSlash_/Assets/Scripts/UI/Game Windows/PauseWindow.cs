@@ -21,18 +21,18 @@ namespace RedMoonGames.Window
         {
             _continue.Select();
 
-            _pauseInput.OnBackKeyPressed += _windowsController.Unpause;
+            _pauseInputs.OnBackKeyPressed += _windowService.Unpause;
 
-            _continue.onClick.AddListener(_windowsController.Unpause);
+            _continue.onClick.AddListener(_windowService.Unpause);
             _settings.onClick.AddListener(() => SwitchWindows(_pauseHandler, _settingsHandler));
             _exit.onClick.AddListener(ExitClick);
-            _close.onClick.AddListener(_windowsController.Unpause);
+            _close.onClick.AddListener(_windowService.Unpause);
         }
 
         private void ExitClick()
         {
-            _windowsController.Unpause();
-            _sceneTransition.SwichToScene("StartMenu");
+            _windowService.ChangeScene("StartMenu");
+            _windowService.Unpause();
         }
 
         protected override void EnablePause()
@@ -42,10 +42,10 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         { 
-            _windowsController.OnUnpausing -= DisablePause;
-            _windowsController.OnPausing -= EnablePause;
+            _windowService.OnHideWindow -= DisablePause;
+            _windowService.OnShowWindow -= EnablePause;
 
-            _pauseInput.OnBackKeyPressed -= _windowsController.Unpause;
+            _pauseInputs.OnBackKeyPressed -= _windowService.Unpause;
 
             _continue.onClick.RemoveAllListeners();
             _settings.onClick.RemoveAllListeners();

@@ -30,7 +30,7 @@ namespace RedMoonGames.Window
         {
             _masterVolume.Select();
 
-            _pauseInput.OnBackKeyPressed += Back;
+            _pauseInputs.OnBackKeyPressed += Back;
 
             _masterVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_masterVolume, _masterValue, 5));
             _musicVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_musicVolume, _musicValue, 5));
@@ -38,7 +38,7 @@ namespace RedMoonGames.Window
             _sfxVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_sfxVolume, _sfxValue, 5));
 
             _back.onClick.AddListener(() => SwitchWindows(_audioHandler, _settingsHandler));
-            _close.onClick.AddListener(_windowsController.Unpause);
+            if (!_IsMainMenu) _close.onClick.AddListener(_windowService.Unpause);
         }
 
         private void Back()
@@ -48,9 +48,9 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _windowsController.OnUnpausing -= DisablePause;
+            _windowService.OnHideWindow -= DisablePause;
 
-            _pauseInput.OnBackKeyPressed -= Back;
+            _pauseInputs.OnBackKeyPressed -= Back;
 
             _masterVolume.onValueChanged.RemoveAllListeners();
             _musicVolume.onValueChanged.RemoveAllListeners();
@@ -58,7 +58,7 @@ namespace RedMoonGames.Window
             _sfxVolume.onValueChanged.RemoveAllListeners();
 
             _back.onClick.RemoveAllListeners();
-            _close.onClick.RemoveAllListeners();
+            if (!_IsMainMenu) _close.onClick.RemoveListener(_windowService.Unpause);
         }
     }
 }

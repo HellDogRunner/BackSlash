@@ -11,13 +11,13 @@ namespace RedMoonGames.Window
         private WindowHandler _currentWindow;
 
         private SceneTransitionService _sceneTransition;
-        private WindowService _windowService;
+        //private WindowService _windowService;
         private UIPauseInputs _inputs;
 
         [Inject]
-        private void Construct(WindowService windowService, SceneTransitionService sceneTransition, UIPauseInputs inputs)
+        private void Construct(SceneTransitionService sceneTransition, UIPauseInputs inputs)
         {
-            _windowService = windowService;
+            //_windowService = windowService;
 
             _sceneTransition = sceneTransition;
             _sceneTransition.OnLoading += DisableInput;
@@ -37,14 +37,14 @@ namespace RedMoonGames.Window
 
         public void OpenWindow(WindowHandler handler)
         {
-            _windowService.TryShowWindow(handler);
+            //_windowService.TryShowWindow(handler);
             _currentWindow = handler;
         }
 
         public void CloseWindow(WindowHandler handler)
         {
-            var currentWindow = _windowService.ReturnWindow(handler);
-            currentWindow?.Close();
+            //var currentWindow = ReturnWindow(handler);
+            //currentWindow?.Close();
         }
 
         private void DisableInput()
