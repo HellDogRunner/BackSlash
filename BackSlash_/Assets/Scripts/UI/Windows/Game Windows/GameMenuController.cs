@@ -3,7 +3,7 @@ using Scripts.Player;
 using UnityEngine;
 using Zenject;
 
-public class MenuController : MonoBehaviour
+public class GameMenuController : MonoBehaviour
 {
     [SerializeField] private WindowHandler _pauseWindow;
     [SerializeField] private WindowHandler _menuWindow;
