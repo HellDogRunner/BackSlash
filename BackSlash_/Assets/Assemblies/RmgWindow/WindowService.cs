@@ -10,7 +10,7 @@ namespace RedMoonGames.Window
     {
         [SerializeField] private WindowServiceSettings settings;
         [Space]
-        [SerializeField] private Transform windowsRoot;
+        [SerializeField] public Transform windowsRoot;
 
         [Inject] private DiContainer _diContainer;
 
@@ -21,11 +21,11 @@ namespace RedMoonGames.Window
         public event Action<WindowHandler> OnHideWindow;
         public event Action OnShowWindow;
         public event Action OnUnpause;
-        public event Action<string> OnChangeScene;
+        public event Action<string> OnSwitchScene;
 
-        public void ChangeScene(string SceneName)
+        public void ChangeScene(string sceneName)
         {
-            OnChangeScene?.Invoke(SceneName);
+            OnSwitchScene?.Invoke(sceneName);
         }
 
         public void Unpause()

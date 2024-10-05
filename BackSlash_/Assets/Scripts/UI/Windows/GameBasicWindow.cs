@@ -29,7 +29,6 @@ namespace RedMoonGames.Window
 
             _windowService = windowService;
             _windowService.OnHideWindow += DisablePause;
-            _windowService.OnShowWindow += EnablePause;
         }
 
         protected virtual void EnablePause() { }

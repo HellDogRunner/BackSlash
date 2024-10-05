@@ -1,177 +1,200 @@
-using RedMoonGames.Window;
 using Scripts.Player;
 using UnityEngine;
 using Zenject;
 
-public class GameMenuController : MonoBehaviour
+namespace RedMoonGames.Window
 {
-    [SerializeField] private WindowHandler _pauseWindow;
-    [SerializeField] private WindowHandler _menuWindow;
-
-    private bool _inPlayerMenu;
-
-    private WindowService _windowService;
-    private SceneTransitionService _sceneTransition;
-    private HUDAnimationService _hUDAnimation;
-    private ComboSystem _comboSystem;
-
-    private InputController _gameInputs;
-    private UIPauseInputs _pauseInputs;
-    private UIMenuInputs _menuInputs;
-
-    [Inject]
-    private void Construct(WindowService windowService, SceneTransitionService sceneTransition, ComboSystem comboSystem, HUDAnimationService hUDAnimation, InputController gameInputs, UIPauseInputs pauseInputs, UIMenuInputs menuInputs)
+    public class GameMenuController : MonoBehaviour
     {
-        _windowService = windowService;
-        _hUDAnimation = hUDAnimation;
-        _comboSystem = comboSystem;
-        _pauseInputs = pauseInputs;
+        [SerializeField] private WindowHandler _pauseWindow;
+        [SerializeField] private WindowHandler _menuWindow;
 
-        _sceneTransition = sceneTransition;
-        _sceneTransition.OnLoading += DisableAllInputs;
+        private bool _inPlayerMenu;
 
-        _gameInputs = gameInputs;
-        _gameInputs.OnPauseKeyPressed += OpenPause;
+        private SceneTransitionService _sceneTransition;
+        private WindowService _windowService;
+        private HUDAnimationService _hUDAnimation;
+        private ComboSystem _comboSystem;
 
-        _menuInputs = menuInputs;
-        _menuInputs.OnInventoryPressed += OpenMenu;
-        _menuInputs.OnCombosPressed += OpenMenu;
-        _menuInputs.OnAbilitiesPressed += OpenMenu;
-        _menuInputs.OnSkillsPressed += OpenMenu;
-        _menuInputs.OnJournalPressed += OpenMenu;
-        _menuInputs.OnMapPressed += OpenMenu;
-    }
+        private InputController _gameInputs;
+        private UIPauseInputs _pauseInputs;
+        private UIMenuInputs _menuInputs;
 
-    private void Awake()
-    {
-        _gameInputs.enabled = true;
-        _menuInputs.enabled = true;
-        _pauseInputs.enabled = false;
-
-        UnpauseGame();
-    }
-
-    private void OpenPause()
-    {
-        _windowService.OnUnpause += ClosePause;
-        _pauseInputs.OnEscapeKeyPressed += ClosePause;
-        _pauseInputs.OnHideCursor += SwitchVisible;
-
-        _gameInputs.enabled = false;
-        _menuInputs.enabled = false;
-        _pauseInputs.enabled = true;
-
-        PauseGame();
-
-        _windowService.ShowWindow(_pauseWindow);
-    }
-
-    private void ClosePause()
-    {
-        _windowService.OnUnpause -= ClosePause;
-        _pauseInputs.OnEscapeKeyPressed -= ClosePause;
-        _pauseInputs.OnHideCursor -= SwitchVisible;
-
-        _gameInputs.enabled = true;
-        _menuInputs.enabled = true;
-        _pauseInputs.enabled = false;
-
-        UnpauseGame();
-
-        _windowService.HideWindow();
-    }
-
-    private void OpenMenu(int index)
-    {
-        //_menuController.OpenTab(index);
-
-        if (!_inPlayerMenu)
+        [Inject]
+        private void Construct(SceneTransitionService sceneTransition, WindowService windowService, ComboSystem comboSystem, HUDAnimationService hUDAnimation, InputController gameInputs, UIPauseInputs pauseInputs, UIMenuInputs menuInputs)
         {
-            _inPlayerMenu = true;
+            _hUDAnimation = hUDAnimation;
+            _comboSystem = comboSystem;
+            _pauseInputs = pauseInputs;
 
-            _menuInputs.OnEscapePressed += CloseMenu;
-            _menuInputs.OnBackPressed += CloseMenu;
-            _menuInputs.OnHideCursor += SwitchVisible;
+            _sceneTransition = sceneTransition;
+            _sceneTransition.OnWindowHide += SceneTransitionHide;
 
+            _windowService = windowService;
+            _windowService.OnSwitchScene += ChangeScene;
+
+            _gameInputs = gameInputs;
+            _gameInputs.OnPauseKeyPressed += OpenPause;
+
+            _menuInputs = menuInputs;
+            _menuInputs.OnInventoryPressed += OpenMenu;
+            _menuInputs.OnCombosPressed += OpenMenu;
+            _menuInputs.OnAbilitiesPressed += OpenMenu;
+            _menuInputs.OnSkillsPressed += OpenMenu;
+            _menuInputs.OnJournalPressed += OpenMenu;
+            _menuInputs.OnMapPressed += OpenMenu;
+        }
+
+        private void Awake()
+        {
+            _sceneTransition.gameObject.SetActive(true);
+            _hUDAnimation.gameObject.SetActive(true);
+
+            _gameInputs.enabled = true;
             _menuInputs.enabled = true;
-            _gameInputs.enabled = false;
             _pauseInputs.enabled = false;
+
+            UnpauseGame();
+        }
+
+        private void OpenPause()
+        {
+            _windowService.OnUnpause += ClosePause;
+            _pauseInputs.OnEscapeKeyPressed += ClosePause;
+            _pauseInputs.OnHideCursor += SwitchVisible;
+
+            _gameInputs.enabled = false;
+            _menuInputs.enabled = false;
+            _pauseInputs.enabled = true;
 
             PauseGame();
 
-            _windowService.ShowWindow(_menuWindow);
+            _windowService.ShowWindow(_pauseWindow);
         }
-    }
 
-    private void CloseMenu()
-    {
-        _inPlayerMenu = false;
+        private void ClosePause()
+        {
+            _windowService.OnUnpause -= ClosePause;
+            _pauseInputs.OnEscapeKeyPressed -= ClosePause;
+            _pauseInputs.OnHideCursor -= SwitchVisible;
 
-        _menuInputs.OnEscapePressed -= CloseMenu;
-        _menuInputs.OnBackPressed -= CloseMenu;
-        _menuInputs.OnHideCursor -= SwitchVisible;
+            _gameInputs.enabled = true;
+            _menuInputs.enabled = true;
+            _pauseInputs.enabled = false;
 
-        _menuInputs.enabled = true;
-        _gameInputs.enabled = true;
-        _pauseInputs.enabled = false;
+            UnpauseGame();
 
-        UnpauseGame();
+            _windowService.HideWindow();
+        }
 
-        _windowService.HideWindow();
-    }
+        private void OpenMenu(int index)
+        {
+            if (!_inPlayerMenu)
+            {
+                _inPlayerMenu = true;
 
-    private void PauseGame()
-    {
-        _comboSystem.IsPause = true;
+                _menuInputs.OnEscapePressed += CloseMenu;
+                _menuInputs.OnBackPressed += CloseMenu;
+                _menuInputs.OnHideCursor += SwitchVisible;
 
-        _hUDAnimation.HideOnPause();
+                _menuInputs.enabled = true;
+                _gameInputs.enabled = false;
+                _pauseInputs.enabled = false;
 
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
-        Time.timeScale = 0;
-    }
+                PauseGame();
 
-    private void UnpauseGame()
-    {
-        _comboSystem.IsPause = false;
+                _windowService.ShowWindow(_menuWindow);
+            }
 
-        _hUDAnimation.ShowOnUnpause();
+            //_menuController.OpenTab(index);
+        }
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        Time.timeScale = 1;
-    }
+        private void CloseMenu()
+        {
+            _inPlayerMenu = false;
 
-    private void DisableAllInputs()
-    {
-        _gameInputs.enabled = false;
-        _menuInputs.enabled = false;
-        _pauseInputs.enabled = false;
-    }
+            _menuInputs.OnEscapePressed -= CloseMenu;
+            _menuInputs.OnBackPressed -= CloseMenu;
+            _menuInputs.OnHideCursor -= SwitchVisible;
 
-    private void SwitchVisible(bool visible)
-    {
-        Cursor.visible = visible;
-    }
+            _menuInputs.enabled = true;
+            _gameInputs.enabled = true;
+            _pauseInputs.enabled = false;
 
-    private void OnDestroy()
-    {
-        _gameInputs.OnPauseKeyPressed -= OpenPause;
-        _menuInputs.OnInventoryPressed -= OpenMenu;
-        _menuInputs.OnCombosPressed -= OpenMenu;
-        _menuInputs.OnAbilitiesPressed -= OpenMenu;
-        _menuInputs.OnSkillsPressed -= OpenMenu;
-        _menuInputs.OnJournalPressed -= OpenMenu;
-        _menuInputs.OnMapPressed -= OpenMenu;
+            UnpauseGame();
 
-        _menuInputs.OnEscapePressed -= CloseMenu;
-        _menuInputs.OnBackPressed -= CloseMenu;
-        _menuInputs.OnHideCursor -= SwitchVisible;
+            _windowService.HideWindow();
+        }
 
-        _windowService.OnUnpause -= ClosePause;
-        _pauseInputs.OnEscapeKeyPressed -= ClosePause;
-        _pauseInputs.OnHideCursor -= SwitchVisible;
+        private void PauseGame()
+        {
+            _comboSystem.IsPause = true;
 
-        _sceneTransition.OnLoading += DisableAllInputs;
+            _hUDAnimation.HideOnPause();
+
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+            Time.timeScale = 0;
+        }
+
+        private void UnpauseGame()
+        {
+            _comboSystem.IsPause = false;
+
+            _hUDAnimation.ShowOnUnpause();
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Time.timeScale = 1;
+        }
+
+        private void SceneTransitionHide()
+        {
+            _sceneTransition.gameObject.SetActive(false);
+        }
+
+        private void ChangeScene(string sceneName)
+        {
+            PrepareToChangeScene();
+            _sceneTransition.gameObject.SetActive(true);
+            _sceneTransition.SwichToScene(sceneName);
+        }
+
+        private void PrepareToChangeScene()
+        {
+            _gameInputs.enabled = false;
+            _menuInputs.enabled = false;
+            _pauseInputs.enabled = false;
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        private void SwitchVisible(bool visible)
+        {
+            Cursor.visible = visible;
+        }
+
+        private void OnDestroy()
+        {
+            _gameInputs.OnPauseKeyPressed -= OpenPause;
+            _menuInputs.OnInventoryPressed -= OpenMenu;
+            _menuInputs.OnCombosPressed -= OpenMenu;
+            _menuInputs.OnAbilitiesPressed -= OpenMenu;
+            _menuInputs.OnSkillsPressed -= OpenMenu;
+            _menuInputs.OnJournalPressed -= OpenMenu;
+            _menuInputs.OnMapPressed -= OpenMenu;
+
+            _menuInputs.OnEscapePressed -= CloseMenu;
+            _menuInputs.OnBackPressed -= CloseMenu;
+            _menuInputs.OnHideCursor -= SwitchVisible;
+
+            _windowService.OnUnpause -= ClosePause;
+            _pauseInputs.OnEscapeKeyPressed -= ClosePause;
+            _pauseInputs.OnHideCursor -= SwitchVisible;
+
+            _windowService.OnSwitchScene -= ChangeScene;
+            _sceneTransition.OnWindowHide -= SceneTransitionHide;
+        }
     }
 }

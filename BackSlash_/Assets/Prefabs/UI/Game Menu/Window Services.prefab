@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1783715392407194533}
   - component: {fileID: 3648056539120943492}
-  - component: {fileID: 3367417114126073835}
   - component: {fileID: 3623470573151982729}
+  - component: {fileID: 3367417114126073835}
   - component: {fileID: 5105581947541390981}
   m_Layer: 0
   m_Name: Window Services
@@ -49,19 +49,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 3baa2cd7be1f10545b3e3eb80e6e1c75, type: 2}
   windowsRoot: {fileID: 0}
---- !u!114 &3367417114126073835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7482660243357438915}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eabab924b9e9c6d48bd00d57387c4dcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _fadeDuration: 0.1
 --- !u!114 &3623470573151982729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,7 +63,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pauseWindow: {fileID: 11400000, guid: fc24f6d270a45a54d871f41d082fbcaf, type: 2}
   _menuWindow: {fileID: 11400000, guid: a8b1393bdc0c6ce4c89f4487f449dcf6, type: 2}
-  _mainWindow: {fileID: 11400000, guid: 2c745b6d1b5c003458675efd3866d72d, type: 2}
+--- !u!114 &3367417114126073835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482660243357438915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eabab924b9e9c6d48bd00d57387c4dcd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fadeDuration: 0.1
 --- !u!114 &5105581947541390981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,8 +90,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _components:
   - {fileID: 3648056539120943492}
-  - {fileID: 3367417114126073835}
   - {fileID: 3623470573151982729}
+  - {fileID: 3367417114126073835}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}

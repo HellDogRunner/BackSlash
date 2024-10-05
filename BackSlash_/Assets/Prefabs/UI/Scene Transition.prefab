@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2405831873996627189}
   - component: {fileID: 1436564195840998315}
   - component: {fileID: 7360160228212516030}
-  - component: {fileID: 6245692603679428361}
+  - component: {fileID: 3257998234571897330}
   - component: {fileID: 2942088125291685781}
   m_Layer: 5
   m_Name: Scene Transition
@@ -22,7 +22,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2163864065173948574
 RectTransform:
   m_ObjectHideFlags: 0
@@ -115,7 +115,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2284193532720179800}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -131,9 +131,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 261a4913b124db74aa5ec459fe816afb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animationController: {fileID: 6245692603679428361}
-  _isMainMenuScene: 1
---- !u!114 &6245692603679428361
+  _animations: {fileID: 3257998234571897330}
+  _playOpening: 1
+--- !u!114 &3257998234571897330
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,12 +145,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0af5575a94b4c42babdd2cad2a9a80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transitionService: {fileID: 7360160228212516030}
   _canvasGroup: {fileID: 1436564195840998315}
   _fill: {fileID: 2346090915665353304}
   _glow: {fileID: 3701360501439428485}
-  _transitionDuration: 1
-  _fillDuration: 3
+  _transitionDuration: 0.5
+  _fillDuration: 2
 --- !u!114 &2942088125291685781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,7 +285,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -361,7 +360,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0

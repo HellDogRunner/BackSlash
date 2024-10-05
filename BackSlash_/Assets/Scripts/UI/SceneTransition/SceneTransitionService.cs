@@ -1,74 +1,63 @@
-using RedMoonGames.Window;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Zenject;
 
-public class SceneTransitionService : MonoBehaviour
+namespace RedMoonGames.Window
 {
-    [SerializeField] private SceneTransitionAnimationService _animationController;
-    [Space]
-    [SerializeField] private bool _isMainMenuScene;
-
-    private static bool _needPlayOpening = false;
-
-    private AsyncOperation _loadingScene;
-
-    private WindowService _windowService;
-
-    public event Action OnLoading;
-
-    [Inject]
-    private void Construct(WindowService windowService)
+    public class SceneTransitionService : MonoBehaviour
     {
-        _windowService = windowService;
-        _windowService.OnChangeScene += SwichToScene;
-    }
+        [SerializeField] private LoadingSceneAnimation _animations;
+        [Space]
+        [SerializeField] private bool _playOpening;
 
-    private void Start()
-    {
-        if (_needPlayOpening)
+        private string _sceneName;
+
+        private AsyncOperation _loadingScene;
+
+        public event Action OnWindowHide;
+
+        private void Awake()
         {
-            PrepareToOpenScene(); 
-
-            _needPlayOpening = false;
-            _animationController.AnimateOpening();
+            _animations.OnLoadingEnd += ChangeScene;
+            _animations.OnOpeningEnd += CloseWindow;
+            _animations.OnClosingEnd += LoadScene;
         }
-    }
-    
-    public void SwichToScene(string sceneName)
-    {
-        OnLoading?.Invoke();
-        PrepareToCloseScene();
-        _animationController.AnimateClosing(sceneName);
-    }
 
-    public void LoadScene(string sceneName)
-    {
-        _loadingScene = SceneManager.LoadSceneAsync(sceneName);
-        _loadingScene.allowSceneActivation = false;
-    }
-
-    public void ChangeScene()
-    {
-        _needPlayOpening = true;
-        _loadingScene.allowSceneActivation = true;
-    }
-
-    private void PrepareToCloseScene()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        Time.timeScale = 0;
-    }
-
-    private void PrepareToOpenScene()
-    {
-        if (_isMainMenuScene)
+        private void Start()
         {
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
+            if (_playOpening)
+            {
+                _animations.AnimateOpening();
+            }
         }
-        Time.timeScale = 1;   
+
+        private void CloseWindow()
+        {
+            OnWindowHide?.Invoke();
+        }
+
+        public void SwichToScene(string sceneName)
+        {
+            _sceneName = sceneName;
+            _animations.AnimateClosing();
+        }
+
+        private void LoadScene()
+        {
+            _loadingScene = SceneManager.LoadSceneAsync(_sceneName);
+            _loadingScene.allowSceneActivation = false;
+        }
+
+        private void ChangeScene()
+        {
+            _loadingScene.allowSceneActivation = true;
+        }
+
+        private void OnDestroy()
+        {
+            _animations.OnLoadingEnd -= ChangeScene;
+            _animations.OnOpeningEnd -= CloseWindow;
+            _animations.OnClosingEnd -= LoadScene;
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace RedMoonGames.Window
             _continue.Select();
 
             _pauseInputs.OnBackKeyPressed += _windowService.Unpause;
+            _windowService.OnShowWindow += EnablePause;
 
             _continue.onClick.AddListener(_windowService.Unpause);
             _settings.onClick.AddListener(() => SwitchWindows(_pauseHandler, _settingsHandler));

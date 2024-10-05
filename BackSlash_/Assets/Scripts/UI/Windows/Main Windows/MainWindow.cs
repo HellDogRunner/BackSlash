@@ -18,6 +18,8 @@ namespace RedMoonGames.Window
         {
             _start.Select();
 
+            _windowService.OnShowWindow += EnablePause;
+
             _start.onClick.AddListener(StartClick);
             _settings.onClick.AddListener(() => SwitchWindows(_mainHandler, _settingsHandler));
             _exit.onClick.AddListener(ExitClick);
