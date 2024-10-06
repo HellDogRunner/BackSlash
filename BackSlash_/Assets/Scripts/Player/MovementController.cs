@@ -45,7 +45,7 @@ namespace Scripts.Player
         public event Action OnJump;
 
         //debug gizmo parameter delete later
-        private float currenthitdisance;
+        private float _currenthitdisance;
 
         [Inject]
         private void Construct(InputController inputController, ComboSystem comboSystem)
@@ -235,12 +235,12 @@ namespace Scripts.Player
                 _hitboxLayer,
                 QueryTriggerInteraction.UseGlobal))
             {
-                currenthitdisance = hitInfo.distance;
+                _currenthitdisance = hitInfo.distance;
                 return true;
             }
             else
             {
-                currenthitdisance = _maxCastDistance;
+                _currenthitdisance = _maxCastDistance;
                 return false;
             }
         }
@@ -253,8 +253,8 @@ namespace Scripts.Player
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            Debug.DrawLine(gameObject.transform.position + _characterController.center + (Vector3.up * 0.1f), gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * currenthitdisance, Color.yellow);
-            Gizmos.DrawWireSphere(gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * currenthitdisance, _sphereCastRadius);
+            Debug.DrawLine(gameObject.transform.position + _characterController.center + (Vector3.up * 0.1f), gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * _currenthitdisance, Color.yellow);
+            Gizmos.DrawWireSphere(gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * _currenthitdisance, _sphereCastRadius);
         }
     }
 }

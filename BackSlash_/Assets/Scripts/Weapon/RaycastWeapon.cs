@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using Zenject;
 
 public class RaycastWeapon : MonoBehaviour
 {
-    class Bullet 
+    class Bullet
     {
         public float time;
         public Vector3 initialPosition;
@@ -19,7 +15,6 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private ParticleSystem _hitEffect;
     [SerializeField] private Transform _raycastOrigin;
     [SerializeField] private TrailRenderer _tracerEffect;
-    [SerializeField] private AnimationClip _weaponAnimation;
     [Header("BulletSettings")]
 
     [SerializeField] private float _fireRate = 25;
@@ -27,7 +22,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private float _bulletDrop = 0f;
     [SerializeField] private float _damage = 0f;
     [SerializeField] private float _inaccuracyRadius = 0f;
-    [SerializeField] private float _accuracyPercent = 0f;
+    [SerializeField] private float _accuracyPercent = 100f;
     [SerializeField] private float _missShotRadius = 0f;
     [SerializeField] private LayerMask _hitboxLayer;
 
@@ -37,16 +32,14 @@ public class RaycastWeapon : MonoBehaviour
     private List<Bullet> _bullets = new List<Bullet>();
 
     private Ray ray;
-    private RaycastHit hitInfo;
+    private RaycastHit _hitInfo;
 
     private bool _isFiring = false;
 
     public bool IsFiring => _isFiring;
     public float Damage => _damage;
 
-    public AnimationClip WeaponAnimation => _weaponAnimation;
-
-    private Vector3 GetPosition(Bullet bullet) 
+    private Vector3 GetPosition(Bullet bullet)
     {
         Vector3 gravity = Vector3.down * _bulletDrop;
         return (bullet.initialPosition) + (bullet.initialVelocity * bullet.time) + (0.5f * gravity * bullet.time * bullet.time);
@@ -67,13 +60,13 @@ public class RaycastWeapon : MonoBehaviour
     public void StartFiring()
     {
         _isFiring = true;
-        if (_accumulatedTime > 0f)
+        if (_accumulatedTime != 0f)
         {
             _accumulatedTime = 0f;
         }
     }
 
-    public void UpdateFiring(float deltaTime, Vector3 target) 
+    public void UpdateFiring(float deltaTime, Vector3 target)
     {
         if (_isFiring)
         {
@@ -84,12 +77,12 @@ public class RaycastWeapon : MonoBehaviour
                 var percent = UnityEngine.Random.Range(1, 100);
                 if (_accuracyPercent >= percent)
                 {
-                    target += UnityEngine.Random.insideUnitSphere * _inaccuracyRadius;    
+                    target += UnityEngine.Random.insideUnitSphere * _inaccuracyRadius;
                 }
                 else
                 {
                     target += UnityEngine.Random.insideUnitSphere * _missShotRadius;
-                    
+
                 }
                 FireBullet(target);
                 _accumulatedTime -= fireInterval;
@@ -123,27 +116,34 @@ public class RaycastWeapon : MonoBehaviour
     {
         Vector3 direction = end - start;
         float distance = direction.magnitude;
+
         ray.origin = start;
         ray.direction = direction;
 
-        if (Physics.Raycast(ray, out hitInfo, distance, _hitboxLayer))
+        var raycastHits = Physics.RaycastAll(ray, distance, _hitboxLayer, QueryTriggerInteraction.Collide);
+        if (raycastHits.Length > 0)
         {
-            _hitEffect.transform.position = hitInfo.point;
-            _hitEffect.transform.forward = hitInfo.normal;
+            _hitInfo = raycastHits[0];
+
+            _hitEffect.transform.position = _hitInfo.point;
+            _hitEffect.transform.forward = _hitInfo.normal;
+
             _hitEffect.Emit(1);
 
-            bullet.tracer.transform.position = hitInfo.point;
+            bullet.tracer.transform.position = _hitInfo.point;
             bullet.time = _maxLifeTime;
 
-            var hitbox = hitInfo.collider.GetComponent<HitBox>();
-            if (hitbox)
+            foreach (var hitinfo in raycastHits)
             {
-                hitbox.OnRaycastHit(this);
+                if (hitinfo.collider.TryGetComponent<HitBox>(out HitBox hitbox))
+                {
+                    hitbox.OnRaycastHit(this);
+                }
             }
         }
-        else 
+        else
         {
-            bullet.tracer.transform.position = end; 
+            bullet.tracer.transform.position = end;
         }
     }
 
@@ -155,10 +155,10 @@ public class RaycastWeapon : MonoBehaviour
         }
         Vector3 velocity = (target - _raycastOrigin.position).normalized * _bulletSpeed;
         var bullet = CreateBullet(_raycastOrigin.position, velocity);
-        _bullets.Add(bullet);    
+        _bullets.Add(bullet);
     }
 
-    public void StopFiring() 
+    public void StopFiring()
     {
         _isFiring = false;
     }

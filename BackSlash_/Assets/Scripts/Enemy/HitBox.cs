@@ -1,17 +1,16 @@
-using Scripts.Weapon;
-using Scripts.Weapon.Models;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
 public class HitBox : MonoBehaviour
 {
     public HealthController Health;
 
+    private Collider _collider;
+
     private void Awake()
     {
         Health = this.GetComponent<HealthController>();
+        _collider = GetComponent<Collider>();
+        _collider.isTrigger = true;
     }
 
     public void OnRaycastHit(RaycastWeapon weapon)
@@ -19,7 +18,7 @@ public class HitBox : MonoBehaviour
         Health.TakeDamage(weapon.Damage);
     }
 
-    public void OnSwordHit(float damage)
+    public void OnMeleeHit(float damage)
     {
         Health.TakeDamage(damage);
     }

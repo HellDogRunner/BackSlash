@@ -29,7 +29,7 @@ public class SwordWeapon : MonoBehaviour
             {
                 var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
                 var weaponDamage = weaponType.LightAttackDamage;
-                hitbox.OnSwordHit(weaponDamage);
+                hitbox.OnMeleeHit(weaponDamage);
             }
         }
     }

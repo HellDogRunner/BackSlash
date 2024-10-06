@@ -1,7 +1,5 @@
-using Scripts.Enemy;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HealthController : MonoBehaviour
@@ -19,8 +17,8 @@ public class HealthController : MonoBehaviour
     public event Action<GameObject> OnEnemyTakeDamage;
     public event Action OnDeath;
 
-    private void Start() 
-    { 
+    private void Start()
+    {
         _ragdoll = GetComponent<Ragdoll>();
 
         var rigidbodies = GetComponentsInChildren<Rigidbody>();
@@ -31,7 +29,7 @@ public class HealthController : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage) 
+    public void TakeDamage(float damage)
     {
         if (!isDead)
         {
@@ -47,7 +45,7 @@ public class HealthController : MonoBehaviour
         }
     }
 
-    private void Death() 
+    private void Death()
     {
         isDead = true;
         if (_ragdoll)
