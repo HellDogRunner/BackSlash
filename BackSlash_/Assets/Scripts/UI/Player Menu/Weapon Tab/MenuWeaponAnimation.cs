@@ -16,12 +16,12 @@ public class MenuWeaponAnimation : MonoBehaviour
 
     private Tween _lookAtMouse;
 
-    private UIMenuInputs _menuInputs;
+    private UIActionsController _pauseInputs;
 
     [Inject]
-    private void Construct(UIMenuInputs menuInputs)
+    private void Construct(UIActionsController pauseInputs)
     {
-        _menuInputs = menuInputs;
+        _pauseInputs = pauseInputs;
     }
 
     private void AnimateLookAtMouse(bool isMouse)
@@ -54,12 +54,12 @@ public class MenuWeaponAnimation : MonoBehaviour
     // Реализовать без энейбла
     private void OnEnable()
     {
-        //_menuInputs.OnHideCursor += AnimateLookAtMouse;
+        //_pauseInputs.OnHideCursor += AnimateLookAtMouse;
     }
 
     private void OnDisable()
     {
-        //_menuInputs.OnHideCursor -= AnimateLookAtMouse;
+        //_pauseInputs.OnHideCursor -= AnimateLookAtMouse;
     }
 
 }

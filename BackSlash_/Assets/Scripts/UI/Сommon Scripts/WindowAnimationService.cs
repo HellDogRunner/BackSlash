@@ -1,6 +1,6 @@
 using DG.Tweening;
+using System;
 using UnityEngine;
-using Zenject;
 
 namespace RedMoonGames.Window
 {
@@ -22,13 +22,7 @@ namespace RedMoonGames.Window
 
         private bool _windowClosing;
 
-        private WindowService _windowService;
-
-        [Inject]
-        private void Construct(WindowService windowService)
-        {
-            _windowService = windowService;
-        }
+        public event Action OnAnimationComplete;
 
         public void ShowWindowAnimation(CanvasGroup cg)
         {
@@ -36,7 +30,7 @@ namespace RedMoonGames.Window
             cg.DOFade(1f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true);
         }
 
-        public void HideWindowAnimation(CanvasGroup cg, WindowHandler handler)
+        public void HideWindowAnimation(CanvasGroup cg, WindowHandler window)
         {
             if (!_windowClosing)
             {
@@ -44,7 +38,7 @@ namespace RedMoonGames.Window
                 cg.DOFade(0f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true).OnComplete(() => 
                 {
                     _windowClosing = false;
-                    _windowService.CloseWindow(handler);
+                    OnAnimationComplete?.Invoke();
                 });
             }
         }

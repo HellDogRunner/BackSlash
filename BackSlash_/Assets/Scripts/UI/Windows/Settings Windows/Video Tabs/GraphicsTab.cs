@@ -10,12 +10,12 @@ public class GraphicsTab : BasicTab
     {
         _videoPresetDropdown.Select();
 
-        _videoPresetDropdown.onValueChanged.AddListener((x) => { VideoPresetChange(_videoPresetDropdown); });
+        _videoPresetDropdown.onValueChanged.AddListener(delegate { VideoPresetChange(_videoPresetDropdown); });
     }
 
     private void OnDisable()
     {
-        _videoPresetDropdown.onValueChanged.RemoveAllListeners();
+        _videoPresetDropdown.onValueChanged.RemoveListener(delegate { VideoPresetChange(_videoPresetDropdown); });
     }
 
     private void VideoPresetChange(TMP_Dropdown dropdown)

@@ -3094,9 +3094,8 @@ GameObject:
   m_Component:
   - component: {fileID: 489394601}
   - component: {fileID: 489394600}
-  - component: {fileID: 489394603}
-  - component: {fileID: 489394604}
   - component: {fileID: 489394602}
+  - component: {fileID: 489394603}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -3163,8 +3162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef545334d65ed74e9c9658566d5e97e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pauseInputs: {fileID: 489394603}
-  _menuInputs: {fileID: 489394604}
+  _actionsController: {fileID: 489394603}
 --- !u!114 &489394603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3174,19 +3172,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 489394599}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7791933b656a83646825e925aae5054b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &489394604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489394599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5de9027b4c2f65544948bb3e7b12504a, type: 3}
+  m_Script: {fileID: 11500000, guid: dd38904867bd03c468b1b1e3ad5f876d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &491622311

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace RedMoonGames.Window
 {
@@ -14,41 +15,37 @@ namespace RedMoonGames.Window
         [SerializeField] private Button _settings;
         [SerializeField] private Button _exit;
 
+        private MainMenuController _menuController;
+
+        [Inject]
+        private void Construct(MainMenuController menuController)
+        {
+            _menuController = menuController;
+        }
+
         private void Awake()
         {
             _start.Select();
 
             _windowService.OnShowWindow += EnablePause;
 
-            _start.onClick.AddListener(StartClick);
-            _settings.onClick.AddListener(() => SwitchWindows(_mainHandler, _settingsHandler));
-            _exit.onClick.AddListener(ExitClick);
+            _start.onClick.AddListener(StartButton);
+            _settings.onClick.AddListener(SettingsButton);
+            _exit.onClick.AddListener(ExitButton);
         }
 
-        private void StartClick()
-        {
-            _windowService.HideWindow();
-            _windowService.ChangeScene("FirstLocation");
-        }
-
-        private void ExitClick()
-        {
-            Application.Quit();
-        }
-
-        protected override void EnablePause()
-        {
-            _animationService.ShowWindowAnimation(_canvasGroup);
-        }
+        private void StartButton() { _menuController.ChangeScene("FirstLocation"); }
+        private void SettingsButton() { SwitchWindows(_mainHandler, _settingsHandler); }
+        private void ExitButton() { Application.Quit(); }
 
         private void OnDestroy()
         {
             _windowService.OnHideWindow -= DisablePause;
             _windowService.OnShowWindow -= EnablePause;
 
-            _start.onClick.RemoveAllListeners();
-            _settings.onClick.RemoveAllListeners();
-            _exit.onClick.RemoveAllListeners();
+            _start.onClick.RemoveListener(StartButton);
+            _settings.onClick.RemoveListener(SettingsButton);
+            _exit.onClick.RemoveListener(ExitButton);
         }
     }
 }

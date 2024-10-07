@@ -27,8 +27,6 @@ public class ComboSystem : MonoBehaviour
     private bool _isCanceling = false;
     private bool _canAttack = true;
 
-    public bool IsPause = false;
-
     public event Action<bool> IsAttacking;
     public event Action OnAttackSound;
     public event Action OnComboSound;
@@ -85,8 +83,7 @@ public class ComboSystem : MonoBehaviour
 
     private void RegisterInput(InputActionReference attackInput)
     {
-        // IsPause - prohibits adding inputs to the _inputBuffer during a pause.
-        if (_weaponController.CurrentWeaponType != EWeaponType.None && !IsPause)
+        if (_weaponController.CurrentWeaponType != EWeaponType.None && Time.timeScale == 1)
         {
             if (_attackInterval != null) StopCoroutine(_attackInterval);
 

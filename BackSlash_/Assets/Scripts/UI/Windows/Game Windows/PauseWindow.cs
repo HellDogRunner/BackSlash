@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace RedMoonGames.Window
 {
@@ -17,6 +18,14 @@ namespace RedMoonGames.Window
         [Header("Navigation Keys")]
         [SerializeField] private Button _close;
 
+        private GameMenuController _menuController;
+
+        [Inject]
+        private void Construct(GameMenuController menuController)
+        {
+            _menuController = menuController;
+        }
+
         private void Awake()
         {
             _continue.Select();
@@ -25,20 +34,16 @@ namespace RedMoonGames.Window
             _windowService.OnShowWindow += EnablePause;
 
             _continue.onClick.AddListener(_windowService.Unpause);
-            _settings.onClick.AddListener(() => SwitchWindows(_pauseHandler, _settingsHandler));
-            _exit.onClick.AddListener(ExitClick);
+            _settings.onClick.AddListener(SettingsButton);
+            _exit.onClick.AddListener(ExitButton);
             _close.onClick.AddListener(_windowService.Unpause);
         }
 
-        private void ExitClick()
-        {
-            _windowService.ChangeScene("StartMenu");
-            _windowService.Unpause();
-        }
+        private void SettingsButton() { SwitchWindows(_pauseHandler, _settingsHandler); }
 
-        protected override void EnablePause()
+        private void ExitButton()
         {
-            _animationService.ShowWindowAnimation(_canvasGroup);
+            _menuController.ChangeScene("StartMenu");
         }
 
         private void OnDestroy()
@@ -48,10 +53,10 @@ namespace RedMoonGames.Window
 
             _pauseInputs.OnBackKeyPressed -= _windowService.Unpause;
 
-            _continue.onClick.RemoveAllListeners();
-            _settings.onClick.RemoveAllListeners();
-            _exit.onClick.RemoveAllListeners();
-            _close.onClick.RemoveAllListeners();
+            _continue.onClick.RemoveListener(_windowService.Unpause);
+            _settings.onClick.RemoveListener(SettingsButton);
+            _exit.onClick.RemoveListener(ExitButton);
+            _close.onClick.RemoveListener(_windowService.Unpause);
         }
     }
 }

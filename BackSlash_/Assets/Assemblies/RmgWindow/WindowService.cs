@@ -14,28 +14,21 @@ namespace RedMoonGames.Window
 
         [Inject] private DiContainer _diContainer;
 
-        private WindowHandler _activeWindow;
-
         protected readonly Dictionary<IWindow, WindowHandler> _createdWindows = new Dictionary<IWindow, WindowHandler>();
+
+        private WindowHandler _activeWindow;
 
         public event Action<WindowHandler> OnHideWindow;
         public event Action OnShowWindow;
         public event Action OnUnpause;
-        public event Action<string> OnSwitchScene;
-
-        public void ChangeScene(string sceneName)
-        {
-            OnSwitchScene?.Invoke(sceneName);
-        }
 
         public void Unpause()
         {
             OnUnpause?.Invoke();
         }
-
-        public void ShowWindow(WindowHandler window)
+        
+        public void ShowWindow()
         {
-            OpenWindow(window);
             OnShowWindow?.Invoke();
         }
 
@@ -44,18 +37,7 @@ namespace RedMoonGames.Window
             OnHideWindow?.Invoke(_activeWindow);
         }
 
-        public void OpenWindow(WindowHandler window)
-        {
-            TryShowWindow(window);
-            _activeWindow = window;
-        }
-
-        public void CloseWindow(WindowHandler window)
-        {
-            ReturnWindow(window)?.Close();
-        }
-
-        public TryResult TryShowWindow(WindowHandler window, WindowModel model = null)
+        public TryResult TryOpenWindow(WindowHandler window, WindowModel model = null)
         {
             if (settings == null)
             {
@@ -78,6 +60,7 @@ namespace RedMoonGames.Window
 
             openedWindow.SetModel(model);
             openedWindow.Show();
+            _activeWindow = window;
             return TryResult.Successfully;
         }
 
@@ -153,9 +136,9 @@ namespace RedMoonGames.Window
             RemoveWindow(window);
         }
 
-        public IWindow ReturnWindow(WindowHandler window)
+        public IWindow ReturnActiveWindow()
         {
-            if (_createdWindows.TrySearchKeyByValue(window, out var openedWindow))
+            if (_createdWindows.TrySearchKeyByValue(_activeWindow, out var openedWindow))
             {
                 return openedWindow;
             }

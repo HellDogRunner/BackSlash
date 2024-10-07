@@ -16,10 +16,10 @@ namespace RedMoonGames.Window
         protected WindowService _windowService;
         protected WindowAnimationService _animationService;
         protected AudioController _audioController;
-        protected UIPauseInputs _pauseInputs;
+        protected UIActionsController _pauseInputs;
 
         [Inject]
-        protected virtual void Construct(WindowService windowService, WindowAnimationService animationService, AudioController audioController, UIPauseInputs pauseInputs)
+        protected virtual void Construct(WindowService windowService, WindowAnimationService animationService, AudioController audioController, UIActionsController pauseInputs)
         {
             _canvasGroup = GetComponent<CanvasGroup>();
 
@@ -31,9 +31,12 @@ namespace RedMoonGames.Window
             _windowService.OnHideWindow += DisablePause;
         }
 
-        protected virtual void EnablePause() { }
+        protected void EnablePause() 
+        {
+            _animationService.ShowWindowAnimation(_canvasGroup);
+        }
 
-        protected virtual void DisablePause(WindowHandler handler)
+        protected void DisablePause(WindowHandler handler)
         {
             PlayClickSound();
             _animationService.HideWindowAnimation(_canvasGroup, handler);
@@ -43,8 +46,8 @@ namespace RedMoonGames.Window
         {
             PlayClickSound();
 
-            _windowService.CloseWindow(close);
-            _windowService.OpenWindow(open);
+            _windowService.ReturnActiveWindow()?.Close();
+            _windowService.TryOpenWindow(open);
         }
 
         protected void PlayClickSound()
@@ -61,6 +64,11 @@ namespace RedMoonGames.Window
         {
             PlayHoverSound();
             value.text = (slider.value * multiplier).ToString();
+        }
+
+        private void OnDestroy()
+        {
+            _windowService.OnHideWindow -= DisablePause;
         }
     }
 }

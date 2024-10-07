@@ -1,41 +1,28 @@
-using Scripts.Player;
 using System.Collections;
 using UnityEngine;
-using Zenject;
 
 namespace RedMoonGames.Window
 {
-    public class MainMenuController : MonoBehaviour
+    public class MainMenuController : BasicMenuController
     {
         [SerializeField] private WindowHandler _startWindow;
         [SerializeField] private WindowHandler _mainWindow;
         [Space]
         [SerializeField] private float _inputDelay = 1f;
 
-        private SceneTransitionService _sceneTransition;
-        private WindowService _windowService;
-        private UIPauseInputs _pauseInputs;
-
         private bool _mainWindowOpened;
         private bool _windowOpening;
 
-        [Inject]
-        private void Construct(SceneTransitionService sceneTransition, WindowService windowService, UIPauseInputs pauseInputs)
-        {
-            _windowService = windowService;
-            _windowService.OnSwitchScene += ChangeScene;
-
-            _sceneTransition = sceneTransition;
-            _sceneTransition.OnWindowHide += SceneTransitionHide;
-
-            _pauseInputs = pauseInputs;
-            _pauseInputs.OnHideCursor += SwitchVisible;
-            _pauseInputs.OnAnyKeyboardKeyPressed += ShowMainWindow;
-            _pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
-        }
-
         private void Awake()
         {
+            _windowAnimation.OnAnimationComplete += CloseWindow;
+
+            _sceneTransition.OnWindowHide += SceneTransitionHide;
+
+            _pauseInputs.ShowCursor += SwitchVisible;
+            _pauseInputs.OnAnyKeyPressed += ShowMainWindow;
+            _pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
+
             _sceneTransition.gameObject.SetActive(true);
 
             _pauseInputs.enabled = true;
@@ -45,7 +32,8 @@ namespace RedMoonGames.Window
 
         private void Start()
         {
-            _windowService.ShowWindow(_startWindow);
+            _mainWindowOpened = true;
+            ShowStartWindow();
         }
 
         private void ShowStartWindow()
@@ -61,39 +49,16 @@ namespace RedMoonGames.Window
         IEnumerator ShowWindowDelay(WindowHandler window)
         {
             _windowOpening = true;
+
             _windowService.HideWindow();
 
             yield return new WaitForSeconds(_inputDelay);
 
-            _windowService.ShowWindow(window);
             _mainWindowOpened = window == _mainWindow;
+            _windowService.TryOpenWindow(window);
+            _windowService.ShowWindow();
 
             _windowOpening = false;
-        }
-
-        private void SceneTransitionHide()
-        {
-            _sceneTransition.gameObject.SetActive(false);
-        }
-
-        private void ChangeScene(string sceneName)
-        {
-            PrepareToChangeScene();
-            _sceneTransition.gameObject.SetActive(true);
-            _sceneTransition.SwichToScene(sceneName);
-        }
-
-        private void PrepareToChangeScene()
-        {
-            _pauseInputs.enabled = false;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        private void SwitchVisible(bool visible)
-        {
-            Cursor.visible = visible;
         }
 
         private void UnpauseGame()
@@ -105,12 +70,13 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
-            _pauseInputs.OnHideCursor -= SwitchVisible;
-            _pauseInputs.OnAnyKeyboardKeyPressed -= ShowMainWindow;
+            _pauseInputs.ShowCursor -= SwitchVisible;
+            _pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
             _pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
 
-            _windowService.OnSwitchScene -= ChangeScene;
             _sceneTransition.OnWindowHide -= SceneTransitionHide;
+
+            _windowAnimation.OnAnimationComplete -= CloseWindow;
         }
     }
 }

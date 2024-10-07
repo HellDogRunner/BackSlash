@@ -14,7 +14,7 @@ namespace RedMoonGames.Window
 
         private AsyncOperation _loadingScene;
 
-        public event Action OnWindowHide;
+        public event Action OnWindowHide; 
 
         private void Awake()
         {

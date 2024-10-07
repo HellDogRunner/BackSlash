@@ -33,23 +33,21 @@ namespace RedMoonGames.Window
             _currentTab = _displayTab;
             _currentTab.SetActive(true);
 
-            _pauseInputs.OnBackKeyPressed += Back;
-            _pauseInputs.OnTabPressed += OnTabPressed;
+            _pauseInputs.OnBackKeyPressed += BackButton;
+            _pauseInputs.OnSwitchTabPressed += OnTabAction;
 
-            _displayButton.onClick.AddListener(() => SwitchTab(_displayTab));
-            _graphicsButton.onClick.AddListener(() => SwitchTab(_graphicsTab));
-            
-            _switch.onClick.AddListener(OnTabPressed);
-            _back.onClick.AddListener(() => SwitchWindows(_videoHandler, _settingsHandler));
+            _displayButton.onClick.AddListener(DisplayButton);
+            _graphicsButton.onClick.AddListener(GraphicsButton);
+            _switch.onClick.AddListener(OnTabAction);
+            _back.onClick.AddListener(BackButton);
             if (!_IsMainMenu) _close.onClick.AddListener(_windowService.Unpause);
         }
 
-        private void Back()
-        {
-            SwitchWindows(_videoHandler, _settingsHandler);
-        }
+        private void DisplayButton() { SwitchTab(_displayTab); }
+        private void GraphicsButton() { SwitchTab(_graphicsTab); }
+        private void BackButton() { SwitchWindows(_videoHandler, _settingsHandler); }
 
-        private void OnTabPressed()
+        private void OnTabAction()
         {
             if (_currentTab == _displayTab)
             {
@@ -79,14 +77,14 @@ namespace RedMoonGames.Window
         private void OnDestroy()
         {
             _windowService.OnHideWindow -= DisablePause;
-            _pauseInputs.OnBackKeyPressed -= Back;
-            _pauseInputs.OnTabPressed -= OnTabPressed;
 
-            _displayButton.onClick.RemoveAllListeners();
-            _graphicsButton.onClick.RemoveAllListeners();
-            
-            _switch.onClick.RemoveAllListeners();
-            _back.onClick.RemoveAllListeners();
+            _pauseInputs.OnBackKeyPressed -= BackButton;
+            _pauseInputs.OnSwitchTabPressed -= OnTabAction;
+
+            _displayButton.onClick.RemoveListener(DisplayButton);
+            _graphicsButton.onClick.RemoveListener(GraphicsButton);
+            _switch.onClick.RemoveListener(OnTabAction);
+            _back.onClick.RemoveListener(BackButton);
             if (!_IsMainMenu) _close.onClick.RemoveListener(_windowService.Unpause);
         }
     }

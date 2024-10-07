@@ -16,23 +16,20 @@ namespace RedMoonGames.Window
 
         private void Awake()
         {
-            _pauseInputs.OnBackKeyPressed += Back;
+            _pauseInputs.OnBackKeyPressed += BackButton;
 
-            _back.onClick.AddListener(() => SwitchWindows(_managementHandler, _settingsHandler));
+            _back.onClick.AddListener(BackButton);
             if (!_IsMainMenu) _close.onClick.AddListener(_windowService.Unpause);
         }
 
-        private void Back()
-        {
-            SwitchWindows(_managementHandler, _settingsHandler);
-        }
+        private void BackButton() { SwitchWindows(_managementHandler, _settingsHandler); }
 
         private void OnDestroy()
         {
             _windowService.OnHideWindow -= DisablePause;
-            _pauseInputs.OnBackKeyPressed -= Back;
+            _pauseInputs.OnBackKeyPressed -= BackButton;
 
-            _back.onClick.RemoveAllListeners();
+            _back.onClick.RemoveListener(BackButton);
             if (!_IsMainMenu) _close.onClick.RemoveListener(_windowService.Unpause);
         }
     }

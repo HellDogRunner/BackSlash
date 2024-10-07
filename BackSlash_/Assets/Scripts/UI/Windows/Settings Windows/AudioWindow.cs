@@ -30,34 +30,31 @@ namespace RedMoonGames.Window
         {
             _masterVolume.Select();
 
-            _pauseInputs.OnBackKeyPressed += Back;
+            _pauseInputs.OnBackKeyPressed += BackButton;
 
-            _masterVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_masterVolume, _masterValue, 5));
-            _musicVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_musicVolume, _musicValue, 5));
-            _embientVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_embientVolume, _embientValue, 5));
-            _sfxVolume.onValueChanged.AddListener((_) => ChangeSliderValue(_sfxVolume, _sfxValue, 5));
+            _masterVolume.onValueChanged.AddListener(delegate { ChangeSliderValue(_masterVolume, _masterValue, 5); });
+            _musicVolume.onValueChanged.AddListener(delegate { ChangeSliderValue(_musicVolume, _musicValue, 5); });
+            _embientVolume.onValueChanged.AddListener(delegate { ChangeSliderValue(_embientVolume, _embientValue, 5); });
+            _sfxVolume.onValueChanged.AddListener(delegate { ChangeSliderValue(_sfxVolume, _sfxValue, 5); });
 
-            _back.onClick.AddListener(() => SwitchWindows(_audioHandler, _settingsHandler));
+            _back.onClick.AddListener(BackButton);
             if (!_IsMainMenu) _close.onClick.AddListener(_windowService.Unpause);
         }
 
-        private void Back()
-        {
-            SwitchWindows(_audioHandler, _settingsHandler);
-        }
+        private void BackButton() { SwitchWindows(_audioHandler, _settingsHandler); }
 
         private void OnDestroy()
         {
             _windowService.OnHideWindow -= DisablePause;
 
-            _pauseInputs.OnBackKeyPressed -= Back;
+            _pauseInputs.OnBackKeyPressed -= BackButton;
 
-            _masterVolume.onValueChanged.RemoveAllListeners();
-            _musicVolume.onValueChanged.RemoveAllListeners();
-            _embientVolume.onValueChanged.RemoveAllListeners();
-            _sfxVolume.onValueChanged.RemoveAllListeners();
+            _masterVolume.onValueChanged.RemoveListener(delegate { ChangeSliderValue(_masterVolume, _masterValue, 5); });
+            _musicVolume.onValueChanged.RemoveListener(delegate { ChangeSliderValue(_musicVolume, _musicValue, 5); });
+            _embientVolume.onValueChanged.RemoveListener(delegate { ChangeSliderValue(_embientVolume, _embientValue, 5); });
+            _sfxVolume.onValueChanged.RemoveListener(delegate { ChangeSliderValue(_sfxVolume, _sfxValue, 5); });
 
-            _back.onClick.RemoveAllListeners();
+            _back.onClick.RemoveListener(BackButton);
             if (!_IsMainMenu) _close.onClick.RemoveListener(_windowService.Unpause);
         }
     }

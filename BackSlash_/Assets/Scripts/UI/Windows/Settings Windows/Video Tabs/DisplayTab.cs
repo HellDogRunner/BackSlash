@@ -12,11 +12,11 @@ public class DisplayTab : BasicTab
     {
         _brightnessSlider.Select();
 
-        _brightnessSlider.onValueChanged.AddListener((x) => { ChangeSliderValue(_brightnessSlider, _brightnessValue, 5); });
+        _brightnessSlider.onValueChanged.AddListener(delegate { ChangeSliderValue(_brightnessSlider, _brightnessValue, 5); });
     }
 
     private void OnDisable()
     {
-        _brightnessSlider.onValueChanged.RemoveAllListeners();
+        _brightnessSlider.onValueChanged.RemoveListener(delegate { ChangeSliderValue(_brightnessSlider, _brightnessValue, 5); });
     }
 }
