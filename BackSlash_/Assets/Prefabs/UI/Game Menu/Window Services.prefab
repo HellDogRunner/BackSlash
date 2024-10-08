@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3648056539120943492}
   - component: {fileID: 3623470573151982729}
   - component: {fileID: 3367417114126073835}
+  - component: {fileID: 6361132422685127507}
   - component: {fileID: 5105581947541390981}
   m_Layer: 0
   m_Name: Window Services
@@ -76,6 +77,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fadeDuration: 0.1
+--- !u!114 &6361132422685127507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7482660243357438915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd38904867bd03c468b1b1e3ad5f876d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5105581947541390981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,7 +105,8 @@ MonoBehaviour:
   - {fileID: 3648056539120943492}
   - {fileID: 3623470573151982729}
   - {fileID: 3367417114126073835}
+  - {fileID: 6361132422685127507}
   _identifier: 
-  _useSceneContext: 0
+  _useSceneContext: 1
   _context: {fileID: 0}
   _bindType: 0

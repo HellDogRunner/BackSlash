@@ -1,3 +1,4 @@
+using Scripts.UI.PlayerMenu;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,13 +10,7 @@ namespace RedMoonGames.Window
     [RequireComponent(typeof(CanvasGroup))]
     public class PlayerMenuWindow : GameBasicWindow
     {
-        [Header("Tabs")]
-        [SerializeField] private GameObject _weaponTab;
-        [SerializeField] private GameObject _combosTab;
-        [SerializeField] private GameObject _abilitiesTab;
-        [SerializeField] private GameObject _skillsTab;
-        [SerializeField] private GameObject _journalTab;
-        [SerializeField] private GameObject _mapTab;
+        [SerializeField] private RectTransform _tabsRoot;
 
         [Header("Buttons")]
         [SerializeField] private Button _weaponButton;
@@ -32,34 +27,30 @@ namespace RedMoonGames.Window
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _closeButton;
 
-        [Header("Tabs Animation")]
-        [SerializeField] private MenuTabAnimationService _weaponAnimation;
-        [SerializeField] private MenuTabAnimationService _combosAnimation;
-        [SerializeField] private MenuTabAnimationService _abilitiesAnimation;
-        [SerializeField] private MenuTabAnimationService _skillsAnimation;
-        [SerializeField] private MenuTabAnimationService _journalAnimation;
-        [SerializeField] private MenuTabAnimationService _mapAnimation;
+        [Inject] private DiContainer _diContainer;
 
-        private List<GameObject> _tabs = new List<GameObject>();
         private List<MenuTabAnimationService> _animations = new List<MenuTabAnimationService>();
 
+        private int _index = -1;
+        private int _animationIndex;
+        private GameObject _activeTab;
+
         private GameMenuController _menuController;
+        private TabDatabase _tabData;
+
+        public event Action<Transform> OnMenuOpened;
 
         [Inject]
-        private void Construct(GameMenuController menuController)
+        private void Construct(TabDatabase tabData, GameMenuController menuController)
         {
+            _tabData = tabData;
             _menuController = menuController;
         }
-
-        private int _index;
-        private int _animationIndex;
-
-        private bool _menuActive;
 
         private void Awake()
         {
             _windowService.OnShowWindow += EnablePause;
-
+            _menuController.OpenTab += OpenTab;
             _pauseInputs.OnMenuSwitchTabAction += SwitchTab;
             _pauseInputs.OnMenuTabPressed += OpenTab;
             _pauseInputs.OnBackKeyPressed += _windowService.Unpause;
@@ -70,32 +61,21 @@ namespace RedMoonGames.Window
             _skillsButton.onClick.AddListener(SkillsButton);
             _journalButton.onClick.AddListener(JournalButton);
             _mapButton.onClick.AddListener(MapButton);
-
             _prevKey.onClick.AddListener(PrevButton);
             _nextKey.onClick.AddListener(NextButton);
-
             _backButton.onClick.AddListener(_windowService.Unpause);
             _closeButton.onClick.AddListener(_windowService.Unpause);
-
-            _menuController.OpenTab += OpenTab;
 
             _animationIndex = -1;
 
             _canvasGroup.alpha = 0;
 
-            _tabs.Add(_weaponTab);
-            _tabs.Add(_combosTab);
-            _tabs.Add(_abilitiesTab);
-            _tabs.Add(_skillsTab);
-            _tabs.Add(_journalTab);
-            _tabs.Add(_mapTab);
-
-            _animations.Add(_weaponAnimation);
-            _animations.Add(_combosAnimation);
-            _animations.Add(_abilitiesAnimation);
-            _animations.Add(_skillsAnimation);
-            _animations.Add(_journalAnimation);
-            _animations.Add(_mapAnimation);
+            _animations.Add(_weaponButton.GetComponent<MenuTabAnimationService>());
+            _animations.Add(_combosButton.GetComponent<MenuTabAnimationService>());
+            _animations.Add(_abilitiesButton.GetComponent<MenuTabAnimationService>());
+            _animations.Add(_skillsButton.GetComponent<MenuTabAnimationService>());
+            _animations.Add(_journalButton.GetComponent<MenuTabAnimationService>());
+            _animations.Add(_mapButton.GetComponent<MenuTabAnimationService>());
         }
 
         private void WeaponButton() { OpenTab(0); }
@@ -105,7 +85,7 @@ namespace RedMoonGames.Window
         private void JournalButton() { OpenTab(4); }
         private void MapButton() { OpenTab(5); }
         private void PrevButton() { SwitchTab(-1); }
-        private void NextButton() { SwitchTab(+1); }
+        private void NextButton() { SwitchTab(1); }
 
         private void SwitchTab(int index)
         {
@@ -114,22 +94,16 @@ namespace RedMoonGames.Window
 
         private void OpenTab(int index)
         {
-            _index = index % _tabs.Count;
-            if (_index < 0)
-            {
-                _index = _tabs.Count - 1;
-            }
-            if (_tabs[_index].activeSelf)
-            {
-                return;
-            }
+            var tabModel = _tabData.GetTypeByIndex(index);
+
+            if (_index == tabModel.Index) return;
+            if (_activeTab != null) Destroy(_activeTab);
+            _activeTab = _diContainer.InstantiatePrefab(tabModel.Prefab, _tabsRoot);
+
+            _index = tabModel.Index;
 
             PlayHoverSound();
-
-            CloseAllTabs();
             ShowActiveTabButton();
-
-            _tabs[_index].SetActive(true);
         }
 
         private void ShowActiveTabButton()
@@ -143,21 +117,11 @@ namespace RedMoonGames.Window
             _animations[_index].EnableTab();
         }
 
-        private void CloseAllTabs()
-        {
-            foreach (var _tab in _tabs)
-            {
-                _tab.SetActive(false);
-            }
-        }
-
-        private void ShowCursor(bool _)
-        {
-            Cursor.visible = _;
-        }
-
         private void OnDestroy()
         {
+            _windowService.OnHideWindow -= DisablePause;
+            _windowService.OnShowWindow -= EnablePause;
+            _menuController.OpenTab -= OpenTab;
             _pauseInputs.OnMenuSwitchTabAction -= SwitchTab;
             _pauseInputs.OnMenuTabPressed -= OpenTab;
             _pauseInputs.OnBackKeyPressed -= _windowService.Unpause;
@@ -168,17 +132,10 @@ namespace RedMoonGames.Window
             _skillsButton.onClick.RemoveListener(SkillsButton);
             _journalButton.onClick.RemoveListener(JournalButton);
             _mapButton.onClick.RemoveListener(MapButton);
-
             _prevKey.onClick.RemoveListener(PrevButton);
             _nextKey.onClick.RemoveListener(NextButton);
-
             _backButton.onClick.RemoveListener(_windowService.Unpause);
             _closeButton.onClick.RemoveListener(_windowService.Unpause);
-
-            _windowService.OnHideWindow -= DisablePause;
-            _windowService.OnShowWindow -= EnablePause;
-
-            _menuController.OpenTab -= OpenTab;
         }
     }
 }

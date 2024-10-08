@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d791256e06578284082119648478d0ba, type: 3}
+  m_Name: TabDatabase
+  m_EditorClassIdentifier: 
+  _data:
+  - Name: Weapon
+    Prefab: {fileID: 346610453548094034, guid: b35ce03a78eb12340b86d8911ee801a5, type: 3}
+    Index: 0
+  - Name: Combos
+    Prefab: {fileID: 6518271740648760045, guid: 44637068f8e674342b06f140d7b49f80,
+      type: 3}
+    Index: 1
+  - Name: Abilities
+    Prefab: {fileID: 8763686323755155127, guid: 9d7ad80cef5e2aa4e997a83279f94e58,
+      type: 3}
+    Index: 2
+  - Name: Skills
+    Prefab: {fileID: 3974040941802068582, guid: ad2f15172f5e65c478261fa752fbd01d,
+      type: 3}
+    Index: 3
+  - Name: Journal
+    Prefab: {fileID: 5746085888806142502, guid: 8117c61af5445a3458838eb468dcf350,
+      type: 3}
+    Index: 4
+  - Name: Map
+    Prefab: {fileID: 6324801272732646375, guid: 9aa1b2f3496d975468e101148c2d1a73,
+      type: 3}
+    Index: 5

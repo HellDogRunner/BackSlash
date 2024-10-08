@@ -19,7 +19,7 @@ namespace RedMoonGames.Window
         protected UIActionsController _pauseInputs;
 
         [Inject]
-        protected virtual void Construct(WindowService windowService, WindowAnimationService animationService, AudioController audioController, UIActionsController pauseInputs)
+        private void Construct(WindowService windowService, WindowAnimationService animationService, AudioController audioController, UIActionsController pauseInputs)
         {
             _canvasGroup = GetComponent<CanvasGroup>();
 

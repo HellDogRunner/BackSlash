@@ -20,6 +20,7 @@ namespace RedMoonGames.Window
         [Inject]
         private void Construct(InputController gameInputs, HUDAnimationService hUDAnimation)
         {
+            Debug.Log("GameMenuController");
             _hUDAnimation = hUDAnimation;
             _gameInputs = gameInputs;
         }
