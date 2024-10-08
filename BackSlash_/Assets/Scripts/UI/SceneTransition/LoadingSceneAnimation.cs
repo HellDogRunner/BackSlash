@@ -22,7 +22,6 @@ namespace RedMoonGames.Window
  
         public void AnimateLoading()
         {
-
             _fill.DOFillAmount(1, _fillDuration).SetUpdate(true).SetEase(Ease.Flash);
             _glow.DOFillAmount(1, _fillDuration).SetUpdate(true).SetEase(Ease.Flash).
                 OnComplete(() => OnLoadingEnd?.Invoke());

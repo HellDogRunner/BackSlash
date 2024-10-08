@@ -77,7 +77,7 @@ namespace RedMoonGames.Window
             _backButton.onClick.AddListener(_windowService.Unpause);
             _closeButton.onClick.AddListener(_windowService.Unpause);
 
-            _menuController.OnPlayerMenuOpened += OpenTab;
+            _menuController.OpenTab += OpenTab;
 
             _animationIndex = -1;
 
@@ -178,7 +178,7 @@ namespace RedMoonGames.Window
             _windowService.OnHideWindow -= DisablePause;
             _windowService.OnShowWindow -= EnablePause;
 
-            _menuController.OnPlayerMenuOpened -= OpenTab;
+            _menuController.OpenTab -= OpenTab;
         }
     }
 }

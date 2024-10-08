@@ -17,7 +17,6 @@ namespace RedMoonGames.Window
         private void Awake()
         {
             _playerHealth.OnHealthChanged += ShowHUD;
-            _canvasGroup.gameObject.SetActive(true);
             //_canvasGroup.alpha = 0;
         }
 
@@ -36,16 +35,6 @@ namespace RedMoonGames.Window
         {
             yield return new WaitForSeconds(_hideDelay);
             HideHUD();
-        }
-
-        public void HideOnPause()
-        {
-            _canvasGroup.gameObject.SetActive(false);
-        }
-
-        public void ShowOnUnpause()
-        {
-            _canvasGroup.gameObject.SetActive(true);
         }
 
         private void OnDestroy()

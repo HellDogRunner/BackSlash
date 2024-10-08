@@ -2,31 +2,44 @@ using UnityEngine;
 using DG.Tweening;
 using Scripts.Player;
 using Zenject;
+using RedMoonGames.Window;
 
 public class MenuWeaponAnimation : MonoBehaviour
 {
-    [SerializeField] private Transform _weapon;
+    [SerializeField] private GameObject _weaponProjection;
 
     [Header("Settings")]
     [SerializeField] private float _lookAtDuration = 1;
     [SerializeField] private float _lookAtOffsetX = 15;
     [SerializeField] private float _lookAtOffsetY = 30;
 
+    private GameObject _weaponInst;
+    [SerializeField] private Transform _weapon;
+
     private bool _isChoosing;
 
     private Tween _lookAtMouse;
 
     private UIActionsController _pauseInputs;
+    private GameMenuController _menuController;
 
     [Inject]
-    private void Construct(UIActionsController pauseInputs)
+    private void Construct(UIActionsController pauseInputs, GameMenuController menuController)
     {
         _pauseInputs = pauseInputs;
+        _menuController = menuController;
+    }
+
+    private void Awake()
+    {
+        _pauseInputs.ShowCursor += AnimateLookAtMouse;
+
+        SpawnWeapon();
     }
 
     private void AnimateLookAtMouse(bool isMouse)
     {
-        if (isMouse && !_isChoosing)
+        if (isMouse && !_isChoosing && _weapon != null)
         {
             _lookAtMouse = _weapon.DOLocalRotate(GetWeaponRotation(), _lookAtDuration).SetUpdate(true).SetEase(Ease.OutSine);
         }
@@ -51,15 +64,15 @@ public class MenuWeaponAnimation : MonoBehaviour
         _isChoosing = _;
     }
 
-    // Реализовать без энейбла
-    private void OnEnable()
+    private void SpawnWeapon()
     {
-        //_pauseInputs.OnHideCursor += AnimateLookAtMouse;
+        _weaponInst = Instantiate(_weaponProjection);
+        _weapon = _weaponInst.transform.Find("Weapon");
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        //_pauseInputs.OnHideCursor -= AnimateLookAtMouse;
+        _pauseInputs.ShowCursor -= AnimateLookAtMouse;
+        Destroy(_weaponInst);
     }
-
 }

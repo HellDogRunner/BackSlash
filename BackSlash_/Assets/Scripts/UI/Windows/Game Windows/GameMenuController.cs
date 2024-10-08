@@ -15,7 +15,7 @@ namespace RedMoonGames.Window
         private HUDAnimationService _hUDAnimation;
         private InputController _gameInputs;
 
-        public event Action<int> OnPlayerMenuOpened;
+        public event Action<int> OpenTab;
 
         [Inject]
         private void Construct(InputController gameInputs, HUDAnimationService hUDAnimation)
@@ -75,13 +75,12 @@ namespace RedMoonGames.Window
                 _windowService.ShowWindow();
             }
 
-            OnPlayerMenuOpened?.Invoke(index);
-            //_menuController.OpenTab(index);
+            OpenTab?.Invoke(index);
         }
 
         private void PauseGame()
         {
-            _hUDAnimation.HideOnPause();
+            _hUDAnimation.gameObject.SetActive(false);
             _gameInputs.enabled = false;
 
             Cursor.lockState = CursorLockMode.Confined;
@@ -91,7 +90,7 @@ namespace RedMoonGames.Window
 
         private void UnpauseGame()
         {
-            _hUDAnimation.ShowOnUnpause();
+            _hUDAnimation.gameObject.SetActive(true);
             _gameInputs.enabled = true;
 
             Cursor.lockState = CursorLockMode.Locked;
