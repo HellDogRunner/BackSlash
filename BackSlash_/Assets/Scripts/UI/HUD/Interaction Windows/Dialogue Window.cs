@@ -50,7 +50,8 @@ public class DialogueWindow : MonoBehaviour
         _dialogueSystem.OnShowPhrase += SetPhraseText;
         _dialogueSystem.OnWaitAnswer += WaitAnswer;
 
-        HideAllComponents();
+        HideDialogueComponents();
+        _animationService.AnimateHide(_talk);
     }
 
     private void SetName(string name) { _name.text = name; }
@@ -67,8 +68,8 @@ public class DialogueWindow : MonoBehaviour
 
     private void HideDialogue()
     {
-        HideAllComponents();
         _animationService.AnimateShow(_talk);
+        HideDialogueComponents();
     }
 
     private void WaitAnswer()
@@ -94,15 +95,14 @@ public class DialogueWindow : MonoBehaviour
 
     private void EndDialogue()
     {
-        HideAllComponents();
         _animationService.AnimateShow(_talk);
+        HideDialogueComponents();
 
         _dialogueSystem.OnDialogueEnd();
     }
 
-    private void HideAllComponents()
+    private void HideDialogueComponents()
     {
-        _animationService.AnimateHide(_talk);
         _animationService.AnimateHide(_buttons);
         _animationService.AnimateHide(_answerKeys);
         _animationService.AnimateHide(_dialogue);
@@ -110,7 +110,7 @@ public class DialogueWindow : MonoBehaviour
 
     private void SubscribeToActions()
     {
-        HideAllComponents();
+        HideDialogueComponents();
         _animationService.AnimateShow(_talk);
 
         _nextButton.onClick.AddListener(_dialogueSystem.ShowNextPhrase);
@@ -120,7 +120,8 @@ public class DialogueWindow : MonoBehaviour
 
     private void UnsubscribeToActions()
     {
-        HideAllComponents();
+        HideDialogueComponents();
+        _animationService.AnimateHide(_talk);
 
         _nextButton.onClick.RemoveListener(_dialogueSystem.ShowNextPhrase);
         _leaveButton.onClick.RemoveListener(EndDialogue);
