@@ -19,6 +19,7 @@ namespace Scripts.Player
         public event Action OnShowWeaponPressed;
         public event Action OnHideWeaponPressed;
         public event Action OnLockKeyPressed;
+        public event Action OnInteractionKeyPressed;
 
         public Vector3 MoveDirection => _moveDirection;
 
@@ -96,6 +97,11 @@ namespace Scripts.Player
             OnLockKeyPressed?.Invoke();
         }
 
+        private void Interact(InputAction.CallbackContext context)
+        {
+            OnInteractionKeyPressed?.Invoke();
+        }
+
         private void SubscribeToActions()
         {
             _playerControls.Gameplay.WASD.performed += ChangeDirection;
@@ -115,6 +121,8 @@ namespace Scripts.Player
             _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
 
             _playerControls.Gameplay.TargetLock.performed += Lock;
+
+            _playerControls.Gameplay.Interact.performed += Interact;
         }
 
         private void UnsubscribeToActions()
@@ -136,6 +144,9 @@ namespace Scripts.Player
             _playerControls.Gameplay.HideWeapon.performed -= HideWeapon;
 
             _playerControls.Gameplay.TargetLock.performed -= Lock;
+
+            _playerControls.Gameplay.Interact.performed -= Interact;
+
         }
     }
 }

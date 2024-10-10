@@ -136,9 +136,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""StartKeySequence"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
-                    ""id"": ""cc92e7c0-92de-4477-8d6a-261213b7f48a"",
+                    ""id"": ""9088e0fb-a6eb-427c-9a04-db45132a28b7"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -248,7 +248,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""6b73de4f-9d54-4a46-a38d-a81a5596456b"",
-                    ""path"": ""<Keyboard>/1"",
+                    ""path"": ""<Keyboard>/g"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -259,7 +259,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""1fa1f6bf-37e2-4419-b82b-ba4a16d60a0e"",
-                    ""path"": ""<Keyboard>/2"",
+                    ""path"": ""<Keyboard>/h"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -346,12 +346,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""1be2235c-323d-4e07-8caa-2f3c675b6aa2"",
-                    ""path"": """",
+                    ""id"": ""d222a57a-94b7-440b-98ad-76b6bc3cbf7d"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""StartKeySequence"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -428,7 +428,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": ""Enter"",
                     ""type"": ""Button"",
                     ""id"": ""cd26d601-bd69-4ed0-8e2e-255a73e3ff8f"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -527,6 +527,24 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": ""SwitchTab"",
                     ""type"": ""Button"",
                     ""id"": ""c76cf06b-3dbe-4beb-9078-744a39fb2c8c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PositiveAnswer"",
+                    ""type"": ""Button"",
+                    ""id"": ""0d9a77c1-d0d2-4d2a-a1c6-90d21c83ff39"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NegativeAnswer"",
+                    ""type"": ""Button"",
+                    ""id"": ""dcc905ae-9746-409a-bf12-8bb267275dd1"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -863,6 +881,28 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""SwitchTab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""43b98465-78ba-4af6-91d0-ffd986d1c503"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PositiveAnswer"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""79d30410-1077-4d25-917d-1738394c8d01"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NegativeAnswer"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -883,7 +923,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Gameplay_Block = m_Gameplay.FindAction("Block", throwIfNotFound: true);
         m_Gameplay_TargetLock = m_Gameplay.FindAction("TargetLock", throwIfNotFound: true);
         m_Gameplay_Escape = m_Gameplay.FindAction("Escape", throwIfNotFound: true);
-        m_Gameplay_StartKeySequence = m_Gameplay.FindAction("StartKeySequence", throwIfNotFound: true);
+        m_Gameplay_Interact = m_Gameplay.FindAction("Interact", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
@@ -905,6 +945,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_UI_PrevTab = m_UI.FindAction("PrevTab", throwIfNotFound: true);
         m_UI_AnyKey = m_UI.FindAction("AnyKey", throwIfNotFound: true);
         m_UI_SwitchTab = m_UI.FindAction("SwitchTab", throwIfNotFound: true);
+        m_UI_PositiveAnswer = m_UI.FindAction("PositiveAnswer", throwIfNotFound: true);
+        m_UI_NegativeAnswer = m_UI.FindAction("NegativeAnswer", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -984,7 +1026,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Block;
     private readonly InputAction m_Gameplay_TargetLock;
     private readonly InputAction m_Gameplay_Escape;
-    private readonly InputAction m_Gameplay_StartKeySequence;
+    private readonly InputAction m_Gameplay_Interact;
     public struct GameplayActions
     {
         private @GameControls m_Wrapper;
@@ -1001,7 +1043,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Block => m_Wrapper.m_Gameplay_Block;
         public InputAction @TargetLock => m_Wrapper.m_Gameplay_TargetLock;
         public InputAction @Escape => m_Wrapper.m_Gameplay_Escape;
-        public InputAction @StartKeySequence => m_Wrapper.m_Gameplay_StartKeySequence;
+        public InputAction @Interact => m_Wrapper.m_Gameplay_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1047,9 +1089,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Escape.started += instance.OnEscape;
             @Escape.performed += instance.OnEscape;
             @Escape.canceled += instance.OnEscape;
-            @StartKeySequence.started += instance.OnStartKeySequence;
-            @StartKeySequence.performed += instance.OnStartKeySequence;
-            @StartKeySequence.canceled += instance.OnStartKeySequence;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -1090,9 +1132,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Escape.started -= instance.OnEscape;
             @Escape.performed -= instance.OnEscape;
             @Escape.canceled -= instance.OnEscape;
-            @StartKeySequence.started -= instance.OnStartKeySequence;
-            @StartKeySequence.performed -= instance.OnStartKeySequence;
-            @StartKeySequence.canceled -= instance.OnStartKeySequence;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -1133,6 +1175,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_PrevTab;
     private readonly InputAction m_UI_AnyKey;
     private readonly InputAction m_UI_SwitchTab;
+    private readonly InputAction m_UI_PositiveAnswer;
+    private readonly InputAction m_UI_NegativeAnswer;
     public struct UIActions
     {
         private @GameControls m_Wrapper;
@@ -1156,6 +1200,8 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @PrevTab => m_Wrapper.m_UI_PrevTab;
         public InputAction @AnyKey => m_Wrapper.m_UI_AnyKey;
         public InputAction @SwitchTab => m_Wrapper.m_UI_SwitchTab;
+        public InputAction @PositiveAnswer => m_Wrapper.m_UI_PositiveAnswer;
+        public InputAction @NegativeAnswer => m_Wrapper.m_UI_NegativeAnswer;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1222,6 +1268,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @SwitchTab.started += instance.OnSwitchTab;
             @SwitchTab.performed += instance.OnSwitchTab;
             @SwitchTab.canceled += instance.OnSwitchTab;
+            @PositiveAnswer.started += instance.OnPositiveAnswer;
+            @PositiveAnswer.performed += instance.OnPositiveAnswer;
+            @PositiveAnswer.canceled += instance.OnPositiveAnswer;
+            @NegativeAnswer.started += instance.OnNegativeAnswer;
+            @NegativeAnswer.performed += instance.OnNegativeAnswer;
+            @NegativeAnswer.canceled += instance.OnNegativeAnswer;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1283,6 +1335,12 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @SwitchTab.started -= instance.OnSwitchTab;
             @SwitchTab.performed -= instance.OnSwitchTab;
             @SwitchTab.canceled -= instance.OnSwitchTab;
+            @PositiveAnswer.started -= instance.OnPositiveAnswer;
+            @PositiveAnswer.performed -= instance.OnPositiveAnswer;
+            @PositiveAnswer.canceled -= instance.OnPositiveAnswer;
+            @NegativeAnswer.started -= instance.OnNegativeAnswer;
+            @NegativeAnswer.performed -= instance.OnNegativeAnswer;
+            @NegativeAnswer.canceled -= instance.OnNegativeAnswer;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1314,7 +1372,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnBlock(InputAction.CallbackContext context);
         void OnTargetLock(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
-        void OnStartKeySequence(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
@@ -1337,5 +1395,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnPrevTab(InputAction.CallbackContext context);
         void OnAnyKey(InputAction.CallbackContext context);
         void OnSwitchTab(InputAction.CallbackContext context);
+        void OnPositiveAnswer(InputAction.CallbackContext context);
+        void OnNegativeAnswer(InputAction.CallbackContext context);
     }
 }

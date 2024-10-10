@@ -2832,6 +2832,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9154375475347445579}
   - component: {fileID: 9087614315155568461}
+  - component: {fileID: 4880112351262810747}
+  - component: {fileID: 5350033192537205706}
   - component: {fileID: 1177957657704111061}
   - component: {fileID: 5530042786574198228}
   - component: {fileID: 3831153863078339735}
@@ -2893,6 +2895,31 @@ MonoBehaviour:
   _maxSlopeAngle: 30
   _maxCastDistance: 1.1
   _sphereCastRadius: 0.25
+--- !u!114 &4880112351262810747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bac8043e2d6a6542b0607892c1d8104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _questData: {fileID: 11400000, guid: e5c238dd96211d848a9e42010aa40be3, type: 2}
+--- !u!114 &5350033192537205706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26ead0690e74d2044bb62ca1f52f211a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3078,6 +3105,8 @@ MonoBehaviour:
   - {fileID: 1945681995266547424}
   - {fileID: 5300293899505624239}
   - {fileID: 1177957657704111061}
+  - {fileID: 5350033192537205706}
+  - {fileID: 4880112351262810747}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}

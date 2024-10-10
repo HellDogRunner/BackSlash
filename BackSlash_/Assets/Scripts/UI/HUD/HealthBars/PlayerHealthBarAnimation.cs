@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Scripts.UI
 {
-    public class HealthBarService : MonoBehaviour
+    public class PlayerHealthBarAnimation : MonoBehaviour
     {
         [Header("Objects")]
         [SerializeField] private GameObject _player;

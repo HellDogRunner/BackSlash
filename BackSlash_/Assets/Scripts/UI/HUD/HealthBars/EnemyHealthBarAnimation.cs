@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Scripts.UI
 {
-    public class EnemyHealthBar : MonoBehaviour
+    public class EnemyHealthBarAnimation : MonoBehaviour
     {
         [Header("Objects")]
         [SerializeField] private CanvasGroup _enemyCG;

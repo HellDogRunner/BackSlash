@@ -8,6 +8,7 @@ namespace Scripts.Player
     {
         private GameControls _inputActions;
 
+        public event Action OnEnterKeyPressed;
         public event Action OnEscapeKeyPressed;
         public event Action OnSwitchTabPressed;
         public event Action OnBackKeyPressed;
@@ -15,10 +16,16 @@ namespace Scripts.Player
         public event Action<int> OnMenuTabPressed;
         public event Action<int> OnMenuSwitchTabAction;
         public event Action<bool> ShowCursor;
+        public event Action<bool> OnDialogueAnswer;
 
         private void Awake()
         {
             _inputActions = new GameControls();
+        }
+
+        private void Enter(InputAction.CallbackContext context)
+        {
+            OnEnterKeyPressed?.Invoke();
         }
 
         private void Escape(InputAction.CallbackContext context)
@@ -91,8 +98,19 @@ namespace Scripts.Player
             OnMenuSwitchTabAction?.Invoke(+1);
         }
 
+        private void PositiveAnswer(InputAction.CallbackContext context)
+        {
+            OnDialogueAnswer?.Invoke(true);
+        }
+
+        private void NegativeAnswer(InputAction.CallbackContext context)
+        {
+            OnDialogueAnswer?.Invoke(false);
+        }
+
         private void SubscribeToActions()
         {
+            _inputActions.UI.Enter.performed += Enter;
             _inputActions.UI.Escape.performed += Escape;
             _inputActions.UI.Back.performed += Back;
             _inputActions.UI.SwitchTab.performed += TabsNavigation;
@@ -109,10 +127,14 @@ namespace Scripts.Player
             _inputActions.UI.Skills.performed += Skills;
             _inputActions.UI.Journal.performed += Journal;
             _inputActions.UI.Map.performed += Map;
+
+            _inputActions.UI.PositiveAnswer.performed += PositiveAnswer;
+            _inputActions.UI.NegativeAnswer.performed += NegativeAnswer;
         }
 
         private void UnsubscribeToActions()
         {
+            _inputActions.UI.Enter.performed -= Enter;
             _inputActions.UI.Escape.performed -= Escape;
             _inputActions.UI.Back.performed -= Back;
             _inputActions.UI.SwitchTab.performed -= TabsNavigation;
@@ -129,6 +151,9 @@ namespace Scripts.Player
             _inputActions.UI.Skills.performed -= Skills;
             _inputActions.UI.Journal.performed -= Journal;
             _inputActions.UI.Map.performed -= Map;
+
+            _inputActions.UI.PositiveAnswer.performed -= PositiveAnswer;
+            _inputActions.UI.NegativeAnswer.performed -= NegativeAnswer;
         }
 
         private void OnEnable()

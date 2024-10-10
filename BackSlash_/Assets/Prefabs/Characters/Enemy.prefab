@@ -2342,7 +2342,7 @@ GameObject:
   - component: {fileID: 5007165617366180194}
   - component: {fileID: 4325986157129146586}
   m_Layer: 0
-  m_Name: Health Bar Panel
+  m_Name: Health Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2557,6 +2557,7 @@ GameObject:
   - component: {fileID: 8529050560978664490}
   - component: {fileID: 3555233756705365744}
   - component: {fileID: 3759006753693581023}
+  - component: {fileID: 8335183630056735342}
   - component: {fileID: 6615783675611136165}
   - component: {fileID: 3148026500719717159}
   - component: {fileID: 2063432838259369988}
@@ -2624,6 +2625,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health: 500
   _timeToDestroyLeft: 5
+--- !u!114 &8335183630056735342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5961693609402878055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9f41b720b111354d9838ceb7c9d7af7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _quest: {fileID: 11400000, guid: 3fba22d248a47264591e44c7f14e7527, type: 2}
+  _healthController: {fileID: 3759006753693581023}
 --- !u!114 &6615783675611136165
 MonoBehaviour:
   m_ObjectHideFlags: 0

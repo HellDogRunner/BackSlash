@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Scripts.UI.PlayerMenu
 {
-    [CreateAssetMenu(fileName = "TabTypesDatabase", menuName = "[RMG] Scriptable/TabDatabase")]
-    public class TabDatabase : ScriptableDatabase<TabTypeModel>
+    [CreateAssetMenu(fileName = "TabTypesDatabase", menuName = "[RMG] Scriptable/MenuTab")]
+    public class TabDatabase : ScriprtableDatabase<TabTypeModel>
     {
         public TabTypeModel GetTypeByName(string name)
         {

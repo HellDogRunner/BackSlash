@@ -114,9 +114,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "StartKeySequence",
+                    "name": "Interact",
                     "type": "Button",
-                    "id": "cc92e7c0-92de-4477-8d6a-261213b7f48a",
+                    "id": "9088e0fb-a6eb-427c-9a04-db45132a28b7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -226,7 +226,7 @@
                 {
                     "name": "",
                     "id": "6b73de4f-9d54-4a46-a38d-a81a5596456b",
-                    "path": "<Keyboard>/1",
+                    "path": "<Keyboard>/g",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -237,7 +237,7 @@
                 {
                     "name": "",
                     "id": "1fa1f6bf-37e2-4419-b82b-ba4a16d60a0e",
-                    "path": "<Keyboard>/2",
+                    "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -324,12 +324,12 @@
                 },
                 {
                     "name": "",
-                    "id": "1be2235c-323d-4e07-8caa-2f3c675b6aa2",
-                    "path": "",
+                    "id": "d222a57a-94b7-440b-98ad-76b6bc3cbf7d",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "StartKeySequence",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -406,7 +406,7 @@
                     "name": "Enter",
                     "type": "Button",
                     "id": "cd26d601-bd69-4ed0-8e2e-255a73e3ff8f",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -505,6 +505,24 @@
                     "name": "SwitchTab",
                     "type": "Button",
                     "id": "c76cf06b-3dbe-4beb-9078-744a39fb2c8c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PositiveAnswer",
+                    "type": "Button",
+                    "id": "0d9a77c1-d0d2-4d2a-a1c6-90d21c83ff39",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "NegativeAnswer",
+                    "type": "Button",
+                    "id": "dcc905ae-9746-409a-bf12-8bb267275dd1",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -839,6 +857,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "SwitchTab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "43b98465-78ba-4af6-91d0-ffd986d1c503",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PositiveAnswer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "79d30410-1077-4d25-917d-1738394c8d01",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NegativeAnswer",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

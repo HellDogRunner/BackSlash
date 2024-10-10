@@ -2,44 +2,35 @@ using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
-namespace RedMoonGames.Window
+public class HUDAnimationService : MonoBehaviour
 {
-    public class HUDAnimationService : MonoBehaviour
+    [Header("Animation Settings")]
+    [SerializeField] private float _hideDelay = 2f;
+    [SerializeField] private float _fadeDuration = 0.5f;
+
+    public void AnimateShow(CanvasGroup cg)
     {
-        [SerializeField] private HealthController _playerHealth;
-        [Header("Animation Components")]
-        [SerializeField] private CanvasGroup _canvasGroup;
-
-        [Header("Animation Settings")]
-        [SerializeField] private float _hideDelay = 2f;
-        [SerializeField] private float _fadeDuration = 0.5f;
-
-        private void Awake()
+        if (!cg.gameObject.activeSelf)
         {
-            _playerHealth.OnHealthChanged += ShowHUD;
-            //_canvasGroup.alpha = 0;
+            cg.gameObject.SetActive(true);
+            cg.alpha = 0;
+            cg.DOFade(1f, _fadeDuration).SetEase(Ease.InQuart);
         }
+    }
 
-        private void ShowHUD(float health)
+    public void AnimateHide(CanvasGroup cg)
+    {
+        if (cg.gameObject.activeSelf)
         {
-            _canvasGroup.DOFade(1f, _fadeDuration).SetEase(Ease.InQuart);
-            //StartCoroutine(HideDelay());
+            cg.alpha = 1;
+            cg.DOFade(0f, _fadeDuration).SetEase(Ease.InQuart).
+                OnComplete(() => cg.gameObject.SetActive(false));
         }
+    }
 
-        private void HideHUD()
-        {
-            _canvasGroup.DOFade(0f, _fadeDuration).SetEase(Ease.InQuart);
-        }
-
-        private IEnumerator HideDelay()
-        {
-            yield return new WaitForSeconds(_hideDelay);
-            HideHUD();
-        }
-
-        private void OnDestroy()
-        {
-            _playerHealth.OnHealthChanged -= ShowHUD;
-        }
+    public IEnumerator HideDelay(CanvasGroup cg)
+    {
+        yield return new WaitForSeconds(_hideDelay);
+        AnimateHide(cg);
     }
 }

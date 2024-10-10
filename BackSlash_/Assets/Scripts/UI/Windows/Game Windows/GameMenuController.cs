@@ -7,21 +7,20 @@ namespace RedMoonGames.Window
 {
     public class GameMenuController : BasicMenuController
     {
+        [SerializeField] private HUDController _PlayerHUD;
+        [Space]
         [SerializeField] private WindowHandler _pauseWindow;
         [SerializeField] private WindowHandler _menuWindow;
 
         private bool _inPlayerMenu;
 
-        private HUDAnimationService _hUDAnimation;
         private InputController _gameInputs;
 
         public event Action<int> OpenTab;
 
         [Inject]
-        private void Construct(InputController gameInputs, HUDAnimationService hUDAnimation)
+        private void Construct(InputController gameInputs)
         {
-            Debug.Log("GameMenuController");
-            _hUDAnimation = hUDAnimation;
             _gameInputs = gameInputs;
         }
 
@@ -36,7 +35,7 @@ namespace RedMoonGames.Window
             _pauseInputs.OnEscapeKeyPressed += OpenPause;
 
             _sceneTransition.gameObject.SetActive(true);
-            _hUDAnimation.gameObject.SetActive(true);
+            _PlayerHUD.gameObject.SetActive(true);
 
             _gameInputs.enabled = true;
             _pauseInputs.enabled = true;
@@ -81,7 +80,7 @@ namespace RedMoonGames.Window
 
         private void PauseGame()
         {
-            _hUDAnimation.gameObject.SetActive(false);
+            _PlayerHUD.gameObject.SetActive(false);
             _gameInputs.enabled = false;
 
             Cursor.lockState = CursorLockMode.Confined;
@@ -91,7 +90,7 @@ namespace RedMoonGames.Window
 
         private void UnpauseGame()
         {
-            _hUDAnimation.gameObject.SetActive(true);
+            _PlayerHUD.gameObject.SetActive(true);
             _gameInputs.enabled = true;
 
             Cursor.lockState = CursorLockMode.Locked;
