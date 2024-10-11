@@ -21,18 +21,17 @@ public class DialogueSystem : MonoBehaviour
 
     private InteractionSystem _interactionSystem;
     private QuestSystem _questSystem;
-    private HUDController _hudController;
 
     public event Action<string> OnSetModel;
     public event Action<string> OnShowPhrase;
     public event Action OnWaitAnswer;
+    public event Action OnDialogueEnd;
 
     [Inject]
-    private void Construct(QuestSystem questSystem, HUDController hudController, InteractionSystem interactionSystem)
+    private void Construct(QuestSystem questSystem, InteractionSystem interactionSystem)
     {
         _interactionSystem = interactionSystem;
         _questSystem = questSystem;
-        _hudController = hudController;
     }
 
     private void Awake()
@@ -74,15 +73,18 @@ public class DialogueSystem : MonoBehaviour
     {
         if (_waitAnswer) return;
 
-
         if (_dialogueGone)
         {
-            OnDialogueEnd();
+            DialogueEnd();
+            OnDialogueEnd?.Invoke();
             return;
         }
 
         OnShowPhrase?.Invoke(_phrases[_index]);
+    }
 
+    public void OnPhraseShowEnd()
+    {
         if (_positiveIndex == _index || _negativeIndex == _index)
         {
             _dialogueGone = true;
@@ -113,14 +115,13 @@ public class DialogueSystem : MonoBehaviour
         ShowNextPhrase();
     }
 
-    public void OnDialogueEnd()
+    public void DialogueEnd()
     {
         _index = 0;
         _waitAnswer = false;
         _dialogueGone = false;
 
         _questSystem.UpdateData(_data);
-        _interactionSystem.EndInteraction();
     }
 
     private void OnDestroy()

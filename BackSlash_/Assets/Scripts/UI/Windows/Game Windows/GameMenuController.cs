@@ -1,5 +1,6 @@
 using Scripts.Player;
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
 
@@ -7,25 +8,31 @@ namespace RedMoonGames.Window
 {
     public class GameMenuController : BasicMenuController
     {
-        [SerializeField] private HUDController _PlayerHUD;
+        [SerializeField] private CinemachineBrain _cameraRotation;
         [Space]
         [SerializeField] private WindowHandler _pauseWindow;
         [SerializeField] private WindowHandler _menuWindow;
 
         private bool _inPlayerMenu;
-
+        
+        private HUDController _hudController;
         private InputController _gameInputs;
+        private DialogueWindow _dialogueWindow;
 
         public event Action<int> OpenTab;
-
+        
         [Inject]
-        private void Construct(InputController gameInputs)
+        private void Construct(HUDController hudController, DialogueWindow dialogueWindow, InputController gameInputs)
         {
+            _hudController = hudController;
+            _dialogueWindow = dialogueWindow;
             _gameInputs = gameInputs;
         }
 
         private void Awake()
         {
+            _dialogueWindow.OnSwitchDialogue += SwitchDialogue;
+
             _pauseInputs.ShowCursor += SwitchVisible;
 
             _windowAnimation.OnAnimationComplete += CloseWindow;
@@ -35,7 +42,7 @@ namespace RedMoonGames.Window
             _pauseInputs.OnEscapeKeyPressed += OpenPause;
 
             _sceneTransition.gameObject.SetActive(true);
-            _PlayerHUD.gameObject.SetActive(true);
+            _hudController.gameObject.SetActive(true);
 
             _gameInputs.enabled = true;
             _pauseInputs.enabled = true;
@@ -78,9 +85,26 @@ namespace RedMoonGames.Window
             OpenTab?.Invoke(index);
         }
 
+        private void SwitchDialogue(bool enable)
+        {
+            _gameInputs.enabled = enable;
+            _cameraRotation.enabled = enable;
+
+            if (_gameInputs.enabled)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = true;
+            }
+        }
+
         private void PauseGame()
         {
-            _PlayerHUD.gameObject.SetActive(false);
+            _hudController.gameObject.SetActive(false);
             _gameInputs.enabled = false;
 
             Cursor.lockState = CursorLockMode.Confined;
@@ -90,7 +114,7 @@ namespace RedMoonGames.Window
 
         private void UnpauseGame()
         {
-            _PlayerHUD.gameObject.SetActive(true);
+            _hudController.gameObject.SetActive(true);
             _gameInputs.enabled = true;
 
             Cursor.lockState = CursorLockMode.Locked;
@@ -116,6 +140,8 @@ namespace RedMoonGames.Window
 
         private void OnDestroy()
         {
+            _dialogueWindow.OnSwitchDialogue -= SwitchDialogue;
+
             _pauseInputs.ShowCursor -= SwitchVisible;
 
             _windowAnimation.OnAnimationComplete -= CloseWindow;

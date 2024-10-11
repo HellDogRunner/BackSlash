@@ -8,23 +8,22 @@ public class InteractionSystem : MonoBehaviour
 {
     private bool _canInteract;
 
-    private InputController _gameInputs;
+    private UIActionsController _uiActions;
 
     public event Action<DialogueDatabase> SetData;
     public event Action OnInteract;
-    public event Action OnEndInteract;
     public event Action OnExitTrigger;
     public event Action OnEnterTrigger;
 
     [Inject]
-    private void Construct(InputController gameInputs)
+    private void Construct(UIActionsController uIActions)
     {
-        _gameInputs = gameInputs;
+        _uiActions = uIActions;
     }
 
     private void Awake()
     {
-        _gameInputs.OnInteractionKeyPressed += Interact;
+        _uiActions.OnEnterKeyPressed += Interact;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -59,13 +58,8 @@ public class InteractionSystem : MonoBehaviour
         }
     }
 
-    public void EndInteraction()
-    {
-        OnEndInteract?.Invoke();
-    }
-
     private void OnDestroy()
     {
-        _gameInputs.OnInteractionKeyPressed -= Interact;
+        _uiActions.OnEnterKeyPressed -= Interact;
     }
 }

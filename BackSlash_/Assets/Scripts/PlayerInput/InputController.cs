@@ -33,13 +33,13 @@ namespace Scripts.Player
         {
             _playerControls.Enable();
             SubscribeToActions();
-            _moveDirection = Vector3.zero;
         }
 
         private void OnDisable()
         {
             _playerControls.Disable();
             UnsubscribeToActions();
+            _moveDirection = Vector3.zero;
         }
 
         private void ChangeDirection(InputAction.CallbackContext context)
