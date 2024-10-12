@@ -11,6 +11,8 @@ public class GraphicsTab : BasicTab
         _videoPresetDropdown.Select();
 
         _videoPresetDropdown.onValueChanged.AddListener(delegate { VideoPresetChange(_videoPresetDropdown); });
+
+        _videoPresetDropdown.value = QualitySettings.GetQualityLevel();
     }
 
     private void OnDisable()

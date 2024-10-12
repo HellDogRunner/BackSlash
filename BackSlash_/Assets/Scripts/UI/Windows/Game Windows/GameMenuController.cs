@@ -2,6 +2,7 @@ using Scripts.Player;
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace RedMoonGames.Window
@@ -12,6 +13,8 @@ namespace RedMoonGames.Window
         [Space]
         [SerializeField] private WindowHandler _pauseWindow;
         [SerializeField] private WindowHandler _menuWindow;
+        [Space]
+        [SerializeField] private bool _setLowPreset;
 
         private bool _inPlayerMenu;
         
@@ -48,6 +51,8 @@ namespace RedMoonGames.Window
             _pauseInputs.enabled = true;
 
             UnpauseGame();
+
+            if (_setLowPreset) SetLowPreset();
         }
 
         private void OpenPause()
@@ -100,6 +105,11 @@ namespace RedMoonGames.Window
                 Cursor.lockState = CursorLockMode.Confined;
                 Cursor.visible = true;
             }
+        }
+
+        private void SetLowPreset()
+        {
+            QualitySettings.SetQualityLevel(0);
         }
 
         private void PauseGame()

@@ -30,14 +30,15 @@ public class InteractionSystem : MonoBehaviour
     {
         if (other.tag == "NPC")
         {
-            OnEnterTrigger?.Invoke();
-
             var npcInteraction = other.GetComponent<NpcInteractionService>();
             var dialogueData = npcInteraction.GetDialogueData();
 
-            SetData?.Invoke(dialogueData);
-
-            _canInteract = true;
+            if (dialogueData != null)
+            {
+                OnEnterTrigger?.Invoke();
+                SetData?.Invoke(dialogueData);
+                _canInteract = true;
+            }
         }
     }
 

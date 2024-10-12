@@ -102,9 +102,12 @@ namespace Scripts.Player
         {
             canShow = false;
 
+            if (_dialogueAnimation._text.IsActive()) _dialogueAnimation._text.Kill();
+
             OnSwitchDialogue?.Invoke(true);
 
             _dialogueAnimation.Window();
+            _dialogueAnimation.AnswerKeys();
             _dialogueAnimation.InteractionKey(1);
             _hudController.SwitchOverlay(1);
         }
