@@ -9,6 +9,8 @@ public class DialogueAnimation : MonoBehaviour
     [Header("Text")]
     [SerializeField] public TMP_Text Name;
     [SerializeField] private Text _phrase;
+    [SerializeField] private TMP_Text _positiveAnswer;
+    [SerializeField] private TMP_Text _negativeAnswer;
 
     [Header("Canvas Groups")]
     [SerializeField] private CanvasGroup _windowCG;
@@ -20,14 +22,15 @@ public class DialogueAnimation : MonoBehaviour
     [SerializeField] private float _textDelay = 0.1f;
     [SerializeField] private float _charsPerSecond = 30;
     [Space]
-    [SerializeField] private float _talkDuration = 0.1f;
-    [SerializeField] private float _windowDuration = 0.1f;
+    [SerializeField] private float _showWindowDuration = 0.2f;
+    [SerializeField] private float _hideWindowDuration = 0.1f;
     [SerializeField] private float _answerDuration = 0.1f;
+    [SerializeField] private float _talkDuration = 0.1f;
 
-    public Tween _text;
     private Tween _window;
     private Tween _talk;
     private Tween _answerKeys;
+    public Tween _text;
 
     [HideInInspector] public bool _firstPhrase;
 
@@ -62,6 +65,12 @@ public class DialogueAnimation : MonoBehaviour
         AnimationEnd?.Invoke();
     }
 
+    public void SetAnswers(string positive, string negative)
+    {
+        _positiveAnswer.text = positive;
+        _negativeAnswer.text = negative;
+    }
+
     public void InteractionKey(int fade = 0)
     {
         if (_talk.IsActive()) _talk.Kill();
@@ -69,11 +78,18 @@ public class DialogueAnimation : MonoBehaviour
         _talk = _talkCG.DOFade(fade, _talkDuration).SetEase(Ease.Flash);
     }
 
-    public void Window(int fade = 0)
+    public void ShowWindow()
     {
         if (_window.IsActive()) _window.Kill();
 
-        _window = _windowCG.DOFade(fade, _windowDuration).SetEase(Ease.Flash);
+        _window = _windowCG.DOFade(1, _showWindowDuration).SetEase(Ease.Flash);
+    }
+
+    public void HideWindow()
+    {
+        if (_window.IsActive()) _window.Kill();
+
+        _window = _windowCG.DOFade(0, _hideWindowDuration).SetEase(Ease.Flash);
     }
 
     public void AnswerKeys(int fade = 0)

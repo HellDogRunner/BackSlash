@@ -12,57 +12,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e87dfa43b918a242b9853a20f0f069b, type: 3}
   m_Name: BotQuest
   m_EditorClassIdentifier: 
-  NPCName: Bot
-  _dialogue:
+  _questData:
   - State: Give
     Phrases:
-    - What is your name, stranger?
-    - 
+    - ' What is your name, stranger? '
     - Nice to meet you, <name>!
     - I need you to clear the way, these bandits won't let me through!
-    - 
     - Never mind, you brute!
     - Clear the way and you'll get a reward.
-    - 
     - Thank you so much!
-    - 
     - As you wish...
-    Indexes:
-    - {x: 0, y: 2, z: 5}
-    - {x: 3, y: 8, z: 10}
-    - {x: 6, y: 8, z: 10}
-    PositiveEnd: 8
-    NegativeEnd: 10
+    - 
+    - Say
+    - Silent
+    - Agree
+    - Disagree
+    Questions:
+    - {x: 0, y: 1, z: 3}
+    - {x: 2, y: 5, z: 6}
+    - {x: 4, y: 5, z: 6}
+    Answers:
+    - {x: 0, y: 8, z: 9}
+    - {x: 2, y: 10, z: 11}
+    - {x: 4, y: 10, z: 11}
+    Endings: {x: 5, y: 6}
   - State: Cancel
     Phrases:
     - Have you changed your mind?
-    - 
     - I knew you would help me!
-    - 
     - Well, get lost!
-    Indexes:
-    - {x: 0, y: 2, z: 4}
-    PositiveEnd: 2
-    NegativeEnd: 4
+    - 
+    - Agree
+    - Disagree
+    Questions:
+    - {x: 0, y: 1, z: 2}
+    Answers:
+    - {x: 0, y: 4, z: 5}
+    Endings: {x: 2, y: 3}
   - State: Progress
     Phrases:
     - Have you finished yet?
-    Indexes: []
-    PositiveEnd: 0
-    NegativeEnd: 0
+    Questions: []
+    Answers: []
+    Endings: {x: 0, y: 0}
   - State: Reward
     Phrases:
     - You did it! Here's your reward.
-    Indexes: []
-    PositiveEnd: 0
-    NegativeEnd: 0
+    Questions: []
+    Answers: []
+    Endings: {x: 0, y: 0}
   - State: Complete
     Phrases:
     - Thank you again for your help!
-    Indexes: []
-    PositiveEnd: 0
-    NegativeEnd: 0
-  _answer:
+    Questions: []
+    Answers: []
+    Endings: {x: 0, y: 0}
+  _stateTransitions:
   - State: Give
     Positive: Progress
     Negative: Cancel

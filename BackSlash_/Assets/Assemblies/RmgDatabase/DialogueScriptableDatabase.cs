@@ -7,23 +7,17 @@ namespace RedMoonGames.Database
     [Serializable]
     public class DialogueScriptableDatabase<TData, TData2> : ScriptableObject
     {
-        [SerializeField] protected string NPCName;
-        [SerializeField] protected List<TData> _dialogue = new List<TData>();
-        [SerializeField] protected List<TData2> _answer = new List<TData2>();
+        [SerializeField] protected List<TData> _questData = new List<TData>();
+        [SerializeField] protected List<TData2> _stateTransitions = new List<TData2>();
 
         public List<TData> GetDialogue()
         {
-            return _dialogue;
-        }
-
-        public string GetName()
-        {
-            return NPCName;
+            return _questData;
         }
 
         public List<TData2> GetStates()
         {
-            return _answer;
+            return _stateTransitions;
         }
     }
 }

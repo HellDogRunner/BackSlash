@@ -4,7 +4,7 @@ using Zenject;
 
 public class QuestTarget : MonoBehaviour
 {
-    [SerializeField] private DialogueDatabase _quest;
+    [SerializeField] private QuestDatabase _quest;
     [Space]
     [SerializeField] HealthController _healthController;
 

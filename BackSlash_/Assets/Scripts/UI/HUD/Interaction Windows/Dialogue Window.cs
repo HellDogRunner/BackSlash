@@ -43,14 +43,9 @@ namespace Scripts.Player
             _interactionSystem.OnEnterTrigger += EnterTrigger;
             _interactionSystem.OnInteract += ShowDialogue;
             _dialogueSystem.OnDialogueEnd += HideDialogue;
-            _dialogueSystem.OnSetModel += SetName;
             _dialogueSystem.OnShowPhrase += AnimatePhrase;
             _dialogueSystem.OnWaitAnswer += WaitAnswer;
             _dialogueAnimation.AnimationEnd += PhraseAnimationEnd;
-
-            _dialogueAnimation.AnswerKeys();
-            _dialogueAnimation.Window();
-            _dialogueAnimation.InteractionKey();
         }
 
         private void ButtonPositive() { DialogueAnswer(true); }
@@ -86,11 +81,11 @@ namespace Scripts.Player
         {
             if (canShow)
             {
-                OnSwitchDialogue?.Invoke(false);
+                OnSwitchDialogue?.Invoke(true);
 
                 _hudController.SwitchOverlay();
                 _dialogueAnimation.InteractionKey();
-                _dialogueAnimation.Window(1);
+                _dialogueAnimation.ShowWindow();
             }
             else
             {
@@ -104,16 +99,17 @@ namespace Scripts.Player
 
             if (_dialogueAnimation._text.IsActive()) _dialogueAnimation._text.Kill();
 
-            OnSwitchDialogue?.Invoke(true);
+            OnSwitchDialogue?.Invoke(false);
 
-            _dialogueAnimation.Window();
+            _dialogueAnimation.HideWindow();
             _dialogueAnimation.AnswerKeys();
             _dialogueAnimation.InteractionKey(1);
             _hudController.SwitchOverlay(1);
         }
 
-        private void WaitAnswer()
+        private void WaitAnswer(string positive, string negative)
         {
+            _dialogueAnimation.SetAnswers(positive, negative);
             _dialogueAnimation.AnswerKeys(1);
 
             _positiveButton.onClick.AddListener(ButtonPositive);
@@ -141,9 +137,10 @@ namespace Scripts.Player
             _dialogueSystem.DialogueEnd();
         }
 
-        private void EnterTrigger()
+        private void EnterTrigger(string name)
         {
             _dialogueAnimation.InteractionKey(1);
+            SetName(name);
 
             _nextButton.onClick.AddListener(NextButton);
             _backButton.onClick.AddListener(EndDialogue);
@@ -153,7 +150,7 @@ namespace Scripts.Player
         private void ExitTrigger()
         {
             _dialogueAnimation.AnswerKeys();
-            _dialogueAnimation.Window();
+            _dialogueAnimation.HideWindow();
             _dialogueAnimation.InteractionKey(0);
             _hudController.SwitchOverlay(1);
 
@@ -168,7 +165,6 @@ namespace Scripts.Player
             _interactionSystem.OnEnterTrigger -= EnterTrigger;
             _interactionSystem.OnInteract -= ShowDialogue;
             _dialogueSystem.OnDialogueEnd -= HideDialogue;
-            _dialogueSystem.OnSetModel -= SetName;
             _dialogueSystem.OnShowPhrase -= AnimatePhrase;
             _dialogueSystem.OnWaitAnswer -= WaitAnswer;
             _uiActions.OnDialogueAnswer -= DialogueAnswer;

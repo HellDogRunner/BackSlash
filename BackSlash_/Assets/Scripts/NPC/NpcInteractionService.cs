@@ -4,15 +4,30 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class NpcInteractionService : MonoBehaviour
 {
-    [SerializeField] private DialogueDatabase _botData;
+    [SerializeField] private QuestDatabase _quest;
+    [Space]
+    [SerializeField] private string _name;
+
+    private Vector3 _defaultRotation;
 
     private void Awake()
     {
+        _defaultRotation = transform.rotation.eulerAngles;
         gameObject.tag = "NPC";
     }
 
-    public DialogueDatabase GetDialogueData()
+    public QuestDatabase GetQuestData()
     {
-        return _botData;
+        return _quest;
+    }
+
+    public string GetName()
+    {
+        return _name;
+    }
+
+    public Vector3 GetRotation()
+    {
+        return _defaultRotation;
     }
 }

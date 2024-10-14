@@ -2,7 +2,6 @@ using Scripts.Player;
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 namespace RedMoonGames.Window
@@ -17,7 +16,8 @@ namespace RedMoonGames.Window
         [SerializeField] private bool _setLowPreset;
 
         private bool _inPlayerMenu;
-        
+        private bool _inDialogue;
+
         private HUDController _hudController;
         private InputController _gameInputs;
         private DialogueWindow _dialogueWindow;
@@ -50,15 +50,15 @@ namespace RedMoonGames.Window
             _gameInputs.enabled = true;
             _pauseInputs.enabled = true;
 
-            UnpauseGame();
+            SwitchPause(false);
 
             if (_setLowPreset) SetLowPreset();
         }
 
         private void OpenPause()
         {
-            EventsOnPause(); 
-            PauseGame();
+            EventsOnPause();
+            SwitchPause(true);
 
             _windowService.TryOpenWindow(_pauseWindow);
             _windowService.ShowWindow();
@@ -69,7 +69,7 @@ namespace RedMoonGames.Window
             _inPlayerMenu = false;
 
             EventsOnGame();
-            UnpauseGame();
+            SwitchPause(false);
 
             _windowService.HideWindow();
         }
@@ -80,7 +80,7 @@ namespace RedMoonGames.Window
             {
                 _inPlayerMenu = true;
 
-                PauseGame();
+                SwitchPause(true);
                 EventsOnPause(); 
 
                 _windowService.TryOpenWindow(_menuWindow);
@@ -90,46 +90,44 @@ namespace RedMoonGames.Window
             OpenTab?.Invoke(index);
         }
 
-        private void SwitchDialogue(bool enable)
+        private void SwitchDialogue(bool inDialogue)
         {
-            _gameInputs.enabled = enable;
-            _cameraRotation.enabled = enable;
+            _inDialogue = inDialogue;
+            _cameraRotation.enabled = !inDialogue;
+            _gameInputs.enabled = !inDialogue;
 
-            if (_gameInputs.enabled)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-            else
+            SwitchInteraction(inDialogue);
+        }
+
+        private void SwitchInteraction(bool enable)
+        {
+            if (!_inDialogue) _gameInputs.enabled = !enable;
+
+            if (enable)
             {
                 Cursor.lockState = CursorLockMode.Confined;
                 Cursor.visible = true;
             }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
+
+        private void SwitchPause(bool enable)
+        {
+            _hudController.gameObject.SetActive(!enable);
+
+            SwitchInteraction(enable);
+
+            if (enable) Time.timeScale = 0;
+            else Time.timeScale = 1;
         }
 
         private void SetLowPreset()
         {
             QualitySettings.SetQualityLevel(0);
-        }
-
-        private void PauseGame()
-        {
-            _hudController.gameObject.SetActive(false);
-            _gameInputs.enabled = false;
-
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
-            Time.timeScale = 0;
-        }
-
-        private void UnpauseGame()
-        {
-            _hudController.gameObject.SetActive(true);
-            _gameInputs.enabled = true;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            Time.timeScale = 1;
         }
 
         private void EventsOnPause()

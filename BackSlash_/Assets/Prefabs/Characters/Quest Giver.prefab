@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: 7634975416147733353}
   m_Layer: 0
   m_Name: Quest Giver
-  m_TagString: NPC
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -384,7 +384,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 858c0dacb718ba9469990bccc03f242c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _botData: {fileID: 11400000, guid: 3fba22d248a47264591e44c7f14e7527, type: 2}
+  _quest: {fileID: 11400000, guid: 3fba22d248a47264591e44c7f14e7527, type: 2}
+  _name: Bot
 --- !u!1 &4979899332758962110
 GameObject:
   m_ObjectHideFlags: 0

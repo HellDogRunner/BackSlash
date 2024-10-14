@@ -6,11 +6,11 @@ using Zenject;
 
 public class QuestSystem : MonoBehaviour
 {
-    [SerializeField] private QuestDatabase _questData;
+    [SerializeField] private ActiveQuestsDatabase _questData;
 
     private InteractionSystem _interactionSystem;
 
-    public event Action<DialogueDatabase, string> SetData;
+    public event Action<QuestDatabase, string> SetData;
 
     [Inject]
     private void Construct(InteractionSystem interactionSystem)
@@ -23,31 +23,31 @@ public class QuestSystem : MonoBehaviour
         _interactionSystem.SetData += UpdateData;
     }
 
-    public void UpdateData(DialogueDatabase dialogueData)
+    public void UpdateData(QuestDatabase dialogueData)
     {
-        var model = _questData.GetModelByDialogueData(dialogueData);
+        var model = _questData.GetModelByQuestData(dialogueData);
 
         if (model == null)
         {
             _questData.AddQuest(dialogueData, "Give");
-            model = _questData.GetModelByDialogueData(dialogueData);
+            model = _questData.GetModelByQuestData(dialogueData);
         }
 
-        SetData?.Invoke(model.DialogueData, model.State);
+        SetData?.Invoke(model.QuestData, model.State);
     }
 
-    public void ChangeQuestState(DialogueDatabase dialogueData, bool result)
+    public void ChangeQuestState(QuestDatabase dialogueData, bool result)
     {
-        var interactionModel = _questData.GetModelByDialogueData(dialogueData);
+        var interactionModel = _questData.GetModelByQuestData(dialogueData);
         var state = dialogueData.GetAnswerByState(interactionModel.State);
 
         if (result) interactionModel.State = state.Positive;
         else interactionModel.State = state.Negative;
     }
 
-    public void ChangeQuestState(DialogueDatabase dialogueData, string state)
+    public void ChangeQuestState(QuestDatabase dialogueData, string state)
     {
-        var iterModel = _questData.GetModelByDialogueData(dialogueData);
+        var iterModel = _questData.GetModelByQuestData(dialogueData);
         iterModel.State = state;
     }
 

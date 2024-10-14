@@ -7,24 +7,23 @@ using Zenject;
 
 public class DialogueSystem : MonoBehaviour
 {
-    private DialogueDatabase _data;
+    private QuestDatabase _data;
 
     private bool _waitAnswer;
     private bool _dialogueGone;
+    private Vector3 _currentQuestion;
 
     private int _index;
-    private Vector3 _currentConnect;
     private List<string> _phrases;
-    private List<Vector3> _phraseConnect;
-    private int _positiveIndex;
-    private int _negativeIndex;
+    private List<Vector3> _questions;
+    private List<Vector3> _answers;
+    private Vector2 _endings;
 
     private InteractionSystem _interactionSystem;
     private QuestSystem _questSystem;
 
-    public event Action<string> OnSetModel;
     public event Action<string> OnShowPhrase;
-    public event Action OnWaitAnswer;
+    public event Action<string, string> OnWaitAnswer;
     public event Action OnDialogueEnd;
 
     [Inject]
@@ -42,17 +41,16 @@ public class DialogueSystem : MonoBehaviour
         _interactionSystem.OnExitTrigger += SetDefaultState;
     }
 
-    private void SetDialogueModel(DialogueDatabase data, string state)
+    private void SetDialogueModel(QuestDatabase data, string state)
     {
         _data = data;
-        OnSetModel?.Invoke(_data.GetName());
-
         var model = data.GetModelByState(state);
+
         _index = 0;
         _phrases = model.Phrases.ToList();
-        _phraseConnect = model.Indexes.ToList();
-        _positiveIndex = model.PositiveEnd;
-        _negativeIndex = model.NegativeEnd;
+        _questions = model.Questions.ToList();
+        _answers = model.Answers.ToList();
+        _endings = new Vector2(model.Endings.x, model.Endings.y);
     }
 
     private void SetDefaultState()
@@ -64,9 +62,9 @@ public class DialogueSystem : MonoBehaviour
 
         _index = 0;
         _phrases = null;
-        _phraseConnect = null;
-        _positiveIndex = 0;
-        _negativeIndex = 0;
+        _questions = null;
+        _answers = null;
+        _endings = Vector2.zero;
     }
 
     public void ShowNextPhrase()
@@ -85,20 +83,24 @@ public class DialogueSystem : MonoBehaviour
 
     public void OnPhraseShowEnd()
     {
-        if (_positiveIndex == _index || _negativeIndex == _index)
+        if (_endings.x == _index || _endings.y == _index)
         {
             _dialogueGone = true;
-            _questSystem.ChangeQuestState(_data, _positiveIndex == _index);
+            _questSystem.ChangeQuestState(_data, _endings.x == _index);
             return;
         }
 
-        foreach (var connect in _phraseConnect)
+        for (int index = 0; index < _questions.Count; index ++)
         {
-            if (connect.x == _index)
+            if (_questions[index].x == _index)
             {
-                _currentConnect = connect;
                 _waitAnswer = true;
-                OnWaitAnswer?.Invoke();
+
+                var positive = _phrases[(int)_answers[index].y];
+                var negative = _phrases[(int)_answers[index].z];
+                _currentQuestion = _questions[index];
+
+                OnWaitAnswer?.Invoke(positive, negative);
                 return;
             }
         }
@@ -109,8 +111,8 @@ public class DialogueSystem : MonoBehaviour
     public void DialogueAnswer(bool answer)
     {
         _waitAnswer = false;
-        if (answer) _index = (int)_currentConnect.y;
-        else _index = (int)_currentConnect.z;
+        if (answer) _index = (int)_currentQuestion.y;
+        else _index = (int)_currentQuestion.z;
 
         ShowNextPhrase();
     }

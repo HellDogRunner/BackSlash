@@ -9,15 +9,17 @@ public class InteractionSystem : MonoBehaviour
     private bool _canInteract;
 
     private UIActionsController _uiActions;
+    private InteractionAnimation _interaction;
 
-    public event Action<DialogueDatabase> SetData;
+    public event Action<QuestDatabase> SetData;
     public event Action OnInteract;
     public event Action OnExitTrigger;
-    public event Action OnEnterTrigger;
+    public event Action<string> OnEnterTrigger;
 
     [Inject]
-    private void Construct(UIActionsController uIActions)
+    private void Construct(InteractionAnimation interaction, UIActionsController uIActions)
     {
+        _interaction = interaction;
         _uiActions = uIActions;
     }
 
@@ -30,12 +32,13 @@ public class InteractionSystem : MonoBehaviour
     {
         if (other.tag == "NPC")
         {
-            var npcInteraction = other.GetComponent<NpcInteractionService>();
-            var dialogueData = npcInteraction.GetDialogueData();
+            var npc = other.GetComponent<NpcInteractionService>();
+            var dialogueData = npc.GetQuestData();
 
             if (dialogueData != null)
             {
-                OnEnterTrigger?.Invoke();
+                _interaction.SetNPCTransform(npc.transform, npc.GetRotation());
+                OnEnterTrigger?.Invoke(npc.GetName());
                 SetData?.Invoke(dialogueData);
                 _canInteract = true;
             }
@@ -47,6 +50,8 @@ public class InteractionSystem : MonoBehaviour
         if (other.tag == "NPC")
         {
             _canInteract = false;
+
+            _interaction.RotateToDefault();
             OnExitTrigger?.Invoke();
         }
     }
@@ -55,6 +60,7 @@ public class InteractionSystem : MonoBehaviour
     {
         if (_canInteract)
         {
+            _interaction.LookAtEachOther(gameObject.transform);
             OnInteract?.Invoke();
         }
     }
