@@ -270,8 +270,8 @@ GameObject:
   - component: {fileID: 7876219046051284542}
   - component: {fileID: 905111294510751134}
   - component: {fileID: 5031928243021173473}
-  - component: {fileID: 2336787873819373400}
   - component: {fileID: 7634975416147733353}
+  - component: {fileID: 8418969165718415537}
   m_Layer: 0
   m_Name: Quest Giver
   m_TagString: Untagged
@@ -351,8 +351,23 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &2336787873819373400
-BoxCollider:
+--- !u!114 &7634975416147733353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4767171737211502706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 858c0dacb718ba9469990bccc03f242c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _quest: {fileID: 11400000, guid: 3fba22d248a47264591e44c7f14e7527, type: 2}
+  _name: Bot
+  _viewTR: {fileID: 7876219046051284542}
+--- !u!135 &8418969165718415537
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -370,23 +385,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4, y: 1, z: 4}
-  m_Center: {x: 0, y: 0.1, z: 0}
---- !u!114 &7634975416147733353
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4767171737211502706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 858c0dacb718ba9469990bccc03f242c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _quest: {fileID: 11400000, guid: 3fba22d248a47264591e44c7f14e7527, type: 2}
-  _name: Bot
-  _viewTR: {fileID: 7876219046051284542}
+  m_Radius: 3
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4979899332758962110
 GameObject:
   m_ObjectHideFlags: 0

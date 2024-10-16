@@ -150,7 +150,6 @@ public class TargetLock : MonoBehaviour
 
     private Target ClosestTarget()
     {
-        //float currAngle = _maxAngle;
         float distance = _maxDistance;
         Vector3 position = transform.position;
         Target closest = null;

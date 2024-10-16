@@ -34,7 +34,8 @@ public class DialogueAnimation : MonoBehaviour
 
     [HideInInspector] public bool _firstPhrase;
 
-    public event Action AnimationEnd;
+    public event Action TextAnimationEnd;
+    public event Action<bool> OnWindowHide;
 
     private void Awake()
     {
@@ -55,14 +56,14 @@ public class DialogueAnimation : MonoBehaviour
 
         _phrase.text = "";
         _text = _phrase.DOText(text, duration).SetEase(Ease.Flash).SetDelay(delay).
-            OnComplete(() => AnimationEnd?.Invoke());
+            OnComplete(() => TextAnimationEnd?.Invoke());
     }
 
     public void ShowWholePhrase(string text)
     {
         _text.Kill();
         _phrase.text = text;
-        AnimationEnd?.Invoke();
+        TextAnimationEnd?.Invoke();
     }
 
     public void SetAnswers(string positive, string negative)
@@ -89,7 +90,8 @@ public class DialogueAnimation : MonoBehaviour
     {
         if (_window.IsActive()) _window.Kill();
 
-        _window = _windowCG.DOFade(0, _hideWindowDuration).SetEase(Ease.Flash);
+        _window = _windowCG.DOFade(0, _hideWindowDuration).SetEase(Ease.Flash).
+            OnComplete(() => OnWindowHide?.Invoke(false));
     }
 
     public void AnswerKeys(int fade = 0)

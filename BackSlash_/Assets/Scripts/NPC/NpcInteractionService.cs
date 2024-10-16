@@ -1,7 +1,7 @@
 using Scripts.UI.Dialogue;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(SphereCollider))]
 public class NpcInteractionService : MonoBehaviour
 {
     [SerializeField] private QuestDatabase _quest;

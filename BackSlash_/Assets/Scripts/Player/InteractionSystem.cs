@@ -6,10 +6,12 @@ using Zenject;
 
 public class InteractionSystem : MonoBehaviour
 {
+    private Transform _npcTR;
     private bool _canInteract;
+    private float _maxDistance;
 
     private UIActionsController _uiActions;
-    private InteractionAnimation _interaction;
+    private InteractionAnimation _interactionAnimation;
 
     public event Action<QuestDatabase> SetData;
     public event Action OnInteract;
@@ -19,7 +21,7 @@ public class InteractionSystem : MonoBehaviour
     [Inject]
     private void Construct(InteractionAnimation interaction, UIActionsController uIActions)
     {
-        _interaction = interaction;
+        _interactionAnimation = interaction;
         _uiActions = uIActions;
     }
 
@@ -37,9 +39,14 @@ public class InteractionSystem : MonoBehaviour
 
             if (dialogueData != null)
             {
-                _interaction.SetNPCTransform(npc.transform, npc.GetRotation());
+                _interactionAnimation.SetNPCTransform(npc.transform, npc.GetRotation());
+
+                _npcTR = npc.transform;
+                _maxDistance = other.GetComponent<SphereCollider>().radius + 0.2f;
+
                 OnEnterTrigger?.Invoke(npc.GetName());
                 SetData?.Invoke(dialogueData);
+
                 _canInteract = true;
             }
         }
@@ -51,18 +58,26 @@ public class InteractionSystem : MonoBehaviour
         {
             _canInteract = false;
 
-            _interaction.RotateToDefault();
+            _interactionAnimation.RotateToDefault();
+
             OnExitTrigger?.Invoke();
         }
     }
 
     private void Interact()
     {
-        if (_canInteract)
+        if (_canInteract && GetCanInteract(transform))
         {
-            _interaction.LookAtEachOther(gameObject.transform);
+            _interactionAnimation.LookAtEachOther(gameObject.transform);
             OnInteract?.Invoke();
         }
+    }
+
+    private bool GetCanInteract(Transform playerTR)
+    {
+        float distance = (playerTR.position - _npcTR.position).magnitude;
+
+        return distance < _maxDistance;
     }
 
     private void OnDestroy()

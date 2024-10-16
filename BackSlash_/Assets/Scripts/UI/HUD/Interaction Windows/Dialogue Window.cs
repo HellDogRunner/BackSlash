@@ -14,12 +14,13 @@ namespace Scripts.Player
         [Header("Buttons")]
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _nextButton;
+        [SerializeField] private Button _endButton;
 
         [Header("Interactive Keys")]
         [SerializeField] private Button _positiveButton;
         [SerializeField] private Button _negativeButton;
 
-        private bool canShow = true;
+        [SerializeField] private bool canShow = true;
 
         private HUDController _hudController;
         private InteractionSystem _interactionSystem;
@@ -45,7 +46,9 @@ namespace Scripts.Player
             _dialogueSystem.OnDialogueEnd += HideDialogue;
             _dialogueSystem.OnShowPhrase += AnimatePhrase;
             _dialogueSystem.OnWaitAnswer += WaitAnswer;
-            _dialogueAnimation.AnimationEnd += PhraseAnimationEnd;
+            _dialogueSystem.OnDialogueGone += SwitchButton;
+            _dialogueAnimation.OnWindowHide += SwitchButton;
+            _dialogueAnimation.TextAnimationEnd += PhraseAnimationEnd;
         }
 
         private void ButtonPositive() { DialogueAnswer(true); }
@@ -91,6 +94,12 @@ namespace Scripts.Player
             {
                 canShow = true;
             }
+        }
+
+        private void SwitchButton(bool enable)
+        {
+            _endButton.gameObject.SetActive(enable);
+            _nextButton.gameObject.SetActive(!enable);
         }
 
         private void HideDialogue()
@@ -167,9 +176,11 @@ namespace Scripts.Player
             _dialogueSystem.OnDialogueEnd -= HideDialogue;
             _dialogueSystem.OnShowPhrase -= AnimatePhrase;
             _dialogueSystem.OnWaitAnswer -= WaitAnswer;
+            _dialogueSystem.OnDialogueGone -= SwitchButton;
+            _dialogueAnimation.OnWindowHide -= SwitchButton;
+            _dialogueAnimation.TextAnimationEnd -= PhraseAnimationEnd;
             _uiActions.OnDialogueAnswer -= DialogueAnswer;
             _uiActions.OnBackKeyPressed -= EndDialogue;
-            _dialogueAnimation.AnimationEnd -= PhraseAnimationEnd;
 
             _positiveButton.onClick.RemoveListener(ButtonPositive);
             _negativeButton.onClick.RemoveListener(ButtonNegative);

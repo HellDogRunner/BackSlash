@@ -25,6 +25,7 @@ public class DialogueSystem : MonoBehaviour
     public event Action<string> OnShowPhrase;
     public event Action<string, string> OnWaitAnswer;
     public event Action OnDialogueEnd;
+    public event Action<bool> OnDialogueGone;
 
     [Inject]
     private void Construct(QuestSystem questSystem, InteractionSystem interactionSystem)
@@ -85,7 +86,10 @@ public class DialogueSystem : MonoBehaviour
     {
         if (_endings.x == _index || _endings.y == _index)
         {
+            Debug.Log("Gone");
             _dialogueGone = true;
+
+            OnDialogueGone?.Invoke(true);
             _questSystem.ChangeQuestState(_data, _endings.x == _index);
             return;
         }
@@ -104,7 +108,6 @@ public class DialogueSystem : MonoBehaviour
                 return;
             }
         }
-
         _index++;
     }
 

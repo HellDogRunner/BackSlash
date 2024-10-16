@@ -1038,7 +1038,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7734398532158820195}
   - component: {fileID: 1980477631159129699}
-  - component: {fileID: 5122264834111569371}
   m_Layer: 0
   m_Name: SM_Chr_Mercenary_Male_01
   m_TagString: CharacterController
@@ -1168,27 +1167,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0002861023, y: 0.84047985, z: -0.045200855}
     m_Extent: {x: 1.0242751, y: 0.9475714, z: 0.3354024}
   m_DirtyAABB: 0
---- !u!135 &5122264834111569371
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4405748393816215956}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Radius: 20
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4637940176641638544
 GameObject:
   m_ObjectHideFlags: 0
@@ -2844,6 +2822,7 @@ GameObject:
   - component: {fileID: 1259562901829629793}
   - component: {fileID: 3184469423278028609}
   - component: {fileID: 8507639596095695501}
+  - component: {fileID: 4451823675897094731}
   m_Layer: 2
   m_Name: Player
   m_TagString: CharacterController
@@ -2909,6 +2888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26ead0690e74d2044bb62ca1f52f211a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interactDistance: 3
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3020,7 +3000,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _lockOnCamera: {fileID: 0}
   _rotationComposer: {fileID: 0}
-  _triggerCollider: {fileID: 5122264834111569371}
+  _triggerCollider: {fileID: 4451823675897094731}
   _aimIcon: {fileID: 0}
   _maxDistance: 20
   _targetAngle: 70
@@ -3099,6 +3079,27 @@ MonoBehaviour:
   _useSceneContext: 0
   _context: {fileID: 0}
   _bindType: 0
+--- !u!135 &4451823675897094731
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 20
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8541310659857842121
 GameObject:
   m_ObjectHideFlags: 0
