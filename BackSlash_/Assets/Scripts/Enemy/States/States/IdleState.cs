@@ -13,7 +13,6 @@ public class IdleState : IEnemyState
 
     public void Enter()
     {
-        Debug.Log("idle state Entered");
         _enemy.NavAgent.isStopped = true;
         _enemy.Animator.SetFloat("Speed", 0);
     }

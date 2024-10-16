@@ -14,10 +14,9 @@ namespace Scripts.Player
         public event Action<bool> OnLightAttackPressed;
         public event Action<bool> OnHeavyAtttackPressed;
         public event Action<bool> OnBlockPressed;
+        public event Action OnShowWeaponPressed;
         public event Action OnJumpKeyPressed;
         public event Action OnDodgeKeyPressed;
-        public event Action OnShowWeaponPressed;
-        public event Action OnHideWeaponPressed;
         public event Action OnLockKeyPressed;
         public event Action OnInteractionKeyPressed;
 
@@ -51,11 +50,6 @@ namespace Scripts.Player
         private void ShowWeapon(InputAction.CallbackContext context)
         {
             OnShowWeaponPressed?.Invoke();
-        }
-
-        private void HideWeapon(InputAction.CallbackContext context)
-        {
-            OnHideWeaponPressed?.Invoke();
         }
 
         private void Sprint(InputAction.CallbackContext context)
@@ -118,7 +112,6 @@ namespace Scripts.Player
             _playerControls.Gameplay.Jump.performed += Jump;
 
             _playerControls.Gameplay.ShowWeapon.performed += ShowWeapon;
-            _playerControls.Gameplay.HideWeapon.performed += HideWeapon;
 
             _playerControls.Gameplay.TargetLock.performed += Lock;
 
@@ -141,7 +134,6 @@ namespace Scripts.Player
             _playerControls.Gameplay.Jump.performed -= Jump;
 
             _playerControls.Gameplay.ShowWeapon.performed -= ShowWeapon;
-            _playerControls.Gameplay.HideWeapon.performed -= HideWeapon;
 
             _playerControls.Gameplay.TargetLock.performed -= Lock;
 

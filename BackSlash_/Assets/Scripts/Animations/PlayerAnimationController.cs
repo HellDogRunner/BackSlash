@@ -20,6 +20,8 @@ namespace Scripts.Animations
         private WeaponController _weaponController;
         private ThirdPersonCameraController _thirdPersonController;
 
+        private bool _isWeaponActive;
+
         [Inject]
         private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
         {
@@ -30,13 +32,12 @@ namespace Scripts.Animations
 
             _movementController = movementController;
             _movementController.OnJump += JumpAnimation;
-            _movementController.InAir += JumpAnimation;
+            _movementController.InAir += InAirAnimation;
             _movementController.OnDodge += DodgeAnimation;
 
             _inputController = inputController;
             _inputController.OnSprintKeyPressed += SprintAnimation;
             _inputController.OnShowWeaponPressed += ShowWeaponAnimation;
-            _inputController.OnHideWeaponPressed += HideWeaponAnimation;
             _inputController.OnBlockPressed += BlockAnimation;
 
             _thirdPersonController = thirdPersonController;
@@ -48,12 +49,11 @@ namespace Scripts.Animations
             _targetLock.OnSwitchLock -= SwitchStrafeAnimation;
 
             _movementController.OnJump -= JumpAnimation;
-            _movementController.InAir -= JumpAnimation;
+            _movementController.InAir -= InAirAnimation;
             _movementController.OnDodge -= DodgeAnimation;
 
             _inputController.OnSprintKeyPressed -= SprintAnimation;
             _inputController.OnShowWeaponPressed -= ShowWeaponAnimation;
-            _inputController.OnHideWeaponPressed -= HideWeaponAnimation;
             _inputController.OnBlockPressed -= BlockAnimation;
 
             _thirdPersonController.IsAttacking -= PrimaryAttackAnimation;
@@ -81,7 +81,7 @@ namespace Scripts.Animations
             _animator.Play("Jump");
         }
 
-        private void JumpAnimation(bool isInAir)
+        private void InAirAnimation(bool isInAir)
         {
             _animator.SetBool("InAir", isInAir);
             _animator.applyRootMotion = !isInAir;
@@ -94,17 +94,15 @@ namespace Scripts.Animations
 
         private void ShowWeaponAnimation()
         {
-            if (_weaponController.CurrentWeaponType == EWeaponType.None)
+            if (_weaponController.CurrentWeaponType == EWeaponType.None && !_isWeaponActive)
             {
+                _isWeaponActive = true;
                 _animator.SetTrigger("Equip");
                 _animator.runtimeAnimatorController = _swordOverride;
             }
-        }
-
-        private void HideWeaponAnimation()
-        {
-            if (_weaponController.CurrentWeaponType != EWeaponType.None)
+            if(_weaponController.CurrentWeaponType != EWeaponType.None && _isWeaponActive)
             {
+                _isWeaponActive = false;
                 _animator.SetTrigger("Unequip");
                 _animator.runtimeAnimatorController = _mainOverride;
             }

@@ -2,25 +2,23 @@ using UnityEngine;
 
 public class HitBox : MonoBehaviour
 {
-    public HealthController Health;
-
-    private Collider _collider;
+    private HealthController _healthController;
 
     private void Awake()
     {
-        Health = this.GetComponent<HealthController>();
-        _collider = GetComponent<Collider>();
-        _collider.isTrigger = true;
+        _healthController = this.GetComponentInParent<HealthController>();
+        var collider = this.GetComponent<Collider>();
+        collider.isTrigger = true;
+        gameObject.layer = 7;
     }
 
-    public void OnRaycastHit(RaycastWeapon weapon)
+    public void OnRangedHit(float damage)
     {
-        Health.TakeDamage(weapon.Damage);
+        _healthController.TakeDamage(damage);
     }
 
     public void OnMeleeHit(float damage)
     {
-        Health.TakeDamage(damage);
+        _healthController.TakeDamage(damage);
     }
-
 }

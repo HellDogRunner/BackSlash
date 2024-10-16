@@ -2569,7 +2569,7 @@ GameObject:
   - component: {fileID: 5830989082111267631}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Enemy
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2607,7 +2607,7 @@ MonoBehaviour:
   _player: {fileID: 0}
   _speed: 3.5
   _meleeRange: 2
-  _rangedRange: 10
+  _rangedRange: 15
   _detectionRadius: 10
   _meleeDamage: 5
   _currentPatrolIndex: 0
@@ -2697,7 +2697,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d3e9a12a5022a04196979b3a9f858d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: {fileID: 3759006753693581023}
 --- !u!114 &3677045783407548891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3852,6 +3851,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pistol
       objectReference: {fileID: 0}
+    - target: {fileID: 4199094504299548083, guid: b142ff51874f4ef41908223ef447c668,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790295576454464744, guid: b142ff51874f4ef41908223ef447c668,
+        type: 3}
+      propertyPath: _bulletSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790295576454464744, guid: b142ff51874f4ef41908223ef447c668,
+        type: 3}
+      propertyPath: _hitboxLayer.m_Bits
+      value: 129
+      objectReference: {fileID: 0}
     - target: {fileID: 8948819290738394563, guid: b142ff51874f4ef41908223ef447c668,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3902,7 +3916,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 68.406
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5138769155127223703, guid: b142ff51874f4ef41908223ef447c668, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

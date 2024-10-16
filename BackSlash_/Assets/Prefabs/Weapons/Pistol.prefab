@@ -9938,16 +9938,16 @@ MonoBehaviour:
   _raycastOrigin: {fileID: 7272271231610657830}
   _tracerEffect: {fileID: 3052021911545049099, guid: d69ff3c2fc720a44cb4349aef207f83a,
     type: 3}
-  _fireRate: 0.88
-  _bulletSpeed: 1000
+  _fireRate: 0.85
+  _bulletSpeed: 100
   _bulletDrop: 0
   _damage: 5
-  _inaccuracyRadius: 0.5
-  _accuracyPercent: 50
+  _inaccuracyRadius: 0
+  _accuracyPercent: 100
   _missShotRadius: 1.5
   _hitboxLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 129
 --- !u!114 &2965704086332234460
 MonoBehaviour:
   m_ObjectHideFlags: 0

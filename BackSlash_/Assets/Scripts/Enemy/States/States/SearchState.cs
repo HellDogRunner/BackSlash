@@ -16,7 +16,6 @@ public class SearchState : IEnemyState
 
     public void Enter()
     {
-        Debug.Log("Search state Entered");
         _enemy.NavAgent.isStopped = false;
         _searchAttempts = 0;
         SetNewSearchTarget();
