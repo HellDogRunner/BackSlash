@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class RaycastWeapon : MonoBehaviour
@@ -20,7 +21,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private float _fireRate = 25;
     [SerializeField] private float _bulletSpeed = 1000;
     [SerializeField] private float _bulletDrop = 0f;
-    [SerializeField] private float _damage = 0f;
+    [SerializeField] private float _damage = 10f;
     [SerializeField] private float _inaccuracyRadius = 0f;
     [SerializeField] private float _accuracyPercent = 100f;
     [SerializeField] private float _missShotRadius = 0f;
@@ -70,6 +71,7 @@ public class RaycastWeapon : MonoBehaviour
     {
         if (_isFiring)
         {
+            target += new Vector3(0, 1, 0);
             _accumulatedTime += deltaTime;
             float fireInterval = 1f / _fireRate;
             while (_accumulatedTime >= 0f)
@@ -119,27 +121,19 @@ public class RaycastWeapon : MonoBehaviour
 
         ray.origin = start;
         ray.direction = direction;
-
-        var raycastHits = Physics.RaycastAll(ray, distance, _hitboxLayer, QueryTriggerInteraction.Collide);
-        if (raycastHits.Length > 0)
+        if (Physics.Raycast(ray, out _hitInfo, distance, _hitboxLayer, QueryTriggerInteraction.Collide))
         {
-            _hitInfo = raycastHits[0];
-
             _hitEffect.transform.position = _hitInfo.point;
             _hitEffect.transform.forward = _hitInfo.normal;
-
             _hitEffect.Emit(1);
 
             bullet.tracer.transform.position = _hitInfo.point;
             bullet.time = _maxLifeTime;
 
-            foreach (var hitinfo in raycastHits)
+            if (_hitInfo.collider.TryGetComponent(out HitBox hitbox))
             {
-                if (hitinfo.collider.TryGetComponent<HitBox>(out HitBox hitbox))
-                {
-                    hitbox.OnRaycastHit(this);
-                }
-            }
+                hitbox.OnRangedHit(_damage);
+            }     
         }
         else
         {

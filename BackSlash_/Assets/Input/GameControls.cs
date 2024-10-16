@@ -91,15 +91,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""HideWeapon"",
-                    ""type"": ""Button"",
-                    ""id"": ""dfceaf67-c5b0-4083-8094-8c0d6780bdd9"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
                     ""id"": ""bca16aa9-8df2-4b94-9f0a-3b2c428313b4"",
@@ -253,17 +244,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ShowWeapon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1fa1f6bf-37e2-4419-b82b-ba4a16d60a0e"",
-                    ""path"": ""<Keyboard>/h"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""HideWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -918,7 +898,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Gameplay_HeavyAttack = m_Gameplay.FindAction("HeavyAttack", throwIfNotFound: true);
         m_Gameplay_Dodge = m_Gameplay.FindAction("Dodge", throwIfNotFound: true);
         m_Gameplay_ShowWeapon = m_Gameplay.FindAction("ShowWeapon", throwIfNotFound: true);
-        m_Gameplay_HideWeapon = m_Gameplay.FindAction("HideWeapon", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
         m_Gameplay_Block = m_Gameplay.FindAction("Block", throwIfNotFound: true);
         m_Gameplay_TargetLock = m_Gameplay.FindAction("TargetLock", throwIfNotFound: true);
@@ -1021,7 +1000,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_HeavyAttack;
     private readonly InputAction m_Gameplay_Dodge;
     private readonly InputAction m_Gameplay_ShowWeapon;
-    private readonly InputAction m_Gameplay_HideWeapon;
     private readonly InputAction m_Gameplay_Jump;
     private readonly InputAction m_Gameplay_Block;
     private readonly InputAction m_Gameplay_TargetLock;
@@ -1038,7 +1016,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @HeavyAttack => m_Wrapper.m_Gameplay_HeavyAttack;
         public InputAction @Dodge => m_Wrapper.m_Gameplay_Dodge;
         public InputAction @ShowWeapon => m_Wrapper.m_Gameplay_ShowWeapon;
-        public InputAction @HideWeapon => m_Wrapper.m_Gameplay_HideWeapon;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         public InputAction @Block => m_Wrapper.m_Gameplay_Block;
         public InputAction @TargetLock => m_Wrapper.m_Gameplay_TargetLock;
@@ -1074,9 +1051,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ShowWeapon.started += instance.OnShowWeapon;
             @ShowWeapon.performed += instance.OnShowWeapon;
             @ShowWeapon.canceled += instance.OnShowWeapon;
-            @HideWeapon.started += instance.OnHideWeapon;
-            @HideWeapon.performed += instance.OnHideWeapon;
-            @HideWeapon.canceled += instance.OnHideWeapon;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
@@ -1117,9 +1091,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @ShowWeapon.started -= instance.OnShowWeapon;
             @ShowWeapon.performed -= instance.OnShowWeapon;
             @ShowWeapon.canceled -= instance.OnShowWeapon;
-            @HideWeapon.started -= instance.OnHideWeapon;
-            @HideWeapon.performed -= instance.OnHideWeapon;
-            @HideWeapon.canceled -= instance.OnHideWeapon;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
@@ -1367,7 +1338,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
         void OnShowWeapon(InputAction.CallbackContext context);
-        void OnHideWeapon(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnBlock(InputAction.CallbackContext context);
         void OnTargetLock(InputAction.CallbackContext context);

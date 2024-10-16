@@ -20,12 +20,16 @@ public class HealthController : MonoBehaviour
     private void Start()
     {
         _ragdoll = GetComponent<Ragdoll>();
+        SetupHitboxes();
+    }
 
+    private void SetupHitboxes()
+    {
         var rigidbodies = GetComponentsInChildren<Rigidbody>();
         foreach (var rigidbody in rigidbodies)
         {
+            rigidbody.isKinematic = true;
             HitBox hitBox = rigidbody.gameObject.AddComponent<HitBox>();
-            hitBox.Health = this;
         }
     }
 

@@ -14,7 +14,6 @@ public class ChaseState : IEnemyState
 
     public void Enter()
     {
-        Debug.Log("chase state Entered");
         _enemy.NavAgent.isStopped = false;
         _chaseTimer = 0f;
     }

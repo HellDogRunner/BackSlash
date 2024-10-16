@@ -4,12 +4,14 @@ public class AttackState : IEnemyState
 {
     private readonly EnemyController _enemy;
 
-    private bool _isAttack;
     private Vector3 _offset;
     private RaycastWeapon _weapon;
+
     private float _meleeAttackRange = 2f;
     private float _attackCooldown = 2f;
     private float _attackTimer;
+    private bool _isAttack;
+
     public AttackState(EnemyController enemy)
     {
         _enemy = enemy;
@@ -17,7 +19,6 @@ public class AttackState : IEnemyState
 
     public void Enter()
     {
-        Debug.Log("atttack state Entered");
         _enemy.NavAgent.isStopped = true;
         _weapon = _enemy.GetComponentInChildren<RaycastWeapon>();
     }
@@ -38,6 +39,7 @@ public class AttackState : IEnemyState
         else
         {
             _isAttack = false;
+            _weapon.StartFiring();
             _enemy.SetState(new ChaseState(_enemy));
         }
         if (!IsPlayerInSight())
@@ -83,7 +85,7 @@ public class AttackState : IEnemyState
     {
         Vector3 directionToPlayer = (_enemy.Target.position - _enemy.transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
-        _enemy.transform.rotation = Quaternion.Slerp(_enemy.transform.rotation, lookRotation, Time.deltaTime * 5f); // Плавное поворачивание
+        _enemy.transform.rotation = Quaternion.Slerp(_enemy.transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
 
     private void ShootTarget(Transform target)

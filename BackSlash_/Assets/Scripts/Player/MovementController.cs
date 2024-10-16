@@ -23,6 +23,7 @@ namespace Scripts.Player
         [Header("IsGround settings")]
         [SerializeField] private float _maxCastDistance;
         [SerializeField] private float _sphereCastRadius;
+        [SerializeField] private LayerMask _hitboxLayer;
 
         private bool _isJump;
         private bool _isDodge;
@@ -32,7 +33,6 @@ namespace Scripts.Player
 
         private Vector3 _forwardDirection;
         private RaycastHit _slopeHit;
-        private LayerMask _hitboxLayer;
 
         private InputController _inputController;
         private ComboSystem _comboSystem;
@@ -56,8 +56,6 @@ namespace Scripts.Player
             _inputController.OnSprintKeyPressed += Sprint;
 
             _currentSpeed = _runSpeed;
-            _hitboxLayer = 1 << 7;
-            _hitboxLayer = ~_hitboxLayer;
 
             _comboSystem = comboSystem;
             _comboSystem.IsAttacking += IsAttacking;
@@ -233,7 +231,7 @@ namespace Scripts.Player
                 Vector3.down, out hitInfo,
                 _maxCastDistance,
                 _hitboxLayer,
-                QueryTriggerInteraction.UseGlobal))
+                QueryTriggerInteraction.Ignore))
             {
                 _currenthitdisance = hitInfo.distance;
                 return true;
