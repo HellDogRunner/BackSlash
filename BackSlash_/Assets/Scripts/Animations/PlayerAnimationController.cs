@@ -23,8 +23,10 @@ namespace Scripts.Animations
         [Inject]
         private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
         {
-            _targetLock = targetLock;
             _weaponController = weaponController;
+
+            _targetLock = targetLock;
+            _targetLock.OnSwitchLock += SwitchStrafeAnimation;
 
             _movementController = movementController;
             _movementController.OnJump += JumpAnimation;
@@ -43,6 +45,8 @@ namespace Scripts.Animations
 
         private void OnDestroy()
         {
+            _targetLock.OnSwitchLock -= SwitchStrafeAnimation;
+
             _movementController.OnJump -= JumpAnimation;
             _movementController.InAir -= JumpAnimation;
             _movementController.OnDodge -= DodgeAnimation;
@@ -59,15 +63,12 @@ namespace Scripts.Animations
         {
             var direction = _inputController.MoveDirection;
             _animator.SetFloat("InputX", direction.x, _smoothBlend, Time.deltaTime);
-            _animator.SetFloat("InputY", direction.z, _smoothBlend, Time.deltaTime);
-            if (_targetLock.CurrentTargetTransform != null)
-            {
-                _animator.SetBool("TargetLock", true);
-            }
-            else
-            {
-                _animator.SetBool("TargetLock", false);
-            }
+            _animator.SetFloat("InputY", direction.z, _smoothBlend, Time.deltaTime); 
+        }
+
+        private void SwitchStrafeAnimation(bool value)
+        {
+            _animator.SetBool("TargetLock", value);
         }
 
         private void SprintAnimation(bool isPressed)

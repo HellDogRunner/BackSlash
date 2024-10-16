@@ -1,45 +1,37 @@
-using System.Collections.Generic;
-using UnityEngine;
-using Unity.Cinemachine;
-using UnityEngine.UI;
 using Scripts.Player;
-using Zenject;
 using System;
-using UniRx.Triggers;
+using System.Collections.Generic;
 using UniRx;
+using UniRx.Triggers;
+using Unity.Cinemachine;
+using UnityEngine;
+using UnityEngine.UI;
+using Zenject;
 
 public class TargetLock : MonoBehaviour
 {
     [Header("Objects")]
-    [Space]
-    [SerializeField] private CinemachineFreeLook _cinemachineFreeLook;
+    [SerializeField] private CinemachineCamera _lockOnCamera;
+    [SerializeField] private CinemachineRotationComposer _rotationComposer;
     [SerializeField] private SphereCollider _triggerCollider;
     [Space]
-    [Header("UI")]
-    [SerializeField] private Image _aimIcon;  
-    [Space]
+    [SerializeField] private Image _aimIcon;
+
     [Header("Settings")]
-    [Space]
-    [SerializeField] private Vector2 _targetLockOffset; 
     [SerializeField] private float _maxDistance;
-
-    public bool isTargeting = false;
-
-    public event Action<GameObject> OnStartTargeting;
-    public event Action<GameObject> OnStopTarteting;
+    [SerializeField] private float _targetAngle;
+    [SerializeField] private List<Target> _targets = new List<Target>();
 
     private Camera _mainCamera;
-    private Transform _currentTargetTransform;
     private Target _currentTarget;
-    private float _maxAngle;
-    private float _mouseX;
-    private float _mouseY;
-
-    [SerializeField] private List<Target> _targets = new List<Target>();
+    private Vector3 TargetOffsetY;
+    private bool isTargeting = false;
 
     private InputController _inputService;
 
-    public Transform CurrentTargetTransform => _currentTargetTransform;
+    public event Action<bool> OnSwitchLock;
+
+    public Target Target => _currentTarget;
 
     [Inject]
     private void Construct(InputController inputService)
@@ -51,11 +43,8 @@ public class TargetLock : MonoBehaviour
     private void Awake()
     {
         _mainCamera = Camera.main;
-        _maxAngle = 90f;
         _triggerCollider.radius = _maxDistance;
-
-        _cinemachineFreeLook.m_XAxis.m_InputAxisName = "";
-        _cinemachineFreeLook.m_YAxis.m_InputAxisName = "";
+        TargetOffsetY = new Vector3(0, _rotationComposer.TargetOffset.y, 0);
 
         _triggerCollider.OnTriggerEnterAsObservable()
            .Subscribe(other =>
@@ -70,16 +59,32 @@ public class TargetLock : MonoBehaviour
            }).AddTo(this);
     }
 
-    private void AddTargets(Collider other) 
+    private void Update()
     {
-        if (!other.TryGetComponent<Target>(out Target target)) { return; }
+        if (_currentTarget)
+        {
+            Vector3 aimTarget = _currentTarget.transform.position + TargetOffsetY;
+            _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(aimTarget);
+        }
+    }
+
+    private void AddTargets(Collider other)
+    {
+        if (!other.TryGetComponent<Target>(out Target target)) return;
+
         _targets.Add(target);
         target.OnTargetDeath += ForceUnlock;
     }
 
     private void RemoveTargets(Collider other)
     {
-        if (!other.TryGetComponent<Target>(out Target target)) { return; }
+        if (!other.TryGetComponent<Target>(out Target target)) return;
+
+        if (target == _currentTarget)
+        {
+            ForceUnlock(target);
+            return;
+        }
 
         _targets.Remove(target);
     }
@@ -89,74 +94,50 @@ public class TargetLock : MonoBehaviour
         _inputService.OnLockKeyPressed -= AssignTarget;
     }
 
-    void Update()
-    {
-        if (!isTargeting)
-        {
-            _mouseX = Input.GetAxis("Mouse X");
-            _mouseY = Input.GetAxis("Mouse Y");
-        }
-        else
-        {
-            NewInputTarget(_currentTargetTransform);
-        }
-
-        if (_aimIcon)
-        {
-            _aimIcon.gameObject.SetActive(isTargeting);
-        }
-
-        _cinemachineFreeLook.m_XAxis.m_InputAxisValue = _mouseX;
-        _cinemachineFreeLook.m_YAxis.m_InputAxisValue = _mouseY;
-    }
-
     private void AssignTarget()
-    {       
+    {
         if (isTargeting)
         {
             isTargeting = false;
-            _currentTargetTransform = null;
-            OnStopTarteting?.Invoke(_currentTarget.gameObject);
+            _aimIcon.gameObject.SetActive(false);
+            _currentTarget = null;
+
+            UnlockCamera();
             return;
         }
 
-        if (ClosestTarget())
+        _currentTarget = ClosestTarget();
+
+        if (_currentTarget)
         {
-            _currentTarget = ClosestTarget();
-            _currentTargetTransform = _currentTarget.transform;
             isTargeting = true;
-            OnStartTargeting?.Invoke(_currentTarget.gameObject);
+            _aimIcon.gameObject.SetActive(true);
+
+            LockOnTarget(_currentTarget.transform);
         }
     }
 
-    private void NewInputTarget(Transform target) 
+    private void LockOnTarget(Transform target)
     {
-        if (!_currentTargetTransform)
-        {
-            isTargeting = false;
-            return;
-        }
+        _lockOnCamera.Target.LookAtTarget = target;
+        _lockOnCamera.gameObject.SetActive(true);
+        OnSwitchLock?.Invoke(true);
+    }
 
-        float distance = Vector3.Distance(_currentTargetTransform.position, gameObject.transform.position);
-        if (distance > _maxDistance)
-        {
-            ForceUnlock(_currentTarget);
-        }
-
-        Vector3 aimTarget = target.position + new Vector3(0, 1.3f, 0);
-        Vector3 viewPos = _mainCamera.WorldToViewportPoint(aimTarget);
-        if (_aimIcon)
-            _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(aimTarget);
-
-        _mouseX = (viewPos.x - 0.5f + _targetLockOffset.x) * 3f;
-        _mouseY = (viewPos.y - 0.5f + _targetLockOffset.y) * 3f;              
+    private void UnlockCamera()
+    {
+        _lockOnCamera.gameObject.SetActive(false);
+        OnSwitchLock?.Invoke(false);
     }
 
     private void ForceUnlock(Target target)
     {
         if (target)
         {
-            _currentTargetTransform = null;
+            _currentTarget = null;
+
+            UnlockCamera();
+
             _targets.Remove(target);
             if (isTargeting)
             {
@@ -167,30 +148,23 @@ public class TargetLock : MonoBehaviour
         }
     }
 
-
-    private Target ClosestTarget() 
+    private Target ClosestTarget()
     {
-        Target closest = null;
+        //float currAngle = _maxAngle;
         float distance = _maxDistance;
-        float currAngle = _maxAngle;
         Vector3 position = transform.position;
+        Target closest = null;
+
         foreach (Target target in _targets)
         {
             Vector3 diff = target.transform.position - position;
             float curDistance = diff.magnitude;
-            if (curDistance < distance)
+            bool correctAngel = Vector3.Angle(diff.normalized, _mainCamera.transform.forward) < _targetAngle;
+
+            if (curDistance < distance && correctAngel && target.IsValid)
             {
-                if (target.IsValid)
-                {
-                    Vector3 viewPos = _mainCamera.WorldToViewportPoint(target.transform.position);
-                    Vector2 newPos = new Vector3(viewPos.x - 0.5f, viewPos.y - 0.5f);
-                    if (Vector3.Angle(diff.normalized, _mainCamera.transform.forward) < _maxAngle)
-                    {
-                        closest = target;
-                        currAngle = Vector3.Angle(diff.normalized, _mainCamera.transform.forward.normalized);
-                        distance = curDistance;
-                    }
-                }
+                closest = target;
+                distance = curDistance;
             }
         }
         return closest;

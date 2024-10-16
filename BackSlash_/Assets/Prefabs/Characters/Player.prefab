@@ -1054,14 +1054,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4405748393816215956}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.12836292, z: 0, w: 0.9917273}
+  m_LocalRotation: {x: 0, y: 0.08715578, z: 0, w: 0.9961947}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3952134005975904134}
   m_Father: {fileID: 9154375475347445579}
-  m_LocalEulerAnglesHint: {x: 0, y: 14.75, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 10, z: 0}
 --- !u!137 &1980477631159129699
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -2885,9 +2885,9 @@ MonoBehaviour:
   _characterController: {fileID: 3184469423278028609}
   _currentSpeed: 0
   _moveDirection: {x: 0, y: 0, z: 0}
-  _runSpeed: 7
-  _sprintSpeed: 12
-  _jumpForce: 7
+  _runSpeed: 6
+  _sprintSpeed: 8
+  _jumpForce: 5
   _jumpCooldown: 0.5
   _dodgeForce: 0.5
   _dodgeCooldown: 1
@@ -2963,7 +2963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _baseOrientation: {fileID: 655372459109497677}
   _rotationTime: 40
-  _turnSpeed: 40
+  _turnSpeed: 39.8
   _delayRotationTime: 5
 --- !u!114 &4037733144099541882
 MonoBehaviour:
@@ -3015,12 +3015,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569198f987bf4f34d8e56a3a5cb172a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cinemachineFreeLook: {fileID: 0}
+  _lockOnCamera: {fileID: 0}
+  _rotationComposer: {fileID: 0}
   _triggerCollider: {fileID: 5122264834111569371}
   _aimIcon: {fileID: 0}
-  _targetLockOffset: {x: 0, y: 0}
   _maxDistance: 20
-  isTargeting: 0
+  _targetAngle: 70
   _targets: []
 --- !u!95 &1259562901829629793
 Animator:

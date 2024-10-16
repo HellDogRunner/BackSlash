@@ -57,6 +57,10 @@ public class HierarchyObjectColor
                     backgroundColor = _backgroundColor;
                     textColor = _textColor;
                     break;
+                case "CAMERAS":
+                    backgroundColor = _backgroundColor;
+                    textColor = _textColor;
+                    break;
             }
 
 

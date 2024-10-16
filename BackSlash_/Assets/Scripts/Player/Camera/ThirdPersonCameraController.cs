@@ -46,7 +46,7 @@ namespace Scripts.Player.camera
                 _isAttacking = false;
             }
 
-            if (_targetLock.CurrentTargetTransform != null)
+            if (_targetLock.Target != null)
             {
                 RotatePlayerLocked();
             }
@@ -79,7 +79,7 @@ namespace Scripts.Player.camera
 
         private void RotatePlayerLocked()
         {
-            Vector3 rotationDirection = _targetLock.CurrentTargetTransform.position - gameObject.transform.position;
+            Vector3 rotationDirection = _targetLock.Target.transform.position - gameObject.transform.position;
             rotationDirection.Normalize();
             rotationDirection.y = 0;
             Quaternion targetRotation = Quaternion.LookRotation(rotationDirection);
