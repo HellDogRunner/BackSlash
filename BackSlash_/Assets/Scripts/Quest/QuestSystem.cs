@@ -29,7 +29,7 @@ public class QuestSystem : MonoBehaviour
 
         if (model == null)
         {
-            _questData.AddQuest(dialogueData, "Give");
+            _questData.AddQuest(dialogueData, dialogueData.GetDeafultState());
             model = _questData.GetModelByQuestData(dialogueData);
         }
 

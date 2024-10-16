@@ -17,7 +17,7 @@ public class MenuWeaponAnimation : MonoBehaviour
 
     private bool _isChoosing;
 
-    private Tween _lookAtMouse;
+    private Tween _weaponTween;
 
     private UIActionsController _pauseInputs;
 
@@ -37,7 +37,8 @@ public class MenuWeaponAnimation : MonoBehaviour
     {
         if (isMouse && !_isChoosing && _weapon != null)
         {
-            _lookAtMouse = _weapon.DOLocalRotate(GetWeaponRotation(), _lookAtDuration).SetUpdate(true).SetEase(Ease.OutSine);
+            if (_weaponTween.IsActive()) _weaponTween.Kill();
+            _weaponTween = _weapon.DOLocalRotate(GetWeaponRotation(), _lookAtDuration).SetUpdate(true).SetEase(Ease.OutSine);
         }
     }
 
@@ -68,6 +69,7 @@ public class MenuWeaponAnimation : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (_weaponTween.IsActive()) _weaponTween.Kill();
         Destroy(_spawnedWeapon);
         _pauseInputs.ShowCursor -= AnimateLookAtMouse;
     }

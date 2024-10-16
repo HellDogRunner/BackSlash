@@ -49,7 +49,7 @@ public class HierarchyObjectColor
                     backgroundColor = _backgroundColor;
                     textColor = _textColor;
                     break;
-                case "USER INTERFAÑE":
+                case "USER INTERFACE":
                     backgroundColor = _backgroundColor;
                     textColor = _textColor;
                     break;

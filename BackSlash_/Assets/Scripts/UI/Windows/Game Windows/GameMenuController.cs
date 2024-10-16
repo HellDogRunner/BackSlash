@@ -1,5 +1,6 @@
 using Scripts.Player;
 using System;
+using System.Collections;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
@@ -13,6 +14,7 @@ namespace RedMoonGames.Window
         [SerializeField] private WindowHandler _pauseWindow;
         [SerializeField] private WindowHandler _menuWindow;
         [Space]
+        [SerializeField] private float _inputsDelay = 1;
         [SerializeField] private bool _setLowPreset;
 
         private bool _inPlayerMenu;
@@ -47,10 +49,8 @@ namespace RedMoonGames.Window
             _sceneTransition.gameObject.SetActive(true);
             _hudController.gameObject.SetActive(true);
 
-            _gameInputs.enabled = true;
-            _pauseInputs.enabled = true;
-
             SwitchPause(false);
+            StartCoroutine(EnableInputsDelay());
 
             if (_setLowPreset) SetLowPreset();
         }
@@ -123,6 +123,17 @@ namespace RedMoonGames.Window
 
             if (enable) Time.timeScale = 0;
             else Time.timeScale = 1;
+        }
+
+        IEnumerator EnableInputsDelay()
+        {
+            _gameInputs.enabled = false;
+            _pauseInputs.enabled = false;
+
+            yield return new WaitForSeconds(_inputsDelay);
+
+            _gameInputs.enabled = true;
+            _pauseInputs.enabled = true;
         }
 
         private void SetLowPreset()

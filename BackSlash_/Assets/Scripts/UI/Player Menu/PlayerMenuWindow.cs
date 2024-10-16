@@ -38,7 +38,7 @@ namespace RedMoonGames.Window
         private GameMenuController _menuController;
         private TabDatabase _tabData;
 
-        public event Action<Transform> OnMenuOpened;
+        //public event Action<Transform> OnMenuOpened;
 
         [Inject]
         private void Construct(TabDatabase tabData, GameMenuController menuController)

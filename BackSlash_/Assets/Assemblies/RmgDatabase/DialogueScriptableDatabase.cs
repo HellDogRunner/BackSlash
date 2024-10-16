@@ -9,8 +9,9 @@ namespace RedMoonGames.Database
     {
         [SerializeField] protected List<TData> _questData = new List<TData>();
         [SerializeField] protected List<TData2> _stateTransitions = new List<TData2>();
+        [SerializeField] protected string _deafultState;
 
-        public List<TData> GetDialogue()
+        public List<TData> QuestDialogue()
         {
             return _questData;
         }
@@ -18,6 +19,11 @@ namespace RedMoonGames.Database
         public List<TData2> GetStates()
         {
             return _stateTransitions;
+        }
+
+        public string GetDeafultState()
+        {
+            return _deafultState;
         }
     }
 }

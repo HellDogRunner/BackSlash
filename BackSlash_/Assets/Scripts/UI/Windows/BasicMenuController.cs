@@ -5,18 +5,18 @@ using Zenject;
 
 public class BasicMenuController : MonoBehaviour
 {
-    [SerializeField] protected SceneTransitionService _sceneTransition;
-
+    protected SceneTransition _sceneTransition;
     protected WindowAnimationService _windowAnimation;
     protected WindowService _windowService;
     protected UIActionsController _pauseInputs;
 
     [Inject]
-    protected void Construct(WindowAnimationService windowAnimation, WindowService windowService, UIActionsController actionsController)
+    protected void Construct(SceneTransition sceneTransition, WindowAnimationService windowAnimation, WindowService windowService, UIActionsController actionsController)
     {
         _windowService = windowService;
         _windowAnimation = windowAnimation;
         _pauseInputs = actionsController;
+        _sceneTransition = sceneTransition;
     }
 
     protected void CloseWindow()
