@@ -53,7 +53,7 @@ public class RaycastWeapon : MonoBehaviour
         bullet.initialPosition = position;
         bullet.initialVelocity = velocity;
         bullet.time = 0f;
-        bullet.tracer = Instantiate(_tracerEffect, position, Quaternion.identity);
+        bullet.tracer = CreateTracer(bullet.initialPosition);
         bullet.tracer.AddPosition(position);
         return bullet;
     }
@@ -65,6 +65,10 @@ public class RaycastWeapon : MonoBehaviour
         {
             _accumulatedTime = 0f;
         }
+    }
+    public void StopFiring()
+    {
+        _isFiring = false;
     }
 
     public void UpdateFiring(float deltaTime, Vector3 target)
@@ -121,6 +125,12 @@ public class RaycastWeapon : MonoBehaviour
 
         ray.origin = start;
         ray.direction = direction;
+
+        if (bullet.tracer == null)
+        {
+            bullet.tracer = CreateTracer(bullet.initialPosition);
+        }
+
         if (Physics.Raycast(ray, out _hitInfo, distance, _hitboxLayer, QueryTriggerInteraction.Collide))
         {
             _hitEffect.transform.position = _hitInfo.point;
@@ -152,9 +162,9 @@ public class RaycastWeapon : MonoBehaviour
         _bullets.Add(bullet);
     }
 
-    public void StopFiring()
+    private TrailRenderer CreateTracer(Vector3 position)
     {
-        _isFiring = false;
+        return Instantiate(_tracerEffect, position, Quaternion.identity);
     }
 
 }
