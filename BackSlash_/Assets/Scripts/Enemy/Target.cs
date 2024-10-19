@@ -28,6 +28,6 @@ public class Target : MonoBehaviour
 
     private void OnDestroy()
     {
-        _health.OnDeath += ChangeValidation;
+        _health.OnDeath -= ChangeValidation;
     }
 }

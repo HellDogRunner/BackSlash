@@ -4,12 +4,22 @@ public class HitBox : MonoBehaviour
 {
     private HealthController _healthController;
 
+    private Collider _collider;
+
     private void Awake()
     {
         _healthController = this.GetComponentInParent<HealthController>();
-        var collider = this.GetComponent<Collider>();
-        collider.isTrigger = true;
+        _healthController.OnDeath += EnableCollision;
+
+        _collider = this.GetComponent<Collider>();
+        _collider.isTrigger = true;
+
         gameObject.layer = 7;
+    }
+
+    private void OnDestroy()
+    {
+        _healthController.OnDeath -= EnableCollision;
     }
 
     public void OnRangedHit(float damage)
@@ -20,5 +30,10 @@ public class HitBox : MonoBehaviour
     public void OnMeleeHit(float damage)
     {
         _healthController.TakeDamage(damage);
+    }
+
+    private void EnableCollision()
+    {
+        _collider.isTrigger = false;
     }
 }
