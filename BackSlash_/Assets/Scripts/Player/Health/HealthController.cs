@@ -19,7 +19,7 @@ public class HealthController : MonoBehaviour
     public bool IsDead => _isDead;
 
     public event Action<float> OnHealthChanged;
-    public event Action<GameObject> OnEnemyTakeDamage;
+    public event Action OnDamageTaken;
     public event Action OnDeath;
 
     private void Start()
@@ -59,8 +59,8 @@ public class HealthController : MonoBehaviour
                 Death();
                 _health = 0;
             }
-            OnEnemyTakeDamage?.Invoke(gameObject);
             OnHealthChanged?.Invoke(_health);
+            OnDamageTaken?.Invoke();
         }
     }
 

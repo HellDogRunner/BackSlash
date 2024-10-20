@@ -39,7 +39,7 @@ public class AttackState : IEnemyState
         else
         {
             _isAttack = false;
-            _weapon.StartFiring();
+            _weapon.StopFiring();
             _enemy.SetState(new ChaseState(_enemy));
         }
         if (!IsPlayerInSight())

@@ -9,7 +9,7 @@ public class SwordWeapon : MonoBehaviour
 
     private WeaponTypesDatabase _weaponTypesDatabase;
     private ComboSystem _comboSystem;
-    private bool _isAttacking;
+    [SerializeField] private bool _isAttacking;
 
     [Inject]
     private void Construct(WeaponTypesDatabase weaponTypesDatabase, ComboSystem comboSystem)
@@ -30,6 +30,7 @@ public class SwordWeapon : MonoBehaviour
                 var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
                 var weaponDamage = weaponType.LightAttackDamage;
                 hitbox.OnMeleeHit(weaponDamage);
+                _isAttacking = false;
             }
         }
     }

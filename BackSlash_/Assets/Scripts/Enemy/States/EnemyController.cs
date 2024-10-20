@@ -14,15 +14,21 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float _detectionRadius = 10f;
     [SerializeField] private float _meleeDamage = 5f;
     [SerializeField] private int _currentPatrolIndex = 0;
+    [SerializeField] private int _attacksForStagger = 3;
+    [SerializeField] private float _staggerTimer = 0.3f;
 
     private IEnemyState _currentState;
     private HealthController _healthController;
+
+    private float _currentAttacksOnEnemy;
 
     public float Speed => _speed;
     public float MeleeRange => _meleeRange;
     public float RangedRange => _rangedRange;
     public float DetectionRadius => _detectionRadius;
     public float MeleeDamage => _meleeDamage;
+
+    public float StaggerTimer => _staggerTimer;
 
     public NavMeshAgent NavAgent { get; private set; }
     public Animator Animator { get; private set; }
@@ -35,6 +41,7 @@ public class EnemyController : MonoBehaviour
 
         _healthController = GetComponent<HealthController>();
         _healthController.OnDeath += SwitchToDeathState;
+        _healthController.OnDamageTaken += HandleHit;
 
         NavAgent.speed = Speed;
 
@@ -53,6 +60,7 @@ public class EnemyController : MonoBehaviour
     private void OnDestroy()
     {
         _healthController.OnDeath -= SwitchToDeathState;
+        _healthController.OnDamageTaken -= HandleHit;
     }
 
     public void SetState(IEnemyState newState)
@@ -76,10 +84,15 @@ public class EnemyController : MonoBehaviour
         Target = target;
     }
 
-    public void Disable()
+    private void HandleHit()
     {
-        NavAgent.enabled = false;
-        Animator.enabled = false; 
+        _currentAttacksOnEnemy++;
+        if (_currentAttacksOnEnemy >= _attacksForStagger)
+        {
+            _currentAttacksOnEnemy = 0;
+            SetState(new StaggerState(this));
+        }
+        Animator.SetTrigger("Hit");
     }
 
     // Возвращает случайную точку для патрулирования в пределах определенной зоны
@@ -109,4 +122,9 @@ public class EnemyController : MonoBehaviour
         _currentPatrolIndex = (_currentPatrolIndex + 1) % _patrolPoints.Count;
     }
 
+    public void Disable()
+    {
+        NavAgent.enabled = false;
+        Animator.enabled = false; 
+    }
 }

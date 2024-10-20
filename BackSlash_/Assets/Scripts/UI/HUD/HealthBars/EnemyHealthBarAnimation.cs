@@ -39,8 +39,8 @@ namespace Scripts.UI
             _maxHealth = _health.Health;
             _currentHealth = _maxHealth;
 
-            _health.OnEnemyTakeDamage += ShowHealthBar;
             _health.OnHealthChanged += FillHealthBar;
+            _health.OnDamageTaken += ShowHealthBar;
         }
 
         private void Update()
@@ -60,15 +60,12 @@ namespace Scripts.UI
             _enemyCG.transform.LookAt(_camera.transform.position);
         }
 
-        private void ShowHealthBar(GameObject target)
+        private void ShowHealthBar()
         {
-            if (this.name == target.name)
-            {
-                _damageBar.enabled = true;
-                _enemyCG.alpha = 1f;
-                _isEnemyCanvasVisible = true;
-                _timeToHideLeft = _timeToHide;
-            }
+            _damageBar.enabled = true;
+            _enemyCG.alpha = 1f;
+            _isEnemyCanvasVisible = true;
+            _timeToHideLeft = _timeToHide;
         }
 
         private void HideHealthBar()
@@ -92,7 +89,7 @@ namespace Scripts.UI
 
         private void OnDestroy()
         {
-            _health.OnEnemyTakeDamage -= ShowHealthBar;
+            _health.OnDamageTaken -= ShowHealthBar;
             _health.OnHealthChanged -= FillHealthBar;
         }
     }

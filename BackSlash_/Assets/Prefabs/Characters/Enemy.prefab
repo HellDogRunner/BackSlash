@@ -2657,6 +2657,7 @@ GameObject:
   - component: {fileID: 2266715642144943402}
   - component: {fileID: 4266757835406807225}
   - component: {fileID: 5830989082111267631}
+  - component: {fileID: 5198545181475768229}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -2701,6 +2702,8 @@ MonoBehaviour:
   _detectionRadius: 10
   _meleeDamage: 5
   _currentPatrolIndex: 0
+  _attacksForStagger: 3
+  _staggerTimer: 3
 --- !u!114 &3759006753693581023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2890,6 +2893,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5198545181475768229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5961693609402878055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d3e9a12a5022a04196979b3a9f858d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6191318063715670669
 GameObject:
   m_ObjectHideFlags: 0

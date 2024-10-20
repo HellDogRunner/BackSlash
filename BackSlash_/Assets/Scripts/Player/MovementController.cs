@@ -142,7 +142,7 @@ namespace Scripts.Player
             {
                 _isJump = true;
                 StartCoroutine(JumpCooldown(_jumpCooldown));
-                OnJump?.Invoke();
+                if(IsGrounded()) OnJump?.Invoke();
             }
         }
 

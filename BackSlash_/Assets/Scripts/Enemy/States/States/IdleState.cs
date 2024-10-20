@@ -29,6 +29,6 @@ public class IdleState : IEnemyState
 
     public void Exit()
     {
-        
+        _enemy.NavAgent.isStopped = false;
     }
 }
