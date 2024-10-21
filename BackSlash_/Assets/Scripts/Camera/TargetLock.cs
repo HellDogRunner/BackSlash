@@ -70,6 +70,7 @@ public class TargetLock : MonoBehaviour
 
     private void AddTargets(Collider other)
     {
+        Debug.Log("add target");
         if (!other.TryGetComponent<Target>(out Target target)) return;
 
         _targets.Add(target);
@@ -78,6 +79,7 @@ public class TargetLock : MonoBehaviour
 
     private void RemoveTargets(Collider other)
     {
+        Debug.Log("remove target");
         if (!other.TryGetComponent<Target>(out Target target)) return;
 
         if (target == _currentTarget)
@@ -96,6 +98,8 @@ public class TargetLock : MonoBehaviour
 
     private void AssignTarget()
     {
+        Debug.Log("Q");
+
         if (isTargeting)
         {
             isTargeting = false;

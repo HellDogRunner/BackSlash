@@ -9,8 +9,6 @@ namespace RedMoonGames.Window
 {
     public class GameMenuController : BasicMenuController
     {
-        [SerializeField] private CinemachineBrain _cameraRotation;
-        [Space]
         [SerializeField] private WindowHandler _pauseWindow;
         [SerializeField] private WindowHandler _menuWindow;
         [Space]
@@ -93,7 +91,6 @@ namespace RedMoonGames.Window
         private void SwitchDialogue(bool inDialogue)
         {
             _inDialogue = inDialogue;
-            _cameraRotation.enabled = !inDialogue;
             _gameInputs.enabled = !inDialogue;
 
             SwitchInteraction(inDialogue);

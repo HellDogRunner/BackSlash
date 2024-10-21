@@ -9,7 +9,7 @@ public class InteractionAnimation : MonoBehaviour
     private Transform _npcTR;
     private Vector3 _defaultRotation;
 
-    public void SetNPCTransform(Transform transform, Vector3 rotation)
+    public void SetTransform(Transform transform, Vector3 rotation)
     {
         _npcTR = transform;
         _defaultRotation = rotation;

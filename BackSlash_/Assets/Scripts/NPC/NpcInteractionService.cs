@@ -8,13 +8,13 @@ public class NpcInteractionService : MonoBehaviour
     [Space]
     [SerializeField] private string _name;
     [Space]
-    [SerializeField] private Transform _viewTR;
+    [SerializeField] private Transform _dialogueLookAt;
 
     private Vector3 _defaultRotation;
 
     private void Awake()
     {
-        _defaultRotation = _viewTR.rotation.eulerAngles;
+        _defaultRotation = transform.rotation.eulerAngles;
         gameObject.tag = "NPC";
     }
 
@@ -31,5 +31,10 @@ public class NpcInteractionService : MonoBehaviour
     public Vector3 GetRotation()
     {
         return _defaultRotation;
+    }
+
+    public Transform GetLookAt()
+    {
+        return _dialogueLookAt;
     }
 }

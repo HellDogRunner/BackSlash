@@ -9,6 +9,7 @@ public class DialogueAnimation : MonoBehaviour
     [Header("Text")]
     [SerializeField] public TMP_Text Name;
     [SerializeField] private Text _phrase;
+    [Space]
     [SerializeField] private TMP_Text _positiveAnswer;
     [SerializeField] private TMP_Text _negativeAnswer;
 
@@ -35,7 +36,6 @@ public class DialogueAnimation : MonoBehaviour
     [HideInInspector] public bool _firstPhrase;
 
     public event Action TextAnimationEnd;
-    public event Action<bool> OnWindowHide;
 
     private void Awake()
     {
@@ -63,6 +63,7 @@ public class DialogueAnimation : MonoBehaviour
     {
         _text.Kill();
         _phrase.text = text;
+
         TextAnimationEnd?.Invoke();
     }
 
@@ -90,8 +91,7 @@ public class DialogueAnimation : MonoBehaviour
     {
         if (_window.IsActive()) _window.Kill();
 
-        _window = _windowCG.DOFade(0, _hideWindowDuration).SetEase(Ease.Flash).
-            OnComplete(() => OnWindowHide?.Invoke(false));
+        _window = _windowCG.DOFade(0, _hideWindowDuration).SetEase(Ease.Flash);
     }
 
     public void AnswerKeys(int fade = 0)
