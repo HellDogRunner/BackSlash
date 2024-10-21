@@ -99,6 +99,7 @@ namespace RedMoonGames.Window
         private void SwitchInteraction(bool enable)
         {
             if (!_inDialogue) _gameInputs.enabled = !enable;
+            if (_inDialogue) _dialogueWindow.OnGamePause(enable);
 
             if (enable)
             {

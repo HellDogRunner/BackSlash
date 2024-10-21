@@ -56,8 +56,8 @@ namespace Scripts.Player
             _dialogueAnimation.TextAnimationEnd += PhraseAnimationEnd;
         }
 
-        private void ButtonPositive() { DialogueAnswer(true); }
-        private void ButtonNegative() { DialogueAnswer(false); }
+        private void ButtonPositive() { DialogueAnswer(1); }
+        private void ButtonNegative() { DialogueAnswer(2); }
 
         private void NextButton()
         {
@@ -145,7 +145,7 @@ namespace Scripts.Player
             _uiActions.OnDialogueAnswer += DialogueAnswer;
         }
 
-        private void DialogueAnswer(bool answer)
+        private void DialogueAnswer(int answer)
         {
             _uiActions.OnDialogueAnswer -= DialogueAnswer;
             _positiveButton.onClick.RemoveListener(ButtonPositive);
@@ -153,6 +153,12 @@ namespace Scripts.Player
 
             _dialogueAnimation.AnswerKeys();
             _dialogueSystem.DialogueAnswer(answer);
+        }
+
+        public void OnGamePause(bool enable)
+        {
+            if (enable) _uiActions.OnBackKeyPressed -= EndDialogue;
+            else _uiActions.OnBackKeyPressed += EndDialogue;
         }
 
         private void EndDialogue()

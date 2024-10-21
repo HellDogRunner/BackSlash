@@ -9,13 +9,13 @@ public class DialogueSystem : MonoBehaviour
 {
     private QuestDatabase _data;
 
-    private Vector3 _currentQuestion;
+    private List<int> _currentQuestion;
     private bool _waitAnswer;
     private bool _dialogueGone;
 
     private List<string> _phrases;
-    private List<Vector3> _questions;
-    private List<Vector3> _answers;
+    private List<QuestListModel> _questions;
+    private List<QuestListModel> _answers;
     private Vector2 _endings;
     private int _index;
 
@@ -95,13 +95,13 @@ public class DialogueSystem : MonoBehaviour
 
         for (int index = 0; index < _questions.Count; index ++)
         {
-            if (_questions[index].x == _index)
+            if (_questions[index].List[0] == _index)
             {
                 _waitAnswer = true;
 
-                var positive = _phrases[(int)_answers[index].y];
-                var negative = _phrases[(int)_answers[index].z];
-                _currentQuestion = _questions[index];
+                var positive = _phrases[_answers[index].List[1]];  
+                var negative = _phrases[_answers[index].List[2]];
+                _currentQuestion = _questions[index].List;
 
                 OnWaitAnswer?.Invoke(positive, negative);
                 return;
@@ -110,11 +110,13 @@ public class DialogueSystem : MonoBehaviour
         _index++;
     }
 
-    public void DialogueAnswer(bool answer)
+    public void DialogueAnswer(int answer)
     {
         _waitAnswer = false;
-        if (answer) _index = (int)_currentQuestion.y;
-        else _index = (int)_currentQuestion.z;
+
+        _index = _currentQuestion[answer];
+        //if (answer) _index = (int)_currentQuestion.y;
+        //else _index = (int)_currentQuestion.z;
 
         ShowNextPhrase();
     }

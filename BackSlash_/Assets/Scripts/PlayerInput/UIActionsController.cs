@@ -16,7 +16,7 @@ namespace Scripts.Player
         public event Action<int> OnMenuTabPressed;
         public event Action<int> OnMenuSwitchTabAction;
         public event Action<bool> ShowCursor;
-        public event Action<bool> OnDialogueAnswer;
+        public event Action<int> OnDialogueAnswer;
 
         private void Awake()
         {
@@ -100,12 +100,12 @@ namespace Scripts.Player
 
         private void PositiveAnswer(InputAction.CallbackContext context)
         {
-            OnDialogueAnswer?.Invoke(true);
+            OnDialogueAnswer?.Invoke(1);
         }
 
         private void NegativeAnswer(InputAction.CallbackContext context)
         {
-            OnDialogueAnswer?.Invoke(false);
+            OnDialogueAnswer?.Invoke(2);
         }
 
         private void SubscribeToActions()

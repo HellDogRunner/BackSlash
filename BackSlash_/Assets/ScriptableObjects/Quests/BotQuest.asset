@@ -28,13 +28,13 @@ MonoBehaviour:
     - Agree
     - Disagree
     Questions:
-    - {x: 0, y: 1, z: 3}
-    - {x: 2, y: 5, z: 6}
-    - {x: 4, y: 5, z: 6}
+    - List: 000000000100000003000000
+    - List: 020000000500000006000000
+    - List: 040000000500000006000000
     Answers:
-    - {x: 0, y: 8, z: 9}
-    - {x: 2, y: 10, z: 11}
-    - {x: 4, y: 10, z: 11}
+    - List: 000000000800000009000000
+    - List: 020000000a0000000b000000
+    - List: 040000000a0000000b000000
     Endings: {x: 5, y: 6}
   - State: Cancel
     Phrases:
@@ -45,9 +45,9 @@ MonoBehaviour:
     - Agree
     - Disagree
     Questions:
-    - {x: 0, y: 1, z: 2}
+    - List: 000000000100000002000000
     Answers:
-    - {x: 0, y: 4, z: 5}
+    - List: 000000000400000005000000
     Endings: {x: 2, y: 3}
   - State: Progress
     Phrases:

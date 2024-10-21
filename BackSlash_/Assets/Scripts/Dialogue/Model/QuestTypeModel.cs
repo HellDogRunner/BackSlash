@@ -1,5 +1,6 @@
 using RedMoonGames.Database;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Scripts.UI.Dialogue
@@ -9,8 +10,8 @@ namespace Scripts.UI.Dialogue
     {
         public string State;
         public string[] Phrases;
-        public Vector3[] Questions;
-        public Vector3[] Answers;
+        public List<QuestListModel> Questions;
+        public List<QuestListModel> Answers;
         public Vector2 Endings;
 
         public string PrimaryKey => State;
