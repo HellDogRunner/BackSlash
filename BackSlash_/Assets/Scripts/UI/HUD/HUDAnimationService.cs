@@ -14,10 +14,10 @@ public class HUDAnimationService : MonoBehaviour
     private void Awake()
     {
         _overlayCG.alpha = 0;
-        Overlay(1);
+        SwitchOverlayView(1);
     }
 
-    public void Overlay(int fade)
+    public void SwitchOverlayView(int fade)
     {
         if (_overlay.IsActive()) _overlay.Kill();
 
@@ -28,7 +28,7 @@ public class HUDAnimationService : MonoBehaviour
         else _overlay = _overlayCG.DOFade(fade, _fadeDuration).SetEase(Ease.Flash).SetDelay(_showDelay);
     }
 
-    // Пока не нужно, возможно, пригодится при реализации трейда
+    // РђРЅРёРјР°С†РёСЏ РґР»СЏ РѕР±СЉРµРєС‚Р° СЃ Canvas Group СЃ РїРµСЂРµРєР»СЋС‡РµРЅРёРµРј Р°РєС‚РёРІРЅРѕСЃС‚Рё
     public void AnimateShow(CanvasGroup cg)
     {
         if (!cg.gameObject.activeSelf)

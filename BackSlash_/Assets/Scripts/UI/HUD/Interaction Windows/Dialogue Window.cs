@@ -24,14 +24,12 @@ namespace Scripts.Player
         [SerializeField] private Button _positiveButton;
         [SerializeField] private Button _negativeButton;
 
-        [SerializeField] private bool canShow = true;
+        private bool canShow = true;
 
         private HUDController _hudController;
         private InteractionSystem _interactionSystem;
         private DialogueSystem _dialogueSystem;
         private UIActionsController _uiActions;
-
-        private bool _lastPhrase;
 
         public event Action<bool> OnSwitchDialogue;
 
@@ -56,8 +54,8 @@ namespace Scripts.Player
             _dialogueAnimation.TextAnimationEnd += PhraseAnimationEnd;
         }
 
-        private void ButtonPositive() { DialogueAnswer(1); }
-        private void ButtonNegative() { DialogueAnswer(2); }
+        private void ButtonPositive() { DialogueAnswer(true); }
+        private void ButtonNegative() { DialogueAnswer(false); }
 
         private void NextButton()
         {
@@ -88,13 +86,14 @@ namespace Scripts.Player
         {
             SwitchNextButtonText(false);
             _dialogueSystem.OnPhraseShowEnd();
-            _lastPhrase = false;
         }
 
         private void ShowDialogue()
         {
             if (canShow)
             {
+                _uiActions.OnBackKeyPressed += EndDialogue;
+
                 OnSwitchDialogue?.Invoke(true);
 
                 _hudController.SwitchOverlay();
@@ -124,6 +123,8 @@ namespace Scripts.Player
         {
             canShow = false;
 
+            _uiActions.OnBackKeyPressed -= EndDialogue;
+
             if (_dialogueAnimation._text.IsActive()) _dialogueAnimation._text.Kill();
 
             _interactionSystem.EndInteraction();
@@ -145,7 +146,7 @@ namespace Scripts.Player
             _uiActions.OnDialogueAnswer += DialogueAnswer;
         }
 
-        private void DialogueAnswer(int answer)
+        private void DialogueAnswer(bool answer)
         {
             _uiActions.OnDialogueAnswer -= DialogueAnswer;
             _positiveButton.onClick.RemoveListener(ButtonPositive);
@@ -178,7 +179,6 @@ namespace Scripts.Player
 
             _nextButton.onClick.AddListener(NextButton);
             _backButton.onClick.AddListener(EndDialogue);
-            _uiActions.OnBackKeyPressed += EndDialogue;
         }
 
         private void ExitTrigger()
@@ -190,7 +190,6 @@ namespace Scripts.Player
 
             _nextButton.onClick.RemoveListener(NextButton);
             _backButton.onClick.RemoveListener(EndDialogue);
-            _uiActions.OnBackKeyPressed -= EndDialogue;
         }
 
         private void OnDestroy()

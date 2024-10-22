@@ -6,6 +6,6 @@ public class HUDController : MonoBehaviour
 
     public void SwitchOverlay(int fade = 0)
     {
-        _animationService.Overlay(fade);
+        _animationService.SwitchOverlayView(fade);
     }
 }

@@ -16,8 +16,12 @@ MonoBehaviour:
   - State: Neutral
     Phrases:
     - Hey
-    Questions: []
-    Answers: []
+    Questions:
+    - QuestionIndex: 0
+      FirstAnswer: 
+      SecondAnswer: 
+      FirstIndex: 0
+      SecondIndex: 0
     Endings: {x: 0, y: 0}
   _stateTransitions:
   - State: Neutral

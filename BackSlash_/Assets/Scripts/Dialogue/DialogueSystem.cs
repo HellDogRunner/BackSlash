@@ -9,14 +9,13 @@ public class DialogueSystem : MonoBehaviour
 {
     private QuestDatabase _data;
 
-    private List<int> _currentQuestion;
+    private QuestQuestionsModel _currentQuestion;
     private bool _waitAnswer;
     private bool _dialogueGone;
 
     private List<string> _phrases;
-    private List<QuestListModel> _questions;
-    private List<QuestListModel> _answers;
-    private Vector2 _endings;
+    private List<QuestQuestionsModel> _questions;
+    private List<QuestEndingsModel> _endings;
     private int _index;
 
     private InteractionSystem _interactionSystem;
@@ -50,8 +49,7 @@ public class DialogueSystem : MonoBehaviour
         _index = 0;
         _phrases = model.Phrases.ToList();
         _questions = model.Questions.ToList();
-        _answers = model.Answers.ToList();
-        _endings = new Vector2(model.Endings.x, model.Endings.y);
+        _endings = model.Endings.ToList();
     }
 
     private void SetDefaultState()
@@ -64,8 +62,7 @@ public class DialogueSystem : MonoBehaviour
         _index = 0;
         _phrases = null;
         _questions = null;
-        _answers = null;
-        _endings = Vector2.zero;
+        _endings = null;
     }
 
     public void ShowNextPhrase()
@@ -84,24 +81,27 @@ public class DialogueSystem : MonoBehaviour
 
     public void OnPhraseShowEnd()
     {
-        if (_endings.x == _index || _endings.y == _index)
+        foreach (var end in _endings) 
         {
-            _dialogueGone = true;
+            if (end.Index == _index)
+            {
+                _dialogueGone = true;
 
-            OnDialogueGone?.Invoke();
-            _questSystem.ChangeQuestState(_data, _endings.x == _index);
-            return;
+                OnDialogueGone?.Invoke();
+                _questSystem.ChangeQuestState(_data, end.State);
+                return;
+            }
         }
 
         for (int index = 0; index < _questions.Count; index ++)
         {
-            if (_questions[index].List[0] == _index)
+            if (_questions[index].PhraseIndex == _index)
             {
                 _waitAnswer = true;
 
-                var positive = _phrases[_answers[index].List[1]];  
-                var negative = _phrases[_answers[index].List[2]];
-                _currentQuestion = _questions[index].List;
+                var positive = _questions[index].Answer1;  
+                var negative = _questions[index].Answer2;
+                _currentQuestion = _questions[index];
 
                 OnWaitAnswer?.Invoke(positive, negative);
                 return;
@@ -110,13 +110,12 @@ public class DialogueSystem : MonoBehaviour
         _index++;
     }
 
-    public void DialogueAnswer(int answer)
+    public void DialogueAnswer(bool answer)
     {
         _waitAnswer = false;
 
-        _index = _currentQuestion[answer];
-        //if (answer) _index = (int)_currentQuestion.y;
-        //else _index = (int)_currentQuestion.z;
+        if (answer) _index = _currentQuestion.Index1;
+        else _index = _currentQuestion.Index2;
 
         ShowNextPhrase();
     }

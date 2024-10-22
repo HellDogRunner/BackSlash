@@ -29,26 +29,16 @@ public class QuestSystem : MonoBehaviour
 
         if (model == null)
         {
-            _questData.AddQuest(dialogueData, dialogueData.GetDeafultState());
+            _questData.AddQuest(dialogueData, dialogueData.GetDefaultState());
             model = _questData.GetModelByQuestData(dialogueData);
         }
 
         SetData?.Invoke(model.QuestData, model.State);
     }
 
-    public void ChangeQuestState(QuestDatabase dialogueData, bool result)
-    {
-        var interactionModel = _questData.GetModelByQuestData(dialogueData);
-        var state = dialogueData.GetAnswerByState(interactionModel.State);
-
-        if (result) interactionModel.State = state.Positive;
-        else interactionModel.State = state.Negative;
-    }
-
     public void ChangeQuestState(QuestDatabase dialogueData, string state)
     {
-        var iterModel = _questData.GetModelByQuestData(dialogueData);
-        iterModel.State = state;
+        _questData.GetModelByQuestData(dialogueData).State = state;
     }
 
     private void OnDestroy()

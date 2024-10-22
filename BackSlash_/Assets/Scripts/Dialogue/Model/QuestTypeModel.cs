@@ -10,9 +10,8 @@ namespace Scripts.UI.Dialogue
     {
         public string State;
         public string[] Phrases;
-        public List<QuestListModel> Questions;
-        public List<QuestListModel> Answers;
-        public Vector2 Endings;
+        public List<QuestQuestionsModel> Questions;
+        public List<QuestEndingsModel> Endings;
 
         public string PrimaryKey => State;
     }

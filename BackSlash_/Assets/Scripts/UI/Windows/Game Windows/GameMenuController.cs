@@ -99,7 +99,6 @@ namespace RedMoonGames.Window
         private void SwitchInteraction(bool enable)
         {
             if (!_inDialogue) _gameInputs.enabled = !enable;
-            if (_inDialogue) _dialogueWindow.OnGamePause(enable);
 
             if (enable)
             {
@@ -118,6 +117,8 @@ namespace RedMoonGames.Window
             _hudController.gameObject.SetActive(!enable);
 
             SwitchInteraction(enable);
+
+            if (_inDialogue) _dialogueWindow.OnGamePause(enable);
 
             if (enable) Time.timeScale = 0;
             else Time.timeScale = 1;
