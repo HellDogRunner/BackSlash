@@ -7,7 +7,6 @@ public class AttackState : IEnemyState
     private Vector3 _offset;
     private RaycastWeapon _weapon;
 
-    private float _meleeAttackRange = 2f;
     private float _attackCooldown = 2f;
     private float _attackTimer;
     private bool _isAttack;

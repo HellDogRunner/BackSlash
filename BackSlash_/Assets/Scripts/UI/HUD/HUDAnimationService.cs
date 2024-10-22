@@ -1,10 +1,13 @@
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public class HUDAnimationService : MonoBehaviour
 {
+    [Header("Objects")]
     [SerializeField] private CanvasGroup _overlayCG;
-    [Space]
+    [SerializeField] private TMP_Text _currencyValue;
+
     [Header("Animation Settings")]
     [SerializeField] private float _showDelay = 1f;
     [SerializeField] private float _fadeDuration = 0.5f;
@@ -26,6 +29,12 @@ public class HUDAnimationService : MonoBehaviour
             _overlay = _overlayCG.DOFade(fade, _fadeDuration).SetEase(Ease.Flash);
         }
         else _overlay = _overlayCG.DOFade(fade, _fadeDuration).SetEase(Ease.Flash).SetDelay(_showDelay);
+    }
+
+    public void CurrencyAnimation(int value)
+    {
+        // Анимация изменения значения валюты
+        _currencyValue.text = value.ToString();
     }
 
     // Анимация для объекта с Canvas Group с переключением активности
