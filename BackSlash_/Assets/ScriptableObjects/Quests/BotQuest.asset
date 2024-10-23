@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e87dfa43b918a242b9853a20f0f069b, type: 3}
   m_Name: BotQuest
   m_EditorClassIdentifier: 
-  _questData:
+  _data:
   - State: Give
     Phrases:
     - 'What is your name, stranger? '
@@ -49,11 +49,11 @@ MonoBehaviour:
     - I knew you would help me!
     - Well, get lost!
     Questions:
-    - PhraseIndex: 1
+    - PhraseIndex: 0
       Answer1: Agree
-      Index1: 2
+      Index1: 1
       Answer2: Disagree
-      Index2: 3
+      Index2: 2
     Endings:
     - Index: 1
       State: Progress
@@ -80,4 +80,3 @@ MonoBehaviour:
     Endings:
     - Index: 0
       State: Complete
-  _deafultState: Give

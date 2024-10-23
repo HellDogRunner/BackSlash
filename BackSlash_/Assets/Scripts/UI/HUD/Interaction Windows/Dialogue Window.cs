@@ -6,209 +6,191 @@ using Zenject;
 
 namespace Scripts.Player
 {
-    [RequireComponent(typeof(CanvasGroup))]
-    public class DialogueWindow : MonoBehaviour
-    {
-        [SerializeField] private DialogueAnimation _dialogueAnimation;
+	[RequireComponent(typeof(CanvasGroup))]
+	public class DialogueWindow : MonoBehaviour
+	{
+		[SerializeField] private DialogueAnimation _dialogueAnimation;
 
-        [Header("Buttons")]
-        [SerializeField] private Button _backButton;
-        [SerializeField] private Button _nextButton;
+		[Header("Buttons")]
+		[SerializeField] private Button _backButton;
+		[SerializeField] private Button _nextButton;
 
-        [Header("Next Button Texts")]
-        [SerializeField] private GameObject _next;
-        [SerializeField] private GameObject _skip;
-        [SerializeField] private GameObject _leave;
+		[Header("Next Button Texts")]
+		[SerializeField] private GameObject _next;
+		[SerializeField] private GameObject _skip;
+		[SerializeField] private GameObject _leave;
 
-        [Header("Interactive Keys")]
-        [SerializeField] private Button _positiveButton;
-        [SerializeField] private Button _negativeButton;
+		[Header("Interactive Keys")]
+		[SerializeField] private Button _positiveButton;
+		[SerializeField] private Button _negativeButton;
 
-        private bool canShow = true;
+		private HUDController _hudController;
+		private InteractionSystem _interactionSystem;
+		private DialogueSystem _dialogueSystem;
+		private UIActionsController _uiActions;
 
-        private HUDController _hudController;
-        private InteractionSystem _interactionSystem;
-        private DialogueSystem _dialogueSystem;
-        private UIActionsController _uiActions;
+		public event Action<bool> OnSwitchDialogue;
 
-        public event Action<bool> OnSwitchDialogue;
+		[Inject]
+		private void Construct(HUDController hudController, InteractionSystem interactionSystem, UIActionsController uiActions, DialogueSystem dialogueSystem)
+		{
+			_interactionSystem = interactionSystem;
+			_hudController = hudController;
+			_dialogueSystem = dialogueSystem;
+			_uiActions = uiActions;
+		}
 
-        [Inject]
-        private void Construct(HUDController hudController, InteractionSystem interactionSystem, UIActionsController uiActions, DialogueSystem dialogueSystem)
-        {
-            _interactionSystem = interactionSystem;
-            _hudController = hudController;
-            _dialogueSystem = dialogueSystem;
-            _uiActions = uiActions;
-        }
+		private void Awake()
+		{
+			_interactionSystem.OnExitTrigger += ExitTrigger;
+			_interactionSystem.OnEnterTrigger += EnterTrigger;
+			_interactionSystem.OnStartInteract += ShowDialogue;
+			_dialogueSystem.OnDialogueEnd += HideDialogue;
+			_dialogueSystem.OnShowPhrase += AnimatePhrase;
+			_dialogueSystem.OnWaitAnswer += WaitAnswer;
+			_dialogueSystem.OnDialogueGone += LastPhrase;
+			_dialogueAnimation.TextAnimationEnd += PhraseAnimationEnd;
+		}
 
-        private void Awake()
-        {
-            _interactionSystem.OnExitTrigger += ExitTrigger;
-            _interactionSystem.OnEnterTrigger += EnterTrigger;
-            _interactionSystem.OnInteract += ShowDialogue;
-            _dialogueSystem.OnDialogueEnd += HideDialogue;
-            _dialogueSystem.OnShowPhrase += AnimatePhrase;
-            _dialogueSystem.OnWaitAnswer += WaitAnswer;
-            _dialogueSystem.OnDialogueGone += LastPhrase;
-            _dialogueAnimation.TextAnimationEnd += PhraseAnimationEnd;
-        }
+		private void ButtonPositive() { DialogueAnswer(true); }
+		private void ButtonNegative() { DialogueAnswer(false); }
+		private void NextButton() { _dialogueSystem.ShowNextPhrase(); }
 
-        private void ButtonPositive() { DialogueAnswer(true); }
-        private void ButtonNegative() { DialogueAnswer(false); }
+		private void SetName(string name)
+		{
+			_dialogueAnimation.Name.text = name;
+			_dialogueAnimation._firstPhrase = true;
+		}
 
-        private void NextButton()
-        {
-            _dialogueSystem.ShowNextPhrase();
-            canShow = true;
-        }
+		private void AnimatePhrase(string phrase)
+		{
+			if (_dialogueAnimation._text.IsActive())
+			{
+				_dialogueAnimation.ShowWholePhrase(phrase);
+			}
+			else
+			{
+				SwitchNextButtonText(true);
+				_dialogueAnimation.PhraseAnimation(phrase);
+			}
+		}
 
-        private void SetName(string name)
-        {
-            _dialogueAnimation.Name.text = name;
-            _dialogueAnimation._firstPhrase = true;
-        }
+		private void PhraseAnimationEnd()
+		{
+			SwitchNextButtonText(false);
+			_dialogueSystem.OnPhraseShowEnd();
+		}
 
-        private void AnimatePhrase(string phrase)
-        {
-            if (_dialogueAnimation._text.IsActive())
-            {
-                _dialogueAnimation.ShowWholePhrase(phrase);
-            }
-            else
-            {
-                SwitchNextButtonText(true);
-                _dialogueAnimation.PhraseAnimation(phrase);
-            }
-        }
+		private void ShowDialogue()
+		{
+			_uiActions.OnBackKeyPressed += EndDialogue;
 
-        private void PhraseAnimationEnd()
-        {
-            SwitchNextButtonText(false);
-            _dialogueSystem.OnPhraseShowEnd();
-        }
+			OnSwitchDialogue?.Invoke(true);
 
-        private void ShowDialogue()
-        {
-            if (canShow)
-            {
-                _uiActions.OnBackKeyPressed += EndDialogue;
+			_hudController.SwitchOverlay();
+			_dialogueAnimation.InteractionKey();
+			_dialogueAnimation.ShowWindow();
+		}
 
-                OnSwitchDialogue?.Invoke(true);
+		private void SwitchNextButtonText(bool textTupping)
+		{
+			_next.gameObject.SetActive(!textTupping);
+			_skip.gameObject.SetActive(textTupping);
+			_leave.gameObject.SetActive(false);
+		}
 
-                _hudController.SwitchOverlay();
-                _dialogueAnimation.InteractionKey();
-                _dialogueAnimation.ShowWindow();
-            }
-            else
-            {
-                canShow = true;
-            }
-        }
+		private void LastPhrase()
+		{
+			_next.gameObject.SetActive(false);
+			_leave.gameObject.SetActive(true);
+		}
 
-        private void SwitchNextButtonText(bool textTupping)
-        {
-            _next.gameObject.SetActive(!textTupping);
-            _skip.gameObject.SetActive(textTupping);
-            _leave.gameObject.SetActive(false);
-        }
+		private void HideDialogue()
+		{
+			_uiActions.OnBackKeyPressed -= EndDialogue;
 
-        private void LastPhrase()
-        {
-            _next.gameObject.SetActive(false);
-            _leave.gameObject.SetActive(true);
-        }
+			if (_dialogueAnimation._text.IsActive()) _dialogueAnimation._text.Kill();
 
-        private void HideDialogue()
-        {
-            canShow = false;
+			_interactionSystem.EndInteraction();
+			OnSwitchDialogue?.Invoke(false);
 
-            _uiActions.OnBackKeyPressed -= EndDialogue;
+			_dialogueAnimation.HideWindow();
+			_dialogueAnimation.AnswerKeys();
+			_dialogueAnimation.InteractionKey(1);
+			_hudController.SwitchOverlay(1);
+		}
 
-            if (_dialogueAnimation._text.IsActive()) _dialogueAnimation._text.Kill();
+		private void WaitAnswer(string positive, string negative)
+		{
+			_dialogueAnimation.SetAnswers(positive, negative);
+			_dialogueAnimation.AnswerKeys(1);
 
-            _interactionSystem.EndInteraction();
-            OnSwitchDialogue?.Invoke(false);
+			_positiveButton.onClick.AddListener(ButtonPositive);
+			_negativeButton.onClick.AddListener(ButtonNegative);
+			_uiActions.OnDialogueAnswer += DialogueAnswer;
+		}
 
-            _dialogueAnimation.HideWindow();
-            _dialogueAnimation.AnswerKeys();
-            _dialogueAnimation.InteractionKey(1);
-            _hudController.SwitchOverlay(1);
-        }
+		private void DialogueAnswer(bool answer)
+		{
+			_uiActions.OnDialogueAnswer -= DialogueAnswer;
+			_positiveButton.onClick.RemoveListener(ButtonPositive);
+			_negativeButton.onClick.RemoveListener(ButtonNegative);
 
-        private void WaitAnswer(string positive, string negative)
-        {
-            _dialogueAnimation.SetAnswers(positive, negative);
-            _dialogueAnimation.AnswerKeys(1);
+			_dialogueAnimation.AnswerKeys();
+			_dialogueSystem.DialogueAnswer(answer);
+		}
 
-            _positiveButton.onClick.AddListener(ButtonPositive);
-            _negativeButton.onClick.AddListener(ButtonNegative);
-            _uiActions.OnDialogueAnswer += DialogueAnswer;
-        }
+		public void OnGamePause(bool enable)
+		{
+			if (enable) _uiActions.OnBackKeyPressed -= EndDialogue;
+			else _uiActions.OnBackKeyPressed += EndDialogue;
+		}
 
-        private void DialogueAnswer(bool answer)
-        {
-            _uiActions.OnDialogueAnswer -= DialogueAnswer;
-            _positiveButton.onClick.RemoveListener(ButtonPositive);
-            _negativeButton.onClick.RemoveListener(ButtonNegative);
+		private void EndDialogue()
+		{
+			_dialogueAnimation.AnswerKeys();
+			HideDialogue();
 
-            _dialogueAnimation.AnswerKeys();
-            _dialogueSystem.DialogueAnswer(answer);
-        }
+			_dialogueSystem.DialogueEnd();
+		}
 
-        public void OnGamePause(bool enable)
-        {
-            if (enable) _uiActions.OnBackKeyPressed -= EndDialogue;
-            else _uiActions.OnBackKeyPressed += EndDialogue;
-        }
+		private void EnterTrigger(string name)
+		{
+			_dialogueAnimation.InteractionKey(1);
+			SetName(name);
 
-        private void EndDialogue()
-        {
-            _dialogueAnimation.AnswerKeys();
-            HideDialogue();
+			_nextButton.onClick.AddListener(NextButton);
+			_backButton.onClick.AddListener(EndDialogue);
+		}
 
-            canShow = true;
+		private void ExitTrigger()
+		{
+			_dialogueAnimation.AnswerKeys();
+			_dialogueAnimation.HideWindow();
+			_dialogueAnimation.InteractionKey(0);
+			_hudController.SwitchOverlay(1);
 
-            _dialogueSystem.DialogueEnd();
-        }
+			_nextButton.onClick.RemoveListener(NextButton);
+			_backButton.onClick.RemoveListener(EndDialogue);
+		}
 
-        private void EnterTrigger(string name)
-        {
-            _dialogueAnimation.InteractionKey(1);
-            SetName(name);
+		private void OnDestroy()
+		{
+			_interactionSystem.OnExitTrigger -= ExitTrigger;
+			_interactionSystem.OnEnterTrigger -= EnterTrigger;
+			_interactionSystem.OnStartInteract -= ShowDialogue;
+			_dialogueSystem.OnDialogueEnd -= HideDialogue;
+			_dialogueSystem.OnShowPhrase -= AnimatePhrase;
+			_dialogueSystem.OnWaitAnswer -= WaitAnswer;
+			_dialogueSystem.OnDialogueGone -= LastPhrase;
+			_dialogueAnimation.TextAnimationEnd -= PhraseAnimationEnd;
+			_uiActions.OnDialogueAnswer -= DialogueAnswer;
+			_uiActions.OnBackKeyPressed -= EndDialogue;
 
-            _nextButton.onClick.AddListener(NextButton);
-            _backButton.onClick.AddListener(EndDialogue);
-        }
-
-        private void ExitTrigger()
-        {
-            _dialogueAnimation.AnswerKeys();
-            _dialogueAnimation.HideWindow();
-            _dialogueAnimation.InteractionKey(0);
-            _hudController.SwitchOverlay(1);
-
-            _nextButton.onClick.RemoveListener(NextButton);
-            _backButton.onClick.RemoveListener(EndDialogue);
-        }
-
-        private void OnDestroy()
-        {
-            _interactionSystem.OnExitTrigger -= ExitTrigger;
-            _interactionSystem.OnEnterTrigger -= EnterTrigger;
-            _interactionSystem.OnInteract -= ShowDialogue;
-            _dialogueSystem.OnDialogueEnd -= HideDialogue;
-            _dialogueSystem.OnShowPhrase -= AnimatePhrase;
-            _dialogueSystem.OnWaitAnswer -= WaitAnswer;
-            _dialogueSystem.OnDialogueGone -= LastPhrase;
-            _dialogueAnimation.TextAnimationEnd -= PhraseAnimationEnd;
-            _uiActions.OnDialogueAnswer -= DialogueAnswer;
-            _uiActions.OnBackKeyPressed -= EndDialogue;
-
-            _positiveButton.onClick.RemoveListener(ButtonPositive);
-            _negativeButton.onClick.RemoveListener(ButtonNegative);
-            _nextButton.onClick.RemoveListener(_dialogueSystem.ShowNextPhrase);
-            _backButton.onClick.RemoveListener(EndDialogue);
-        }
-    }
+			_positiveButton.onClick.RemoveListener(ButtonPositive);
+			_negativeButton.onClick.RemoveListener(ButtonNegative);
+			_nextButton.onClick.RemoveListener(_dialogueSystem.ShowNextPhrase);
+			_backButton.onClick.RemoveListener(EndDialogue);
+		}
+	}
 }

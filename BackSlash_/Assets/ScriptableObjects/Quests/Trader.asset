@@ -12,19 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e87dfa43b918a242b9853a20f0f069b, type: 3}
   m_Name: Trader
   m_EditorClassIdentifier: 
-  _questData:
+  _data:
   - State: Neutral
     Phrases:
     - Hey
-    Questions:
-    - QuestionIndex: 0
-      FirstAnswer: 
-      SecondAnswer: 
-      FirstIndex: 0
-      SecondIndex: 0
-    Endings: {x: 0, y: 0}
-  _stateTransitions:
-  - State: Neutral
-    Positive: Neutral
-    Negative: Neutral
-  _deafultState: Neutral
+    Questions: []
+    Endings:
+    - Index: 0
+      State: Neutral

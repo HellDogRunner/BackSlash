@@ -37,7 +37,7 @@ public class DialogueSystem : MonoBehaviour
     {
         _questSystem.SetData += SetDialogueModel;
 
-        _interactionSystem.OnInteract += ShowNextPhrase;
+        _interactionSystem.OnInteracting += ShowNextPhrase;
         _interactionSystem.OnExitTrigger += SetDefaultState;
     }
 
@@ -133,7 +133,7 @@ public class DialogueSystem : MonoBehaviour
     {
         _questSystem.SetData -= SetDialogueModel;
 
-        _interactionSystem.OnInteract -= ShowNextPhrase;
+        _interactionSystem.OnInteracting -= ShowNextPhrase;
         _interactionSystem.OnExitTrigger -= SetDefaultState;
     }
 }
