@@ -1,6 +1,7 @@
 using Scripts.Player;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UniRx.Triggers;
 using Unity.Cinemachine;
@@ -136,15 +137,17 @@ public class TargetLock : MonoBehaviour
         {
             _currentTarget = null;
 
+            _aimIcon.transform.position = new Vector3(0, 0, 0);
+            
             UnlockCamera();
 
             _targets.Remove(target);
+            target.OnTargetDeath -= ForceUnlock;
             if (isTargeting)
             {
                 isTargeting = false;
                 AssignTarget();
             }
-            target.OnTargetDeath -= ForceUnlock;
         }
     }
 
@@ -153,6 +156,8 @@ public class TargetLock : MonoBehaviour
         float distance = _maxDistance;
         Vector3 position = transform.position;
         Target closest = null;
+
+        _targets = _targets.Where(x => x != null).ToList();
 
         foreach (Target target in _targets)
         {

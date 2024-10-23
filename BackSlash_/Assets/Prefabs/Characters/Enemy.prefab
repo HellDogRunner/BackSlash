@@ -2658,7 +2658,8 @@ GameObject:
   - component: {fileID: 4266757835406807225}
   - component: {fileID: 5830989082111267631}
   - component: {fileID: 5198545181475768229}
-  m_Layer: 0
+  - component: {fileID: 129099930938287463}
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -2905,6 +2906,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d3e9a12a5022a04196979b3a9f858d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!136 &129099930938287463
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5961693609402878055}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6191318063715670669
 GameObject:
   m_ObjectHideFlags: 0
@@ -4010,7 +4034,7 @@ PrefabInstance:
     - target: {fileID: 7790295576454464744, guid: b142ff51874f4ef41908223ef447c668,
         type: 3}
       propertyPath: _hitboxLayer.m_Bits
-      value: 187
+      value: 315
       objectReference: {fileID: 0}
     - target: {fileID: 8948819290738394563, guid: b142ff51874f4ef41908223ef447c668,
         type: 3}

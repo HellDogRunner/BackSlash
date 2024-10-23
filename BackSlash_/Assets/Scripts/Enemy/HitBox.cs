@@ -12,7 +12,6 @@ public class HitBox : MonoBehaviour
         _healthController.OnDeath += EnableCollision;
 
         _collider = this.GetComponent<Collider>();
-        _collider.isTrigger = true;
     }
 
     private void OnDestroy()
