@@ -136,7 +136,6 @@ public class AttackState : IEnemyState
 
     public void Exit()
     {
-        _enemy.Animator.SetFloat("DistanceToTarget", 0);
         _enemy.Animator.SetBool("Shoot", false);
         _enemy.Animator.SetBool("Punch", false);
     }

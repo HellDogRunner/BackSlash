@@ -6,10 +6,12 @@ using Zenject;
 public class SwordWeapon : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _swordTrails;
+    [SerializeField] float _attackRange = 3f;
+    [SerializeField] LayerMask _hitboxlayer;
 
     private WeaponTypesDatabase _weaponTypesDatabase;
     private ComboSystem _comboSystem;
-    [SerializeField] private bool _isAttacking;
+    private bool _isAttacking;
 
     [Inject]
     private void Construct(WeaponTypesDatabase weaponTypesDatabase, ComboSystem comboSystem)
@@ -20,17 +22,20 @@ public class SwordWeapon : MonoBehaviour
         _comboSystem.IsAttacking += ShowParticles;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void Attack(bool isAttaking)
     {
-        if (other.gameObject.tag == "Enemy" && _isAttacking)
+        if (isAttaking)
         {
-            var hitbox = other.GetComponent<HitBox>();
-            if (hitbox)
+            Collider[] hitEnemies = Physics.OverlapSphere(gameObject.transform.position, _attackRange, _hitboxlayer);
+
+            foreach (Collider enemy in hitEnemies)
             {
                 var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
                 var weaponDamage = weaponType.LightAttackDamage;
-                hitbox.OnMeleeHit(weaponDamage);
-                _isAttacking = false;
+                if (enemy.TryGetComponent(out HealthController health))
+                {
+                    health.TakeDamage(weaponDamage);
+                }
             }
         }
     }
@@ -38,6 +43,7 @@ public class SwordWeapon : MonoBehaviour
     private void AttackFlag(bool isAttacking)
     {
         _isAttacking = isAttacking;
+        Attack(isAttacking);
     }
 
     private void ShowParticles(bool isAttacking)
@@ -56,5 +62,10 @@ public class SwordWeapon : MonoBehaviour
     {
         _comboSystem.IsAttacking -= AttackFlag;
         _comboSystem.IsAttacking -= ShowParticles;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(gameObject.transform.position, _attackRange);
     }
 }

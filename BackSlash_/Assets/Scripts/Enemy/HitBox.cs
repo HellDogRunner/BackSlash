@@ -13,8 +13,6 @@ public class HitBox : MonoBehaviour
 
         _collider = this.GetComponent<Collider>();
         _collider.isTrigger = true;
-
-        gameObject.layer = 7;
     }
 
     private void OnDestroy()
