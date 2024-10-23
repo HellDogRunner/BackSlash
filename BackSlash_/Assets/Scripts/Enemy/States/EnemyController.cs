@@ -92,7 +92,6 @@ public class EnemyController : MonoBehaviour
             _currentAttacksOnEnemy = 0;
             SetState(new StaggerState(this));
         }
-        Animator.SetTrigger("Hit");
     }
 
     // Возвращает случайную точку для патрулирования в пределах определенной зоны
