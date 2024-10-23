@@ -366,7 +366,7 @@
                     "name": "Escape",
                     "type": "Button",
                     "id": "76812fcd-86fd-420c-af6d-47982add24f4",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -492,6 +492,15 @@
                     "name": "NegativeAnswer",
                     "type": "Button",
                     "id": "dcc905ae-9746-409a-bf12-8bb267275dd1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Trade",
+                    "type": "Button",
+                    "id": "75cd65b9-602d-4788-980e-64527df25c38",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -848,6 +857,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "NegativeAnswer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4e42dbec-79b2-4c75-990a-20293b8394b5",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Trade",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

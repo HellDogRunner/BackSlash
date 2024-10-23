@@ -388,7 +388,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": ""Escape"",
                     ""type"": ""Button"",
                     ""id"": ""76812fcd-86fd-420c-af6d-47982add24f4"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -514,6 +514,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""name"": ""NegativeAnswer"",
                     ""type"": ""Button"",
                     ""id"": ""dcc905ae-9746-409a-bf12-8bb267275dd1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Trade"",
+                    ""type"": ""Button"",
+                    ""id"": ""75cd65b9-602d-4788-980e-64527df25c38"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -872,6 +881,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""NegativeAnswer"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4e42dbec-79b2-4c75-990a-20293b8394b5"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Trade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -915,6 +935,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_UI_SwitchTab = m_UI.FindAction("SwitchTab", throwIfNotFound: true);
         m_UI_PositiveAnswer = m_UI.FindAction("PositiveAnswer", throwIfNotFound: true);
         m_UI_NegativeAnswer = m_UI.FindAction("NegativeAnswer", throwIfNotFound: true);
+        m_UI_Trade = m_UI.FindAction("Trade", throwIfNotFound: true);
     }
 
     ~@GameControls()
@@ -1137,6 +1158,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_SwitchTab;
     private readonly InputAction m_UI_PositiveAnswer;
     private readonly InputAction m_UI_NegativeAnswer;
+    private readonly InputAction m_UI_Trade;
     public struct UIActions
     {
         private @GameControls m_Wrapper;
@@ -1162,6 +1184,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @SwitchTab => m_Wrapper.m_UI_SwitchTab;
         public InputAction @PositiveAnswer => m_Wrapper.m_UI_PositiveAnswer;
         public InputAction @NegativeAnswer => m_Wrapper.m_UI_NegativeAnswer;
+        public InputAction @Trade => m_Wrapper.m_UI_Trade;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1234,6 +1257,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @NegativeAnswer.started += instance.OnNegativeAnswer;
             @NegativeAnswer.performed += instance.OnNegativeAnswer;
             @NegativeAnswer.canceled += instance.OnNegativeAnswer;
+            @Trade.started += instance.OnTrade;
+            @Trade.performed += instance.OnTrade;
+            @Trade.canceled += instance.OnTrade;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1301,6 +1327,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @NegativeAnswer.started -= instance.OnNegativeAnswer;
             @NegativeAnswer.performed -= instance.OnNegativeAnswer;
             @NegativeAnswer.canceled -= instance.OnNegativeAnswer;
+            @Trade.started -= instance.OnTrade;
+            @Trade.performed -= instance.OnTrade;
+            @Trade.canceled -= instance.OnTrade;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1356,5 +1385,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnSwitchTab(InputAction.CallbackContext context);
         void OnPositiveAnswer(InputAction.CallbackContext context);
         void OnNegativeAnswer(InputAction.CallbackContext context);
+        void OnTrade(InputAction.CallbackContext context);
     }
 }

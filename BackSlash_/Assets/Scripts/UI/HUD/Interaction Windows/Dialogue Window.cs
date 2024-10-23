@@ -14,6 +14,7 @@ namespace Scripts.Player
 		[Header("Buttons")]
 		[SerializeField] private Button _backButton;
 		[SerializeField] private Button _nextButton;
+		[SerializeField] private Button _tradeButton;
 
 		[Header("Next Button Texts")]
 		[SerializeField] private GameObject _next;
@@ -45,16 +46,25 @@ namespace Scripts.Player
 			_interactionSystem.OnExitTrigger += ExitTrigger;
 			_interactionSystem.OnEnterTrigger += EnterTrigger;
 			_interactionSystem.OnStartInteract += ShowDialogue;
+			_interactionSystem.CanTrade += EnableTradeButton;
 			_dialogueSystem.OnDialogueEnd += HideDialogue;
 			_dialogueSystem.OnShowPhrase += AnimatePhrase;
 			_dialogueSystem.OnWaitAnswer += WaitAnswer;
 			_dialogueSystem.OnDialogueGone += LastPhrase;
 			_dialogueAnimation.TextAnimationEnd += PhraseAnimationEnd;
+			
+			_tradeButton.gameObject.SetActive(false);
 		}
 
 		private void ButtonPositive() { DialogueAnswer(true); }
 		private void ButtonNegative() { DialogueAnswer(false); }
 		private void NextButton() { _dialogueSystem.ShowNextPhrase(); }
+
+		private void EnableTradeButton() 
+		{
+			_tradeButton.onClick.AddListener(_interactionSystem.OpenTradeWindow);
+			_tradeButton.gameObject.SetActive(true);
+		}
 
 		private void SetName(string name)
 		{
@@ -179,6 +189,7 @@ namespace Scripts.Player
 			_interactionSystem.OnExitTrigger -= ExitTrigger;
 			_interactionSystem.OnEnterTrigger -= EnterTrigger;
 			_interactionSystem.OnStartInteract -= ShowDialogue;
+			_interactionSystem.CanTrade -= EnableTradeButton;
 			_dialogueSystem.OnDialogueEnd -= HideDialogue;
 			_dialogueSystem.OnShowPhrase -= AnimatePhrase;
 			_dialogueSystem.OnWaitAnswer -= WaitAnswer;
@@ -191,6 +202,7 @@ namespace Scripts.Player
 			_negativeButton.onClick.RemoveListener(ButtonNegative);
 			_nextButton.onClick.RemoveListener(_dialogueSystem.ShowNextPhrase);
 			_backButton.onClick.RemoveListener(EndDialogue);
+			_tradeButton.onClick.RemoveListener(_interactionSystem.OpenTradeWindow);
 		}
 	}
 }

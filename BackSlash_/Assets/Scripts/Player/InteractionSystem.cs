@@ -17,11 +17,13 @@ public class InteractionSystem : MonoBehaviour
 	private UIActionsController _uiActions;
 	private InteractionAnimation _interactionAnimation;
 
-	public event Action<QuestDatabase> SetData;
-	public event Action OnStartInteract;
-	public event Action OnInteracting;
 	public event Action OnExitTrigger;
 	public event Action<string> OnEnterTrigger;
+	public event Action<QuestDatabase> SetData;
+	public event Action CanTrade;
+	public event Action OnOpenTradeWindow;
+	public event Action OnStartInteract;
+	public event Action OnInteracting;
 
 	[Inject]
 	private void Construct(InteractionAnimation interaction, UIActionsController uIActions)
@@ -50,6 +52,12 @@ public class InteractionSystem : MonoBehaviour
 				SetData?.Invoke(_npc.GetQuestData());
 
 				_canInteract = true;
+			}
+			
+			if (_npc.GetTradePossible()) 
+			{
+				Debug.Log("Trade");
+				CanTrade?.Invoke();
 			}
 		}
 	}
@@ -104,6 +112,12 @@ public class InteractionSystem : MonoBehaviour
 		
 		_dialogueCamera.gameObject.SetActive(false);
 		_dialogueCamera.Target.LookAtTarget = null;
+	}
+
+	public void OpenTradeWindow()
+	{
+		OnOpenTradeWindow?.Invoke();
+		Debug.Log("Open Window");
 	}
 
 	private void OnDestroy()
