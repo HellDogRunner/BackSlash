@@ -1,40 +1,56 @@
+using RedMoonGames.Window;
 using Scripts.Player;
 using Scripts.UI.Dialogue;
 using System;
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 public class InteractionSystem : MonoBehaviour
 {
 	[SerializeField] private CinemachineCamera _dialogueCamera;
-
+	
+	private Button _backButton;
+	private Button _nextButton;
+	private Button _tradeButton;
+	
 	private NpcInteractionService _npc;
 	private bool _canInteract;
 	private bool _isInteracting;
+	private bool _canTrade;
+	private bool _inTrade;
 	private float _maxDistance;
 
 	private UIActionsController _uiActions;
-	private InteractionAnimation _interactionAnimation;
+	private InteractionAnimator _animator;
+	private GameMenuController _menuController;
+	private HUDController _hudController;
 
 	public event Action OnExitTrigger;
-	public event Action<string> OnEnterTrigger;
-	public event Action<QuestDatabase> SetData;
-	public event Action CanTrade;
-	public event Action OnOpenTradeWindow;
-	public event Action OnStartInteract;
+	public event Action OnEnterTrigger;
+	public event Action<QuestDatabase> SetQuestData;
+	public event Action<TraderInventory> SetTradeInventory;
+	public event Action ShowDialogue;
+	public event Action ShowTrade;
 	public event Action OnInteracting;
+	public event Action EndInteracting;
 
 	[Inject]
-	private void Construct(InteractionAnimation interaction, UIActionsController uIActions)
+	private void Construct(HUDController hudController, GameMenuController menuController, InteractionAnimator animator, UIActionsController uIActions)
 	{
-		_interactionAnimation = interaction;
+		_animator = animator;
 		_uiActions = uIActions;
+		_hudController = hudController;
+		_menuController = menuController;
 	}
 
 	private void Awake()
 	{
 		_uiActions.OnEnterKeyPressed += TryInteract;
+		_uiActions.OnBackKeyPressed += TryStopInteract;
+		_menuController.OnGamePause += OnGamePause;
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -43,21 +59,21 @@ public class InteractionSystem : MonoBehaviour
 		{
 			_npc = other.GetComponent<NpcInteractionService>();
    
-			if (_npc.GetQuestData() != null)
-			{
-				_interactionAnimation.SetTransform(_npc.transform, _npc.GetRotation());
-				_maxDistance = other.GetComponent<SphereCollider>().radius + 0.2f;
-
-				OnEnterTrigger?.Invoke(_npc.GetName());
-				SetData?.Invoke(_npc.GetQuestData());
-
-				_canInteract = true;
-			}
+			if (_npc.GetQuestData() == null) return;
+   
+			_canInteract = true;
 			
-			if (_npc.GetTradePossible()) 
+			_animator.SetTransform(_npc.transform, _npc.GetRotation());
+			_maxDistance = other.GetComponent<SphereCollider>().radius + 0.2f;
+
+			OnEnterTrigger?.Invoke();
+			SetQuestData?.Invoke(_npc.GetQuestData());
+
+			if (_npc.GetTraderInventory() != null) 
 			{
-				Debug.Log("Trade");
-				CanTrade?.Invoke();
+				_canTrade = true;
+				
+				SetTradeInventory?.Invoke(_npc.GetTraderInventory());
 			}
 		}
 	}
@@ -67,8 +83,9 @@ public class InteractionSystem : MonoBehaviour
 		if (other.tag == "NPC")
 		{
 			_canInteract = false;
-
-			_interactionAnimation.RotateToDefault();
+			_canTrade = false;
+			
+			_animator.RotateToDefault();
 
 			OnExitTrigger?.Invoke();
 		}
@@ -82,18 +99,28 @@ public class InteractionSystem : MonoBehaviour
 			{
 				_isInteracting = true;
 
+				_backButton.onClick.AddListener(TryStopInteract);
+				_nextButton.onClick.AddListener(TryInteract);
+				if (_canTrade)
+				{
+					_uiActions.OnTradeKeyPressed += SwitchInteractionWindow;
+					_tradeButton.onClick.AddListener(SwitchInteractionWindow);
+					_tradeButton.gameObject.SetActive(true);
+				}
+				
 				_dialogueCamera.Target.LookAtTarget = _npc.GetLookAt();
 				_dialogueCamera.gameObject.SetActive(true);
 
-				_interactionAnimation.LookAtEachOther(gameObject.transform);
+				_animator.TalkKey();
+				_animator.LookAtEachOther(gameObject.transform);
+				_animator.SetName(_npc.GetName());
+				_hudController.SwitchOverlay();
+				_menuController.SwitchDialogue(true);
 
-				OnStartInteract?.Invoke();
+				ShowDialogue?.Invoke();
 			}
-
-			if (_isInteracting)
-			{
-				OnInteracting?.Invoke();
-			}
+			
+			if (!_inTrade) OnInteracting?.Invoke();
 		}
 	}
 
@@ -105,23 +132,65 @@ public class InteractionSystem : MonoBehaviour
 
 		return distance < _maxDistance && _canInteract;
 	}
-
-	public void EndInteraction()
+	
+	public void TryStopInteract() 
 	{
-		_isInteracting = false;
+		if (_isInteracting) 
+		{
+			_isInteracting = false;
+			_inTrade = false;
+			
+			_backButton.onClick.RemoveListener(TryStopInteract);
+			_nextButton.onClick.RemoveListener(TryInteract);
+			if (_canTrade)
+			{
+				_uiActions.OnTradeKeyPressed -= SwitchInteractionWindow;
+				_tradeButton.onClick.RemoveListener(SwitchInteractionWindow);
+				_tradeButton.gameObject.SetActive(false);
+			}
+			
+			EndInteracting?.Invoke();
+			
+			_animator.TalkKey();
+			_hudController.SwitchOverlay(1);
+			_menuController.SwitchDialogue(false);
 		
-		_dialogueCamera.gameObject.SetActive(false);
-		_dialogueCamera.Target.LookAtTarget = null;
+			_dialogueCamera.gameObject.SetActive(false);
+			_dialogueCamera.Target.LookAtTarget = null;
+		}
 	}
 
-	public void OpenTradeWindow()
+	public void SetInteractionButtons(Button back, Button next, Button trade)
 	{
-		OnOpenTradeWindow?.Invoke();
-		Debug.Log("Open Window");
+		_backButton = back;
+		_nextButton = next;
+		_tradeButton = trade;
 	}
+
+	public void SwitchInteractionWindow()
+	{
+		if (_inTrade)
+		{
+			ShowDialogue?.Invoke();
+		}
+		else
+		{
+			ShowTrade?.Invoke();
+		}
+		_inTrade = !_inTrade;
+	}
+
+	private void OnGamePause(bool enable)
+		{
+			if (enable) _uiActions.OnBackKeyPressed -= TryStopInteract;
+			else _uiActions.OnBackKeyPressed += TryStopInteract;
+		}
 
 	private void OnDestroy()
 	{
 		_uiActions.OnEnterKeyPressed -= TryInteract;
+		_uiActions.OnBackKeyPressed -= TryStopInteract;
+		_menuController.OnGamePause -= OnGamePause;
+		
 	}
 }

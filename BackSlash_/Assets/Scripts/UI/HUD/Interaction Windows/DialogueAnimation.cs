@@ -67,12 +67,6 @@ public class DialogueAnimation : MonoBehaviour
         TextAnimationEnd?.Invoke();
     }
 
-    public void SetAnswers(string positive, string negative)
-    {
-        _positiveAnswer.text = positive;
-        _negativeAnswer.text = negative;
-    }
-
     public void InteractionKey(int fade = 0)
     {
         if (_talk.IsActive()) _talk.Kill();

@@ -1,16 +1,13 @@
-using DG.Tweening;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
 namespace Scripts.Player
 {
-	[RequireComponent(typeof(CanvasGroup))]
 	public class DialogueWindow : MonoBehaviour
 	{
-		[SerializeField] private DialogueAnimation _dialogueAnimation;
-
 		[Header("Buttons")]
 		[SerializeField] private Button _backButton;
 		[SerializeField] private Button _nextButton;
@@ -21,70 +18,59 @@ namespace Scripts.Player
 		[SerializeField] private GameObject _skip;
 		[SerializeField] private GameObject _leave;
 
-		[Header("Interactive Keys")]
+		[Header("Answers")]
 		[SerializeField] private Button _positiveButton;
 		[SerializeField] private Button _negativeButton;
+		[SerializeField] private TMP_Text _positiveAnswer;
+		[SerializeField] private TMP_Text _negativeAnswer;
 
-		private HUDController _hudController;
+		private InteractionAnimator _animator;
 		private InteractionSystem _interactionSystem;
-		private DialogueSystem _dialogueSystem;
 		private UIActionsController _uiActions;
-
-		public event Action<bool> OnSwitchDialogue;
+		private DialogueSystem _dialogueSystem;
 
 		[Inject]
-		private void Construct(HUDController hudController, InteractionSystem interactionSystem, UIActionsController uiActions, DialogueSystem dialogueSystem)
+		private void Construct(UIActionsController uiActions, InteractionAnimator animator, InteractionSystem interactionSystem, DialogueSystem dialogueSystem)
 		{
 			_interactionSystem = interactionSystem;
-			_hudController = hudController;
 			_dialogueSystem = dialogueSystem;
+			_animator = animator;
 			_uiActions = uiActions;
 		}
 
 		private void Awake()
 		{
+			_interactionSystem.SetInteractionButtons(_backButton, _nextButton, _tradeButton);
+			
 			_interactionSystem.OnExitTrigger += ExitTrigger;
 			_interactionSystem.OnEnterTrigger += EnterTrigger;
-			_interactionSystem.OnStartInteract += ShowDialogue;
-			_interactionSystem.CanTrade += EnableTradeButton;
-			_dialogueSystem.OnDialogueEnd += HideDialogue;
+			_interactionSystem.ShowDialogue += ShowDialogue;
+			_interactionSystem.EndInteracting += HideDialogue;
+			_interactionSystem.ShowTrade += HideDialogue;
 			_dialogueSystem.OnShowPhrase += AnimatePhrase;
 			_dialogueSystem.OnWaitAnswer += WaitAnswer;
 			_dialogueSystem.OnDialogueGone += LastPhrase;
-			_dialogueAnimation.TextAnimationEnd += PhraseAnimationEnd;
-			
-			_tradeButton.gameObject.SetActive(false);
+			_animator.TextAnimationEnd += PhraseAnimationEnd;
 		}
 
 		private void ButtonPositive() { DialogueAnswer(true); }
 		private void ButtonNegative() { DialogueAnswer(false); }
-		private void NextButton() { _dialogueSystem.ShowNextPhrase(); }
-
-		private void EnableTradeButton() 
-		{
-			_tradeButton.onClick.AddListener(_interactionSystem.OpenTradeWindow);
-			_tradeButton.gameObject.SetActive(true);
-		}
-
-		private void SetName(string name)
-		{
-			_dialogueAnimation.Name.text = name;
-			_dialogueAnimation._firstPhrase = true;
-		}
-
+		private void EnterTrigger() { _animator.TalkKey(1); }
+		private void ExitTrigger() { _animator.TalkKey(0); }
+		
 		private void AnimatePhrase(string phrase)
 		{
-			if (_dialogueAnimation._text.IsActive())
+			if (_animator.GetTextAnimationActive())
 			{
-				_dialogueAnimation.ShowWholePhrase(phrase);
+				_animator.ShowWholePhrase(phrase);
 			}
 			else
 			{
 				SwitchNextButtonText(true);
-				_dialogueAnimation.PhraseAnimation(phrase);
+				_animator.PhraseAnimation(phrase);
 			}
 		}
-
+		
 		private void PhraseAnimationEnd()
 		{
 			SwitchNextButtonText(false);
@@ -93,13 +79,12 @@ namespace Scripts.Player
 
 		private void ShowDialogue()
 		{
-			_uiActions.OnBackKeyPressed += EndDialogue;
-
-			OnSwitchDialogue?.Invoke(true);
-
-			_hudController.SwitchOverlay();
-			_dialogueAnimation.InteractionKey();
-			_dialogueAnimation.ShowWindow();
+			_animator.Dialogue(1);
+		}
+		
+		private void HideDialogue()
+		{
+			_animator.Dialogue();
 		}
 
 		private void SwitchNextButtonText(bool textTupping)
@@ -115,94 +100,42 @@ namespace Scripts.Player
 			_leave.gameObject.SetActive(true);
 		}
 
-		private void HideDialogue()
-		{
-			_uiActions.OnBackKeyPressed -= EndDialogue;
-
-			if (_dialogueAnimation._text.IsActive()) _dialogueAnimation._text.Kill();
-
-			_interactionSystem.EndInteraction();
-			OnSwitchDialogue?.Invoke(false);
-
-			_dialogueAnimation.HideWindow();
-			_dialogueAnimation.AnswerKeys();
-			_dialogueAnimation.InteractionKey(1);
-			_hudController.SwitchOverlay(1);
-		}
-
 		private void WaitAnswer(string positive, string negative)
 		{
-			_dialogueAnimation.SetAnswers(positive, negative);
-			_dialogueAnimation.AnswerKeys(1);
-
 			_positiveButton.onClick.AddListener(ButtonPositive);
 			_negativeButton.onClick.AddListener(ButtonNegative);
 			_uiActions.OnDialogueAnswer += DialogueAnswer;
+			
+			_positiveAnswer.text = positive;
+			_negativeAnswer.text = negative;
+			
+			_animator.AnswerKeys(1);
 		}
 
 		private void DialogueAnswer(bool answer)
 		{
-			_uiActions.OnDialogueAnswer -= DialogueAnswer;
 			_positiveButton.onClick.RemoveListener(ButtonPositive);
 			_negativeButton.onClick.RemoveListener(ButtonNegative);
+			_uiActions.OnDialogueAnswer -= DialogueAnswer;;
 
-			_dialogueAnimation.AnswerKeys();
+			_animator.AnswerKeys();
 			_dialogueSystem.DialogueAnswer(answer);
-		}
-
-		public void OnGamePause(bool enable)
-		{
-			if (enable) _uiActions.OnBackKeyPressed -= EndDialogue;
-			else _uiActions.OnBackKeyPressed += EndDialogue;
-		}
-
-		private void EndDialogue()
-		{
-			_dialogueAnimation.AnswerKeys();
-			HideDialogue();
-
-			_dialogueSystem.DialogueEnd();
-		}
-
-		private void EnterTrigger(string name)
-		{
-			_dialogueAnimation.InteractionKey(1);
-			SetName(name);
-
-			_nextButton.onClick.AddListener(NextButton);
-			_backButton.onClick.AddListener(EndDialogue);
-		}
-
-		private void ExitTrigger()
-		{
-			_dialogueAnimation.AnswerKeys();
-			_dialogueAnimation.HideWindow();
-			_dialogueAnimation.InteractionKey(0);
-			_hudController.SwitchOverlay(1);
-
-			_nextButton.onClick.RemoveListener(NextButton);
-			_backButton.onClick.RemoveListener(EndDialogue);
 		}
 
 		private void OnDestroy()
 		{
 			_interactionSystem.OnExitTrigger -= ExitTrigger;
 			_interactionSystem.OnEnterTrigger -= EnterTrigger;
-			_interactionSystem.OnStartInteract -= ShowDialogue;
-			_interactionSystem.CanTrade -= EnableTradeButton;
-			_dialogueSystem.OnDialogueEnd -= HideDialogue;
+			_interactionSystem.ShowDialogue -= ShowDialogue;
+			_interactionSystem.EndInteracting -= HideDialogue;
+			_interactionSystem.ShowTrade -= HideDialogue;
 			_dialogueSystem.OnShowPhrase -= AnimatePhrase;
 			_dialogueSystem.OnWaitAnswer -= WaitAnswer;
 			_dialogueSystem.OnDialogueGone -= LastPhrase;
-			_dialogueAnimation.TextAnimationEnd -= PhraseAnimationEnd;
-			_uiActions.OnDialogueAnswer -= DialogueAnswer;
-			_uiActions.OnBackKeyPressed -= EndDialogue;
+			_animator.TextAnimationEnd -= PhraseAnimationEnd;
 
 			_positiveButton.onClick.RemoveListener(ButtonPositive);
 			_negativeButton.onClick.RemoveListener(ButtonNegative);
-			_nextButton.onClick.RemoveListener(_dialogueSystem.ShowNextPhrase);
-			_backButton.onClick.RemoveListener(EndDialogue);
-			_tradeButton.onClick.RemoveListener(_interactionSystem.OpenTradeWindow);
 		}
 	}
 }

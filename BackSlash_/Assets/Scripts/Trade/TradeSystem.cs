@@ -1,42 +1,48 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 using Zenject;
 
 public class TradeSystem : MonoBehaviour
 {
-	private CurrencyService _currencyService;
+	private InteractionSystem _interactionSystem;
+	
+	public event Action<List<GameObject>> OnSetInventory;
 	
 	[Inject]
-	private void Construct(CurrencyService currencyService) 
+	private void Construct(InteractionSystem interactionSystem) 
 	{
-		_currencyService = currencyService;
+		_interactionSystem = interactionSystem;
 	}
 	
 	private void Awake()
 	{
-		_currencyService.OnCheckCurrency += BuyingConfirm;
+		_interactionSystem.SetTradeInventory += SetInventory;
+		_interactionSystem.OnExitTrigger += SetDefault;
 	}
 	
-	public void TryBuy(int price) 
+	private void SetInventory(TraderInventory inventory) 
 	{
-		_currencyService.TryRemoveCurrency(price);
+		// Установка инвентаря трейдера
+		List<GameObject> products = new List<GameObject>();
+		
+		foreach (var item in inventory.Inventory)
+		{
+			products.Add(item.Icon);
+		}
+		
+		OnSetInventory?.Invoke(products);
 	}
 	
-	private void BuyingConfirm(bool confirm) 
+	private void SetDefault()
 	{
-		if (confirm) 
-		{
-			// Покурка состоялась
-			Debug.Log("Buy Success");
-		}
-		else 
-		{
-			// Недостаточно средств
-			Debug.Log("Not enough currency");
-		}
+		
 	}
 	
 	private void OnDestroy()
 	{
-		_currencyService.OnCheckCurrency -= BuyingConfirm;
+		_interactionSystem.SetTradeInventory -= SetInventory;
+		_interactionSystem.OnExitTrigger -= SetDefault;
 	}
 }

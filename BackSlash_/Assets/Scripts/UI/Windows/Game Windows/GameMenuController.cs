@@ -1,174 +1,168 @@
 using Scripts.Player;
 using System;
 using System.Collections;
-using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
 
 namespace RedMoonGames.Window
 {
-    public class GameMenuController : BasicMenuController
-    {
-        [SerializeField] private WindowHandler _pauseWindow;
-        [SerializeField] private WindowHandler _menuWindow;
-        [Space]
-        [SerializeField] private float _inputsDelay = 1;
-        [SerializeField] private bool _setLowPreset;
+	public class GameMenuController : BasicMenuController
+	{
+		[SerializeField] private WindowHandler _pauseWindow;
+		[SerializeField] private WindowHandler _menuWindow;
+		[Space]
+		[SerializeField] private float _inputsDelay = 1;
+		[SerializeField] private bool _setLowPreset;
 
-        private bool _inPlayerMenu;
-        private bool _inDialogue;
+		private bool _inPlayerMenu;
+		private bool _inDialogue;
 
-        private HUDController _hudController;
-        private InputController _gameInputs;
-        private DialogueWindow _dialogueWindow;
+		private HUDController _hudController;
+		private InputController _gameInputs;
 
-        public event Action<int> OpenTab;
-        
-        [Inject]
-        private void Construct(HUDController hudController, DialogueWindow dialogueWindow, InputController gameInputs)
-        {
-            _hudController = hudController;
-            _dialogueWindow = dialogueWindow;
-            _gameInputs = gameInputs;
-        }
+		public event Action<int> OpenTab;
+		public event Action<bool> OnGamePause;
+		
+		[Inject]
+		private void Construct(HUDController hudController, InputController gameInputs)
+		{
+			_hudController = hudController;
+			_gameInputs = gameInputs;
+		}
 
-        private void Awake()
-        {
-            _dialogueWindow.OnSwitchDialogue += SwitchDialogue;
+		private void Awake()
+		{
+			_pauseInputs.ShowCursor += SwitchVisible;
 
-            _pauseInputs.ShowCursor += SwitchVisible;
+			_windowAnimation.OnAnimationComplete += CloseWindow;
+			_sceneTransition.OnWindowHide += SceneTransitionHide;
 
-            _windowAnimation.OnAnimationComplete += CloseWindow;
-            _sceneTransition.OnWindowHide += SceneTransitionHide;
+			_pauseInputs.OnMenuTabPressed += OpenMenu;
+			_pauseInputs.OnEscapeKeyPressed += OpenPause;
 
-            _pauseInputs.OnMenuTabPressed += OpenMenu;
-            _pauseInputs.OnEscapeKeyPressed += OpenPause;
+			_sceneTransition.gameObject.SetActive(true);
+			_hudController.gameObject.SetActive(true);
 
-            _sceneTransition.gameObject.SetActive(true);
-            _hudController.gameObject.SetActive(true);
+			SwitchPause(false);
+			StartCoroutine(EnableInputsDelay());
 
-            SwitchPause(false);
-            StartCoroutine(EnableInputsDelay());
+			if (_setLowPreset) SetLowPreset();
+		}
 
-            if (_setLowPreset) SetLowPreset();
-        }
+		private void OpenPause()
+		{
+			EventsOnPause();
+			SwitchPause(true);
 
-        private void OpenPause()
-        {
-            EventsOnPause();
-            SwitchPause(true);
+			_windowService.TryOpenWindow(_pauseWindow);
+			_windowService.ShowWindow();
+		}
 
-            _windowService.TryOpenWindow(_pauseWindow);
-            _windowService.ShowWindow();
-        }
+		private void HideWindow()
+		{
+			_inPlayerMenu = false;
 
-        private void HideWindow()
-        {
-            _inPlayerMenu = false;
+			EventsOnGame();
+			SwitchPause(false);
 
-            EventsOnGame();
-            SwitchPause(false);
+			_windowService.HideWindow();
+		}
 
-            _windowService.HideWindow();
-        }
+		private void OpenMenu(int index)
+		{
+			if (!_inPlayerMenu)
+			{
+				_inPlayerMenu = true;
 
-        private void OpenMenu(int index)
-        {
-            if (!_inPlayerMenu)
-            {
-                _inPlayerMenu = true;
+				SwitchPause(true);
+				EventsOnPause(); 
 
-                SwitchPause(true);
-                EventsOnPause(); 
+				_windowService.TryOpenWindow(_menuWindow);
+				_windowService.ShowWindow();
+			}
 
-                _windowService.TryOpenWindow(_menuWindow);
-                _windowService.ShowWindow();
-            }
+			OpenTab?.Invoke(index);
+		}
 
-            OpenTab?.Invoke(index);
-        }
+		public void SwitchDialogue(bool inDialogue)
+		{
+			_inDialogue = inDialogue;
+			_gameInputs.enabled = !inDialogue;
 
-        private void SwitchDialogue(bool inDialogue)
-        {
-            _inDialogue = inDialogue;
-            _gameInputs.enabled = !inDialogue;
+			SwitchInteraction(inDialogue);
+		}
 
-            SwitchInteraction(inDialogue);
-        }
+		private void SwitchInteraction(bool enable)
+		{
+			if (!_inDialogue) _gameInputs.enabled = !enable;
 
-        private void SwitchInteraction(bool enable)
-        {
-            if (!_inDialogue) _gameInputs.enabled = !enable;
+			if (enable)
+			{
+				Cursor.lockState = CursorLockMode.Confined;
+				Cursor.visible = true;
+			}
+			else
+			{
+				Cursor.lockState = CursorLockMode.Locked;
+				Cursor.visible = false;
+			}
+		}
 
-            if (enable)
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = true;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-        }
+		private void SwitchPause(bool enable)
+		{
+			_hudController.gameObject.SetActive(!enable);
 
-        private void SwitchPause(bool enable)
-        {
-            _hudController.gameObject.SetActive(!enable);
+			SwitchInteraction(enable);
 
-            SwitchInteraction(enable);
+			if (_inDialogue) OnGamePause?.Invoke(enable);
 
-            if (_inDialogue) _dialogueWindow.OnGamePause(enable);
+			if (enable) Time.timeScale = 0;
+			else Time.timeScale = 1;
+		}
 
-            if (enable) Time.timeScale = 0;
-            else Time.timeScale = 1;
-        }
+		IEnumerator EnableInputsDelay()
+		{
+			_gameInputs.enabled = false;
+			_pauseInputs.enabled = false;
 
-        IEnumerator EnableInputsDelay()
-        {
-            _gameInputs.enabled = false;
-            _pauseInputs.enabled = false;
+			yield return new WaitForSeconds(_inputsDelay);
 
-            yield return new WaitForSeconds(_inputsDelay);
+			_gameInputs.enabled = true;
+			_pauseInputs.enabled = true;
+		}
 
-            _gameInputs.enabled = true;
-            _pauseInputs.enabled = true;
-        }
+		private void SetLowPreset()
+		{
+			QualitySettings.SetQualityLevel(0);
+		}
 
-        private void SetLowPreset()
-        {
-            QualitySettings.SetQualityLevel(0);
-        }
+		private void EventsOnPause()
+		{
+			_pauseInputs.OnEscapeKeyPressed -= OpenPause;
+			_pauseInputs.OnMenuTabPressed -= OpenMenu;
+			_pauseInputs.OnEscapeKeyPressed += HideWindow;
+			_windowService.OnUnpause += HideWindow;
+		}
 
-        private void EventsOnPause()
-        {
-            _pauseInputs.OnEscapeKeyPressed -= OpenPause;
-            _pauseInputs.OnMenuTabPressed -= OpenMenu;
-            _pauseInputs.OnEscapeKeyPressed += HideWindow;
-            _windowService.OnUnpause += HideWindow;
-        }
+		private void EventsOnGame()
+		{
+			_pauseInputs.OnEscapeKeyPressed += OpenPause;
+			_pauseInputs.OnMenuTabPressed += OpenMenu;
+			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
+			_windowService.OnUnpause -= HideWindow;
+		}
 
-        private void EventsOnGame()
-        {
-            _pauseInputs.OnEscapeKeyPressed += OpenPause;
-            _pauseInputs.OnMenuTabPressed += OpenMenu;
-            _pauseInputs.OnEscapeKeyPressed -= HideWindow;
-            _windowService.OnUnpause -= HideWindow;
-        }
+		private void OnDestroy()
+		{
+			_pauseInputs.ShowCursor -= SwitchVisible;
 
-        private void OnDestroy()
-        {
-            _dialogueWindow.OnSwitchDialogue -= SwitchDialogue;
+			_windowAnimation.OnAnimationComplete -= CloseWindow;
+			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
-            _pauseInputs.ShowCursor -= SwitchVisible;
+			_windowService.OnUnpause -= HideWindow;
+			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
 
-            _windowAnimation.OnAnimationComplete -= CloseWindow;
-            _sceneTransition.OnWindowHide -= SceneTransitionHide;
-
-            _windowService.OnUnpause -= HideWindow;
-            _pauseInputs.OnEscapeKeyPressed -= HideWindow;
-
-            _pauseInputs.OnMenuTabPressed -= OpenMenu;
-        }
-    }
+			_pauseInputs.OnMenuTabPressed -= OpenMenu;
+		}
+	}
 }

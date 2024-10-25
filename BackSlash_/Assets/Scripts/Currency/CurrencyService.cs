@@ -9,7 +9,7 @@ public class CurrencyService : MonoBehaviour
 	private int _currency;
 
 	public event Action<bool> OnCheckCurrency;
-	public event Action<int> OnCurrencyChanged;
+	public event Action<int, int> OnCurrencyChanged;
 
 	private void Awake()
 	{
@@ -19,12 +19,12 @@ public class CurrencyService : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.R)) 
+		if (Input.GetKey(KeyCode.R)) 
 		{
 			AddCurrency(10);
 		}
 		
-		if (Input.GetKeyDown(KeyCode.F)) 
+		if (Input.GetKey(KeyCode.F)) 
 		{
 			TryRemoveCurrency(10);
 		}
@@ -39,7 +39,7 @@ public class CurrencyService : MonoBehaviour
 
 	public void TryRemoveCurrency(int value)
 	{
-		// Убавление валюты
+		// Трата валюты
 		if (CheckCurrency(value))
 		{
 			_itemsData.SetCurrency(_currency - value);
@@ -50,8 +50,9 @@ public class CurrencyService : MonoBehaviour
 	private void ChangeCurrency()
 	{
 		// запуск анимаций и пр.
+		int startValue = _currency;
 		_currency = _itemsData.GetCurrency();
-		OnCurrencyChanged?.Invoke(_currency);
+		OnCurrencyChanged?.Invoke(startValue, _currency);
 	}
 	
 	private bool CheckCurrency(int value)

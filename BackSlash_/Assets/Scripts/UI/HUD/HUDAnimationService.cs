@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class HUDAnimationService : MonoBehaviour
 {
-	[Header("Objects")]
 	[SerializeField] private CanvasGroup _overlayCG;
-	[SerializeField] private CanvasGroup _tradeCG;
-	[SerializeField] private TMP_Text _currencyValue;
+	[SerializeField] private TMP_Text _currency;
 
 	[Header("Animation Settings")]
 	[SerializeField] private float _showDelay = 1f;
@@ -18,25 +16,15 @@ public class HUDAnimationService : MonoBehaviour
 	private void Awake()
 	{
 		_overlayCG.alpha = 0;
-		_tradeCG.alpha = 0;
 		SwitchOverlayView(1);
 	}
 
 	public void SwitchOverlayView(int fade)
 	{
+		float delay = fade == 0 ? 0 : _showDelay;
+		
 		if (_overlay.IsActive()) _overlay.Kill();
-
-		if (fade == 0)
-		{
-			_overlay = _overlayCG.DOFade(fade, _fadeDuration).SetEase(Ease.Flash);
-		}
-		else _overlay = _overlayCG.DOFade(fade, _fadeDuration).SetEase(Ease.Flash).SetDelay(_showDelay);
-	}
-
-	public void CurrencyAnimation(int value)
-	{
-		// Анимация изменения значения валюты
-		_currencyValue.text = value.ToString();
+		_overlay = _overlayCG.DOFade(fade, _fadeDuration).SetEase(Ease.Flash).SetDelay(delay);
 	}
 
 	// Анимация для объекта с Canvas Group с переключением активности
@@ -58,5 +46,10 @@ public class HUDAnimationService : MonoBehaviour
 			cg.DOFade(0f, _fadeDuration).SetEase(Ease.InQuart).
 				OnComplete(() => cg.gameObject.SetActive(false));
 		}
+	}
+
+	public TMP_Text GetCurrency()
+	{
+		return _currency;
 	}
 }
