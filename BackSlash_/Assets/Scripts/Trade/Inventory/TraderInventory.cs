@@ -5,4 +5,11 @@ using UnityEngine;
 public class TraderInventory : ScriptableObject
 {
 	public List<TraderProduct> Inventory;
+	public Sprite SoldSprite;
+	
+	[ContextMenu("Reset inventory")]
+	private void ResetInventory() 
+	{
+		foreach (var product in Inventory) product.Sold = false;
+	}
 }

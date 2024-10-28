@@ -156,7 +156,7 @@ public class InteractionAnimator : MonoBehaviour
 		if (tween.IsActive()) tween.Kill();
 	}
 	
-	public TMP_Text GetCurrencyText()
+	public TMP_Text GetCurrency()
 	{
 		return _currency;
 	}

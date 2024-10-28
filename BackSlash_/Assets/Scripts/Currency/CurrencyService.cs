@@ -4,62 +4,58 @@ using UnityEngine;
 
 public class CurrencyService : MonoBehaviour
 {
-	[SerializeField] private AvailableItemsDatabase _itemsData;
+	[SerializeField] private AvailableItemsDatabase _playerInventory;
 
 	private int _currency;
-
-	public event Action<bool> OnCheckCurrency;
 	public event Action<int, int> OnCurrencyChanged;
 
 	private void Awake()
 	{
-		// Получение количества валюты
-		ChangeCurrency();
+		_currency = _playerInventory.GetCurrency();
 	}
 
 	private void Update()
 	{
-		if (Input.GetKey(KeyCode.R)) 
+		if (Input.GetKeyDown(KeyCode.R)) 
 		{
 			AddCurrency(10);
 		}
 		
-		if (Input.GetKey(KeyCode.F)) 
+		if (Input.GetKeyDown(KeyCode.F)) 
 		{
-			TryRemoveCurrency(10);
+			RemoveCurrency(10);
 		}
 	}
 
 	public void AddCurrency(int value) 
 	{
-		// Добавление валюты
-		_itemsData.SetCurrency(_currency + value);
+		_playerInventory.SetCurrency(_currency + value);
 		ChangeCurrency();
 	}
 
-	public void TryRemoveCurrency(int value)
+	public void RemoveCurrency(int value)
 	{
-		// Трата валюты
 		if (CheckCurrency(value))
 		{
-			_itemsData.SetCurrency(_currency - value);
+			_playerInventory.SetCurrency(_currency - value);
 			ChangeCurrency();
 		}
 	}
 
+	public int GetCurrentCurrency() 
+	{
+		return _playerInventory.GetCurrency();
+	}
+
 	private void ChangeCurrency()
 	{
-		// запуск анимаций и пр.
 		int startValue = _currency;
-		_currency = _itemsData.GetCurrency();
+		_currency = _playerInventory.GetCurrency();
 		OnCurrencyChanged?.Invoke(startValue, _currency);
 	}
 	
-	private bool CheckCurrency(int value)
+	public bool CheckCurrency(int value)
 	{
-		bool check = _currency >= value;
-		
-		OnCheckCurrency?.Invoke(check);
-		return check;
+		return _currency >= value;
 	}
 }

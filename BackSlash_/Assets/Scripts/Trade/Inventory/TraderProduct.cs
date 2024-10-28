@@ -4,7 +4,9 @@ using UnityEngine;
 public class TraderProduct : ScriptableObject
 {
 	public string Name;
+	public bool Sold;
 	public int Price;
-	public GameObject Icon;
-	public GameObject Prefab;
+	public GameObject Product;
+	[TextArea] public string Description;
+	public GameObject Model;
 }

@@ -1,29 +1,31 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public class TradeWindow : MonoBehaviour
 {
 	[SerializeField] private RectTransform _productsRoot;
-	[SerializeField] private Image _image;
+	[SerializeField] private TMP_Text _description;
 	
-	private List<GameObject> _products;
+	private List<GameObject> _products = new List<GameObject>();
+	private TraderInventory _trader;
+	
+	private bool _currencyVisible;
 	
 	private InteractionSystem _interactionSystem;
-	private TradeSystem _tradeSystem;
 	private InteractionAnimator _animator;
 	private CurrencyAnimation _currencyAnimation;
 	private CurrencyService _currencyService;
 	
+	[Inject] private DiContainer _diContainer;
+	
 	[Inject]
-	private void Construct(InteractionAnimator animator, CurrencyService currencyService, CurrencyAnimation currencyAnimation, InteractionSystem interactionSystem, TradeSystem tradeSystem)
+	private void Construct(InteractionAnimator animator, CurrencyService currencyService, CurrencyAnimation currencyAnimation, InteractionSystem interactionSystem)
 	{
 		_currencyService = currencyService;
 		_interactionSystem = interactionSystem;
 		_currencyAnimation = currencyAnimation;
-		_tradeSystem = tradeSystem;
 		_animator = animator;
 	}
 	
@@ -32,39 +34,68 @@ public class TradeWindow : MonoBehaviour
 		_interactionSystem.ShowDialogue += HideTrade;
 		_interactionSystem.ShowTrade += ShowTrade;
 		_interactionSystem.EndInteracting += HideTrade;
+		_interactionSystem.SetTradeInventory += SetInventory;
+		_interactionSystem.OnExitTrigger += ResetInventory;
 		
 		_currencyService.OnCurrencyChanged += ChangeCurrency;
-		_currencyService.OnCheckCurrency += BuyingConfirm;
-		_tradeSystem.OnSetInventory += InstantiateProducts;
 	}
 	
-	private void InstantiateProducts(List<GameObject> products) 
+	private void SetInventory(TraderInventory trader) 
 	{
-		List<Image> icons = new List<Image>();
+		_trader = trader;
 		
-		foreach (var product in products)
+		foreach (var item in _trader.Inventory)
 		{
-			Instantiate(product, _productsRoot);
+			var product = _diContainer.InstantiatePrefab(item.Product, _productsRoot);
+			_products.Add(product);
 		}
+	}
+	
+	private void ResetInventory()
+	{
+		foreach (var product in _products)
+		{
+			Destroy(product);
+		}
+		
+		_trader = null;
+		_products.Clear();
+	}
+	
+	private void SetCurrency() 
+	{
+		var value = _currencyService.GetCurrentCurrency();
+		var target = _animator.GetCurrency();
+		
+		_currencyVisible = true;
+		_currencyAnimation.SetCurrency(target, value);
 	}
 	
 	private void ShowTrade()
 	{
-		//_button.onClick.AddListener(TruBuyProduct);
-		
 		_animator.Trade(1);
+		SetCurrency();
 	}
 	
 	private void HideTrade()
 	{
-		//_button.onClick.RemoveListener(TruBuyProduct);
-		
 		_animator.Trade();
+		_currencyVisible = false;
 	}
 	
-	private void TruBuyProduct() 
+	public bool TruBuyProduct(TraderProduct product) 
 	{
-		_currencyService.TryRemoveCurrency(10);
+		if (_currencyService.CheckCurrency(product.Price))
+		{
+			_currencyService.RemoveCurrency(product.Price);
+			return true;
+		}
+		return false;
+	}
+	
+	public Sprite GetSoldSprite() 
+	{
+		return _trader.SoldSprite;
 	}
 	
 	private void BuyingConfirm(bool confirm) 
@@ -81,18 +112,22 @@ public class TradeWindow : MonoBehaviour
 	
 	private void ChangeCurrency(int startValue, int endValue)
 	{
-		_currencyAnimation.Animate(_animator.GetCurrencyText(), startValue, endValue);
+		if (_currencyVisible) _currencyAnimation.Animate(_animator.GetCurrency(), startValue, endValue);
 	}
 
+	public void ProductSelected(string description) 
+	{
+		_description.text = description;
+	}
 	
 	private void OnDestroy()
 	{
 		_interactionSystem.ShowDialogue -= HideTrade;
 		_interactionSystem.ShowTrade -= ShowTrade;
 		_interactionSystem.EndInteracting -= HideTrade;
+		_interactionSystem.SetTradeInventory -= SetInventory;
+		_interactionSystem.OnExitTrigger -= ResetInventory;
 		
 		_currencyService.OnCurrencyChanged -= ChangeCurrency;
-		_currencyService.OnCheckCurrency -= BuyingConfirm;
-		_tradeSystem.OnSetInventory -= InstantiateProducts;
 	}
 }

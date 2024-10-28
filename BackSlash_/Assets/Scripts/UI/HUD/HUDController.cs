@@ -18,11 +18,21 @@ public class HUDController : MonoBehaviour
 	private void Awake()
 	{
 		_currencyService.OnCurrencyChanged += ChangeCurrency;
+		
+		SetCurrency();
 	}
 	
 	public void SwitchOverlay(int fade = 0)
 	{
 		_animationService.SwitchOverlayView(fade);
+	}
+	
+	private void SetCurrency()
+	{
+		var value = _currencyService.GetCurrentCurrency();
+		var target = _animationService.GetCurrency();
+		
+		_currencyAnimation.SetCurrency(target, value);
 	}
 	
 	private void ChangeCurrency(int startValue, int endValue)
