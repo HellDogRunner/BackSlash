@@ -1,32 +1,48 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zenject;
 
 [RequireComponent(typeof(Button))]
-[RequireComponent(typeof(Image))]
 public class TradeProduct : MonoBehaviour, IPointerEnterHandler
 {
-	[SerializeField] private TraderProduct _product;
+	[SerializeField] private Image _icon;
+	[SerializeField] private Image _sold;
+	[SerializeField] private TMP_Text _name;
+	[SerializeField] private TMP_Text _price;
 	
-	private Image _image;
 	private Button _button;
+	private TraderProduct _product;
 	
+	private InteractionAnimator _animator;
 	private TradeWindow _tradeWindow;
 	
 	[Inject]
-	private void Construct(TradeWindow tradeWindow)
+	private void Construct(InteractionAnimator animator, TradeWindow tradeWindow)
 	{
 		_tradeWindow = tradeWindow;
+		_animator = animator;	// Create product animations
 	}
 	
 	private void Awake()
 	{
-		_image = GetComponent<Image>();
 		_button = GetComponent<Button>();
 		_button.onClick.AddListener(TryBuyProduct);
 		
-		if (_product.Sold) ChangeIcon(_tradeWindow.GetSoldSprite());
+		_icon.sprite = _product.Icon;
+		_name.text = _product.Name;
+		
+		if (_product.Sold)
+		{
+			_sold.gameObject.SetActive(true);
+			_price.text = "Sold";
+		}
+		else
+		{
+			_sold.gameObject.SetActive(false);
+			_price.text = _product.Price.ToString();
+		}
 	}
 	
 	public void OnPointerEnter(PointerEventData eventData)
@@ -38,18 +54,29 @@ public class TradeProduct : MonoBehaviour, IPointerEnterHandler
 		}
 	}
 	
-	private void ChangeIcon(Sprite sprite) 
-	{
-		_image.sprite = sprite;
+	private void TryBuyProduct()
+	{		
+		if (_product.Sold)
+		{
+			// продано
+			return;
+		}
+		
+		if (_tradeWindow.TruBuyProduct(_product))
+		{
+			// не хватает денег
+			return;
+		}
+		
+		// покупка совершена
+		_price.text = "Sold!";
+		_product.Sold = true;
+		_sold.gameObject.SetActive(true);
 	}
 	
-	private void TryBuyProduct()
+	public void SetProduct(TraderProduct product) 
 	{
-		if (!_product.Sold && _tradeWindow.TruBuyProduct(_product))
-		{
-			_product.Sold = true;
-			ChangeIcon(_tradeWindow.GetSoldSprite());
-		}
+		_product = product;
 	}
 	
 	private void OnDestroy()

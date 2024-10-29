@@ -6,30 +6,29 @@ public class CurrencyService : MonoBehaviour
 {
 	[SerializeField] private AvailableItemsDatabase _playerInventory;
 
-	private int _currency;
-	public event Action<int, int> OnCurrencyChanged;
-
-	private void Awake()
-	{
-		_currency = _playerInventory.GetCurrency();
-	}
+	public event Action<int> OnCurrencyChanged;
 
 	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.R)) 
 		{
-			AddCurrency(10);
+			AddCurrency(1000);
 		}
 		
 		if (Input.GetKeyDown(KeyCode.F)) 
 		{
-			RemoveCurrency(10);
+			RemoveCurrency(1000);
 		}
+	}
+
+	private int GetCurrency()
+	{
+		return _playerInventory.GetCurrency();
 	}
 
 	public void AddCurrency(int value) 
 	{
-		_playerInventory.SetCurrency(_currency + value);
+		_playerInventory.SetCurrency(GetCurrency() + value);
 		ChangeCurrency();
 	}
 
@@ -37,7 +36,7 @@ public class CurrencyService : MonoBehaviour
 	{
 		if (CheckCurrency(value))
 		{
-			_playerInventory.SetCurrency(_currency - value);
+			_playerInventory.SetCurrency(GetCurrency() - value);
 			ChangeCurrency();
 		}
 	}
@@ -49,13 +48,11 @@ public class CurrencyService : MonoBehaviour
 
 	private void ChangeCurrency()
 	{
-		int startValue = _currency;
-		_currency = _playerInventory.GetCurrency();
-		OnCurrencyChanged?.Invoke(startValue, _currency);
+		OnCurrencyChanged?.Invoke(GetCurrency());
 	}
 	
 	public bool CheckCurrency(int value)
 	{
-		return _currency >= value;
+		return GetCurrency() >= value;
 	}
 }

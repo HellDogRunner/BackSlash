@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -22,15 +23,15 @@ public class CurrencyAnimation : MonoBehaviour
 				return;
 			}
 			
-			_startValue += _change;
+			_startValue += _change * GetValue();
 			_target.text = _startValue.ToString();
 			_time = Time.time;
 		}
 	}
 
-	public void Animate(TMP_Text target, int startValue, int endValue)
+	public void Animate(TMP_Text target, int endValue)
 	{	
-		_startValue = startValue;
+		_startValue = int.Parse(target.text);
 		_endValue = endValue;
 		_change = _endValue > _startValue ? 1 : -1;
 		_target = target;
@@ -42,5 +43,19 @@ public class CurrencyAnimation : MonoBehaviour
 	public void SetCurrency(TMP_Text target, int value)
 	{
 		target.text = value.ToString();
+	}
+	
+	private int GetValue()
+	{
+		int value = 1;
+		int inc = 10;
+		int abs = Math.Abs(_endValue - _startValue);
+		
+		while (value + inc < abs)
+		{
+			value += inc;
+			inc *= 10;
+		}
+		return value;
 	}
 }

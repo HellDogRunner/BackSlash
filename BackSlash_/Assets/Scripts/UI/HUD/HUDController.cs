@@ -35,9 +35,9 @@ public class HUDController : MonoBehaviour
 		_currencyAnimation.SetCurrency(target, value);
 	}
 	
-	private void ChangeCurrency(int startValue, int endValue)
+	private void ChangeCurrency(int endValue)
 	{
-		_currencyAnimation.Animate(_animationService.GetCurrency(), startValue, endValue);
+		_currencyAnimation.Animate(_animationService.GetCurrency(), endValue);
 	}
 	
 	private void OnDestroy()

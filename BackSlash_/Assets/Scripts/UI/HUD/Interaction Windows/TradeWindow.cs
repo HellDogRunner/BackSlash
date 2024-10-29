@@ -6,6 +6,7 @@ using Zenject;
 public class TradeWindow : MonoBehaviour
 {
 	[SerializeField] private RectTransform _productsRoot;
+	[SerializeField] private GameObject _productTemplate;
 	[SerializeField] private TMP_Text _description;
 	
 	private List<GameObject> _products = new List<GameObject>();
@@ -46,7 +47,10 @@ public class TradeWindow : MonoBehaviour
 		
 		foreach (var item in _trader.Inventory)
 		{
-			var product = _diContainer.InstantiatePrefab(item.Product, _productsRoot);
+			var product = _diContainer.InstantiatePrefab(_productTemplate, _productsRoot);
+			
+			product.GetComponent<TradeProduct>().SetProduct(item);
+			
 			_products.Add(product);
 		}
 	}
@@ -92,27 +96,10 @@ public class TradeWindow : MonoBehaviour
 		}
 		return false;
 	}
-	
-	public Sprite GetSoldSprite() 
+
+	private void ChangeCurrency(int endValue)
 	{
-		return _trader.SoldSprite;
-	}
-	
-	private void BuyingConfirm(bool confirm) 
-	{
-		if (confirm) 
-		{
-			// Покупка состоялась
-		}
-		else 
-		{
-			// Недостаточно средств
-		}
-	}
-	
-	private void ChangeCurrency(int startValue, int endValue)
-	{
-		if (_currencyVisible) _currencyAnimation.Animate(_animator.GetCurrency(), startValue, endValue);
+		if (_currencyVisible) _currencyAnimation.Animate(_animator.GetCurrency(), endValue);
 	}
 
 	public void ProductSelected(string description) 
