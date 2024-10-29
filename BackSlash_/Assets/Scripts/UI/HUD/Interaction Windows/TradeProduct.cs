@@ -62,7 +62,7 @@ public class TradeProduct : MonoBehaviour, IPointerEnterHandler
 			return;
 		}
 		
-		if (_tradeWindow.TruBuyProduct(_product))
+		if (!_tradeWindow.TruBuyProduct(_product))
 		{
 			// не хватает денег
 			return;

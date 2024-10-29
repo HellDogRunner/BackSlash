@@ -8,7 +8,7 @@ namespace Scripts.Inventory
 	public class ModsTypeModel : IDatabaseModelPrimaryKey<string>
 	{
 		public string Name;
-		public int Prace;
+		public int Price;
 		public Sprite Icon;
 		public string PrimaryKey => Name;
 	}

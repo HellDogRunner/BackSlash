@@ -48,13 +48,12 @@ public class CurrencyAnimation : MonoBehaviour
 	private int GetValue()
 	{
 		int value = 1;
-		int inc = 10;
+		int inc = 5;
 		int abs = Math.Abs(_endValue - _startValue);
 		
-		while (value + inc < abs)
+		while (value * inc < abs)
 		{
-			value += inc;
-			inc *= 10;
+			value *= inc;
 		}
 		return value;
 	}
