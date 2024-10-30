@@ -7,17 +7,20 @@ public class HUDController : MonoBehaviour
 	
 	private CurrencyService _currencyService;
 	private CurrencyAnimation _currencyAnimation;
+	private InteractionSystem _interactionSystem;
 	
 	[Inject]
-	private void Construct(CurrencyAnimation currencyAnimation, CurrencyService currencyService)
+	private void Construct(InteractionSystem interactionSystem, CurrencyAnimation currencyAnimation, CurrencyService currencyService)
 	{
 		_currencyService = currencyService;
 		_currencyAnimation = currencyAnimation;
+		_interactionSystem = interactionSystem;
 	}
 	
 	private void Awake()
 	{
 		_currencyService.OnCurrencyChanged += ChangeCurrency;
+		_interactionSystem.EndInteracting += SetCurrency;
 		
 		SetCurrency();
 	}
@@ -43,5 +46,6 @@ public class HUDController : MonoBehaviour
 	private void OnDestroy()
 	{
 		_currencyService.OnCurrencyChanged -= ChangeCurrency;
+		_interactionSystem.EndInteracting -= SetCurrency;
 	}
 }

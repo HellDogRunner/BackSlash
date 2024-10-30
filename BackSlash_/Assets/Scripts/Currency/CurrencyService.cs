@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CurrencyService : MonoBehaviour
 {
-	[SerializeField] private AvailableItemsDatabase _playerInventory;
+	[SerializeField] private PlayerItemsDatabase _playerInventory;
 
 	public event Action<int> OnCurrencyChanged;
 

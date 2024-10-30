@@ -14,7 +14,7 @@ namespace Scripts.Player
 		public event Action OnBackKeyPressed;
 		public event Action OnAnyKeyPressed;
 		public event Action OnTradeKeyPressed;
-		public event Action<int> OnMenuTabPressed;
+		public event Action<int> OnMenuTabKeyPressed;
 		public event Action<int> OnMenuSwitchTabAction;
 		public event Action<bool> ShowCursor;
 		public event Action<bool> OnDialogueAnswer;
@@ -66,32 +66,32 @@ namespace Scripts.Player
 
 		private void Weapon(InputAction.CallbackContext context)
 		{
-			OnMenuTabPressed?.Invoke(0);
+			OnMenuTabKeyPressed?.Invoke(0);
 		}
 
 		private void Combos(InputAction.CallbackContext context)
 		{
-			OnMenuTabPressed?.Invoke(1);
+			OnMenuTabKeyPressed?.Invoke(1);
 		}
 
 		private void Abilities(InputAction.CallbackContext context)
 		{
-			OnMenuTabPressed?.Invoke(2);
+			OnMenuTabKeyPressed?.Invoke(2);
 		}
 
 		private void Skills(InputAction.CallbackContext context)
 		{
-			OnMenuTabPressed?.Invoke(3);
+			OnMenuTabKeyPressed?.Invoke(3);
 		}
 
 		private void Journal(InputAction.CallbackContext context)
 		{
-			OnMenuTabPressed?.Invoke(4);
+			OnMenuTabKeyPressed?.Invoke(4);
 		}
 
 		private void Map(InputAction.CallbackContext context)
 		{
-			OnMenuTabPressed?.Invoke(5);
+			OnMenuTabKeyPressed?.Invoke(5);
 		}
 
 		private void Prev(InputAction.CallbackContext context)

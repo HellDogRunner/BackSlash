@@ -10,7 +10,7 @@ namespace RedMoonGames.Database
     {
         [SerializeField] protected List<TData> _data = new List<TData>();
 
-        public List<TData> GetDialogue()
+        public List<TData> GetData()
         {
             return _data;
         }

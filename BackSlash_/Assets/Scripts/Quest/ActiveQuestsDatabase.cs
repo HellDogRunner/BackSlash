@@ -5,26 +5,33 @@ using UnityEngine;
 
 namespace Scripts.UI.Quest
 {
-    [CreateAssetMenu(fileName = "ActiveQuests", menuName = "[RMG] Scriptable/Quests/ActiveQuestsDatabase")]
-    public class ActiveQuestsDatabase : QuestScriptableDatabase<ActiveQuestsTypeModel>
-    {
-        public ActiveQuestsTypeModel GetModelByQuestData(QuestDatabase questData)
-        {
-            if (questData == null) return null;
+	[CreateAssetMenu(fileName = "ActiveQuests", menuName = "[RMG] Scriptable/Quests/ActiveQuestsDatabase")]
+	public class ActiveQuestsDatabase : QuestScriptableDatabase<ActiveQuestsTypeModel>
+	{
+		public ActiveQuestsTypeModel GetModelByQuestData(QuestDatabase questData)
+		{
+			if (questData == null) return null;
 
-            return _activeQuests.GetBy(model => model.QuestData == questData);
-        }
+			return _activeQuests.GetBy(model => model.QuestData == questData);
+		}
 
-        public void AddQuest(QuestDatabase questData, string state)
-        {
-            var model = _modelTemplate;
+		public string GetStateQuest(QuestDatabase questData)
+		{
+			if (questData == null) return null;
+			
+			return _activeQuests.GetBy(model => model.QuestData == questData).State;
+		}
 
-            model.QuestData = questData;
-            model.State = state;
+		public void AddQuest(QuestDatabase questData, string state)
+		{
+			var model = _modelTemplate;
 
-            _activeQuests.Add(model);
+			model.QuestData = questData;
+			model.State = state;
 
-            _modelTemplate = null;
-        }
-    }
+			_activeQuests.Add(model);
+
+			_modelTemplate = null;
+		}
+	}
 }

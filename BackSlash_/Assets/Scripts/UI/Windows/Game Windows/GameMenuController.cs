@@ -37,7 +37,7 @@ namespace RedMoonGames.Window
 			_windowAnimation.OnAnimationComplete += CloseWindow;
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 
-			_pauseInputs.OnMenuTabPressed += OpenMenu;
+			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
 			_pauseInputs.OnEscapeKeyPressed += OpenPause;
 
 			_sceneTransition.gameObject.SetActive(true);
@@ -94,8 +94,6 @@ namespace RedMoonGames.Window
 
 		private void SwitchInteraction(bool enable)
 		{
-			if (!_inDialogue) _gameInputs.enabled = !enable;
-
 			if (enable)
 			{
 				Cursor.lockState = CursorLockMode.Confined;
@@ -106,18 +104,18 @@ namespace RedMoonGames.Window
 				Cursor.lockState = CursorLockMode.Locked;
 				Cursor.visible = false;
 			}
+			
+			_gameInputs.enabled = !enable;
 		}
 
 		private void SwitchPause(bool enable)
 		{
 			_hudController.gameObject.SetActive(!enable);
 
-			SwitchInteraction(enable);
-
 			if (_inDialogue) OnGamePause?.Invoke(enable);
+			else SwitchInteraction(enable);
 
-			if (enable) Time.timeScale = 0;
-			else Time.timeScale = 1;
+			Time.timeScale = enable ? 0 : 1;
 		}
 
 		IEnumerator EnableInputsDelay()
@@ -139,7 +137,7 @@ namespace RedMoonGames.Window
 		private void EventsOnPause()
 		{
 			_pauseInputs.OnEscapeKeyPressed -= OpenPause;
-			_pauseInputs.OnMenuTabPressed -= OpenMenu;
+			_pauseInputs.OnMenuTabKeyPressed -= OpenMenu;
 			_pauseInputs.OnEscapeKeyPressed += HideWindow;
 			_windowService.OnUnpause += HideWindow;
 		}
@@ -147,7 +145,7 @@ namespace RedMoonGames.Window
 		private void EventsOnGame()
 		{
 			_pauseInputs.OnEscapeKeyPressed += OpenPause;
-			_pauseInputs.OnMenuTabPressed += OpenMenu;
+			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
 			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
 			_windowService.OnUnpause -= HideWindow;
 		}
@@ -162,7 +160,7 @@ namespace RedMoonGames.Window
 			_windowService.OnUnpause -= HideWindow;
 			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
 
-			_pauseInputs.OnMenuTabPressed -= OpenMenu;
+			_pauseInputs.OnMenuTabKeyPressed -= OpenMenu;
 		}
 	}
 }

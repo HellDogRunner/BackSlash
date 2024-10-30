@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Scripts.Inventory;
 using Scripts.UI.Dialogue;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public class NpcInteractionService : MonoBehaviour
 {
 	[SerializeField] private string _name;
 	[SerializeField] private QuestDatabase _quest;
-	[SerializeField] private TraderInventory _traderInventory;
+	[SerializeField] private PlayerItemsDatabase _items;
 	[Space]
 	[SerializeField] private Transform _dialogueLookAt;
 
@@ -39,8 +40,8 @@ public class NpcInteractionService : MonoBehaviour
 		return _dialogueLookAt;
 	}
 	
-	public TraderInventory GetTraderInventory()
+	public PlayerItemsDatabase GetTraderInventory()
 	{
-		return _traderInventory;
+		return _items;
 	}
 }

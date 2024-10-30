@@ -9,6 +9,7 @@ public class InteractionAnimator : MonoBehaviour
 	[Header("Interaction Objects")]
 	[SerializeField] private CanvasGroup _tradeCG;
 	[SerializeField] private CanvasGroup _dialogueCG;
+	[SerializeField] private CanvasGroup _buttonsCG;
 	[SerializeField] private CanvasGroup _talkCG;
 	[SerializeField] private CanvasGroup _answerKeysCG;
 	
@@ -34,6 +35,7 @@ public class InteractionAnimator : MonoBehaviour
 	private Tween _dialogue;
 	private Tween _trade;
 	private Tween _talk;
+	private Tween _buttons;
 	private Tween _answerKeys;
 	private Tween _text;
 	
@@ -41,17 +43,20 @@ public class InteractionAnimator : MonoBehaviour
 	
 	private void Awake()
 	{
-		_answerKeysCG.alpha = 0;
+		_dialogueCG.alpha = 0;
+		_dialogueCG.gameObject.SetActive(false);
 		
 		_tradeCG.alpha = 0;
 		_tradeCG.gameObject.SetActive(false);
 		
-		_dialogueCG.alpha = 0;
-		_dialogueCG.gameObject.SetActive(false);
+		_buttonsCG.alpha = 0;
+		_buttonsCG.gameObject.SetActive(false);
 		
 		_talkCG.alpha = 0;
 		_talkCG.gameObject.SetActive(false);
 		
+		_answerKeysCG.alpha = 0;
+		_answerKeysCG.gameObject.SetActive(false);
 	}
 
 	public void SetName(string name)
@@ -96,6 +101,11 @@ public class InteractionAnimator : MonoBehaviour
 		SwitchAlphaAndSetActive(_trade, _tradeCG, alpha);
 	}
 
+	public void Buttons(int alpha = 0)
+	{
+		SwitchAlphaAndSetActive(_buttons, _buttonsCG, alpha);
+	}
+
 	public void TalkKey(int alpha = 0)
 	{
 		SwitchAlphaAndSetActive(_talk, _talkCG, alpha);
@@ -103,7 +113,7 @@ public class InteractionAnimator : MonoBehaviour
 
 	public void AnswerKeys(int alpha = 0)
 	{
-		SwitchObjectAlpha(_answerKeys, _answerKeysCG, alpha);
+		SwitchAlphaAndSetActive(_answerKeys, _answerKeysCG, alpha);
 	}
 
 	private void SwitchAlphaAndSetActive(Tween tween, CanvasGroup cg, float alpha = 0)
@@ -122,6 +132,7 @@ public class InteractionAnimator : MonoBehaviour
 		}
 	}
 
+	// Нужна ли fade анимация без переключения активности объекта?
 	private void SwitchObjectAlpha(Tween tween, CanvasGroup cg, float alpha, bool isWindow = false) 
 	{
 		float duration;

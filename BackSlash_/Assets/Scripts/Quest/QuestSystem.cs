@@ -6,43 +6,51 @@ using Zenject;
 
 public class QuestSystem : MonoBehaviour
 {
-    [SerializeField] private ActiveQuestsDatabase _questData;
+	[SerializeField] private ActiveQuestsDatabase _activeQuests;
 
-    private InteractionSystem _interactionSystem;
+	private InteractionSystem _interactionSystem;
 
-    public event Action<QuestDatabase, string> SetData;
+	public event Action<QuestDatabase, string> SetData;
 
-    [Inject]
-    private void Construct(InteractionSystem interactionSystem)
-    {
-        _interactionSystem = interactionSystem;
-    }
+	[Inject]
+	private void Construct(InteractionSystem interactionSystem)
+	{
+		_interactionSystem = interactionSystem;
+	}
 
-    private void Awake()
-    {
-        _interactionSystem.SetQuestData += UpdateData;
-    }
+	private void Awake()
+	{
+		_interactionSystem.SetQuestData += UpdateData;
+	}
 
-    public void UpdateData(QuestDatabase dialogueData)
-    {
-        var model = _questData.GetModelByQuestData(dialogueData);
+	public void UpdateData(QuestDatabase dialogueData)
+	{
+		var model = _activeQuests.GetModelByQuestData(dialogueData);
 
-        if (model == null)
-        {
-            _questData.AddQuest(dialogueData, dialogueData.GetDefaultState());
-            model = _questData.GetModelByQuestData(dialogueData);
-        }
+		if (model == null)
+		{
+			_activeQuests.AddQuest(dialogueData, dialogueData.GetDefaultState());
+			model = _activeQuests.GetModelByQuestData(dialogueData);
+		}
 
-        SetData?.Invoke(model.QuestData, model.State);
-    }
+		SetData?.Invoke(model.QuestData, model.State);
+	}
 
-    public void ChangeQuestState(QuestDatabase dialogueData, string state)
-    {
-        _questData.GetModelByQuestData(dialogueData).State = state;
-    }
-
-    private void OnDestroy()
-    {
-        _interactionSystem.SetQuestData -= UpdateData;  
-    }
+	public void ChangeQuestState(QuestDatabase questData, string state)
+	{
+		_activeQuests.GetModelByQuestData(questData).State = state;
+	}
+	
+	public void ChangeQuestState(QuestDatabase questData)
+	{
+		var state = _activeQuests.GetStateQuest(questData);
+		var model = questData.GetModelByState(state);
+		
+		_activeQuests.GetModelByQuestData(questData).State = model.Objective;
+	}
+	
+	private void OnDestroy()
+	{
+		_interactionSystem.SetQuestData -= UpdateData;  
+	}
 }

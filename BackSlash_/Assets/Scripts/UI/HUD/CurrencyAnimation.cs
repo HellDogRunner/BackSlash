@@ -5,6 +5,7 @@ using UnityEngine;
 public class CurrencyAnimation : MonoBehaviour
 {
 	[SerializeField] private float _timeInterval;
+	[SerializeField] private int _value;
 	
 	private TMP_Text _target;
 	private float _time;
@@ -48,12 +49,11 @@ public class CurrencyAnimation : MonoBehaviour
 	private int GetValue()
 	{
 		int value = 1;
-		int inc = 5;
 		int abs = Math.Abs(_endValue - _startValue);
 		
-		while (value * inc < abs)
+		while (value * _value < abs)
 		{
-			value *= inc;
+			value *= _value;
 		}
 		return value;
 	}

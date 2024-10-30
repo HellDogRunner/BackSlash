@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -51,6 +50,8 @@ namespace Scripts.Player
 			_dialogueSystem.OnWaitAnswer += WaitAnswer;
 			_dialogueSystem.OnDialogueGone += LastPhrase;
 			_animator.TextAnimationEnd += PhraseAnimationEnd;
+			
+			_nextButton.gameObject.SetActive(true);
 		}
 
 		private void ButtonPositive() { DialogueAnswer(true); }
@@ -66,37 +67,44 @@ namespace Scripts.Player
 			}
 			else
 			{
-				SwitchNextButtonText(true);
+				HideAllButtonsText();
+				_skip.SetActive(true);
 				_animator.PhraseAnimation(phrase);
 			}
 		}
 		
 		private void PhraseAnimationEnd()
 		{
-			SwitchNextButtonText(false);
+			HideAllButtonsText();
+			_next.SetActive(true);
 			_dialogueSystem.OnPhraseShowEnd();
 		}
 
 		private void ShowDialogue()
 		{
 			_animator.Dialogue(1);
+			
+			_nextButton.gameObject.SetActive(true);
 		}
 		
 		private void HideDialogue()
 		{
 			_animator.Dialogue();
+			_animator.AnswerKeys();
+			
+			_nextButton.gameObject.SetActive(false);
 		}
 
-		private void SwitchNextButtonText(bool textTupping)
+		private void HideAllButtonsText()
 		{
-			_next.gameObject.SetActive(!textTupping);
-			_skip.gameObject.SetActive(textTupping);
+			_skip.gameObject.SetActive(false);
+			_next.gameObject.SetActive(false);
 			_leave.gameObject.SetActive(false);
 		}
 
 		private void LastPhrase()
 		{
-			_next.gameObject.SetActive(false);
+			HideAllButtonsText();
 			_leave.gameObject.SetActive(true);
 		}
 

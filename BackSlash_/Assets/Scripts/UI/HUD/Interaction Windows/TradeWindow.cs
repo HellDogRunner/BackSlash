@@ -1,18 +1,29 @@
 using System.Collections.Generic;
+using Scripts.Inventory;
 using TMPro;
 using UnityEngine;
 using Zenject;
 
 public class TradeWindow : MonoBehaviour
 {
+	[SerializeField] private PlayerItemsDatabase _playerItems;
+	
+	[Header("Instantiate Products")]
 	[SerializeField] private RectTransform _productsRoot;
 	[SerializeField] private GameObject _productTemplate;
 	[SerializeField] private TMP_Text _description;
+	[Space]
+	[SerializeField] private GameObject _buyButton;
+	
+	[Header("Trade Button Texts")]
+	[SerializeField] private GameObject _showTrade;
+	[SerializeField] private GameObject _hideTrade;
 	
 	private List<GameObject> _products = new List<GameObject>();
-	private TraderInventory _trader;
+	private PlayerItemsDatabase _items;
+	private TradeProduct _firstProduct;
 	
-	private bool _currencyVisible;
+	private bool _windowVisible;
 	
 	private InteractionSystem _interactionSystem;
 	private InteractionAnimator _animator;
@@ -39,20 +50,31 @@ public class TradeWindow : MonoBehaviour
 		_interactionSystem.OnExitTrigger += ResetInventory;
 		
 		_currencyService.OnCurrencyChanged += ChangeCurrency;
+		
+		SwitchTradeText(true);
+		_buyButton.SetActive(false);
 	}
 	
-	private void SetInventory(TraderInventory trader) 
+	private void SetInventory(PlayerItemsDatabase items) 
 	{
-		_trader = trader;
+		_items = items;
 		
-		foreach (var item in _trader.Inventory)
+		foreach (var item in _items.GetData())
 		{
 			var product = _diContainer.InstantiatePrefab(_productTemplate, _productsRoot);
+			var tradeProduct = product.GetComponent<TradeProduct>();
 			
-			product.GetComponent<TradeProduct>().SetProduct(item);
+			tradeProduct.SetProduct(item);
+			if (_products.Count == 0) _firstProduct = tradeProduct;
 			
 			_products.Add(product);
 		}
+	}
+
+	private void SwitchTradeText(bool enable)
+	{
+		_showTrade.SetActive(enable);
+		_hideTrade.SetActive(!enable);
 	}
 	
 	private void ResetInventory()
@@ -62,7 +84,8 @@ public class TradeWindow : MonoBehaviour
 			Destroy(product);
 		}
 		
-		_trader = null;
+		_items = null;
+		_firstProduct = null;
 		_products.Clear();
 	}
 	
@@ -71,27 +94,34 @@ public class TradeWindow : MonoBehaviour
 		var value = _currencyService.GetCurrentCurrency();
 		var target = _animator.GetCurrency();
 		
-		_currencyVisible = true;
+		_windowVisible = true;
 		_currencyAnimation.SetCurrency(target, value);
 	}
 	
 	private void ShowTrade()
 	{
+		SwitchTradeText(false);
 		_animator.Trade(1);
+		_buyButton.SetActive(true);
+		
+		_firstProduct.SelectButton();
 		SetCurrency();
 	}
 	
 	private void HideTrade()
 	{
+		_windowVisible = false;
+		
+		SwitchTradeText(true);
 		_animator.Trade();
-		_currencyVisible = false;
+		_buyButton.SetActive(false);
 	}
 	
-	public bool TruBuyProduct(TraderProduct product) 
+	public bool TruBuyProduct(int price) 
 	{
-		if (_currencyService.CheckCurrency(product.Price))
+		if (_currencyService.CheckCurrency(price))
 		{
-			_currencyService.RemoveCurrency(product.Price);
+			_currencyService.RemoveCurrency(price);
 			return true;
 		}
 		return false;
@@ -99,7 +129,7 @@ public class TradeWindow : MonoBehaviour
 
 	private void ChangeCurrency(int endValue)
 	{
-		if (_currencyVisible) _currencyAnimation.Animate(_animator.GetCurrency(), endValue);
+		if (_windowVisible) _currencyAnimation.Animate(_animator.GetCurrency(), endValue);
 	}
 
 	public void ProductSelected(string description) 

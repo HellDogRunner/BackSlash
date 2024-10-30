@@ -1,8 +1,8 @@
 using RedMoonGames.Window;
+using Scripts.Inventory;
 using Scripts.Player;
 using Scripts.UI.Dialogue;
 using System;
-using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,7 +31,7 @@ public class InteractionSystem : MonoBehaviour
 	public event Action OnExitTrigger;
 	public event Action OnEnterTrigger;
 	public event Action<QuestDatabase> SetQuestData;
-	public event Action<TraderInventory> SetTradeInventory;
+	public event Action<PlayerItemsDatabase> SetTradeInventory;
 	public event Action ShowDialogue;
 	public event Action ShowTrade;
 	public event Action OnInteracting;
@@ -72,7 +72,6 @@ public class InteractionSystem : MonoBehaviour
 			if (_npc.GetTraderInventory() != null) 
 			{
 				_canTrade = true;
-				
 				SetTradeInventory?.Invoke(_npc.GetTraderInventory());
 			}
 		}
@@ -112,6 +111,7 @@ public class InteractionSystem : MonoBehaviour
 				_dialogueCamera.gameObject.SetActive(true);
 
 				_animator.TalkKey();
+				_animator.Buttons(1);
 				_animator.LookAtEachOther(gameObject.transform);
 				_animator.SetName(_npc.GetName());
 				_hudController.SwitchOverlay();
@@ -152,6 +152,7 @@ public class InteractionSystem : MonoBehaviour
 			EndInteracting?.Invoke();
 			
 			_animator.TalkKey();
+			_animator.Buttons();
 			_hudController.SwitchOverlay(1);
 			_menuController.SwitchDialogue(false);
 		
@@ -165,6 +166,7 @@ public class InteractionSystem : MonoBehaviour
 		_backButton = back;
 		_nextButton = next;
 		_tradeButton = trade;
+		_tradeButton.gameObject.SetActive(false);
 	}
 
 	public void SwitchInteractionWindow()

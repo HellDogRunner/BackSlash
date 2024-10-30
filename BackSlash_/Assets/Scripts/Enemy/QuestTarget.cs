@@ -23,7 +23,7 @@ public class QuestTarget : MonoBehaviour
 
     private void CompleteQuest()
     {
-        _questSystem.ChangeQuestState(_quest, "Reward");
+        _questSystem.ChangeQuestState(_quest);
     }
 
     private void OnDestroy()

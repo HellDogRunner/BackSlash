@@ -52,7 +52,7 @@ namespace RedMoonGames.Window
             _windowService.OnShowWindow += EnablePause;
             _menuController.OpenTab += OpenTab;
             _pauseInputs.OnMenuSwitchTabAction += SwitchTab;
-            _pauseInputs.OnMenuTabPressed += OpenTab;
+            _pauseInputs.OnMenuTabKeyPressed += OpenTab;
             _pauseInputs.OnBackKeyPressed += _windowService.Unpause;
 
             _weaponButton.onClick.AddListener(WeaponButton);
@@ -123,7 +123,7 @@ namespace RedMoonGames.Window
             _windowService.OnShowWindow -= EnablePause;
             _menuController.OpenTab -= OpenTab;
             _pauseInputs.OnMenuSwitchTabAction -= SwitchTab;
-            _pauseInputs.OnMenuTabPressed -= OpenTab;
+            _pauseInputs.OnMenuTabKeyPressed -= OpenTab;
             _pauseInputs.OnBackKeyPressed -= _windowService.Unpause;
 
             _weaponButton.onClick.RemoveListener(WeaponButton);
