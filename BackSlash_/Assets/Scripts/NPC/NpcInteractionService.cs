@@ -8,7 +8,7 @@ public class NpcInteractionService : MonoBehaviour
 {
 	[SerializeField] private string _name;
 	[SerializeField] private QuestDatabase _quest;
-	[SerializeField] private PlayerItemsDatabase _items;
+	[SerializeField] private InventoryDatabase _items;
 	[Space]
 	[SerializeField] private Transform _dialogueLookAt;
 
@@ -40,7 +40,7 @@ public class NpcInteractionService : MonoBehaviour
 		return _dialogueLookAt;
 	}
 	
-	public PlayerItemsDatabase GetTraderInventory()
+	public InventoryDatabase GetTraderInventory()
 	{
 		return _items;
 	}

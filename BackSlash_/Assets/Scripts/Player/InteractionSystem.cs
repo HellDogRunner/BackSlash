@@ -31,7 +31,7 @@ public class InteractionSystem : MonoBehaviour
 	public event Action OnExitTrigger;
 	public event Action OnEnterTrigger;
 	public event Action<QuestDatabase> SetQuestData;
-	public event Action<PlayerItemsDatabase> SetTradeInventory;
+	public event Action<InventoryDatabase> SetTradeInventory;
 	public event Action ShowDialogue;
 	public event Action ShowTrade;
 	public event Action OnInteracting;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CurrencyService : MonoBehaviour
 {
-	[SerializeField] private PlayerItemsDatabase _playerInventory;
+	[SerializeField] private InventoryDatabase _playerInventory;
 
 	public event Action<int> OnCurrencyChanged;
 
@@ -17,7 +17,10 @@ public class CurrencyService : MonoBehaviour
 		
 		if (Input.GetKeyDown(KeyCode.F)) 
 		{
-			RemoveCurrency(1000);
+			int currency = GetCurrency();
+			
+			if (currency < 1000) RemoveCurrency(currency);
+			else RemoveCurrency(1000);
 		}
 	}
 

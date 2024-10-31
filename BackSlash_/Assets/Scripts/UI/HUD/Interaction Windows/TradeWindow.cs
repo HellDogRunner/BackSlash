@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Scripts.Inventory;
 using TMPro;
 using UnityEngine;
@@ -6,22 +5,15 @@ using Zenject;
 
 public class TradeWindow : MonoBehaviour
 {
-	[SerializeField] private PlayerItemsDatabase _playerItems;
+	[SerializeField] private TradeProtuctSetter _setter;
 	
-	[Header("Instantiate Products")]
-	[SerializeField] private RectTransform _productsRoot;
-	[SerializeField] private GameObject _productTemplate;
+	[Header("UI Components")]
 	[SerializeField] private TMP_Text _description;
-	[Space]
 	[SerializeField] private GameObject _buyButton;
 	
 	[Header("Trade Button Texts")]
 	[SerializeField] private GameObject _showTrade;
 	[SerializeField] private GameObject _hideTrade;
-	
-	private List<GameObject> _products = new List<GameObject>();
-	private PlayerItemsDatabase _items;
-	private TradeProduct _firstProduct;
 	
 	private bool _windowVisible;
 	
@@ -29,8 +21,6 @@ public class TradeWindow : MonoBehaviour
 	private InteractionAnimator _animator;
 	private CurrencyAnimation _currencyAnimation;
 	private CurrencyService _currencyService;
-	
-	[Inject] private DiContainer _diContainer;
 	
 	[Inject]
 	private void Construct(InteractionAnimator animator, CurrencyService currencyService, CurrencyAnimation currencyAnimation, InteractionSystem interactionSystem)
@@ -55,22 +45,11 @@ public class TradeWindow : MonoBehaviour
 		_buyButton.SetActive(false);
 	}
 	
-	private void SetInventory(PlayerItemsDatabase items) 
+	private void SetInventory(InventoryDatabase inventory) 
 	{
-		_items = items;
-		
-		foreach (var item in _items.GetData())
-		{
-			var product = _diContainer.InstantiatePrefab(_productTemplate, _productsRoot);
-			var tradeProduct = product.GetComponent<TradeProduct>();
-			
-			tradeProduct.SetProduct(item);
-			if (_products.Count == 0) _firstProduct = tradeProduct;
-			
-			_products.Add(product);
-		}
+		_setter.SetTradeInventory(inventory);
 	}
-
+	
 	private void SwitchTradeText(bool enable)
 	{
 		_showTrade.SetActive(enable);
@@ -79,14 +58,7 @@ public class TradeWindow : MonoBehaviour
 	
 	private void ResetInventory()
 	{
-		foreach (var product in _products)
-		{
-			Destroy(product);
-		}
-		
-		_items = null;
-		_firstProduct = null;
-		_products.Clear();
+		_setter.ResetInventory();
 	}
 	
 	private void SetCurrency() 
@@ -104,7 +76,6 @@ public class TradeWindow : MonoBehaviour
 		_animator.Trade(1);
 		_buyButton.SetActive(true);
 		
-		_firstProduct.SelectButton();
 		SetCurrency();
 	}
 	
