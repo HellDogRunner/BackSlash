@@ -6,5 +6,6 @@ public class WeaponBladeMod : TradeItem
 	[Header("Blade Stats")]
 	public int Damage;
 	public int PoiseDamage;
-	public int AttackSpeed;
+	public float AttackSpeed;
+	public float Range;
 }

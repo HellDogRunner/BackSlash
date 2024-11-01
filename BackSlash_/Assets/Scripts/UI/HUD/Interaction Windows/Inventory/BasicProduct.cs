@@ -15,6 +15,12 @@ public class BasicProduct : MonoBehaviour, ISelectHandler, IPointerEnterHandler,
 	[SerializeField] protected TMP_Text _name;
 	[SerializeField] protected TMP_Text _price;
 	
+	protected Sprite _productIcon;
+	protected string _productName;
+	protected string _productDescription;
+	protected int _productPrice;
+	protected bool _productHave;
+	
 	protected Button _button;
 	protected bool select;
 	
@@ -32,12 +38,12 @@ public class BasicProduct : MonoBehaviour, ISelectHandler, IPointerEnterHandler,
 	
 	private void Awake()
 	{
+		SetValues();
+		
 		_button = GetComponent<Button>();
 		_button.onClick.AddListener(TryBuyProduct);
 		
-		if (select) SelectButton();
-		
-		SetValues();
+		if (select) SelectButton();	
 	}
 	
 	public void OnPointerEnter(PointerEventData eventData) { SelectButton(); }
@@ -46,20 +52,17 @@ public class BasicProduct : MonoBehaviour, ISelectHandler, IPointerEnterHandler,
 	public void OnDeselect(BaseEventData eventData) { DeselectButton(); }
 	
 	protected virtual void AddItem() {}
-	
-	protected virtual (string, string, int, bool, Sprite) GetValues()
-	{  
-		return (null, null, 0, false, null);
-	}
+	protected virtual void  SetProductValues() { }
+	protected virtual string GenerateStats() { return ""; }
 	
 	public void SetValues()
 	{
-		var product = GetValues();
+		SetProductValues();
 		
-		_icon.sprite = product.Item5;
-		_name.text = product.Item1;
+		_icon.sprite = _productIcon;
+		_name.text = _productName;
 		
-		if (product.Item4)
+		if (_productHave)
 		{
 			_sold.gameObject.SetActive(true);
 			_price.text = "Sold";
@@ -67,21 +70,19 @@ public class BasicProduct : MonoBehaviour, ISelectHandler, IPointerEnterHandler,
 		else
 		{
 			_sold.gameObject.SetActive(false);
-			_price.text = product.Item3.ToString();
+			_price.text = _productPrice.ToString();
 		}
 	}
 	
 	protected void TryBuyProduct()
 	{
-		var _product = GetValues();
-		
-		if (_product.Item4)
+		if (_productHave)
 		{
 			_animator.Bought(_frame);
 			return;
 		}
 		
-		if (!_tradeWindow.TruBuyProduct(_product.Item3))
+		if (!_tradeWindow.TruBuyProduct(_productPrice))
 		{
 			_animator.NeedCurrency(_price);
 			return;
@@ -101,7 +102,7 @@ public class BasicProduct : MonoBehaviour, ISelectHandler, IPointerEnterHandler,
 	{
 		if (!EventSystem.current.alreadySelecting) EventSystem.current.SetSelectedGameObject(gameObject);
 		
-		_tradeWindow.ProductSelected(GetValues().Item2);
+		_tradeWindow.ProductSelected(_productName, _productPrice.ToString(), _productDescription, GenerateStats());
 		
 		_animator.Select(_frame, _name);
 	}

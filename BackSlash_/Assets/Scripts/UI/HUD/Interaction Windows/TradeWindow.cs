@@ -7,8 +7,12 @@ public class TradeWindow : MonoBehaviour
 {
 	[SerializeField] private TradeProtuctSetter _setter;
 	
-	[Header("UI Components")]
+	[Header("Description Texts")]
+	[SerializeField] private TMP_Text _price;
+	[SerializeField] private TMP_Text _name;
+	[SerializeField] private TMP_Text _stats;
 	[SerializeField] private TMP_Text _description;
+	[Space]
 	[SerializeField] private GameObject _buyButton;
 	
 	[Header("Trade Button Texts")]
@@ -103,9 +107,12 @@ public class TradeWindow : MonoBehaviour
 		if (_windowVisible) _currencyAnimation.Animate(_animator.GetCurrency(), endValue);
 	}
 
-	public void ProductSelected(string description) 
+	public void ProductSelected(string name, string price, string description, string stats) 
 	{
-		_description.text = description;
+		_name.text = name;
+		_price.text = string.Format("Price: {0}", price);
+		_stats.text = string.Format("STATS\n{0}", stats);
+		_description.text = string.Format("DESCRIPTION\n{0}", description);
 	}
 	
 	private void OnDestroy()

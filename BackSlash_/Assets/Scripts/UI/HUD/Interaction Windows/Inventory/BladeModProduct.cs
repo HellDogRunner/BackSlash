@@ -4,15 +4,25 @@ public class BladeModProduct : BasicProduct
 {
 	private WeaponBladeMod _product;
 
-	protected override (string, string, int, bool, Sprite) GetValues()
+	protected override void SetProductValues()
 	{
-		return (_product.Name, _product.Description, _product.Price, _product.Have, _product.Icon);
+		_productName = _product.Name;
+		_productDescription = _product.Description;
+		_productIcon = _product.Icon;
+		_productHave = _product.Have;
+		_productPrice = _product.Price;
 	}
 
 	public void SetProduct(WeaponBladeMod product) 
 	{
 		_product = product;
 	}
+	
+	protected override string GenerateStats()
+	{
+		return string.Format("Damage: {0}\nAttack speed: {1}\nPoise damage: {2}\nRange: {3}", _product.Damage, _product.AttackSpeed, _product.PoiseDamage, _product.Range);
+	}
+
 	
 	protected override void AddItem()
 	{

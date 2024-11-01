@@ -4,15 +4,24 @@ public class GuardModProduct : BasicProduct
 {
 	private WeaponGuardMod _product;
 
-	protected override (string, string, int, bool, Sprite) GetValues()
+	protected override void SetProductValues()
 	{
-		return (_product.Name, _product.Description, _product.Price, _product.Have, _product.Icon);
+		_productName = _product.Name;
+		_productDescription = _product.Description;
+		_productIcon = _product.Icon;
+		_productHave = _product.Have;
+		_productPrice = _product.Price;
 	}
-
 	public void SetProduct(WeaponGuardMod product) 
 	{
 		_product = product;
 	}
+	
+	protected override string GenerateStats()
+	{
+		return string.Format("Guard stats");
+	}
+
 	
 	protected override void AddItem()
 	{

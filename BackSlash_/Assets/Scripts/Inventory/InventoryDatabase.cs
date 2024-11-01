@@ -30,6 +30,24 @@ namespace Scripts.Inventory
 			foreach (var item in _guards) item.Have = false;
 		}
 		
+		[ContextMenu("Reset Buffs")]
+		public void ResetBuffs() 
+		{
+			foreach(var buff in _buffs)
+			{
+				buff.Damage = false;
+				buff.AttackSpeed = false;
+				buff.Resistance = false;
+				buff.Burning = false;
+				buff.Frost = false;
+				buff.Poison = false;
+				buff.Shock = false;
+				buff.Bleed = false;
+				buff.setted = false;
+				buff.Value = 0;
+			}
+		}
+		
 		[ContextMenu("Clear Inventory")]
 		private void ClearInventory()
 		{
