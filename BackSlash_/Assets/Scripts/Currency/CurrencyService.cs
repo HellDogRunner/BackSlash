@@ -1,12 +1,15 @@
 using System;
+using RedMoonGames.Basics;
 using Scripts.Inventory;
 using UnityEngine;
 
 public class CurrencyService : MonoBehaviour
 {
-	[SerializeField] private InventoryDatabase _playerInventory;
+    [SerializeField] private int _currency = 10000;
 
-	public event Action<int> OnCurrencyChanged;
+	public int Currency => _currency;
+
+    public event Action<int> OnCurrencyChanged;
 
 	private void Update()
 	{
@@ -16,46 +19,26 @@ public class CurrencyService : MonoBehaviour
 		}
 		
 		if (Input.GetKeyDown(KeyCode.F)) 
-		{
-			int currency = GetCurrency();
-			
-			if (currency < 1000) RemoveCurrency(currency);
-			else RemoveCurrency(1000);
+		{		
+			if (_currency < 1000) TryRemoveCurrency(_currency);
+			else TryRemoveCurrency(1000);
 		}
-	}
-
-	private int GetCurrency()
-	{
-		return _playerInventory.GetCurrency();
 	}
 
 	public void AddCurrency(int value) 
 	{
-		_playerInventory.SetCurrency(GetCurrency() + value);
-		ChangeCurrency();
-	}
+        _currency += value;
+        OnCurrencyChanged?.Invoke(_currency);
+    }
 
-	public void RemoveCurrency(int value)
+	public TryResult TryRemoveCurrency(int value)
 	{
-		if (CheckCurrency(value))
+		if (_currency - value <= 0) 
 		{
-			_playerInventory.SetCurrency(GetCurrency() - value);
-			ChangeCurrency();
+			return TryResult.Fail;
 		}
-	}
-
-	public int GetCurrentCurrency() 
-	{
-		return _playerInventory.GetCurrency();
-	}
-
-	private void ChangeCurrency()
-	{
-		OnCurrencyChanged?.Invoke(GetCurrency());
-	}
-	
-	public bool CheckCurrency(int value)
-	{
-		return GetCurrency() >= value;
-	}
+        _currency -= value;
+        OnCurrencyChanged?.Invoke(_currency);
+		return TryResult.Successfully;
+    }
 }

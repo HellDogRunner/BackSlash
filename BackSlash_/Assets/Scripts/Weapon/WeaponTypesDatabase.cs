@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Scripts.Weapon.Models
 {
-    [CreateAssetMenu(fileName = "WeaponTypesDatabase", menuName = "[RMG] Scriptable/Weapon/WeaponTypesDatabase", order = 1)]
+    [CreateAssetMenu(fileName = "WeaponTypesDatabase", menuName = "Scriptable/Weapon/WeaponTypesDatabase", order = 1)]
     public class WeaponTypesDatabase : ScriprtableDatabase<WeaponTypeModel>
     {
         public WeaponTypeModel GetWeaponTypeModel(EWeaponType weaponType)

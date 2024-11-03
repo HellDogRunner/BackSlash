@@ -32,7 +32,7 @@ public class HUDController : MonoBehaviour
 	
 	private void SetCurrency()
 	{
-		var value = _currencyService.GetCurrentCurrency();
+		var value = _currencyService.Currency;
 		var target = _animationService.GetCurrency();
 		
 		_currencyAnimation.SetCurrency(target, value);

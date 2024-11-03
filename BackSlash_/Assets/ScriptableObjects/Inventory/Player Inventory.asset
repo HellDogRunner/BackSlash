@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3811b98ffd0ec1429ac780b0ed4c672, type: 3}
   m_Name: Player Inventory
   m_EditorClassIdentifier: 
-  _currency: 10000
-  _buffs: []
-  _blades: []
-  _guards: []
+  _data:
+  - ItemType: 1
+    Item: {fileID: 11400000, guid: 5dfe8d7d850bd8f439ca63299367e59d, type: 2}

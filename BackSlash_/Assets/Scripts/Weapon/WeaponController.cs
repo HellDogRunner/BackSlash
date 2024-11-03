@@ -27,11 +27,12 @@ namespace Scripts.Weapon
         public event Action OnDrawWeapon;
         public event Action OnSneathWeapon;
 
-        [Inject] private DiContainer _diContainer;
+        private DiContainer _diContainer;
 
         [Inject]
-        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputController)
+        private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputController, DiContainer diContainer)
         {
+            _diContainer = diContainer;
             _weaponTypesDatabase = weaponTypesDatabase;
             _inputController = inputController;
             _curentWeaponType = EWeaponType.None;
