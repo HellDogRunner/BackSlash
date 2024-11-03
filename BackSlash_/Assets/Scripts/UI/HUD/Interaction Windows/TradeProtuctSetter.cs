@@ -5,7 +5,9 @@ using Zenject;
 
 public class TradeProtuctSetter : MonoBehaviour
 {
-	[SerializeField] private RectTransform _productsRoot;
+	[Header("Roots")]
+	[SerializeField] private RectTransform _buffRoot;
+	[SerializeField] private RectTransform _modsRoot;
 	
 	[Header("Product Templates")]
 	[SerializeField] private GameObject _buff;
@@ -32,7 +34,7 @@ public class TradeProtuctSetter : MonoBehaviour
 		{
 			if (item.Have) continue; 
 			
-			var product = _diContainer.InstantiatePrefab(_buff, _productsRoot);
+			var product = _diContainer.InstantiatePrefab(_buff, _buffRoot);
 			var buff = product.GetComponent<BuffProduct>();
 			
 			buff.SetProduct(item);
@@ -48,7 +50,7 @@ public class TradeProtuctSetter : MonoBehaviour
 		{
 			if (item.Have) continue;
 			
-			var product = _diContainer.InstantiatePrefab(_bladeMod, _productsRoot);
+			var product = _diContainer.InstantiatePrefab(_bladeMod, _modsRoot);
 			var bladeMod = product.GetComponent<BladeModProduct>();
 			
 			bladeMod.SetProduct(item);
@@ -64,7 +66,7 @@ public class TradeProtuctSetter : MonoBehaviour
 		{
 			if (item.Have) continue;
 			
-			var product = _diContainer.InstantiatePrefab(_guardMod, _productsRoot);
+			var product = _diContainer.InstantiatePrefab(_guardMod, _modsRoot);
 			var bladeMod = product.GetComponent<GuardModProduct>();
 			
 			bladeMod.SetProduct(item);
