@@ -79,40 +79,40 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
     {
         if (inventoryModel.ItemType == EItemType.BuffItem && inventoryModel.Item is BuffItem)
         {
-            var buffItem = inventoryModel.Item as BuffItem;
-            if (buffItem.Damage > 0)
+            var buff = inventoryModel.Item as BuffItem;
+            if (buff.Damage > 0)
             {
-                _productStats += $"Damage: {buffItem.Damage}\n";
+                _productStats += $"Damage: {buff.Damage}\n";
             }
 
-            if (buffItem.Resistance > 0)
+            if (buff.Resistance > 0)
             {
-                _productStats += $"Resistance: {buffItem.Resistance}\n";
+                _productStats += $"Resistance: {buff.Resistance}\n";
             }
 
-            if (buffItem.AttackSpeed > 0)
+            if (buff.AttackSpeed > 0)
             {
-                _productStats += $"Attack Speed: {buffItem.AttackSpeed}\n";
+                _productStats += $"Attack Speed: {buff.AttackSpeed}\n";
             }
             return _productStats;
         }
 
         if (inventoryModel.ItemType == EItemType.Attachment && inventoryModel.Item is AttachmentItem)
         {
-            var buffItem = inventoryModel.Item as AttachmentItem;
-            if (buffItem.Damage > 0)
+            var attachment = inventoryModel.Item as AttachmentItem;
+            if (attachment.Damage > 0)
             {
-                _productStats += $"Damage: {buffItem.Damage}\n";
+                _productStats += $"Damage: {attachment.Damage}\n";
             }
 
-            if (buffItem.AttackSpeed > 0)
+            if (attachment.AttackSpeed > 0)
             {
-                _productStats += $"Attack speed: {buffItem.AttackSpeed}\n";
+                _productStats += $"Attack speed: {attachment.AttackSpeed}\n";
             }
 
-            if (buffItem.ElementalDamage > 0)
+            if (attachment.ElementalDamage > 0)
             {
-                _productStats += $"Elemental damage: {buffItem.ElementalDamage}\n";
+                _productStats += $"Elemental damage: {attachment.ElementalDamage}\n";
             }
             return _productStats;
         }
