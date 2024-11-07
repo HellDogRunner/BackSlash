@@ -1,13 +1,12 @@
 using RedMoonGames.Basics;
 using Scripts.Inventory;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Zenject;
 
 public class TradeWindow : MonoBehaviour
 {
-	[SerializeField] private TradeProductSetter _setter;
-	
 	[Header("Description Texts")]
 	[SerializeField] private TMP_Text _price;
 	[SerializeField] private TMP_Text _name;
@@ -19,8 +18,16 @@ public class TradeWindow : MonoBehaviour
 	[Header("Trade Button Texts")]
 	[SerializeField] private GameObject _showTrade;
 	[SerializeField] private GameObject _hideTrade;
-	
-	private bool _windowVisible;
+    [Header("Products GameObjects")]
+    [SerializeField] private RectTransform _productsRoot;
+    [SerializeField] private GameObject _productTemplate;
+
+    private List<GameObject> _products = new List<GameObject>();
+    private InventoryDatabase _traderInventory;
+    private InventoryDatabase _playerInventory;
+    private DiContainer _diContainer;
+
+    private bool _windowVisible;
 	
 	private InteractionSystem _interactionSystem;
 	private InteractionAnimator _animator;
@@ -28,12 +35,13 @@ public class TradeWindow : MonoBehaviour
 	private CurrencyService _currencyService;
 	
 	[Inject]
-	private void Construct(InteractionAnimator animator, CurrencyService currencyService, CurrencyAnimation currencyAnimation, InteractionSystem interactionSystem)
+	private void Construct(InteractionAnimator animator, CurrencyService currencyService, CurrencyAnimation currencyAnimation, InteractionSystem interactionSystem, DiContainer diContainer)
 	{
 		_currencyService = currencyService;
 		_interactionSystem = interactionSystem;
 		_currencyAnimation = currencyAnimation;
-		_animator = animator;
+		_diContainer = diContainer;
+        _animator = animator;
 	}
 	
 	private void Awake()
@@ -50,7 +58,7 @@ public class TradeWindow : MonoBehaviour
 		_buyButton.SetActive(false);
 	}
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         _interactionSystem.ShowDialogue -= HideTrade;
         _interactionSystem.ShowTrade -= ShowTrade;
@@ -63,10 +71,33 @@ public class TradeWindow : MonoBehaviour
 
     private void SetInventory(InventoryDatabase traderInventory, InventoryDatabase playerInventory) 
 	{
-		_setter.SetTradeInventory(traderInventory, playerInventory);
-	}
-	
-	private void SwitchTradeText(bool enable)
+        _traderInventory = traderInventory;
+        _playerInventory = playerInventory;
+
+		SetItems();
+    }
+
+    private void SetItems()
+    {
+        foreach (var item in _traderInventory.GetData())
+        {
+            var isPlayerHaveItem = _playerInventory.GetItemTypeModel(item.Item);
+
+            if (isPlayerHaveItem == null)
+            {
+                var prefab = _diContainer.InstantiatePrefab(_productTemplate, _productsRoot);
+                var product = prefab.GetComponent<Product>();
+
+                product.SetValues(item);
+
+                if (_products.Count == 0) product.SelectFirst();
+
+                _products.Add(product.gameObject);
+            }
+        }
+    }
+
+    private void SwitchTradeText(bool enable)
 	{
 		_showTrade.SetActive(enable);
 		_hideTrade.SetActive(!enable);
@@ -74,8 +105,14 @@ public class TradeWindow : MonoBehaviour
 	
 	private void ResetInventory()
 	{
-		_setter.ResetInventory();
-	}
+        foreach (var product in _products)
+        {
+            Destroy(product);
+        }
+
+        _traderInventory = null;
+        _products.Clear();
+    }
 	
 	private void SetCurrency() 
 	{
@@ -124,7 +161,7 @@ public class TradeWindow : MonoBehaviour
 	{
 		_name.text = name;
 		_price.text = string.Format("Price: {0}", price);
-		_stats.text = string.Format("STATS\n{0}", stats);
 		_description.text = string.Format("DESCRIPTION\n{0}", description);
+		_stats.text = string.Format("STATS\n{0}", stats);
 	}
 }

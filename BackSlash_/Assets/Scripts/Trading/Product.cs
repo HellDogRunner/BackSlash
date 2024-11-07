@@ -1,6 +1,7 @@
 using RedMoonGames.Basics;
 using Scripts.Inventory;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -15,19 +16,21 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
     [SerializeField] private Image _frame;
     [SerializeField] private TMP_Text _name;
     [SerializeField] private TMP_Text _price;
+    //[SerializeField] private Item _item;
 
     private Sprite _productIcon;
     private string _productName;
     private string _productDescription;
     private int _productPrice;
+    private string _productStats;
     private bool _productHave;
-    private InventoryModel _productInventoryModel;
 
     private Button _button;
     private bool _select;
 
     private TradeAnimator _animator;
     private TradeWindow _tradeWindow;
+    private InventoryModel _productInventoryModel;
     private InventoryDatabase _playerInventory;
 
     [Inject]
@@ -72,11 +75,55 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
         _productPrice = product.Price;
     }
 
-    private string GenerateStats() { return ""; }
+    private string FormatStats(InventoryModel inventoryModel) 
+    {
+        if (inventoryModel.ItemType == EItemType.BuffItem && inventoryModel.Item is BuffItem)
+        {
+            var buffItem = inventoryModel.Item as BuffItem;
+            if (buffItem.Damage > 0)
+            {
+                _productStats += $"Damage: {buffItem.Damage}\n";
+            }
+
+            if (buffItem.Resistance > 0)
+            {
+                _productStats += $"Resistance: {buffItem.Resistance}\n";
+            }
+
+            if (buffItem.AttackSpeed > 0)
+            {
+                _productStats += $"Attack Speed: {buffItem.AttackSpeed}\n";
+            }
+            return _productStats;
+        }
+
+        if (inventoryModel.ItemType == EItemType.Attachment && inventoryModel.Item is AttachmentItem)
+        {
+            var buffItem = inventoryModel.Item as AttachmentItem;
+            if (buffItem.Damage > 0)
+            {
+                _productStats += $"Damage: {buffItem.Damage}\n";
+            }
+
+            if (buffItem.AttackSpeed > 0)
+            {
+                _productStats += $"Attack speed: {buffItem.AttackSpeed}\n";
+            }
+
+            if (buffItem.ElementalDamage > 0)
+            {
+                _productStats += $"Elemental damage: {buffItem.ElementalDamage}\n";
+            }
+            return _productStats;
+        }
+
+        return "";
+    }
 
     public void SetValues(InventoryModel inventoryModel)
     {
         SetProductValues(inventoryModel.Item);
+        FormatStats(inventoryModel);
 
         _icon.sprite = _productIcon;
         _name.text = _productName;
@@ -133,7 +180,7 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
     {
         if (!EventSystem.current.alreadySelecting) EventSystem.current.SetSelectedGameObject(gameObject);
 
-        _tradeWindow.ProductSelected(_productName, _productPrice.ToString(), _productDescription, GenerateStats());
+        _tradeWindow.ProductSelected(_productName, _productPrice.ToString(), _productDescription, _productStats);
 
         _animator.Select(_frame, _name);
     }

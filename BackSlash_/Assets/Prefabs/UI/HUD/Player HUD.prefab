@@ -206,7 +206,6 @@ GameObject:
   - component: {fileID: 3615632899462809047}
   - component: {fileID: 1574304429418479718}
   - component: {fileID: 2055198513993052471}
-  - component: {fileID: 6017587704187883093}
   - component: {fileID: 7099527186166705256}
   - component: {fileID: 8860864101042380358}
   - component: {fileID: 3519314232301861695}
@@ -274,7 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eeee421ac30e914f85ba404dc2f0971, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _setter: {fileID: 6017587704187883093}
+  _setter: {fileID: 0}
   _price: {fileID: 6884314521583294982}
   _name: {fileID: 6389941162185529906}
   _stats: {fileID: 7683862725151244137}
@@ -282,21 +281,8 @@ MonoBehaviour:
   _buyButton: {fileID: 1631938532191824050}
   _showTrade: {fileID: 6479959455587069074}
   _hideTrade: {fileID: 6698820002734671629}
---- !u!114 &6017587704187883093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 120010645016294365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f5b9c33c5569ea46908d8106c8b1b9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _productsRoot: {fileID: 7062969653552745222}
-  _productTemplate: {fileID: 8942215995542258475, guid: ab47b2a46074d7a4484a6b0c0c019af9,
-    type: 3}
+  _productsRoot: {fileID: 0}
+  _productTemplate: {fileID: 0}
 --- !u!114 &7099527186166705256
 MonoBehaviour:
   m_ObjectHideFlags: 0
