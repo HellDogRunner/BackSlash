@@ -1,7 +1,6 @@
 using RedMoonGames.Basics;
 using Scripts.Inventory;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,7 +15,6 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
     [SerializeField] private Image _frame;
     [SerializeField] private TMP_Text _name;
     [SerializeField] private TMP_Text _price;
-    //[SerializeField] private Item _item;
 
     private Sprite _productIcon;
     private string _productName;
@@ -75,7 +73,7 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
         _productPrice = product.Price;
     }
 
-    private string FormatStats(InventoryModel inventoryModel) 
+    private string FormatStats(InventoryModel inventoryModel)
     {
         if (inventoryModel.ItemType == EItemType.BuffItem && inventoryModel.Item is BuffItem)
         {
@@ -159,6 +157,7 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
             _animator.NeedCurrency(_price);
             return TryResult.Fail;
         }
+
         _productHave = true;
         _animator.Buy(_sold);
         _price.text = "Sold!";
