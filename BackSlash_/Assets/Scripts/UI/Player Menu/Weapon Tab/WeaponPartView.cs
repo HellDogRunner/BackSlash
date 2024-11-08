@@ -12,6 +12,7 @@ public class WeaponPartView : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     [SerializeField] private GameObject _pointer;
 
     [Header("Settings")]
+    [SerializeField] private EItemType _partType;
     [SerializeField] private float _duration;
     [Space]
     [SerializeField] private Vector2 _defaultPosition;
@@ -22,7 +23,7 @@ public class WeaponPartView : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private bool _isActive;
 
-    public event Action<bool> OnViewActive;
+    public event Action<bool, EItemType> OnViewActive;
 
     private void OnEnable()
     {
@@ -77,14 +78,14 @@ public class WeaponPartView : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             _weaponAnimation.SwitchChoosing(true);
             MovePartsMenu(_activePosition);
             ShowPartsMenu();
-            OnViewActive?.Invoke(true);
+            OnViewActive?.Invoke(true, _partType);
         }
         else
         {
             _weaponAnimation.SwitchChoosing(false);
             MovePartsMenu(_defaultPosition);
             HidePartsMenu();
-            OnViewActive?.Invoke(false);
+            OnViewActive?.Invoke(false, _partType);
         }
     }
 }

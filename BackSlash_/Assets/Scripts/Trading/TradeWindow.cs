@@ -82,7 +82,6 @@ public class TradeWindow : MonoBehaviour
         foreach (var item in _traderInventory.GetData())
         {
             var isPlayerHaveItem = _playerInventory.GetItemTypeModel(item.Item);
-
             if (isPlayerHaveItem == null)
             {
                 var prefab = _diContainer.InstantiatePrefab(_productTemplate, _productsRoot);

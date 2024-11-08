@@ -3,6 +3,7 @@ using System;
 [Serializable]
 public enum EItemType : int
 {
-    Attachment = 0,
-    BuffItem = 1,
+    BuffItem = 0,
+    Blade = 1,
+    Guard = 2,
 }
