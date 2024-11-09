@@ -37,7 +37,7 @@ public class DialogueSystem : MonoBehaviour
 		_questSystem.SetData += SetDialogueModel;
 
 		_interactionSystem.OnInteracting += ShowNextPhrase;
-		_interactionSystem.OnExitTrigger += SetDefaultState;
+		_interactionSystem.OnReset += SetDefaultState;
 		_interactionSystem.EndInteracting += DialogueEnd;
 	}
 
@@ -111,12 +111,15 @@ public class DialogueSystem : MonoBehaviour
 
 	public void DialogueAnswer(bool answer)
 	{
-		_waitAnswer = false;
+		if (_waitAnswer)
+		{
+			_waitAnswer = false;
 
-		if (answer) _index = _currentQuestion.Index1;
-		else _index = _currentQuestion.Index2;
+			if (answer) _index = _currentQuestion.Index1;
+			else _index = _currentQuestion.Index2;
 
-		ShowNextPhrase();
+			ShowNextPhrase();
+		}
 	}
 
 	public void DialogueEnd()
@@ -134,7 +137,7 @@ public class DialogueSystem : MonoBehaviour
 		_questSystem.SetData -= SetDialogueModel;
 
 		_interactionSystem.OnInteracting -= ShowNextPhrase;
-		_interactionSystem.OnExitTrigger -= SetDefaultState;
+		_interactionSystem.OnReset -= SetDefaultState;
 		_interactionSystem.EndInteracting -= DialogueEnd;
 	}
 }

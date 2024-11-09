@@ -6,7 +6,6 @@ namespace RedMoonGames.Window
     public class VideoWindow : GameBasicWindow
     {
         [Header("Handlers")]
-        [SerializeField] private WindowHandler _videoHandler;
         [SerializeField] private WindowHandler _settingsHandler;
 
         [Header("Tab Keys")]
@@ -45,7 +44,7 @@ namespace RedMoonGames.Window
 
         private void DisplayButton() { SwitchTab(_displayTab); }
         private void GraphicsButton() { SwitchTab(_graphicsTab); }
-        private void BackButton() { SwitchWindows(_videoHandler, _settingsHandler); }
+        private void BackButton() { OpenWindow(_settingsHandler); }
 
         private void OnTabAction()
         {

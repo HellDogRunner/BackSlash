@@ -6,8 +6,6 @@ namespace RedMoonGames.Window
 {
     public class PauseWindow : GameBasicWindow
     {
-        [Header("Handlers")]
-        [SerializeField] private WindowHandler _pauseHandler;
         [SerializeField] private WindowHandler _settingsHandler;
 
         [Header("Buttons")]
@@ -39,7 +37,7 @@ namespace RedMoonGames.Window
             _close.onClick.AddListener(_windowService.Unpause);
         }
 
-        private void SettingsButton() { SwitchWindows(_pauseHandler, _settingsHandler); }
+        private void SettingsButton() { OpenWindow(_settingsHandler); }
 
         private void ExitButton()
         {

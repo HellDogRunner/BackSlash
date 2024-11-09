@@ -739,7 +739,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8912080351853966069}
   m_Layer: 0
-  m_Name: CameraLookAt
+  m_Name: LookAt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2949,7 +2949,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9154375475347445579}
   - component: {fileID: 9087614315155568461}
-  - component: {fileID: 5350033192537205706}
   - component: {fileID: 1177957657704111061}
   - component: {fileID: 5530042786574198228}
   - component: {fileID: 3831153863078339735}
@@ -3014,20 +3013,6 @@ MonoBehaviour:
   _hitboxLayer:
     serializedVersion: 2
     m_Bits: 63
---- !u!114 &5350033192537205706
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540106101222958762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26ead0690e74d2044bb62ca1f52f211a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _dialogueCamera: {fileID: 0}
-  _playerInventory: {fileID: 11400000, guid: debf47b2eb05c8c4aab44a7c1f2b355b, type: 2}
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3215,7 +3200,6 @@ MonoBehaviour:
   - {fileID: 1945681995266547424}
   - {fileID: 5300293899505624239}
   - {fileID: 1177957657704111061}
-  - {fileID: 5350033192537205706}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}

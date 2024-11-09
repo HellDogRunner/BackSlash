@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6534329071545635434}
+  - component: {fileID: 2962320854204362071}
   - component: {fileID: 3209041646405831007}
   - component: {fileID: 2718461530242192260}
   - component: {fileID: 4591345734437057670}
@@ -28,13 +29,30 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5489409182015746407}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10.293242, y: 0.048167024, z: 0.2093769}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2962320854204362071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5489409182015746407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26ead0690e74d2044bb62ca1f52f211a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dialogueWindow: {fileID: 11400000, guid: d20cb13f694b56647a1b040ff452788c, type: 2}
+  _tradeWindow: {fileID: 11400000, guid: eebdf981154cdf24ebb5ff73c97e8eb0, type: 2}
+  _dialogueCamera: {fileID: 0}
+  _playerInventory: {fileID: 11400000, guid: debf47b2eb05c8c4aab44a7c1f2b355b, type: 2}
+  _player: {fileID: 0}
 --- !u!114 &3209041646405831007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05dec2b1e8144314d9ad12879c30e4f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerInventory: {fileID: 11400000, guid: debf47b2eb05c8c4aab44a7c1f2b355b, type: 2}
+  _currency: 10000
 --- !u!114 &4591345734437057670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,6 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _components:
+  - {fileID: 2962320854204362071}
   - {fileID: 3209041646405831007}
   - {fileID: 2718461530242192260}
   - {fileID: 4591345734437057670}

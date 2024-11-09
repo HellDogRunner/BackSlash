@@ -6,7 +6,6 @@ namespace RedMoonGames.Window
     public class SettingsWindow : GameBasicWindow
     {
         [Header("Handlers")]
-        [SerializeField] private WindowHandler _settingsHandler;
         [SerializeField] private WindowHandler _pauseHandler;
         [SerializeField] private WindowHandler _gameplayHandler;
         [SerializeField] private WindowHandler _audioHandler;
@@ -37,11 +36,11 @@ namespace RedMoonGames.Window
             if (!_IsMainMenu) _close.onClick.AddListener(_windowService.Unpause);
         }
 
-        private void GameplayButton() { SwitchWindows(_settingsHandler, _gameplayHandler); }
-        private void AudioButton() { SwitchWindows(_settingsHandler, _audioHandler); }
-        private void VideoButton() { SwitchWindows(_settingsHandler, _videoHandler); }
-        private void ManagementButton() { SwitchWindows(_settingsHandler, _managementHandler); }
-        private void BackButton() { SwitchWindows(_settingsHandler, _pauseHandler); }
+        private void GameplayButton() { OpenWindow(_gameplayHandler); }
+        private void AudioButton() { OpenWindow(_audioHandler); }
+        private void VideoButton() { OpenWindow(_videoHandler); }
+        private void ManagementButton() { OpenWindow(_managementHandler); }
+        private void BackButton() { OpenWindow(_pauseHandler); }
 
         private void OnDestroy()
         {

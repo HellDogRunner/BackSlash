@@ -42,12 +42,12 @@ namespace RedMoonGames.Window
             _animationService.HideWindowAnimation(_canvasGroup, handler);
         }
 
-        public void SwitchWindows(WindowHandler close, WindowHandler open)
+        public void OpenWindow(WindowHandler window)
         {
             PlayClickSound();
 
             _windowService.ReturnActiveWindow()?.Close();
-            _windowService.TryOpenWindow(open);
+            _windowService.TryOpenWindow(window);
         }
 
         protected void PlayClickSound()
