@@ -3,80 +3,78 @@ using UnityEngine;
 
 namespace RedMoonGames.Window
 {
-    public class MainMenuController : BasicMenuController
-    {
-        [SerializeField] private WindowHandler _startWindow;
-        [SerializeField] private WindowHandler _mainWindow;
-        [Space]
-        [SerializeField] private float _inputDelay = 1f;
+	public class MainMenuController : BasicMenuController
+	{
+		[SerializeField] private WindowHandler _startWindow;
+		[SerializeField] private WindowHandler _mainWindow;
+		[Space]
+		[SerializeField] private float _inputDelay = 1f;
+		
+		private bool _windowOpening;
 
-        private bool _mainWindowOpened;
-        private bool _windowOpening;
+		private void Awake()
+		{
+			_windowAnimation.OnAnimationComplete += CloseWindow;
 
-        private void Awake()
-        {
-            _windowAnimation.OnAnimationComplete += CloseWindow;
+			_sceneTransition.OnWindowHide += SceneTransitionHide;
 
-            _sceneTransition.OnWindowHide += SceneTransitionHide;
+			_pauseInputs.ShowCursor += SwitchVisible;
+			_pauseInputs.OnAnyKeyPressed += ShowMainWindow;
+			_pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
 
-            _pauseInputs.ShowCursor += SwitchVisible;
-            _pauseInputs.OnAnyKeyPressed += ShowMainWindow;
-            _pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
+			_sceneTransition.gameObject.SetActive(true);
 
-            _sceneTransition.gameObject.SetActive(true);
+			_pauseInputs.enabled = true;
 
-            _pauseInputs.enabled = true;
+			UnpauseGame();
+		}
 
-            UnpauseGame();
-        }
+		private void Start()
+		{
+			ShowStartWindow();
+		}
 
-        private void Start()
-        {
-            _mainWindowOpened = true;
-            ShowStartWindow();
-        }
+		private void ShowStartWindow()
+		{
+			if (!_windowOpening && _windowService.GetActiveWindow() != _startWindow) StartCoroutine(ShowWindowDelay(_startWindow));
+		}
 
-        private void ShowStartWindow()
-        {
-            if (!_windowOpening && _mainWindowOpened) StartCoroutine(ShowWindowDelay(_startWindow));
-        }
+		private void ShowMainWindow()
+		{
+			if (!_windowOpening && _windowService.GetActiveWindow() != _mainWindow) StartCoroutine(ShowWindowDelay(_mainWindow));
+		}
 
-        private void ShowMainWindow()
-        {
-            if (!_windowOpening && !_mainWindowOpened) StartCoroutine(ShowWindowDelay(_mainWindow));
-        }
+		// replace coroutine with Tween
+		IEnumerator ShowWindowDelay(WindowHandler window)
+		{
+			_windowOpening = true;
+			
+			_windowService.HideWindow(_windowService.GetActiveWindow());
 
-        IEnumerator ShowWindowDelay(WindowHandler window)
-        {
-            _windowOpening = true;
+			yield return new WaitForSeconds(_inputDelay);
 
-            _windowService.HideWindow();
+			_windowService.TryOpenWindow(window);
+			_windowService.ShowWindow();
 
-            yield return new WaitForSeconds(_inputDelay);
+			_windowOpening = false;
+		}
 
-            _mainWindowOpened = window == _mainWindow;
-            _windowService.TryOpenWindow(window);
-            _windowService.ShowWindow();
+		private void UnpauseGame()
+		{
+			Cursor.lockState = CursorLockMode.Confined;
+			Cursor.visible = true;
+			Time.timeScale = 1;
+		}
 
-            _windowOpening = false;
-        }
+		private void OnDestroy()
+		{
+			_pauseInputs.ShowCursor -= SwitchVisible;
+			_pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
+			_pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
 
-        private void UnpauseGame()
-        {
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
-            Time.timeScale = 1;
-        }
+			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
-        private void OnDestroy()
-        {
-            _pauseInputs.ShowCursor -= SwitchVisible;
-            _pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
-            _pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
-
-            _sceneTransition.OnWindowHide -= SceneTransitionHide;
-
-            _windowAnimation.OnAnimationComplete -= CloseWindow;
-        }
-    }
+			_windowAnimation.OnAnimationComplete -= CloseWindow;
+		}
+	}
 }

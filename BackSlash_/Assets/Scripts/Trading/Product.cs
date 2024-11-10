@@ -28,17 +28,17 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 	private bool _select;
 
 	private InventoryModel _productInventoryModel;
-	//private TradeAnimator _animator;
+	private TradeAnimator _animator;
 	private TradeWindow _tradeWindow;
 	private InventoryDatabase _playerInventory;
 
-	[Inject]
-	private void Construct(InventoryDatabase data, TradeWindow tradeWindow)
-	{
-	    _tradeWindow = tradeWindow;
-	    _playerInventory = data;
-	    //_animator = animator;
-	}
+	// [Inject]
+	// private void Construct(InventoryDatabase data, TradeWindow tradeWindow)
+	// {
+	//     _tradeWindow = tradeWindow;
+	//     _playerInventory = data;
+	//     _animator = animator;
+	// }
 
 	private void Awake()
 	{
@@ -56,12 +56,12 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 		_button.onClick.RemoveListener(BuyProduct);
 	}
 
-	// public void SetComponents(TradeWindow tradeWindow, InventoryDatabase inventory, TradeAnimator animator)
-	// {
-	// 	_tradeWindow = tradeWindow;
-	// 	_playerInventory =inventory;
-	// 	_animator = animator;
-	// }
+	public void SetComponents(TradeWindow tradeWindow, InventoryDatabase inventory, TradeAnimator animator)
+	{
+		_tradeWindow = tradeWindow;
+		_playerInventory =inventory;
+		_animator = animator;
+	}
 
 	private void AddItem(EItemType itemType, Item item)
 	{
@@ -156,18 +156,18 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 	{
 		if (_productHave)
 		{
-			//_animator.Bought(_frame);
+			_animator.Bought(_frame);
 			return TryResult.Fail;
 		}
 
 		if (!_tradeWindow.TruBuyProduct(_productPrice))
 		{
-			//_animator.NeedCurrency(_price);
+			_animator.NeedCurrency(_price);
 			return TryResult.Fail;
 		}
 
 		_productHave = true;
-		//_animator.Buy(_sold);
+		_animator.Buy(_sold);
 		_price.text = "Sold!";
 		AddItem(_productInventoryModel.ItemType, _productInventoryModel.Item);
 		return TryResult.Successfully;
@@ -189,11 +189,11 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 
 		_tradeWindow.ProductSelected(_productName, _productPrice.ToString(), _productDescription, _productStats);
 
-		//_animator.Select(_frame, _name);
+		_animator.Select(_frame, _name);
 	}
 
 	private void DeselectButton()
 	{
-		//_animator.Deselect(_frame, _name);
+		_animator.Deselect(_frame, _name);
 	}
 }

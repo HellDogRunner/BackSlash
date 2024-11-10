@@ -14,8 +14,7 @@ namespace RedMoonGames.Window
 		[SerializeField] private float _inputsDelay = 1;
 		[SerializeField] private bool _setLowPreset;
 
-		private bool _inPlayerMenu;
-		private bool _inDialogue;
+		private bool _inInteracting;
 
 		private HUDController _hudController;
 		private InputController _gameInputs;
@@ -54,29 +53,28 @@ namespace RedMoonGames.Window
 			EventsOnPause();
 			SwitchPause(true);
 
+			_windowService.CloseActiveWindow();
 			_windowService.TryOpenWindow(_pauseWindow);
 			_windowService.ShowWindow();
 		}
 
 		private void HideWindow()
 		{
-			_inPlayerMenu = false;
-
+			var window = _windowService.GetActiveWindow();
+			_windowService.HideWindow(window);
+			
 			EventsOnGame();
 			SwitchPause(false);
-
-			_windowService.HideWindow();
 		}
 
 		private void OpenMenu(int index)
 		{
-			if (!_inPlayerMenu)
+			if (_windowService.GetActiveWindow() != _menuWindow)
 			{
-				_inPlayerMenu = true;
-
 				SwitchPause(true);
 				EventsOnPause(); 
 
+				_windowService.CloseActiveWindow();
 				_windowService.TryOpenWindow(_menuWindow);
 				_windowService.ShowWindow();
 			}
@@ -84,12 +82,12 @@ namespace RedMoonGames.Window
 			OpenTab?.Invoke(index);
 		}
 
-		public void SwitchDialogue(bool inDialogue)
+		public void SwitchDialogue(bool inInteracting)
 		{
-			_inDialogue = inDialogue;
-			_gameInputs.enabled = !inDialogue;
+			_inInteracting = inInteracting;
+			_gameInputs.enabled = !inInteracting;
 
-			SwitchInteraction(inDialogue);
+			SwitchInteraction(inInteracting);
 		}
 
 		private void SwitchInteraction(bool enable)
@@ -112,7 +110,7 @@ namespace RedMoonGames.Window
 		{
 			_hudController.gameObject.SetActive(!enable);
 
-			if (_inDialogue) OnGamePause?.Invoke(enable);
+			if (_inInteracting) OnGamePause?.Invoke(enable);
 			else SwitchInteraction(enable);
 
 			Time.timeScale = enable ? 0 : 1;

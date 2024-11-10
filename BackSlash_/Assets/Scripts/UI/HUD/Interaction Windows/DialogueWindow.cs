@@ -8,6 +8,7 @@ namespace RedMoonGames.Window
 {
 	public class DialogueWindow : GameBasicWindow
 	{	
+		[SerializeField] private WindowHandler _tradeWindow;
 		[SerializeField] private DialogueAnimator _animator;
 		
 		[Header("Buttons")]
@@ -47,6 +48,7 @@ namespace RedMoonGames.Window
 			_dialogueSystem.OnDialogueGone += LastPhrase;
 			_animator.TextAnimationEnd += PhraseAnimationEnd;
 			_uiActions.OnDialogueAnswer += DialogueAnswer;
+			_interactionSystem.OnButtonClick += TradeButton;
 			
 			_positiveButton.onClick.AddListener(ButtonPositive);
 			_negativeButton.onClick.AddListener(ButtonNegative);
@@ -83,7 +85,7 @@ namespace RedMoonGames.Window
 		{
 			Debug.Log("TradeButton");
 			
-			_interactionSystem.OpenWindow();
+			_interactionSystem.SwitchWindows(_tradeWindow);
 		}
 		
 		private void SetName()
@@ -131,11 +133,15 @@ namespace RedMoonGames.Window
 
 		private void OnDestroy()
 		{
+			_dialogueSystem.UpdateDialogue();
+			
+			_windowService.OnHideWindow -= DisablePause;
 			_dialogueSystem.OnShowPhrase -= AnimatePhrase;
 			_dialogueSystem.OnWaitAnswer -= WaitAnswer;
 			_dialogueSystem.OnDialogueGone -= LastPhrase;
 			_animator.TextAnimationEnd -= PhraseAnimationEnd;
-			_uiActions.OnDialogueAnswer += DialogueAnswer;
+			_uiActions.OnDialogueAnswer -= DialogueAnswer;
+			_interactionSystem.OnButtonClick -= TradeButton;
 			
 			_positiveButton.onClick.RemoveListener(ButtonPositive);
 			_negativeButton.onClick.RemoveListener(ButtonNegative);

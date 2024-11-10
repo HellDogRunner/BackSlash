@@ -18,6 +18,10 @@ public class NpcInteractionService : MonoBehaviour
 	private InteractionAnimator _animator;
 	private InteractionSystem _interaction;
 	
+	public string Name => _name;
+	public float Distance => _distance;
+	public Transform LookAt => _dialogueLookAt;
+	
 	[Inject]
 	private void Construct(InteractionAnimator animator, InteractionSystem interaction)
 	{
@@ -36,7 +40,7 @@ public class NpcInteractionService : MonoBehaviour
 	{
 		if (other.tag == "CharacterController")
 		{
-			_interaction.SetInformation(_quest, _inentory, _dialogueLookAt, _distance, _name);
+			_interaction.SetInformation(_quest, _inentory, gameObject);
 			
 			_animator.SetTransform(transform, _defaultRotation);
 		}

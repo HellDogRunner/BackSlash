@@ -82,4 +82,10 @@ public class DialogueAnimator : MonoBehaviour
 	{
 		if (tween.IsActive()) tween.Kill();
 	}
+	
+	private  void OnDestroy()
+	{
+		TryKillTween(_text);
+		TryKillTween(_answerKeys);
+	}
 }

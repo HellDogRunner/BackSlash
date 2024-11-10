@@ -10,33 +10,31 @@ using Zenject;
 public class InteractionSystem : MonoBehaviour
 {
 	[SerializeField] private WindowHandler _dialogueWindow;
-	[SerializeField] private WindowHandler _tradeWindow;
 	[Space]
 	[SerializeField] private CinemachineCamera _dialogueCamera;
 	[SerializeField] private InventoryDatabase _playerInventory;
 	[Space]
 	[SerializeField] private GameObject _player;
-	
-	private Transform _lookAt;
 
 	private InventoryDatabase _traderInventory;
 	private QuestDatabase _quest;
+	private NpcInteractionService _npc;
+	private WindowHandler _lastOpenned; 
 	
 	private bool _isInteracting;
 	private bool _inTrade;
-	private float _distance;
-	private string _name;
 
+	private GameMenuController _menuController;
 	private UIActionsController _uiActions;
 	private InteractionAnimator _animator;
-	private GameMenuController _menuController;
 	private HUDController _hudController;
 	private WindowService _windowService;
 
-	public event Action OnReset;	
 	public event Action<QuestDatabase> SetQuest;
-	public event Action OnInteracting;
+	public event Action OnResetDialogue;	
 	public event Action EndInteracting;
+	public event Action<bool> OnInteracting;
+	public event Action OnButtonClick;
 
 	[Inject]
 	private void Construct(WindowService windowService, HUDController hudController, GameMenuController menuController, InteractionAnimator animator, UIActionsController uIActions)
@@ -62,29 +60,25 @@ public class InteractionSystem : MonoBehaviour
 		_menuController.OnGamePause -= OnGamePause;
 	}
 
-	public void SetInformation(QuestDatabase quest, InventoryDatabase inventory, Transform lookAt, float distance, string name)
+	public void SetInformation(QuestDatabase quest, InventoryDatabase inventory, GameObject npc)
 	{
 		_quest = quest;
 		_traderInventory = inventory;
-		_lookAt = lookAt;
-		_distance = distance;
-		_name = name;
+		_npc = npc.GetComponent<NpcInteractionService>();
 		
 		SetQuest?.Invoke(_quest);
-		if (_quest != null) _animator.TalkKey(1);
+		if (_quest != null) _animator.ShowTalk();
 	}
 
 	public void ResetInformation()
 	{
 		_quest = null;
 		_traderInventory = null;
-		_lookAt = null;
-		_distance = 0;
-		_name = "";
+		_npc = null;
 		
-		_animator.TalkKey();
+		_animator.HideTalk();
 		_animator.RotateToDefault();
-		OnReset?.Invoke();
+		OnResetDialogue?.Invoke();
 	}
 
 	public void TryInteract()
@@ -95,21 +89,22 @@ public class InteractionSystem : MonoBehaviour
 			{
 				_isInteracting = true;
 
-				if (_traderInventory != null) _uiActions.OnTradeKeyPressed += OpenWindow;
+				if (_traderInventory != null) _uiActions.OnTradeKeyPressed += TradeButton;
 
-				_dialogueCamera.Target.LookAtTarget = _lookAt;
+				_dialogueCamera.Target.LookAtTarget = _npc.LookAt;
 				_dialogueCamera.gameObject.SetActive(true);
 
-				_animator.TalkKey();
+				_animator.HideTalk();
 				_animator.LookAtEachOther(_player.transform);
 				
 				_hudController.SwitchOverlay();
 				_menuController.SwitchDialogue(true);
 
-				_windowService.TryOpenWindow(_dialogueWindow);
+				SwitchWindows(_dialogueWindow);
+				return;
 			}
 
-			if (!_inTrade) OnInteracting?.Invoke();
+			if (!_inTrade) OnInteracting?.Invoke(true);
 		}
 	}
 
@@ -117,9 +112,9 @@ public class InteractionSystem : MonoBehaviour
 	{
 		if (!_quest) return false;
 
-		float distance = (_player.transform.position - _lookAt.position).magnitude;
+		float distance = (_player.transform.position - _npc.transform.position).magnitude;
 
-		return distance < _distance;
+		return distance < _npc.Distance;
 	}
 
 	public void TryStopInteract()
@@ -129,11 +124,12 @@ public class InteractionSystem : MonoBehaviour
 			_isInteracting = false;
 			_inTrade = false;
 
-			if (_traderInventory != null) _uiActions.OnTradeKeyPressed -= OpenWindow;
+			if (_traderInventory != null) _uiActions.OnTradeKeyPressed -= TradeButton;
 
 			EndInteracting?.Invoke();
+			_windowService.CloseActiveWindow();
 
-			_animator.TalkKey(1);
+			_animator.ShowTalk();
 			_hudController.SwitchOverlay(1);
 			_menuController.SwitchDialogue(false);
 
@@ -142,14 +138,14 @@ public class InteractionSystem : MonoBehaviour
 		}
 	}
 
-	public void OpenWindow()
+	public void SwitchWindows(WindowHandler window)
 	{
-		var window = _inTrade ? _dialogueWindow : _tradeWindow;
-		
-		_windowService.ReturnActiveWindow()?.Close();
+		_windowService.CloseActiveWindow();
 		_windowService.TryOpenWindow(window);
+		_lastOpenned = window;
 		
-		_inTrade = !_inTrade;
+		if (window == _dialogueWindow) OnInteracting?.Invoke(false);
+		else _inTrade = true;
 	}
 
 	public InventoryDatabase GetPlayerInventory() 
@@ -164,12 +160,25 @@ public class InteractionSystem : MonoBehaviour
 
 	public string GetName()
 	{
-		return _name;
+		return _npc.Name;
 	}
 
-	private void OnGamePause(bool enable)
+	private void TradeButton()
 	{
-		if (enable) _uiActions.OnBackKeyPressed -= TryStopInteract;
-		else _uiActions.OnBackKeyPressed += TryStopInteract;
+		OnButtonClick?.Invoke();
+	}
+
+	private void OnGamePause(bool paused)
+	{
+		if (paused)
+		{
+			_uiActions.OnBackKeyPressed -= TryStopInteract;
+		}
+		else
+		{
+			_uiActions.OnBackKeyPressed += TryStopInteract;
+			_windowService.TryOpenWindow(_lastOpenned);
+			OnInteracting?.Invoke(false);
+		}
 	}
 }

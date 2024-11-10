@@ -1,17 +1,9 @@
-using System;
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
 
 public class InteractionAnimator : MonoBehaviour
 {
-	[Header("Interaction Objects")]
-	[SerializeField] private CanvasGroup _tradeCG;
-	[SerializeField] private CanvasGroup _dialogueCG;
-	[SerializeField] private CanvasGroup _buttonsCG;
 	[SerializeField] private CanvasGroup _talkCG;
-	[Space]
-	[SerializeField] private TMP_Text _currency;
 	
 	[Header("Settings")]
 	[SerializeField] private float _showDuration = 0.2f;
@@ -21,70 +13,28 @@ public class InteractionAnimator : MonoBehaviour
 	private Transform _npcTR;
 	private Vector3 _defaultRotation;
 
-	private Tween _dialogue;
-	private Tween _trade;
 	private Tween _talk;
-	private Tween _buttons;
 	
 	private void Awake()
-	{
-		_dialogueCG.alpha = 0;
-		_dialogueCG.gameObject.SetActive(false);
-		
-		_tradeCG.alpha = 0;
-		_tradeCG.gameObject.SetActive(false);
-		
-		_buttonsCG.alpha = 0;
-		_buttonsCG.gameObject.SetActive(false);
-		
+	{		
 		_talkCG.alpha = 0;
 		_talkCG.gameObject.SetActive(false);
 	}
 
-	public void Dialogue(int alpha = 0)
+	public void ShowTalk()
 	{
-		SwitchAlphaAndSetActive(_dialogue, _dialogueCG, alpha);
-	}
-
-	public void Trade(int alpha = 0)
-	{
-		SwitchAlphaAndSetActive(_trade, _tradeCG, alpha);
-	}
-
-	public void Buttons(int alpha = 0)
-	{
-		SwitchAlphaAndSetActive(_buttons, _buttonsCG, alpha);
-	}
-
-	public void TalkKey(int alpha = 0)
-	{
-		SwitchAlphaAndSetActive(_talk, _talkCG, alpha);
-	}
-
-	private void SwitchAlphaAndSetActive(Tween tween, CanvasGroup cg, float alpha = 0)
-	{
-		TryKillTween(tween);
+		TryKillTween(_talk);
 		
-		if (alpha == 0)
-		{
-			tween = cg.DOFade(alpha, _hideDuration).
-			OnComplete(() => cg.gameObject.SetActive(false));
-		}
-		else
-		{
-			cg.gameObject.SetActive(true);
-			tween = cg.DOFade(alpha, _showDuration);
-		}
+		_talkCG.gameObject.SetActive(true);
+		_talk = _talkCG.DOFade(1, _showDuration);
 	}
 
-	// Нужна ли fade анимация без переключения активности объекта?
-	private void SwitchObjectAlpha(Tween tween, CanvasGroup cg, float alpha, bool isWindow = false) 
+	public void HideTalk()
 	{
-		float duration;
-		duration = isWindow ? _hideDuration : _showDuration;
+		TryKillTween(_talk);
 		
-		TryKillTween(tween);
-		tween = cg.DOFade(alpha, duration).SetEase(Ease.Flash);
+		_talk = _talkCG.DOFade(0, _hideDuration).
+		OnComplete(() => _talkCG.gameObject.SetActive(false));
 	}
 
 	public void SetTransform(Transform transform, Vector3 rotation)
@@ -111,9 +61,31 @@ public class InteractionAnimator : MonoBehaviour
 	{
 		if (tween.IsActive()) tween.Kill();
 	}
-	
-	public TMP_Text GetCurrency()
-	{
-		return _currency;
-	}
 }
+
+// fade анимация с переключением активности объекта
+// private void SwitchAlphaAndSetActive(Tween tween, CanvasGroup cg, float alpha = 0)
+// {
+// 	TryKillTween(tween);
+	
+// 	if (alpha == 0)
+// 	{
+// 		tween = cg.DOFade(alpha, _hideDuration).
+// 		OnComplete(() => cg.gameObject.SetActive(false));
+// 	}
+// 	else
+// 	{
+// 		cg.gameObject.SetActive(true);
+// 		tween = cg.DOFade(alpha, _showDuration);
+// 	}
+// }
+
+// fade анимация без переключения активности объекта
+// private void SwitchObjectAlpha(Tween tween, CanvasGroup cg, float alpha, bool isWindow = false) 
+// {
+// 	float duration;
+// 	duration = isWindow ? _hideDuration : _showDuration;
+	
+// 	TryKillTween(tween);
+// 	tween = cg.DOFade(alpha, duration).SetEase(Ease.Flash);
+// }
