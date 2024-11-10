@@ -1,6 +1,6 @@
 using RedMoonGames.Basics;
-using RedMoonGames.Window;
 using Scripts.Inventory;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,190 +10,203 @@ using Zenject;
 [RequireComponent(typeof(Button))]
 public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDeselectHandler, IPointerExitHandler
 {
-	[Header("Components")]
-	[SerializeField] private Image _icon;
-	[SerializeField] private Image _sold;
-	[SerializeField] private Image _frame;
-	[SerializeField] private TMP_Text _name;
-	[SerializeField] private TMP_Text _price;
+    [Header("Components")]
+    [SerializeField] private Image _icon;
+    [SerializeField] private Image _sold;
+    [SerializeField] private Image _frame;
+    [SerializeField] private TMP_Text _name;
+    [SerializeField] private TMP_Text _price;
+    [SerializeField] private TradeAnimator _tradeAnimator;
 
-	private Sprite _productIcon;
-	private string _productName;
-	private string _productDescription;
-	private int _productPrice;
-	private string _productStats;
-	private bool _productHave;
+    private Sprite _productIcon;
+    private string _productName;
+    private string _productDescription;
+    private int _productPrice;
+    private string _productStats;
+    private bool _productHave;
 
-	private Button _button;
-	private bool _select;
+    private Button _button;
+    private bool _select;
 
-	private InventoryModel _productInventoryModel;
-	//private TradeAnimator _animator;
-	private TradeWindow _tradeWindow;
-	private InventoryDatabase _playerInventory;
+    private InventoryModel _productInventoryModel;
+    private InventoryDatabase _playerInventory;
+    private CurrencyService _currencyService;
 
-	[Inject]
-	private void Construct(InventoryDatabase data, TradeWindow tradeWindow)
-	{
-	    _tradeWindow = tradeWindow;
-	    _playerInventory = data;
-	    //_animator = animator;
-	}
+    public string ProductName => _productName;
+    public string ProductPrice => _productPrice.ToString();
+    public string ProductDescription => _productDescription;
 
-	private void Awake()
-	{
-		_button = GetComponent<Button>();
-		if (_select) SelectButton();
-	}
+    public string ProductStats => _productStats;
 
-	private void OnEnable()
-	{
-		_button.onClick.AddListener(BuyProduct);
-	}
+    public event Action<Product> ProductSelected;
 
-	private void OnDisable()
-	{
-		_button.onClick.RemoveListener(BuyProduct);
-	}
+    [Inject]
+    private void Construct(InventoryDatabase data, CurrencyService currencyService)
+    {
+        _playerInventory = data;
+        _currencyService = currencyService;
+    }
 
-	// public void SetComponents(TradeWindow tradeWindow, InventoryDatabase inventory, TradeAnimator animator)
-	// {
-	// 	_tradeWindow = tradeWindow;
-	// 	_playerInventory =inventory;
-	// 	_animator = animator;
-	// }
+    private void Awake()
+    {
+        _button = GetComponent<Button>();
+        if (_select) SelectButton();
+    }
 
-	private void AddItem(EItemType itemType, Item item)
-	{
-		var newInvenotryModel = new InventoryModel()
-		{
-			ItemType = itemType,
-			Item = item,
-		};
-		_playerInventory.AddItem(newInvenotryModel);
-	}
+    private void OnEnable()
+    {
+        _button.onClick.AddListener(BuyProduct);
+    }
 
-	private void SetProductValues(Item product)
-	{
-		_productName = product.Name;
-		_productDescription = product.Description;
-		_productIcon = product.Icon;
-		_productPrice = product.Price;
-	}
+    private void OnDisable()
+    {
+        _button.onClick.RemoveListener(BuyProduct);
+    }
 
-	private string FormatStats(InventoryModel inventoryModel)
-	{
-		if (inventoryModel.ItemType == EItemType.BuffItem && inventoryModel.Item is BuffItem)
-		{
-			var buff = inventoryModel.Item as BuffItem;
-			if (buff.Damage > 0)
-			{
-				_productStats += $"Damage: {buff.Damage}\n";
-			}
+    private void AddItem(EItemType itemType, Item item)
+    {
+        var newInvenotryModel = new InventoryModel()
+        {
+            ItemType = itemType,
+            Item = item,
+        };
+        _playerInventory.AddItem(newInvenotryModel);
+    }
 
-			if (buff.Resistance > 0)
-			{
-				_productStats += $"Resistance: {buff.Resistance}\n";
-			}
+    private void SetProductValues(Item product)
+    {
+        _productName = product.Name;
+        _productDescription = product.Description;
+        _productIcon = product.Icon;
+        _productPrice = product.Price;
+    }
 
-			if (buff.AttackSpeed > 0)
-			{
-				_productStats += $"Attack Speed: {buff.AttackSpeed}\n";
-			}
-			return _productStats;
-		}
+    private string FormatStats(InventoryModel inventoryModel)
+    {
+        if (inventoryModel.ItemType == EItemType.BuffItem && inventoryModel.Item is BuffItem)
+        {
+            var buff = inventoryModel.Item as BuffItem;
+            if (buff.Damage > 0)
+            {
+                _productStats += $"Damage: {buff.Damage}\n";
+            }
 
-		if (inventoryModel.ItemType == EItemType.Attachment && inventoryModel.Item is AttachmentItem)
-		{
-			var attachment = inventoryModel.Item as AttachmentItem;
-			if (attachment.Damage > 0)
-			{
-				_productStats += $"Damage: {attachment.Damage}\n";
-			}
+            if (buff.Resistance > 0)
+            {
+                _productStats += $"Resistance: {buff.Resistance}\n";
+            }
 
-			if (attachment.AttackSpeed > 0)
-			{
-				_productStats += $"Attack speed: {attachment.AttackSpeed}\n";
-			}
+            if (buff.AttackSpeed > 0)
+            {
+                _productStats += $"Attack Speed: {buff.AttackSpeed}\n";
+            }
+            return _productStats;
+        }
 
-			if (attachment.ElementalDamage > 0)
-			{
-				_productStats += $"Elemental damage: {attachment.ElementalDamage}\n";
-			}
-			return _productStats;
-		}
+        if (inventoryModel.ItemType == EItemType.Attachment && inventoryModel.Item is AttachmentItem)
+        {
+            var attachment = inventoryModel.Item as AttachmentItem;
+            if (attachment.Damage > 0)
+            {
+                _productStats += $"Damage: {attachment.Damage}\n";
+            }
 
-		return "";
-	}
+            if (attachment.AttackSpeed > 0)
+            {
+                _productStats += $"Attack speed: {attachment.AttackSpeed}\n";
+            }
 
-	public void SetValues(InventoryModel inventoryModel)
-	{
-		SetProductValues(inventoryModel.Item);
-		FormatStats(inventoryModel);
+            if (attachment.ElementalDamage > 0)
+            {
+                _productStats += $"Elemental damage: {attachment.ElementalDamage}\n";
+            }
+            return _productStats;
+        }
 
-		_icon.sprite = _productIcon;
-		_name.text = _productName;
-		_productInventoryModel = inventoryModel;
+        return "";
+    }
 
-		if (_productHave)
-		{
-			_sold.gameObject.SetActive(true);
-			_price.text = "Sold";
-		}
-		else
-		{
-			_sold.gameObject.SetActive(false);
-			_price.text = _productPrice.ToString();
-		}
-	}
+    public void SetValues(InventoryModel inventoryModel)
+    {
+        SetProductValues(inventoryModel.Item);
+        FormatStats(inventoryModel);
 
-	private void BuyProduct()
-	{
-		TryBuyProduct();
-	}
+        _icon.sprite = _productIcon;
+        _name.text = _productName;
+        _productInventoryModel = inventoryModel;
 
-	private TryResult TryBuyProduct()
-	{
-		if (_productHave)
-		{
-			//_animator.Bought(_frame);
-			return TryResult.Fail;
-		}
+        if (_productHave)
+        {
+            _sold.gameObject.SetActive(true);
+            _price.text = "Sold";
+        }
+        else
+        {
+            _sold.gameObject.SetActive(false);
+            _price.text = _productPrice.ToString();
+        }
+    }
 
-		if (!_tradeWindow.TruBuyProduct(_productPrice))
-		{
-			//_animator.NeedCurrency(_price);
-			return TryResult.Fail;
-		}
+    private void BuyProduct()
+    {
+        TryBuyProduct();
+    }
 
-		_productHave = true;
-		//_animator.Buy(_sold);
-		_price.text = "Sold!";
-		AddItem(_productInventoryModel.ItemType, _productInventoryModel.Item);
-		return TryResult.Successfully;
-	}
+    public bool TruBuyProduct(int price)
+    {
+        var result = _currencyService.TryRemoveCurrency(price);
 
-	public void OnPointerEnter(PointerEventData eventData) { SelectButton(); }
-	public void OnPointerExit(PointerEventData eventData) { DeselectButton(); }
-	public void OnSelect(BaseEventData eventData) { SelectButton(); }
-	public void OnDeselect(BaseEventData eventData) { DeselectButton(); }
+        if (result == TryResult.Successfully)
+        {
+            return true;
+        }
+        return false;
+    }
 
-	public void SelectFirst()
-	{
-		_select = true;
-	}
+    private TryResult TryBuyProduct()
+    {
+        if (_productHave)
+        {
+            _tradeAnimator.Bought(_frame);
+            return TryResult.Fail;
+        }
 
-	public void SelectButton()
-	{
-		if (!EventSystem.current.alreadySelecting) EventSystem.current.SetSelectedGameObject(gameObject);
+        var result = _currencyService.TryRemoveCurrency(_productPrice);
 
-		_tradeWindow.ProductSelected(_productName, _productPrice.ToString(), _productDescription, _productStats);
+        if (result == TryResult.Fail)
+        {
+            _tradeAnimator.NeedCurrency(_price);
+            return TryResult.Fail;
+        }
 
-		//_animator.Select(_frame, _name);
-	}
+        _productHave = true;
+        _tradeAnimator.Buy(_sold);
+        _price.text = "Sold!";
+        AddItem(_productInventoryModel.ItemType, _productInventoryModel.Item);
+        return TryResult.Successfully;
+    }
 
-	private void DeselectButton()
-	{
-		//_animator.Deselect(_frame, _name);
-	}
+    public void OnPointerEnter(PointerEventData eventData) { SelectButton(); }
+    public void OnPointerExit(PointerEventData eventData) { DeselectButton(); }
+    public void OnSelect(BaseEventData eventData) { SelectButton(); }
+    public void OnDeselect(BaseEventData eventData) { DeselectButton(); }
+
+    public void SelectFirst()
+    {
+        _select = true;
+    }
+
+    public void SelectButton()
+    {
+        if (!EventSystem.current.alreadySelecting) EventSystem.current.SetSelectedGameObject(gameObject);
+
+        ProductSelected?.Invoke(this);
+
+        _tradeAnimator.Select(_frame, _name);
+    }
+
+    private void DeselectButton()
+    {
+        _tradeAnimator.Deselect(_frame, _name);
+    }
 }

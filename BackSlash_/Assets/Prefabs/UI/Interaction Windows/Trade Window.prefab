@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 2210755995999965125}
   - component: {fileID: 7516587560136758156}
   - component: {fileID: 2017822563297608471}
-  - component: {fileID: 4259988854531778730}
   - component: {fileID: 946597116229720192}
   m_Layer: 5
   m_Name: Trade Window
@@ -134,7 +133,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _IsMainMenu: 0
-  _tradeAnimator: {fileID: 4259988854531778730}
   _productsRoot: {fileID: 1596268952664586588}
   _productPrefab: {fileID: 8942215995542258475, guid: ab47b2a46074d7a4484a6b0c0c019af9,
     type: 3}
@@ -145,24 +143,6 @@ MonoBehaviour:
   _leaveButton: {fileID: 5233865200057428379}
   _buyButton: {fileID: 6214630382531421760}
   _tradeButton: {fileID: 6322730475105880450}
---- !u!114 &4259988854531778730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 49390829836575123}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88759711319288f44bd3cf4e1a457f72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _duration: 0.3
-  _textColor: {r: 1, g: 1, b: 1, a: 1}
-  _frameColor: {r: 0.07058824, g: 0.15686275, b: 0.24705882, a: 1}
-  _soldColor: {r: 0.07058824, g: 0.15686275, b: 0.24705882, a: 0.78431374}
-  _selectedColor: {r: 0, g: 1, b: 1, a: 1}
-  _needCurrencyColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &946597116229720192
 MonoBehaviour:
   m_ObjectHideFlags: 0
