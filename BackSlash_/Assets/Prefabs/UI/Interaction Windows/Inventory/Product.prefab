@@ -509,8 +509,8 @@ GameObject:
   - component: {fileID: 4204616876616402238}
   - component: {fileID: 7629795563059335373}
   - component: {fileID: -492076258469470689}
+  - component: {fileID: 6740011549116034390}
   - component: {fileID: 2344600653414493857}
-  - component: {fileID: 7873922238137184173}
   m_Layer: 5
   m_Name: Product
   m_TagString: Untagged
@@ -611,6 +611,25 @@ MonoBehaviour:
   _frame: {fileID: 1424634359347150570}
   _name: {fileID: 1114324522353912132}
   _price: {fileID: 8332868152203278790}
+  _tradeAnimator: {fileID: 6740011549116034390}
+--- !u!114 &6740011549116034390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8942215995542258475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88759711319288f44bd3cf4e1a457f72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 0.3
+  _textColor: {r: 1, g: 1, b: 1, a: 1}
+  _frameColor: {r: 0.07058824, g: 0.15686275, b: 0.24705882, a: 1}
+  _soldColor: {r: 0.07058824, g: 0.15686275, b: 0.24705882, a: 0.78431374}
+  _selectedColor: {r: 0, g: 1, b: 1, a: 1}
+  _needCurrencyColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &2344600653414493857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -625,21 +644,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundOnHover: 1
   _soundOnClick: 1
---- !u!114 &7873922238137184173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8942215995542258475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _components:
-  - {fileID: -492076258469470689}
-  _identifier: 
-  _useSceneContext: 0
-  _context: {fileID: 0}
-  _bindType: 0
