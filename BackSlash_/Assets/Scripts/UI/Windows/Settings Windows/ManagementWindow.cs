@@ -7,7 +7,6 @@ namespace RedMoonGames.Window
     public class ManagementWindow : GameBasicWindow
     {
         [Header("Handlers")]
-        [SerializeField] private WindowHandler _managementHandler;
         [SerializeField] private WindowHandler _settingsHandler;
 
         [Header("Navigation Keys")]
@@ -22,7 +21,7 @@ namespace RedMoonGames.Window
             if (!_IsMainMenu) _close.onClick.AddListener(_windowService.Unpause);
         }
 
-        private void BackButton() { SwitchWindows(_managementHandler, _settingsHandler); }
+        private void BackButton() { OpenWindow(_settingsHandler); }
 
         private void OnDestroy()
         {

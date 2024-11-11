@@ -7,7 +7,6 @@ namespace RedMoonGames.Window
     public class MainWindow : GameBasicWindow
     {
         [Header("Handlers")]
-        [SerializeField] private WindowHandler _mainHandler;
         [SerializeField] private WindowHandler _settingsHandler;
 
         [Header("Buttons")]
@@ -35,7 +34,7 @@ namespace RedMoonGames.Window
         }
 
         private void StartButton() { _menuController.ChangeScene("FirstLocation"); }
-        private void SettingsButton() { SwitchWindows(_mainHandler, _settingsHandler); }
+        private void SettingsButton() { OpenWindow(_settingsHandler); }
         private void ExitButton() { Application.Quit(); }
 
         private void OnDestroy()

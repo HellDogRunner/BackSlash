@@ -7,7 +7,6 @@ namespace RedMoonGames.Window
     public class AudioWindow : GameBasicWindow
     {
         [Header("Handlers")]
-        [SerializeField] private WindowHandler _audioHandler;
         [SerializeField] private WindowHandler _settingsHandler;
 
         [Header("Sliders")]
@@ -41,7 +40,7 @@ namespace RedMoonGames.Window
             if (!_IsMainMenu) _close.onClick.AddListener(_windowService.Unpause);
         }
 
-        private void BackButton() { SwitchWindows(_audioHandler, _settingsHandler); }
+        private void BackButton() { OpenWindow(_settingsHandler); }
 
         private void OnDestroy()
         {

@@ -20,7 +20,7 @@ public class QuestSystem : MonoBehaviour
 
 	private void Awake()
 	{
-		_interactionSystem.SetQuestData += UpdateData;
+		_interactionSystem.SetQuest += UpdateData;
 	}
 
 	public void UpdateData(QuestDatabase dialogueData)
@@ -51,6 +51,6 @@ public class QuestSystem : MonoBehaviour
 	
 	private void OnDestroy()
 	{
-		_interactionSystem.SetQuestData -= UpdateData;  
+		_interactionSystem.SetQuest -= UpdateData;  
 	}
 }

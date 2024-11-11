@@ -5,194 +5,180 @@ using Scripts.UI.Dialogue;
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public class InteractionSystem : MonoBehaviour
 {
-    [SerializeField] private CinemachineCamera _dialogueCamera;
-    [SerializeField] private InventoryDatabase _playerInventory;
+	[SerializeField] private WindowHandler _dialogueWindow;
+	[Space]
+	[SerializeField] private CinemachineCamera _dialogueCamera;
+	[SerializeField] private InventoryDatabase _playerInventory;
+	[Space]
+	[SerializeField] private GameObject _player;
 
-    private Button _backButton;
-    private Button _nextButton;
-    private Button _tradeButton;
+	private InventoryDatabase _traderInventory;
+	private QuestDatabase _quest;
+	private NpcInteractionService _npc;
+	private WindowHandler _lastOpenned; 
+	
+	private bool _isInteracting;
+	private bool _inTrade;
 
-    private NpcInteractionService _npc;
-    private bool _canInteract;
-    private bool _isInteracting;
-    private bool _canTrade;
-    private bool _inTrade;
-    private float _maxDistance;
+	private GameMenuController _menuController;
+	private UIActionsController _uiActions;
+	private InteractionAnimator _animator;
+	private HUDController _hudController;
+	private WindowService _windowService;
 
-    private UIActionsController _uiActions;
-    private InteractionAnimator _animator;
-    private GameMenuController _menuController;
-    private HUDController _hudController;
+	public event Action<QuestDatabase> SetQuest;
+	public event Action OnResetDialogue;	
+	public event Action EndInteracting;
+	public event Action<bool> OnInteracting;
+	public event Action OnButtonClick;
 
-    public event Action OnExitTrigger;
-    public event Action OnEnterTrigger;
-    public event Action<QuestDatabase> SetQuestData;
-    public event Action<InventoryDatabase, InventoryDatabase> SetTradeInventories;
-    public event Action ShowDialogue;
-    public event Action ShowTrade;
-    public event Action OnInteracting;
-    public event Action EndInteracting;
+	[Inject]
+	private void Construct(WindowService windowService, HUDController hudController, GameMenuController menuController, InteractionAnimator animator, UIActionsController uIActions)
+	{
+		_animator = animator;
+		_uiActions = uIActions;
+		_windowService = windowService;
+		_hudController = hudController;
+		_menuController = menuController;
+	}
 
-    [Inject]
-    private void Construct(HUDController hudController, GameMenuController menuController, InteractionAnimator animator, UIActionsController uIActions)
-    {
-        _animator = animator;
-        _uiActions = uIActions;
-        _hudController = hudController;
-        _menuController = menuController;
-    }
+	private  void OnEnable()
+	{
+		_uiActions.OnEnterKeyPressed += TryInteract;
+		_uiActions.OnBackKeyPressed += TryStopInteract;
+		_menuController.OnGamePause += OnGamePause;
+	}
 
-    private void Awake()
-    {
-        _uiActions.OnEnterKeyPressed += TryInteract;
-        _uiActions.OnBackKeyPressed += TryStopInteract;
-        _menuController.OnGamePause += OnGamePause;
-    }
+	private void OnDisable()
+	{
+		_uiActions.OnEnterKeyPressed -= TryInteract;
+		_uiActions.OnBackKeyPressed -= TryStopInteract;
+		_menuController.OnGamePause -= OnGamePause;
+	}
 
-    private void OnDisable()
-    {
-        _uiActions.OnEnterKeyPressed -= TryInteract;
-        _uiActions.OnBackKeyPressed -= TryStopInteract;
-        _menuController.OnGamePause -= OnGamePause;
-    }
+	public void SetInformation(QuestDatabase quest, InventoryDatabase inventory, GameObject npc)
+	{
+		_quest = quest;
+		_traderInventory = inventory;
+		_npc = npc.GetComponent<NpcInteractionService>();
+		
+		SetQuest?.Invoke(_quest);
+		if (_quest != null) _animator.ShowTalk();
+	}
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "NPC")
-        {
-            _npc = other.GetComponent<NpcInteractionService>();
+	public void ResetInformation()
+	{
+		_quest = null;
+		_traderInventory = null;
+		_npc = null;
+		
+		_animator.HideTalk();
+		_animator.RotateToDefault();
+		OnResetDialogue?.Invoke();
+	}
 
-            if (_npc.GetQuestData() == null) return;
+	public void TryInteract()
+	{
+		if (CanInteract())
+		{
+			if (!_isInteracting)
+			{
+				_isInteracting = true;
 
-            _canInteract = true;
+				if (_traderInventory != null) _uiActions.OnTradeKeyPressed += TradeButton;
 
-            _animator.SetTransform(_npc.transform, _npc.GetRotation());
-            _maxDistance = other.GetComponent<SphereCollider>().radius + 0.2f;
+				_dialogueCamera.Target.LookAtTarget = _npc.LookAt;
+				_dialogueCamera.gameObject.SetActive(true);
 
-            OnEnterTrigger?.Invoke();
-            SetQuestData?.Invoke(_npc.GetQuestData());
+				_animator.HideTalk();
+				_animator.LookAtEachOther(_player.transform);
+				
+				_hudController.SwitchOverlay();
+				_menuController.SwitchDialogue(true);
 
-            if (_npc.GetTraderInventory() != null)
-            {
-                _canTrade = true;
-                SetTradeInventories?.Invoke(_npc.GetTraderInventory(), _playerInventory);
-            }
-        }
-    }
+				SwitchWindows(_dialogueWindow);
+				return;
+			}
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "NPC")
-        {
-            _canInteract = false;
-            _canTrade = false;
+			if (!_inTrade) OnInteracting?.Invoke(true);
+		}
+	}
 
-            _animator.RotateToDefault();
+	private bool CanInteract()
+	{
+		if (!_quest) return false;
 
-            OnExitTrigger?.Invoke();
-        }
-    }
+		float distance = (_player.transform.position - _npc.transform.position).magnitude;
 
-    private void TryInteract()
-    {
-        if (CanInteract(transform))
-        {
-            if (!_isInteracting)
-            {
-                _isInteracting = true;
+		return distance < _npc.Distance;
+	}
 
-                _backButton.onClick.AddListener(TryStopInteract);
-                _nextButton.onClick.AddListener(TryInteract);
-                if (_canTrade)
-                {
-                    _uiActions.OnTradeKeyPressed += SwitchInteractionWindow;
-                    _tradeButton.onClick.AddListener(SwitchInteractionWindow);
-                    _tradeButton.gameObject.SetActive(true);
-                }
+	public void TryStopInteract()
+	{
+		if (_isInteracting)
+		{
+			_isInteracting = false;
+			_inTrade = false;
 
-                _dialogueCamera.Target.LookAtTarget = _npc.GetLookAt();
-                _dialogueCamera.gameObject.SetActive(true);
+			if (_traderInventory != null) _uiActions.OnTradeKeyPressed -= TradeButton;
 
-                _animator.TalkKey();
-                _animator.Buttons(1);
-                _animator.LookAtEachOther(gameObject.transform);
-                _animator.SetName(_npc.GetName());
-                _hudController.SwitchOverlay();
-                _menuController.SwitchDialogue(true);
+			EndInteracting?.Invoke();
+			_windowService.CloseActiveWindow();
 
-                ShowDialogue?.Invoke();
-            }
+			_animator.ShowTalk();
+			_hudController.SwitchOverlay(1);
+			_menuController.SwitchDialogue(false);
 
-            if (!_inTrade) OnInteracting?.Invoke();
-        }
-    }
+			_dialogueCamera.gameObject.SetActive(false);
+			_dialogueCamera.Target.LookAtTarget = null;
+		}
+	}
 
-    private bool CanInteract(Transform playerTR)
-    {
-        if (!_npc) return false;
+	public void SwitchWindows(WindowHandler window)
+	{
+		_windowService.CloseActiveWindow();
+		_windowService.TryOpenWindow(window);
+		_lastOpenned = window;
+		
+		if (window == _dialogueWindow) OnInteracting?.Invoke(false);
+		else _inTrade = true;
+	}
 
-        float distance = (playerTR.position - _npc.transform.position).magnitude;
+	public InventoryDatabase GetPlayerInventory() 
+	{
+		return _playerInventory;
+	}
 
-        return distance < _maxDistance && _canInteract;
-    }
+	public InventoryDatabase GetTraderInventory() 
+	{
+		return _traderInventory;
+	}
 
-    public void TryStopInteract()
-    {
-        if (_isInteracting)
-        {
-            _isInteracting = false;
-            _inTrade = false;
+	public string GetName()
+	{
+		return _npc.Name;
+	}
 
-            _backButton.onClick.RemoveListener(TryStopInteract);
-            _nextButton.onClick.RemoveListener(TryInteract);
-            if (_canTrade)
-            {
-                _uiActions.OnTradeKeyPressed -= SwitchInteractionWindow;
-                _tradeButton.onClick.RemoveListener(SwitchInteractionWindow);
-                _tradeButton.gameObject.SetActive(false);
-            }
+	private void TradeButton()
+	{
+		OnButtonClick?.Invoke();
+	}
 
-            EndInteracting?.Invoke();
-
-            _animator.TalkKey();
-            _animator.Buttons();
-            _hudController.SwitchOverlay(1);
-            _menuController.SwitchDialogue(false);
-
-            _dialogueCamera.gameObject.SetActive(false);
-            _dialogueCamera.Target.LookAtTarget = null;
-        }
-    }
-
-    public void SetInteractionButtons(Button back, Button next, Button trade)
-    {
-        _backButton = back;
-        _nextButton = next;
-        _tradeButton = trade;
-        _tradeButton.gameObject.SetActive(false);
-    }
-
-    public void SwitchInteractionWindow()
-    {
-        if (_inTrade)
-        {
-            ShowDialogue?.Invoke();
-        }
-        else
-        {
-            ShowTrade?.Invoke();
-        }
-        _inTrade = !_inTrade;
-    }
-
-    private void OnGamePause(bool enable)
-    {
-        if (enable) _uiActions.OnBackKeyPressed -= TryStopInteract;
-        else _uiActions.OnBackKeyPressed += TryStopInteract;
-    }
+	private void OnGamePause(bool paused)
+	{
+		if (paused)
+		{
+			_uiActions.OnBackKeyPressed -= TryStopInteract;
+		}
+		else
+		{
+			_uiActions.OnBackKeyPressed += TryStopInteract;
+			_windowService.TryOpenWindow(_lastOpenned);
+			OnInteracting?.Invoke(false);
+		}
+	}
 }

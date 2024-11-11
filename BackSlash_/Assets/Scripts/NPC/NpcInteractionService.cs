@@ -1,46 +1,56 @@
 using Scripts.Inventory;
 using Scripts.UI.Dialogue;
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(SphereCollider))]
 public class NpcInteractionService : MonoBehaviour
 {
-    [SerializeField] private string _name;
-    [SerializeField] private QuestDatabase _quest;
-    [SerializeField] private InventoryDatabase _items;
-    [Space]
-    [SerializeField] private Transform _dialogueLookAt;
+	[SerializeField] private string _name;
+	[SerializeField] private QuestDatabase _quest;
+	[SerializeField] private InventoryDatabase _inentory;
+	[Space]
+	[SerializeField] private Transform _dialogueLookAt;
 
-    private Vector3 _defaultRotation;
+	private Vector3 _defaultRotation;
+	private float _distance; 
+	
+	private InteractionAnimator _animator;
+	private InteractionSystem _interaction;
+	
+	public string Name => _name;
+	public float Distance => _distance;
+	public Transform LookAt => _dialogueLookAt;
+	
+	[Inject]
+	private void Construct(InteractionAnimator animator, InteractionSystem interaction)
+	{
+		_interaction = interaction;
+		_animator = animator;
+	}
 
-    private void Awake()
-    {
-        _defaultRotation = transform.rotation.eulerAngles;
-        gameObject.tag = "NPC";
-    }
+	private void Awake()
+	{
+		_defaultRotation = transform.rotation.eulerAngles;
+		
+		_distance = GetComponent<SphereCollider>().radius + 0.2f;
+	}
 
-    public QuestDatabase GetQuestData()
-    {
-        return _quest;
-    }
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.tag == "CharacterController")
+		{
+			_interaction.SetInformation(_quest, _inentory, gameObject);
+			
+			_animator.SetTransform(transform, _defaultRotation);
+		}
+	}
 
-    public string GetName()
-    {
-        return _name;
-    }
-
-    public Vector3 GetRotation()
-    {
-        return _defaultRotation;
-    }
-
-    public Transform GetLookAt()
-    {
-        return _dialogueLookAt;
-    }
-
-    public InventoryDatabase GetTraderInventory()
-    {
-        return _items;
-    }
+	private void OnTriggerExit(Collider other)
+	{
+		if (other.tag == "CharacterController")
+		{
+			_interaction.ResetInformation();
+		}
+	}
 }

@@ -12,6 +12,7 @@ public class DialogueSystem : MonoBehaviour
 	private QuestQuestionsModel _currentQuestion;
 	private bool _waitAnswer;
 	private bool _dialogueGone;
+	private bool _textShowing;
 
 	private List<string> _phrases;
 	private List<QuestQuestionsModel> _questions;
@@ -34,14 +35,14 @@ public class DialogueSystem : MonoBehaviour
 
 	private void Awake()
 	{
-		_questSystem.SetData += SetDialogueModel;
+		_questSystem.SetData += SetDialogue;
 
 		_interactionSystem.OnInteracting += ShowNextPhrase;
-		_interactionSystem.OnExitTrigger += SetDefaultState;
+		_interactionSystem.OnResetDialogue += ResetDialogue;
 		_interactionSystem.EndInteracting += DialogueEnd;
 	}
 
-	private void SetDialogueModel(QuestDatabase data, string state)
+	private void SetDialogue(QuestDatabase data, string state)
 	{
 		_data = data;
 		var model = data.GetModelByState(state);
@@ -52,20 +53,26 @@ public class DialogueSystem : MonoBehaviour
 		_endings = model.Endings.ToList();
 	}
 
-	private void SetDefaultState()
+	private void ResetDialogue()
 	{
 		_waitAnswer = false;
 		_dialogueGone = false;
+		_textShowing = true;
 
 		_data = null;
-
-		_index = 0;
 		_phrases = null;
 		_questions = null;
 		_endings = null;
 	}
 
-	public void ShowNextPhrase()
+	public void UpdateDialogue()
+	{
+		_waitAnswer = false;
+		_dialogueGone = false;
+		_textShowing = true;
+	}
+
+	public void ShowNextPhrase(bool next)
 	{
 		if (_waitAnswer) return;
 
@@ -75,11 +82,15 @@ public class DialogueSystem : MonoBehaviour
 			return;
 		}
 
+		if (!_textShowing) _index += next ? 1 : 0;
+		_textShowing = true;
 		OnShowPhrase?.Invoke(_phrases[_index]);
-	}
+	}	
 
 	public void OnPhraseShowEnd()
 	{
+		_textShowing = false;
+		
 		foreach (var end in _endings) 
 		{
 			if (end.Index == _index)
@@ -106,17 +117,19 @@ public class DialogueSystem : MonoBehaviour
 				return;
 			}
 		}
-		_index++;
 	}
 
 	public void DialogueAnswer(bool answer)
 	{
-		_waitAnswer = false;
+		if (_waitAnswer)
+		{
+			_waitAnswer = false;
 
-		if (answer) _index = _currentQuestion.Index1;
-		else _index = _currentQuestion.Index2;
+			if (answer) _index = _currentQuestion.Index1;
+			else _index = _currentQuestion.Index2;
 
-		ShowNextPhrase();
+			ShowNextPhrase(false);
+		}
 	}
 
 	public void DialogueEnd()
@@ -131,10 +144,10 @@ public class DialogueSystem : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		_questSystem.SetData -= SetDialogueModel;
+		_questSystem.SetData -= SetDialogue;
 
 		_interactionSystem.OnInteracting -= ShowNextPhrase;
-		_interactionSystem.OnExitTrigger -= SetDefaultState;
+		_interactionSystem.OnResetDialogue -= ResetDialogue;
 		_interactionSystem.EndInteracting -= DialogueEnd;
 	}
 }
