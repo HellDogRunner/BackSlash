@@ -20,6 +20,7 @@ namespace RedMoonGames.Window
 
 		//private Sequence _blink;
 		private Tween _window;
+		private Tween _interactionWindow;
 
 		private bool _windowClosing;
 
@@ -49,6 +50,14 @@ namespace RedMoonGames.Window
 					OnAnimationComplete?.Invoke(window);
 				});
 			}
+		}
+
+		public void ShowInteractionWindow(CanvasGroup cg, float delay = 0)
+		{
+			TryKillTween(_interactionWindow);
+
+			cg.alpha = 0;
+			_interactionWindow = cg.DOFade(1f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true).SetDelay(delay);
 		}
 
 		private void TryKillTween(Tween tween)

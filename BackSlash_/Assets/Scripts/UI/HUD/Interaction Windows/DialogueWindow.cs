@@ -62,31 +62,15 @@ namespace RedMoonGames.Window
 			else _tradeButton.gameObject.SetActive(false);
 			
 			SetName();
+			
+			_animationService.ShowInteractionWindow(_canvasGroup);
 		}
 
 		private void ButtonPositive() { DialogueAnswer(true); }
 		private void ButtonNegative() { DialogueAnswer(false); }
-		
-		private void BackButton()
-		{
-			Debug.Log("BackButton");
-			
-			_interactionSystem.TryStopInteract();
-		}
-		
-		private void NextButton()
-		{
-			Debug.Log("NextButton");
-			
-			_interactionSystem.TryInteract();
-		}
-		
-		private void TradeButton()
-		{
-			Debug.Log("TradeButton");
-			
-			_interactionSystem.SwitchWindows(_tradeWindow);
-		}
+		private void BackButton() { _interactionSystem.TryStopInteract(); }
+		private void NextButton() { _interactionSystem.TryInteract(); }
+		private void TradeButton() { _interactionSystem.SwitchWindows(_tradeWindow); }
 		
 		private void SetName()
 		{
