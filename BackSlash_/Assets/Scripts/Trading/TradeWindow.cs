@@ -176,7 +176,10 @@ namespace RedMoonGames.Window
 				case EItemType.BuffItem:
 				return _buffsRoot;
 				
-				case EItemType.Attachment:
+				case EItemType.Blade:
+				return _modsRoot;
+				
+				case EItemType.Guard:
 				return _modsRoot;
 			}
 			return null;

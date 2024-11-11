@@ -80,7 +80,7 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 			return _stats;
 		}
 
-		if (inventoryModel.ItemType == EItemType.Attachment && inventoryModel.Item is AttachmentItem)
+		if (inventoryModel.ItemType == EItemType.Blade && inventoryModel.Item is AttachmentItem)
 		{
 			var attachment = inventoryModel.Item as AttachmentItem;
 			if (attachment.Damage > 0)

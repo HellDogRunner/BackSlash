@@ -21,12 +21,12 @@ public class AttachmentItemView : MonoBehaviour, ISelectHandler, IPointerEnterHa
     private Button _button;
     private bool _select;
 
-    private TradeAnimator _animator;
+    private ProductAnimator _animator;
     private InventoryModel _productInventoryModel;
     private InventoryDatabase _playerInventory;
 
     [Inject]
-    private void Construct(TradeAnimator animator, InventoryDatabase data)
+    private void Construct(ProductAnimator animator, InventoryDatabase data)
     {
         _playerInventory = data;
         _animator = animator;
@@ -124,7 +124,7 @@ public class AttachmentItemView : MonoBehaviour, ISelectHandler, IPointerEnterHa
     {
         if (!EventSystem.current.alreadySelecting) EventSystem.current.SetSelectedGameObject(gameObject);
 
-        _animator.Select(_frame, _name);
+        _animator.Select();
     }
 
     private void SelectItem()
@@ -134,6 +134,6 @@ public class AttachmentItemView : MonoBehaviour, ISelectHandler, IPointerEnterHa
 
     private void DeselectButton()
     {
-        _animator.Deselect(_frame, _name);
+        _animator.Deselect();
     }
 }
