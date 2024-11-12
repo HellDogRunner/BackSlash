@@ -8,132 +8,77 @@ using Zenject;
 [RequireComponent(typeof(Button))]
 public class AttachmentItemView : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDeselectHandler, IPointerExitHandler
 {
-    [Header("Components")]
-    [SerializeField] private Image _icon;
-    [SerializeField] private Image _frame;
-    [SerializeField] private TMP_Text _name;
+	[Header("Components")]
+	[SerializeField] private Image _icon;
+	[SerializeField] private Image _frame;
+	[SerializeField] private TMP_Text _name;
 
-    private Sprite _productIcon;
-    private string _productName;
-    private string _productDescription;
-    private string _productStats;
+	private Button _button;
+	private bool _select;
 
-    private Button _button;
-    private bool _select;
+	private Item _item;
+	private EItemType _type;
+	
+	private ProductAnimator _animator;
+	private InventoryDatabase _playerInventory;
 
-    private ProductAnimator _animator;
-    private InventoryModel _productInventoryModel;
-    private InventoryDatabase _playerInventory;
+	[Inject]
+	private void Construct(ProductAnimator animator, InventoryDatabase data)
+	{
+		_playerInventory = data;
+		_animator = animator;
+	}
 
-    [Inject]
-    private void Construct(ProductAnimator animator, InventoryDatabase data)
-    {
-        _playerInventory = data;
-        _animator = animator;
-    }
+	private void Awake()
+	{
+		_button = GetComponent<Button>();
+		if (_select) SelectButton();
+	}
 
-    private void Awake()
-    {
-        _button = GetComponent<Button>();
-        if (_select) SelectButton();
-    }
+	private void OnEnable()
+	{
+		_button.onClick.AddListener(SelectItem);
+	}
 
-    private void OnEnable()
-    {
-        _button.onClick.AddListener(SelectItem);
-    }
+	private void OnDisable()
+	{
+		_button.onClick.RemoveListener(SelectItem);
+	}
 
-    private void OnDisable()
-    {
-        _button.onClick.RemoveListener(SelectItem);
-    }
 
-    private void SetProductValues(Item product)
-    {
-        _productName = product.Name;
-        _productDescription = product.Description;
-        _productIcon = product.Icon;
-    }
+	public void SetValues(InventoryModel inventoryModel)
+	{
+		_item = inventoryModel.Item;
+		_type = inventoryModel.Type;
 
-    private string FormatStats(InventoryModel inventoryModel)
-    {
-        if (inventoryModel.Item is BuffItem)
-        {
-            var buff = inventoryModel.Item as BuffItem;
-            if (buff.Damage > 0)
-            {
-                _productStats += $"Damage: {buff.Damage}\n";
-            }
+		_icon.sprite = _item.Icon;	// Set mod values
+		_name.text = _item.Name;
+	}
 
-            if (buff.Resistance > 0)
-            {
-                _productStats += $"Resistance: {buff.Resistance}\n";
-            }
+	public void OnPointerEnter(PointerEventData eventData) { SelectButton(); }
+	public void OnPointerExit(PointerEventData eventData) { DeselectButton(); }
+	public void OnSelect(BaseEventData eventData) { SelectButton(); }
+	public void OnDeselect(BaseEventData eventData) { DeselectButton(); }
 
-            if (buff.AttackSpeed > 0)
-            {
-                _productStats += $"Attack Speed: {buff.AttackSpeed}\n";
-            }
-            return _productStats;
-        }
+	public void SelectFirst()
+	{
+		_select = true;
+	}
 
-        if (inventoryModel.Item is AttachmentItem)
-        {
-            var attachment = inventoryModel.Item as AttachmentItem;
-            if (attachment.Damage > 0)
-            {
-                _productStats += $"Damage: {attachment.Damage}\n";
-            }
+	public void SelectButton()
+	{
+		if (!EventSystem.current.alreadySelecting) EventSystem.current.SetSelectedGameObject(gameObject);
 
-            if (attachment.AttackSpeed > 0)
-            {
-                _productStats += $"Attack speed: {attachment.AttackSpeed}\n";
-            }
+		_animator.Select();
+	}
 
-            if (attachment.ElementalDamage > 0)
-            {
-                _productStats += $"Elemental damage: {attachment.ElementalDamage}\n";
-            }
-            return _productStats;
-        }
+	private void SelectItem()
+	{
+		//select item in slot
+	}
 
-        return "";
-    }
-
-    public void SetValues(InventoryModel inventoryModel)
-    {
-        SetProductValues(inventoryModel.Item);
-        FormatStats(inventoryModel);
-
-        _icon.sprite = _productIcon;
-        _name.text = _productName;
-        _productInventoryModel = inventoryModel;
-    }
-
-    public void OnPointerEnter(PointerEventData eventData) { SelectButton(); }
-    public void OnPointerExit(PointerEventData eventData) { DeselectButton(); }
-    public void OnSelect(BaseEventData eventData) { SelectButton(); }
-    public void OnDeselect(BaseEventData eventData) { DeselectButton(); }
-
-    public void SelectFirst()
-    {
-        _select = true;
-    }
-
-    public void SelectButton()
-    {
-        if (!EventSystem.current.alreadySelecting) EventSystem.current.SetSelectedGameObject(gameObject);
-
-        _animator.Select();
-    }
-
-    private void SelectItem()
-    {
-        //select item in slot
-    }
-
-    private void DeselectButton()
-    {
-        _animator.Deselect();
-    }
+	private void DeselectButton()
+	{
+		_animator.Deselect();
+	}
 }

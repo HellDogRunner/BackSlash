@@ -4,9 +4,9 @@ using System;
 [Serializable]
 public class InventoryModel : IDatabaseModelPrimaryKey<EItemType>
 {
-    public EItemType ItemType;
+    public EItemType Type;
     public Item Item;
 
-    public EItemType PrimaryKey => ItemType;
+    public EItemType PrimaryKey => Type;
 }
 

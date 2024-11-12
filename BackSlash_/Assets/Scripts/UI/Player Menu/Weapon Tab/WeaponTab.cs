@@ -39,7 +39,7 @@ public class WeaponTab : MonoBehaviour
         {
             foreach (var item in _playerInventory.GetData())
             {
-                if (item.ItemType == itemType)
+                if (item.Type == itemType)
                 {
                     var prefab = _diContainer.InstantiatePrefab(_attachmentPrefab, _bladeFrameRoot);
                     _items.Add(prefab);

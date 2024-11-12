@@ -9,13 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae51bf509023aa74881688f8689b0948, type: 3}
-  m_Name: Default Guard 1
+  m_Script: {fileID: 11500000, guid: 8dcb7c6310902f4479c1c41d49d2ba2d, type: 3}
+  m_Name: Default Guard
   m_EditorClassIdentifier: 
-  Name: DefaultGuard
+  Name: Default Guard
   Price: 200
   Icon: {fileID: 21300000, guid: 1e9526bc4ce25ca4f8a36ca0a4345b53, type: 3}
-  Description: hehe
-  Damage: 0
-  AttackSpeed: 6
-  ElementalDamage: 0
+  Description: Usual guard
+  Stats: 
+  Physical: 20
+  Burning: 0
+  Bleeding: 0
+  Frost: 0
+  Shock: 0
+  Poison: 0
+  Complexity: 10

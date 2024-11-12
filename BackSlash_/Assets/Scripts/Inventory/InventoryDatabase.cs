@@ -15,7 +15,7 @@ namespace Scripts.Inventory
 
         public InventoryModel GetItemTypeModel(EItemType itemType)
         {
-            return _data.GetBy(itemModel => itemModel.ItemType == itemType);
+            return _data.GetBy(itemModel => itemModel.Type == itemType);
         }
 
         public InventoryModel GetItemTypeModel(Item item)
@@ -28,7 +28,7 @@ namespace Scripts.Inventory
             List<InventoryModel> temporaryBuffs = new List<InventoryModel>();
             foreach (var item in _data)
             {
-                if (item.ItemType == EItemType.BuffItem)
+                if (item.Type == EItemType.Buff)
                 {
                     temporaryBuffs.Add(item);
                 }

@@ -126,8 +126,8 @@ namespace RedMoonGames.Window
 			foreach (var item in _traderInventory.GetData())
 			{
 				if (_playerInventory.GetItemTypeModel(item.Item) != null) continue;
-
-				var product = _diContainer.InstantiatePrefabForComponent<Product>(_productPrefab, GetRoot(item.ItemType));
+				
+				var product = _diContainer.InstantiatePrefabForComponent<Product>(_productPrefab, GetRoot(item.Type));
 
 				product.ProductSelected += ProductSelected;
 				product.OnBoughtProduct += RemoveItem;
@@ -155,7 +155,7 @@ namespace RedMoonGames.Window
 			_products.Clear();
 		}
 
-		private void RemoveItem(Product prod)
+		private void RemoveItem(Product prod)	// need to destroy object while player in trade?
 		{
 			foreach (var product in _products)
 			{
@@ -173,13 +173,16 @@ namespace RedMoonGames.Window
 		{	
 			switch (type)
 			{
-				case EItemType.BuffItem:
+				case EItemType.Buff:
 				return _buffsRoot;
 				
 				case EItemType.Blade:
 				return _modsRoot;
 				
 				case EItemType.Guard:
+				return _modsRoot;
+				
+				case EItemType.Hilt:
 				return _modsRoot;
 			}
 			return null;
@@ -202,12 +205,12 @@ namespace RedMoonGames.Window
 			return false;
 		}
 
-		public void ProductSelected(Item item, string stats)
+		public void ProductSelected(Item item)
 		{
 			_name.text = item.Name;
 			_price.text = string.Format("Price: {0}", item.Price);
 			_description.text = string.Format("DESCRIPTION\n{0}", item.Description);
-			_stats.text = string.Format("STATS\n{0}", stats);
+			_stats.text = string.Format("STATS\n{0}", item.Stats);
 		}
 	}
 }

@@ -12,15 +12,14 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 	[SerializeField] private ProductAnimator _animator;
 
 	private Button _button;
-	private string _stats;
 	private bool _select;
 
-	private InventoryModel _inventoryModel;
 	private Item _item;
+	private EItemType _type;
 	private InventoryDatabase _playerInventory;
 	private CurrencyService _currencyService;
 
-	public event Action<Item, string> ProductSelected;
+	public event Action<Item> ProductSelected;
 	public event Action<Product> OnBoughtProduct;
 
 	[Inject]
@@ -52,62 +51,17 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 	{
 		var newInvenotryModel = new InventoryModel()
 		{
-			ItemType = itemType,
+			Type = itemType,
 			Item = item,
 		};
 		_playerInventory.AddItem(newInvenotryModel);
 	}
 
-	private string FormatStats(InventoryModel inventoryModel)
-	{
-		if (inventoryModel.ItemType == EItemType.BuffItem && inventoryModel.Item is BuffItem)
-		{
-			var buff = inventoryModel.Item as BuffItem;
-			if (buff.Damage > 0)
-			{
-				_stats += $"Damage: {buff.Damage}\n";
-			}
-
-			if (buff.Resistance > 0)
-			{
-				_stats += $"Resistance: {buff.Resistance}\n";
-			}
-
-			if (buff.AttackSpeed > 0)
-			{
-				_stats += $"Attack Speed: {buff.AttackSpeed}\n";
-			}
-			return _stats;
-		}
-
-		if (inventoryModel.ItemType == EItemType.Blade && inventoryModel.Item is AttachmentItem)
-		{
-			var attachment = inventoryModel.Item as AttachmentItem;
-			if (attachment.Damage > 0)
-			{
-				_stats += $"Damage: {attachment.Damage}\n";
-			}
-
-			if (attachment.AttackSpeed > 0)
-			{
-				_stats += $"Attack speed: {attachment.AttackSpeed}\n";
-			}
-
-			if (attachment.ElementalDamage > 0)
-			{
-				_stats += $"Elemental damage: {attachment.ElementalDamage}\n";
-			}
-			return _stats;
-		}
-
-		return "";
-	}
-
 	public void SetValues(InventoryModel inventoryModel)
 	{
-		FormatStats(inventoryModel);
-		_inventoryModel = inventoryModel;
+		_type = inventoryModel.Type;
 		_item = inventoryModel.Item;
+		_item.GenerateStats();
 
 		_animator.SetView(_item.Icon);
 	}
@@ -119,7 +73,7 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 
 	private TryResult TryBuyProduct()
 	{
-		if (_playerInventory.GetItemTypeModel(_inventoryModel.Item) != null)
+		if (_playerInventory.GetItemTypeModel(_item) != null)
 		{
 			_animator.Bought();
 			return TryResult.Fail;
@@ -132,7 +86,7 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 		}
 
 		_animator.Buy();
-		AddItem(_inventoryModel.ItemType, _inventoryModel.Item);
+		AddItem(_type, _item);
 		return TryResult.Successfully;
 	}
 
@@ -155,7 +109,7 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 	{
 		if (!EventSystem.current.alreadySelecting) EventSystem.current.SetSelectedGameObject(gameObject);
 
-		ProductSelected?.Invoke(_item, _stats);
+		ProductSelected?.Invoke(_item);
 		_animator.Select();
 	}
 
