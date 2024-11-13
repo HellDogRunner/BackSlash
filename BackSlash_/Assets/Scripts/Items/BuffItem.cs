@@ -1,24 +1,45 @@
-using System.Security.Cryptography;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "BuffItem", menuName = "Scriptable Objects/Items/BuffItem")]
 public class BuffItem : Item
 {
-	[Header("Parametrs")]
-	public int Damage;
-	public int Resistance;
-	public int AttackSpeed;
-
-	public override void GenerateStats()
+	[SerializeField] private BuffConfigurator _config;
+	[HideInInspector] public enum EBuff : int
 	{
-		Stats = "";
-		Stats += Damage != 0 ? $"Damage: {Damage}\n" : "";
-		Stats += Resistance != 0 ? $"Resistance: {Resistance}\n" : "";
-		Stats += AttackSpeed != 0 ? $"Attack Speed: {AttackSpeed}" : "";
+		Damage,
+		StabilityDamage,
+		AttackSpeed,
+		Mobility,
+		Health,
+		Resistance
+	}
+
+	[HideInInspector] public enum EResist : int
+	{
+		None,
+		Physical,
+		Burning,
+		Bleeding,
+		Frost,
+		Shock,
+		Poison,
 	}
 	
-	public void RandomizeBuff()
+	[Header("Parameters will configurate in play time")]
+	public EBuff Buff;
+	public EResist Resist = 0;
+	public int Value;
+	
+	public override void SetValues()
 	{
-		// 
+		_config.Start();
+		
+		Buff = _config.Buff;
+		Resist = _config.Resist;
+		Icon = _config.Icon;
+		Name = _config.Name;
+		Stats = _config.Stats;
+		Price = _config.Price;
+		Value = _config.Value;
 	}
 }

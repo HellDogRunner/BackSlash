@@ -20,7 +20,6 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 	private CurrencyService _currencyService;
 
 	public event Action<Item> ProductSelected;
-	public event Action<Product> OnBoughtProduct;
 
 	[Inject]
 	private void Construct(InventoryDatabase data, CurrencyService currencyService)
@@ -32,19 +31,16 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 	private void Awake()
 	{
 		_button = GetComponent<Button>();
-		if (_select) SelectButton();
 	}
 
 	private void OnEnable()
 	{
 		_button.onClick.AddListener(BuyProduct);
-		_animator.OnBuyComplete += ProductBought;
 	}
 
 	private void OnDisable()
 	{
 		_button.onClick.RemoveListener(BuyProduct);
-		_animator.OnBuyComplete -= ProductBought;
 	}
 
 	private void AddItem(EItemType itemType, Item item)
@@ -57,13 +53,13 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 		_playerInventory.AddItem(newInvenotryModel);
 	}
 
-	public void SetValues(InventoryModel inventoryModel)
+	public void SetValues(InventoryModel inventoryModel, bool bought)
 	{
 		_type = inventoryModel.Type;
 		_item = inventoryModel.Item;
-		_item.GenerateStats();
-
-		_animator.SetView(_item.Icon);
+		
+		_item.SetValues();
+		_animator.SetView(_item.Icon, bought);
 	}
 
 	private void BuyProduct()
@@ -90,20 +86,12 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 		return TryResult.Successfully;
 	}
 
-	private void ProductBought()
-	{
-		OnBoughtProduct?.Invoke(this);
-	}
-
 	public void OnPointerEnter(PointerEventData eventData) { SelectButton(); }
 	public void OnPointerExit(PointerEventData eventData) { DeselectButton(); }
 	public void OnSelect(BaseEventData eventData) { SelectButton(); }
 	public void OnDeselect(BaseEventData eventData) { DeselectButton(); }
-
-	public void SelectFirst()
-	{
-		_select = true;
-	}
+	public void SelectFirst() { SelectButton(); }
+	private void DeselectButton() { _animator.Deselect(); }
 
 	public void SelectButton()
 	{
@@ -111,10 +99,5 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 
 		ProductSelected?.Invoke(_item);
 		_animator.Select();
-	}
-
-	private void DeselectButton()
-	{
-		_animator.Deselect();
 	}
 }

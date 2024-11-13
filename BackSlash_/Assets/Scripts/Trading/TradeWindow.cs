@@ -34,22 +34,26 @@ namespace RedMoonGames.Window
 		[SerializeField] private float _showWindowDelay = 0.02f;
 
 		private List<Product> _products = new List<Product>();
-		private InventoryDatabase _traderInventory;
+		
 		private InventoryDatabase _playerInventory;
-
 		private InteractionSystem _interactionSystem;
+		private TradeSystem _tradeSystem;
 		private CurrencyAnimation _currencyAnimation;
 		private CurrencyService _currencyService;
 		private DiContainer _diContainer;
 
 		[Inject]
 		private void Construct(
+			TradeSystem tradeSystem,
+			InventoryDatabase playerInventory,
 			DiContainer diContainer,
 			InteractionSystem interactionSystem,
 			CurrencyService currencyService,
 			CurrencyAnimation currencyAnimation
 			)
 		{
+			_tradeSystem = tradeSystem;
+			_playerInventory = playerInventory;
 			_diContainer = diContainer;
 			_interactionSystem = interactionSystem;
 			_currencyService = currencyService;
@@ -65,7 +69,7 @@ namespace RedMoonGames.Window
 			_buyButton.onClick.AddListener(BuyButton);
 			_tradeButton.onClick.AddListener(TradeButton);
 
-			SetInventories();
+			SetItems();
 			SetCurrency();
 		}
 
@@ -106,14 +110,6 @@ namespace RedMoonGames.Window
 			_currencyAnimation.SetCurrency(_currency, value);
 		}
 
-		private void SetInventories()
-		{
-			_traderInventory = _interactionSystem.GetTraderInventory();
-			_playerInventory = _interactionSystem.GetPlayerInventory();
-
-			SetItems();
-		}
-
 		private void ChangeCurrency(int endValue)
 		{
 			_currencyAnimation.Animate(_currency, endValue);
@@ -123,20 +119,16 @@ namespace RedMoonGames.Window
 		{
 			_animationService.ShowInteractionWindow(_canvasGroup, _showWindowDelay);
 			
-			foreach (var item in _traderInventory.GetData())
+			foreach (var item in _tradeSystem.GetItems())
 			{
-				if (_playerInventory.GetItemTypeModel(item.Item) != null) continue;
+				bool bought = _playerInventory.GetItemTypeModel(item.Item) is not null ? true : false;
 				
 				var product = _diContainer.InstantiatePrefabForComponent<Product>(_productPrefab, GetRoot(item.Type));
 
 				product.ProductSelected += ProductSelected;
-				product.OnBoughtProduct += RemoveItem;
-				product.SetValues(item);
-
+				product.SetValues(item, bought);
 				if (_products.Count == 0) product.SelectFirst();
-
 				_products.Add(product);
-
 			}
 			
 			FillEmptyRoots();
@@ -147,26 +139,10 @@ namespace RedMoonGames.Window
 			foreach (var product in _products)
 			{
 				product.ProductSelected -= ProductSelected;
-				product.OnBoughtProduct -= RemoveItem;
 				Destroy(product);
 			}
-
-			_traderInventory = null;
+			
 			_products.Clear();
-		}
-
-		private void RemoveItem(Product prod)	// need to destroy object while player in trade?
-		{
-			foreach (var product in _products)
-			{
-				if (product == prod)
-				{
-					product.OnBoughtProduct -= RemoveItem;
-					product.gameObject.SetActive(false);
-					//Destroy(product);
-					return;
-				}
-			}
 		}
 
 		private RectTransform GetRoot(EItemType type)

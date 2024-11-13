@@ -25,8 +25,6 @@ public class ProductAnimator : MonoBehaviour
 	private Sequence _needCurrency;
 	private Sequence _buy;
 	
-	public event Action OnBuyComplete;
-	
 	public void Select() 
 	{
 		TryKill(_select);
@@ -73,12 +71,13 @@ public class ProductAnimator : MonoBehaviour
 		
 		_buy = DOTween.Sequence();
 		_buy.Append(_sold.DOColor(_selectedColor, _duration));
-		_buy.Append(_sold.DOColor(_soldColor, _duration).OnComplete(() => OnBuyComplete?.Invoke()));
+		_buy.Append(_sold.DOColor(_soldColor, _duration));
 	}
 	
-	public void SetView(Sprite icon)
+	public void SetView(Sprite icon, bool bought)
 	{
 		_icon.sprite = icon;
+		if (bought) _sold.gameObject.SetActive(true);
 	}
 	
 	private void TryKill(Tween tween)

@@ -9,5 +9,5 @@ public class Item : ScriptableObject
 	[TextArea] public string Description;
 	[HideInInspector] public string Stats;
 	
-	public virtual void GenerateStats() {}
+	public virtual void SetValues() {}
 }

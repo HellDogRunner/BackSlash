@@ -13,7 +13,7 @@ public class GuardModItem : Item
 	[Space]
 	public int Complexity;
 
-	public override void GenerateStats()
+	public override void SetValues()
 	{
 		Stats = "";
 		Stats += Physical != 0 ? $"Physical resistance: {Physical}\n" : "";

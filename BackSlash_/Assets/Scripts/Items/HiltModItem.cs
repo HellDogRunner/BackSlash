@@ -8,7 +8,7 @@ public class HiltModItem : Item
 	[Space]
 	public int Complexity;
 	
-	public override void GenerateStats()
+	public override void SetValues()
 	{
 		Stats = "";
 		Stats += $"Improves {ComboAttack}\n";

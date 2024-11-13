@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3209041646405831007}
   - component: {fileID: 2718461530242192260}
   - component: {fileID: 4591345734437057670}
+  - component: {fileID: 2877303253908687700}
   - component: {fileID: 8980739692596717960}
   m_Layer: 0
   m_Name: Interaction Systems
@@ -49,7 +50,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogueWindow: {fileID: 11400000, guid: d20cb13f694b56647a1b040ff452788c, type: 2}
-  _tradeWindow: {fileID: 11400000, guid: eebdf981154cdf24ebb5ff73c97e8eb0, type: 2}
   _dialogueCamera: {fileID: 0}
   _playerInventory: {fileID: 11400000, guid: debf47b2eb05c8c4aab44a7c1f2b355b, type: 2}
   _player: {fileID: 0}
@@ -91,6 +91,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17242e40417cbd3408cf21823ad22ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2877303253908687700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5489409182015746407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6e583fc355c3224a9445718bb51e0c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _traderInventory: {fileID: 11400000, guid: 6b75765e1580dc845a3bf762a0545ae7, type: 2}
+  _models: []
 --- !u!114 &8980739692596717960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +122,7 @@ MonoBehaviour:
   - {fileID: 3209041646405831007}
   - {fileID: 2718461530242192260}
   - {fileID: 4591345734437057670}
+  - {fileID: 2877303253908687700}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}

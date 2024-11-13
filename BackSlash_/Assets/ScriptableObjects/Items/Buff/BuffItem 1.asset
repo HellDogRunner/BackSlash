@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 395589e4c21cf9b4596d59f67c556c91, type: 3}
   m_Name: BuffItem 1
   m_EditorClassIdentifier: 
-  Name: Attack speed buff
-  Price: 999
-  Icon: {fileID: 21300000, guid: 394e93ce356b57344903a08ff72fcab2, type: 3}
-  Description: Slash faster
+  Name: 
+  Price: 0
+  Icon: {fileID: 0}
+  Description: Buff player
   Stats: 
-  Damage: 0
-  Resistance: 5
-  AttackSpeed: 15
+  _config: {fileID: 11400000, guid: 70fc0bfe9f54bf04ca13c045159151c0, type: 2}
+  Buff: 0
+  Resist: 0
+  Value: 0
