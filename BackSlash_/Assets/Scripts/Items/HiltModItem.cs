@@ -1,4 +1,3 @@
-using Scripts.Combo.Models;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "HiltModItem", menuName = "Scriptable Objects/Items/HiltModItem")]

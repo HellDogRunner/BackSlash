@@ -1,6 +1,7 @@
 using RedMoonGames.Basics;
 using RedMoonGames.Database;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Scripts.Inventory
@@ -22,20 +23,32 @@ namespace Scripts.Inventory
 		{
 			return _data.GetBy(itemModel => itemModel.Item == item);
 		}
-
-		public List<InventoryModel> GetAllBuffs()
+		
+		private List<InventoryModel> GetTypelist(EItemType type)
 		{
-			List<InventoryModel> temporaryBuffs = new List<InventoryModel>();
+			var list = new List<InventoryModel>();
 			foreach (var item in _data)
 			{
-				if (item.Type == EItemType.Buff)
+				if (item.Type == type)
 				{
-					temporaryBuffs.Add(item);
+					list.Add(item);
 				}
 			}
-			return temporaryBuffs;
+			return list;
 		}
-
+		
+		[ContextMenu("Sort Inventory")]
+		public void SortData()
+		{
+			var buffs = GetTypelist(EItemType.Buff);
+			var hilts = GetTypelist(EItemType.Hilt);
+			var guards = GetTypelist(EItemType.Guard);
+			var blades = GetTypelist(EItemType.Blade);
+			
+			_data.Clear();
+			_data = buffs.Concat(hilts).Concat(guards).Concat(blades).ToList();
+		}
+		
 		[ContextMenu("Clear Inventory")]
 		private void ClearInventory()
 		{

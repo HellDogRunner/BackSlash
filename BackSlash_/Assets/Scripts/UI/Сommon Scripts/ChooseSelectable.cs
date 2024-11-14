@@ -13,6 +13,6 @@ public class ChooseSelectable : MonoBehaviour, IPointerEnterHandler, IDeselectHa
 
     public void OnDeselect(BaseEventData eventData)
     {
-        this.GetComponent<Selectable>().OnPointerExit(null);
+        GetComponent<Selectable>().OnPointerExit(null);
     }
 }

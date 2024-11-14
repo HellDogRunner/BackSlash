@@ -49,8 +49,9 @@ namespace RedMoonGames.Window
 		{
 			_windowOpening = true;
 			
-			_windowService.HideWindow(_windowService.GetActiveWindow());
-
+			//_windowService.HideWindow(_windowService.GetActiveWindow());
+			_windowService.CloseActiveWindow();
+			
 			yield return new WaitForSeconds(_inputDelay);
 
 			_windowService.TryOpenWindow(window);

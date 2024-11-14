@@ -34,6 +34,7 @@ namespace RedMoonGames.Window
 		[SerializeField] private float _showWindowDelay = 0.02f;
 
 		private List<Product> _products = new List<Product>();
+		private Product _currentProduct;
 		
 		private InventoryDatabase _playerInventory;
 		private InteractionSystem _interactionSystem;
@@ -93,9 +94,8 @@ namespace RedMoonGames.Window
 
 		private void BuyButton()
 		{
-			Debug.Log("BuyButton");
-
-			// Покупка выбранного
+			_currentProduct.TryBuyProduct();
+			_currentProduct.SelectButton();
 		}
 
 		private void TradeButton()
@@ -105,9 +105,7 @@ namespace RedMoonGames.Window
 		
 		private void SetCurrency()
 		{
-			var value = _currencyService.Currency;
-			
-			_currencyAnimation.SetCurrency(_currency, value);
+			_currencyAnimation.SetCurrency(_currency, _currencyService.Currency);
 		}
 
 		private void ChangeCurrency(int endValue)
@@ -127,7 +125,7 @@ namespace RedMoonGames.Window
 
 				product.ProductSelected += ProductSelected;
 				product.SetValues(item, bought);
-				if (_products.Count == 0) product.SelectFirst();
+				if (_products.Count == 0) product.SelectButton();
 				_products.Add(product);
 			}
 			
@@ -181,8 +179,9 @@ namespace RedMoonGames.Window
 			return false;
 		}
 
-		public void ProductSelected(Item item)
+		public void ProductSelected(Item item, Product product)
 		{
+			_currentProduct = product;
 			_name.text = item.Name;
 			_price.text = string.Format("Price: {0}", item.Price);
 			_description.text = string.Format("DESCRIPTION\n{0}", item.Description);
