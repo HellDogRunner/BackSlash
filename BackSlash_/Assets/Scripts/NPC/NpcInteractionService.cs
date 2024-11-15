@@ -1,4 +1,3 @@
-using Scripts.Inventory;
 using Scripts.UI.Dialogue;
 using UnityEngine;
 using Zenject;
@@ -8,7 +7,7 @@ public class NpcInteractionService : MonoBehaviour
 {
 	[SerializeField] private string _name;
 	[SerializeField] private QuestDatabase _quest;
-	[SerializeField] private InventoryDatabase _inentory;
+	[SerializeField] private bool _canTrade;
 	[Space]
 	[SerializeField] private Transform _dialogueLookAt;
 
@@ -40,7 +39,7 @@ public class NpcInteractionService : MonoBehaviour
 	{
 		if (other.tag == "CharacterController")
 		{
-			_interaction.SetInformation(_quest, _inentory, gameObject);
+			_interaction.SetInformation(_quest, _canTrade, gameObject);
 			
 			_animator.SetTransform(transform, _defaultRotation);
 		}

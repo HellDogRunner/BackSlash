@@ -43,27 +43,25 @@ namespace RedMoonGames.Window
 
 		private void Awake()
 		{
+			_tradeButton.gameObject.SetActive(false);
+			
 			_dialogueSystem.OnShowPhrase += AnimatePhrase;
 			_dialogueSystem.OnWaitAnswer += WaitAnswer;
 			_dialogueSystem.OnDialogueGone += LastPhrase;
 			_animator.TextAnimationEnd += PhraseAnimationEnd;
 			_uiActions.OnDialogueAnswer += DialogueAnswer;
 			_interactionSystem.OnButtonClick += TradeButton;
+			_interactionSystem.OnCanTrade += ActivateTrade;
 			
 			_positiveButton.onClick.AddListener(ButtonPositive);
 			_negativeButton.onClick.AddListener(ButtonNegative);
 			_backButton.onClick.AddListener(BackButton);
 			_nextButton.onClick.AddListener(NextButton);
-			if (_interactionSystem.GetTraderInventory() != null)
-			{
-				_tradeButton.onClick.AddListener(TradeButton);
-				_tradeButton.gameObject.SetActive(true);
-			}
-			else _tradeButton.gameObject.SetActive(false);
+
 			
 			SetName();
 			
-			_animationService.ShowInteractionWindow(_canvasGroup);
+			_windowAnimator.ShowWindowWithDelay(_canvasGroup);
 		}
 
 		private void ButtonPositive() { DialogueAnswer(true); }
@@ -71,6 +69,12 @@ namespace RedMoonGames.Window
 		private void BackButton() { _interactionSystem.TryStopInteract(); }
 		private void NextButton() { _interactionSystem.TryInteract(); }
 		private void TradeButton() { _interactionSystem.SwitchWindows(_tradeWindow); }
+		
+		private void ActivateTrade()
+		{
+			_tradeButton.onClick.AddListener(TradeButton);
+			_tradeButton.gameObject.SetActive(true);
+		}
 		
 		private void SetName()
 		{
@@ -126,16 +130,13 @@ namespace RedMoonGames.Window
 			_animator.TextAnimationEnd -= PhraseAnimationEnd;
 			_uiActions.OnDialogueAnswer -= DialogueAnswer;
 			_interactionSystem.OnButtonClick -= TradeButton;
+			_interactionSystem.OnCanTrade -= ActivateTrade;
 			
 			_positiveButton.onClick.RemoveListener(ButtonPositive);
 			_negativeButton.onClick.RemoveListener(ButtonNegative);
 			_backButton.onClick.RemoveListener(BackButton);
 			_nextButton.onClick.RemoveListener(NextButton);
-			if (_interactionSystem.GetTraderInventory() != null)
-			{
-				_tradeButton.onClick.RemoveListener(TradeButton);
-				_tradeButton.gameObject.SetActive(false);
-			}
+			_tradeButton.onClick.RemoveListener(TradeButton);
 		}
 	}
 }

@@ -33,7 +33,7 @@ namespace RedMoonGames.Window
 		{
 			_pauseInputs.ShowCursor += SwitchVisible;
 
-			_windowAnimation.OnAnimationComplete += CloseWindow;
+			_animator.OnWindowHided += CloseWindow;
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 
 			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
@@ -82,12 +82,12 @@ namespace RedMoonGames.Window
 			OpenTab?.Invoke(index);
 		}
 
-		public void SwitchDialogue(bool inInteracting)
+		public void SwitchDialogue(bool interacting)
 		{
-			_inInteracting = inInteracting;
-			_gameInputs.enabled = !inInteracting;
+			_inInteracting = interacting;
+			_gameInputs.enabled = !interacting;
 
-			SwitchInteraction(inInteracting);
+			SwitchInteraction(interacting);
 		}
 
 		private void SwitchInteraction(bool enable)
@@ -152,7 +152,7 @@ namespace RedMoonGames.Window
 		{
 			_pauseInputs.ShowCursor -= SwitchVisible;
 
-			_windowAnimation.OnAnimationComplete -= CloseWindow;
+			_animator.OnWindowHided -= CloseWindow;
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
 			_windowService.OnUnpause -= HideWindow;

@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace RedMoonGames.Window
@@ -7,19 +6,15 @@ namespace RedMoonGames.Window
 	{
 		[SerializeField] private WindowHandler _startWindow;
 		[SerializeField] private WindowHandler _mainWindow;
-		[Space]
-		[SerializeField] private float _inputDelay = 1f;
-		
-		private bool _windowOpening;
 
 		private void Awake()
 		{
-			_windowAnimation.OnAnimationComplete += CloseWindow;
+			_animator.OnWindowHided += CloseWindow;
+			_animator.OnWindowDelayShowed += SwitchEvents;
 
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 
 			_pauseInputs.ShowCursor += SwitchVisible;
-			_pauseInputs.OnAnyKeyPressed += ShowMainWindow;
 			_pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
 
 			_sceneTransition.gameObject.SetActive(true);
@@ -27,37 +22,34 @@ namespace RedMoonGames.Window
 			_pauseInputs.enabled = true;
 
 			UnpauseGame();
-		}
-
-		private void Start()
-		{
 			ShowStartWindow();
 		}
 
 		private void ShowStartWindow()
 		{
-			if (!_windowOpening && _windowService.GetActiveWindow() != _startWindow) StartCoroutine(ShowWindowDelay(_startWindow));
+			_windowService.CloseActiveWindow();
+			_windowService.TryOpenWindow(_startWindow);
 		}
 
 		private void ShowMainWindow()
 		{
-			if (!_windowOpening && _windowService.GetActiveWindow() != _mainWindow) StartCoroutine(ShowWindowDelay(_mainWindow));
+			_windowService.CloseActiveWindow();
+			_windowService.TryOpenWindow(_mainWindow);
 		}
 
-		// replace coroutine with Tween
-		IEnumerator ShowWindowDelay(WindowHandler window)
+		private void SwitchEvents()
 		{
-			_windowOpening = true;
+			if (_windowService.GetActiveWindow() == _startWindow)
+			{
+				_pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
+				_pauseInputs.OnAnyKeyPressed += ShowMainWindow;
+			}
 			
-			//_windowService.HideWindow(_windowService.GetActiveWindow());
-			_windowService.CloseActiveWindow();
-			
-			yield return new WaitForSeconds(_inputDelay);
-
-			_windowService.TryOpenWindow(window);
-			_windowService.ShowWindow();
-
-			_windowOpening = false;
+			if (_windowService.GetActiveWindow() == _mainWindow)
+			{
+				_pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
+				_pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
+			}
 		}
 
 		private void UnpauseGame()
@@ -72,10 +64,11 @@ namespace RedMoonGames.Window
 			_pauseInputs.ShowCursor -= SwitchVisible;
 			_pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
 			_pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
+			_animator.OnWindowDelayShowed -= SwitchEvents;
 
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
-			_windowAnimation.OnAnimationComplete -= CloseWindow;
+			_animator.OnWindowHided -= CloseWindow;
 		}
 	}
 }

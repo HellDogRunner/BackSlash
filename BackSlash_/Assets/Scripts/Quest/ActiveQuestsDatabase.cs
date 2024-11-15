@@ -24,14 +24,12 @@ namespace Scripts.UI.Quest
 
 		public void AddQuest(QuestDatabase questData, string state)
 		{
-			var model = _modelTemplate;
+			var model = new ActiveQuestsTypeModel();
 
 			model.QuestData = questData;
 			model.State = state;
 
 			_activeQuests.Add(model);
-
-			_modelTemplate = null;
 		}
 	}
 }

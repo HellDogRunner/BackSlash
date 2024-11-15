@@ -115,7 +115,7 @@ namespace RedMoonGames.Window
 		
 		private void SetItems()
 		{
-			_animationService.ShowInteractionWindow(_canvasGroup, _showWindowDelay);
+			_windowAnimator.ShowWindowWithDelay(_canvasGroup, _showWindowDelay);
 			
 			foreach (var item in _tradeSystem.GetItems())
 			{

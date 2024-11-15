@@ -6,15 +6,15 @@ using Zenject;
 public class BasicMenuController : MonoBehaviour
 {
 	protected SceneTransition _sceneTransition;
-	protected WindowAnimationService _windowAnimation;
+	protected WindowAnimator _animator;
 	protected WindowService _windowService;
 	protected UIActionsController _pauseInputs;
 
 	[Inject]
-	protected void Construct(SceneTransition sceneTransition, WindowAnimationService windowAnimation, WindowService windowService, UIActionsController actionsController)
+	protected void Construct(SceneTransition sceneTransition, WindowAnimator windowAnimation, WindowService windowService, UIActionsController actionsController)
 	{
 		_windowService = windowService;
-		_windowAnimation = windowAnimation;
+		_animator = windowAnimation;
 		_pauseInputs = actionsController;
 		_sceneTransition = sceneTransition;
 	}

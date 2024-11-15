@@ -23,7 +23,7 @@ public class ComboSystem : MonoBehaviour
     private WeaponController _weaponController;
     private PlayerAnimationController _playerAnimationController;
 
-    private bool _ñomboProgress = false;
+    private bool _ComboProgress = false;
     private bool _isCanceling = false;
     private bool _canAttack = true;
 
@@ -126,7 +126,7 @@ public class ComboSystem : MonoBehaviour
             {
                 if (_currentAttackRoutine != null) StopCoroutine(_currentAttackRoutine);
                 if (_attackInterval != null) StopCoroutine(_attackInterval);
-                _attackInterval = StartCoroutine(ÂufferCannotExpand(combo, _inputBuffer[attackIndex]));
+                _attackInterval = StartCoroutine(BufferCannotExpand(combo, _inputBuffer[attackIndex]));
 
                 OnCannotAttack?.Invoke();
                 OnAttackMatched?.Invoke(combo);
@@ -158,7 +158,7 @@ public class ComboSystem : MonoBehaviour
 
     private IEnumerator PerformCombo(ComboTypeModel combo)
     {
-        _ñomboProgress = true;
+        _ComboProgress = true;
         IsAttacking?.Invoke(true);
         _playerAnimationController.TriggerAnimationByName(combo.AnimationTrigger);
         OnComboSound.Invoke();
@@ -187,7 +187,7 @@ public class ComboSystem : MonoBehaviour
 
     private IEnumerator CancelCombo()
     {
-        if (!_isCanceling && !_ñomboProgress)
+        if (!_isCanceling && !_ComboProgress)
         {
             _isCanceling = true;
             _canAttack = false;
@@ -202,17 +202,17 @@ public class ComboSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator ÂufferCannotExpand(ComboTypeModel combo, InputActionReference inputReference)
+    private IEnumerator BufferCannotExpand(ComboTypeModel combo, InputActionReference inputReference)
     {
         ComboInputSettingsModel input = _comboData.GetInputActionSettingByName(inputReference.action.name);
 
         _canAttack = false;
         yield return new WaitForSeconds(input.BeforeAttackTime);
 
-        _attackInterval = StartCoroutine(ÂufferCanExpand(input));
+        _attackInterval = StartCoroutine(BufferCanExpand(input));
     }
 
-    private IEnumerator ÂufferCanExpand(ComboInputSettingsModel input)
+    private IEnumerator BufferCanExpand(ComboInputSettingsModel input)
     {
         _canAttack = true;
         OnCanAttack?.Invoke(input);
@@ -260,6 +260,6 @@ public class ComboSystem : MonoBehaviour
         _inputBuffer.Clear();
         FillComboList();
         _canAttack = true;
-        _ñomboProgress = false;
+        _ComboProgress = false;
     }
 }

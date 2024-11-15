@@ -10,20 +10,21 @@ namespace RedMoonGames.Window
 	public class GameBasicWindow : BasicWindow
 	{
 		[SerializeField] protected bool _IsMainMenu;
+		[SerializeField] protected float _showDelay = 0.3f;
 
 		protected CanvasGroup _canvasGroup;
 
 		protected WindowService _windowService;
-		protected WindowAnimationService _animationService;
+		protected WindowAnimator _windowAnimator;
 		protected AudioController _audioController;
 		protected UIActionsController _pauseInputs;
 
 		[Inject]
-		private void Construct(WindowService windowService, WindowAnimationService animationService, AudioController audioController, UIActionsController pauseInputs)
+		private void Construct(WindowService windowService, WindowAnimator animator, AudioController audioController, UIActionsController pauseInputs)
 		{
 			_canvasGroup = GetComponent<CanvasGroup>();
 
-			_animationService = animationService;
+			_windowAnimator = animator;
 			_audioController = audioController;
 			_pauseInputs = pauseInputs;
 
@@ -33,13 +34,13 @@ namespace RedMoonGames.Window
 
 		protected void EnablePause() 
 		{
-			_animationService.ShowWindowAnimation(_canvasGroup);
+			_windowAnimator.ShowWindow(_canvasGroup);
 		}
 
 		protected void DisablePause(WindowHandler handler)
 		{
 			PlayClickSound();
-			_animationService.HideWindowAnimation(_canvasGroup, handler);
+			_windowAnimator.HideWindow(_canvasGroup, handler);
 		}
 
 		public void OpenWindow(WindowHandler window)
