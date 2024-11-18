@@ -12,7 +12,6 @@ namespace RedMoonGames.Window
 		[SerializeField] private WindowHandler _menuWindow;
 		[Space]
 		[SerializeField] private float _inputsDelay = 1;
-		[SerializeField] private bool _setLowPreset;
 
 		private bool _inInteracting;
 
@@ -44,8 +43,6 @@ namespace RedMoonGames.Window
 
 			SwitchPause(false);
 			StartCoroutine(EnableInputsDelay());
-
-			if (_setLowPreset) SetLowPreset();
 		}
 
 		private void OpenPause()
@@ -125,11 +122,6 @@ namespace RedMoonGames.Window
 
 			_gameInputs.enabled = true;
 			_pauseInputs.enabled = true;
-		}
-
-		private void SetLowPreset()
-		{
-			QualitySettings.SetQualityLevel(0);
 		}
 
 		private void EventsOnPause()
