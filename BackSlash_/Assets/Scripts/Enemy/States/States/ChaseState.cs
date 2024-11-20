@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 
 public class ChaseState : IEnemyState
@@ -46,6 +45,6 @@ public class ChaseState : IEnemyState
 
     public void Exit()
     {
-        // Завершение преследования
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 }

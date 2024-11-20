@@ -1,52 +1,58 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Scripts.UI
 {
-    public class PlayerHealthBarAnimation : MonoBehaviour
-    {
-        [Header("Objects")]
-        [SerializeField] private GameObject _player;
+	public class PlayerHealthBarAnimation : MonoBehaviour
+	{
+		[Header("Bars")]
+		[SerializeField] private Image _healthBar;
 
-        [Header("Bars")]
-        [SerializeField] private Image _healthBar;
+		[Header("Decrease Time")]
+		[SerializeField] private float _healthBarTime = 0.2f;
 
-        [Header("Decrease Time")]
-        [SerializeField] private float _healthBarTime = 0.2f;
+		[Header("indicators")]
+		[SerializeField] private float _maxHealth;
+		[SerializeField] private float _currentHealth;
 
-        [Header("indicators")]
-        [SerializeField] private float _maxHealth = 100;
-        [SerializeField] private float _currentHealth = 0;
+		private HealthController _playerHealth;
 
-        private HealthController _healthController;
+		[Inject]
+		private void Construct(HealthController playerHealth)
+		{
+			_playerHealth = playerHealth;
+		}
 
-        private void Awake()
-        {
-            _healthController = _player.GetComponent<HealthController>();
-            _healthController.OnHealthChanged += HealthChanged;
+		private void Awake()
+		{
+			_maxHealth = _playerHealth.Health;
+			_currentHealth = _maxHealth;
+		}
 
-            _maxHealth = _healthController.Health;
-            _currentHealth = _maxHealth;
-        }
+		private void OnEnable()
+		{
+			_playerHealth.OnHealthChanged += HealthChanged;
+		}
 
-        private void HealthChanged(float health)
-        {
-            if (health < _currentHealth)
-            {
-                DecreaseHealth(health);
-            }
-        }
+		private void OnDisable()
+		{
+			_playerHealth.OnHealthChanged -= HealthChanged;
+		}
 
-        private void DecreaseHealth(float health)
-        {
-            DOTween.To(() => _healthBar.fillAmount, x => _healthBar.fillAmount = x, health / _maxHealth, _healthBarTime).SetEase(Ease.InOutCubic);
-            _currentHealth = health;
-        }
+		private void HealthChanged(float health)
+		{
+			if (health < _currentHealth)
+			{
+				DecreaseHealth(health);
+			}
+		}
 
-        private void OnDestroy()
-        {
-            _healthController.OnHealthChanged -= HealthChanged;
-        }
-    }
+		private void DecreaseHealth(float health)
+		{
+			DOTween.To(() => _healthBar.fillAmount, x => _healthBar.fillAmount = x, health / _maxHealth, _healthBarTime).SetEase(Ease.InOutCubic);
+			_currentHealth = health;
+		}
+	}
 }

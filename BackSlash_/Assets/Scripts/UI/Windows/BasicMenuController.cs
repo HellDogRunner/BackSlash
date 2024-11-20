@@ -44,9 +44,4 @@ public class BasicMenuController : MonoBehaviour
 		Cursor.visible = false;
 		Time.timeScale = 0;
 	}
-
-	protected void SwitchVisible(bool visible)
-	{
-		Cursor.visible = visible;
-	}
 }

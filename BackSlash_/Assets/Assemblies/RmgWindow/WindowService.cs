@@ -13,7 +13,7 @@ namespace RedMoonGames.Window
 		[SerializeField] public Transform windowsRoot;
 
 		[Inject] private DiContainer _diContainer;
-
+		
 		protected readonly Dictionary<IWindow, WindowHandler> _createdWindows = new Dictionary<IWindow, WindowHandler>();
 
 		private WindowHandler _activeWindow;

@@ -8,109 +8,110 @@ namespace RedMoonGames.Window
 {
 	public class GameMenuController : BasicMenuController
 	{
+		[SerializeField] private GameObject _playerHUD;
+		[Space]
 		[SerializeField] private WindowHandler _pauseWindow;
 		[SerializeField] private WindowHandler _menuWindow;
 		[Space]
 		[SerializeField] private float _inputsDelay = 1;
 
-		private bool _inInteracting;
-
-		private HUDController _hudController;
 		private InputController _gameInputs;
+		private PlayerStateMachine _playerState;
 
 		public event Action<int> OpenTab;
-		public event Action<bool> OnGamePause;
-		
+
 		[Inject]
-		private void Construct(HUDController hudController, InputController gameInputs)
+		private void Construct(PlayerStateMachine playerState, InputController gameInputs)
 		{
-			_hudController = hudController;
 			_gameInputs = gameInputs;
+			_playerState = playerState;
 		}
 
 		private void Awake()
 		{
-			_pauseInputs.ShowCursor += SwitchVisible;
+			_sceneTransition.gameObject.SetActive(true);
+			_playerHUD.SetActive(true);
+			
+			_playerState.Explore();
+			StartCoroutine(EnableInputsDelay());
+		}
 
+		private void OnEnable()
+		{
+			_playerState.OnPause += DisableGameInputs;
+			_playerState.OnExplore += EnableGameInputs;
+			
 			_animator.OnWindowHided += CloseWindow;
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 
 			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
 			_pauseInputs.OnEscapeKeyPressed += OpenPause;
+		}
 
-			_sceneTransition.gameObject.SetActive(true);
-			_hudController.gameObject.SetActive(true);
+		private void OnDisable()
+		{
+			_playerState.OnPause -= DisableGameInputs;
+			_playerState.OnExplore -= EnableGameInputs;
 
-			SwitchPause(false);
-			StartCoroutine(EnableInputsDelay());
+			_animator.OnWindowHided -= CloseWindow;
+			_sceneTransition.OnWindowHide -= SceneTransitionHide;
+
+			_windowService.OnUnpause -= HideWindow;
+			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
+			_pauseInputs.OnMenuTabKeyPressed -= OpenMenu;
 		}
 
 		private void OpenPause()
 		{
+			_playerState.Pause();
 			EventsOnPause();
-			SwitchPause(true);
-
-			_windowService.CloseActiveWindow();
-			_windowService.TryOpenWindow(_pauseWindow);
-			_windowService.ShowWindow();
+			
+			TryOpenWindow(_pauseWindow);
 		}
 
 		private void HideWindow()
 		{
-			var window = _windowService.GetActiveWindow();
-			_windowService.HideWindow(window);
-			
-			EventsOnGame();
-			SwitchPause(false);
+			if (_animator.GetCanOpenWindow())
+			{
+				var window = _windowService.GetActiveWindow();
+				_windowService.HideWindow(window);
+
+				_playerState.Explore();
+				EventsOnGame();
+			}
 		}
 
 		private void OpenMenu(int index)
 		{
 			if (_windowService.GetActiveWindow() != _menuWindow)
 			{
-				SwitchPause(true);
-				EventsOnPause(); 
+				_playerState.Pause();
+				EventsOnPause();
 
-				_windowService.CloseActiveWindow();
-				_windowService.TryOpenWindow(_menuWindow);
-				_windowService.ShowWindow();
+				TryOpenWindow(_menuWindow);
 			}
 
 			OpenTab?.Invoke(index);
 		}
 
-		public void SwitchDialogue(bool interacting)
+		private void TryOpenWindow(WindowHandler window) 
 		{
-			_inInteracting = interacting;
-			_gameInputs.enabled = !interacting;
-
-			SwitchInteraction(interacting);
+			if (_animator.GetCanOpenWindow())
+			{
+				_windowService.CloseActiveWindow();
+				_windowService.TryOpenWindow(window);
+				_windowService.ShowWindow();
+			}
 		}
 
-		private void SwitchInteraction(bool enable)
+		private void DisableGameInputs()
 		{
-			if (enable)
-			{
-				Cursor.lockState = CursorLockMode.Confined;
-				Cursor.visible = true;
-			}
-			else
-			{
-				Cursor.lockState = CursorLockMode.Locked;
-				Cursor.visible = false;
-			}
-			
-			_gameInputs.enabled = !enable;
+			_gameInputs.enabled = false;
 		}
 
-		private void SwitchPause(bool enable)
+		private void EnableGameInputs()
 		{
-			_hudController.gameObject.SetActive(!enable);
-
-			if (_inInteracting) OnGamePause?.Invoke(enable);
-			else SwitchInteraction(enable);
-
-			Time.timeScale = enable ? 0 : 1;
+			_gameInputs.enabled = true;
 		}
 
 		IEnumerator EnableInputsDelay()
@@ -138,19 +139,6 @@ namespace RedMoonGames.Window
 			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
 			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
 			_windowService.OnUnpause -= HideWindow;
-		}
-
-		private void OnDestroy()
-		{
-			_pauseInputs.ShowCursor -= SwitchVisible;
-
-			_animator.OnWindowHided -= CloseWindow;
-			_sceneTransition.OnWindowHide -= SceneTransitionHide;
-
-			_windowService.OnUnpause -= HideWindow;
-			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
-
-			_pauseInputs.OnMenuTabKeyPressed -= OpenMenu;
 		}
 	}
 }

@@ -9,20 +9,29 @@ namespace RedMoonGames.Window
 
 		private void Awake()
 		{
-			_animator.OnWindowHided += CloseWindow;
-			_animator.OnWindowDelayShowed += SwitchEvents;
-
-			_sceneTransition.OnWindowHide += SceneTransitionHide;
-
-			_pauseInputs.ShowCursor += SwitchVisible;
-			_pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
-
 			_sceneTransition.gameObject.SetActive(true);
 
 			_pauseInputs.enabled = true;
 
 			UnpauseGame();
 			ShowStartWindow();
+		}
+
+		private void OnEnable()
+		{
+			_sceneTransition.OnWindowHide += SceneTransitionHide;
+			_pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
+			_animator.OnWindowDelayShowed += SwitchEvents;
+			_animator.OnWindowHided += CloseWindow;
+		}
+
+		private void OnDisable()
+		{
+			_sceneTransition.OnWindowHide -= SceneTransitionHide;
+			_pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
+			_pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
+			_animator.OnWindowDelayShowed -= SwitchEvents;
+			_animator.OnWindowHided -= CloseWindow;
 		}
 
 		private void ShowStartWindow()
@@ -52,23 +61,11 @@ namespace RedMoonGames.Window
 			}
 		}
 
-		private void UnpauseGame()
+		private void UnpauseGame()	// Remove from this script
 		{
 			Cursor.lockState = CursorLockMode.Confined;
 			Cursor.visible = true;
 			Time.timeScale = 1;
-		}
-
-		private void OnDestroy()
-		{
-			_pauseInputs.ShowCursor -= SwitchVisible;
-			_pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
-			_pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
-			_animator.OnWindowDelayShowed -= SwitchEvents;
-
-			_sceneTransition.OnWindowHide -= SceneTransitionHide;
-
-			_animator.OnWindowHided -= CloseWindow;
 		}
 	}
 }

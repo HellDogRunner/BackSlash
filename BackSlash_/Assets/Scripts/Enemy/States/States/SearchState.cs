@@ -5,8 +5,8 @@ public class SearchState : IEnemyState
     private readonly EnemyController _enemy;
     private Vector3 _searchTarget;
     private int _searchAttempts;
-    private const int MaxSearchAttempts = 5; // Максимальное количество попыток поиска
-    private float _searchDuration = 3f; // Время ожидания на каждой точке поиска
+    private const int MaxSearchAttempts = 5; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    private float _searchDuration = 3f; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     private float _searchTimer;
 
     public SearchState(EnemyController enemy)
@@ -59,6 +59,6 @@ public class SearchState : IEnemyState
 
     public void Exit()
     {
-        // Завершение состояния поиска
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     }
 }

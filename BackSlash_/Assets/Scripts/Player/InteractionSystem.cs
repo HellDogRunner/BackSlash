@@ -1,6 +1,4 @@
 using RedMoonGames.Window;
-using Scripts.Animations;
-using Scripts.Inventory;
 using Scripts.Player;
 using Scripts.UI.Dialogue;
 using Scripts.Weapon;
@@ -8,61 +6,61 @@ using System;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
+using static PlayerStates;
 
 public class InteractionSystem : MonoBehaviour
 {
 	[SerializeField] private WindowHandler _dialogueWindow;
 	[Space]
 	[SerializeField] private CinemachineCamera _dialogueCamera;
-	[SerializeField] private InventoryDatabase _playerInventory;
 	[Space]
 	[SerializeField] private GameObject _player;
 
 	private QuestDatabase _quest;
 	private NpcInteractionService _npc;
-	private WindowHandler _lastOpenned; 
-	
+	private WindowHandler _lastOpenned;
+
 	private bool _isInteracting;
 	private bool _inDialogue;
 	private bool _canTrade;
 
 	private WeaponController _weaponController;
-	private GameMenuController _menuController;
 	private UIActionsController _uiActions;
 	private InteractionAnimator _animator;
-	private HUDController _hudController;
 	private WindowService _windowService;
+	private PlayerStateMachine _playerState;
 
 	public event Action<QuestDatabase> SetQuest;
-	public event Action OnResetDialogue;	
+	public event Action OnResetDialogue;
 	public event Action EndInteracting;
 	public event Action<bool> OnInteracting;
 	public event Action OnButtonClick;
 	public event Action OnCanTrade;
 
 	[Inject]
-	private void Construct(WeaponController weaponController, WindowService windowService, HUDController hudController, GameMenuController menuController, InteractionAnimator animator, UIActionsController uIActions)
+	private void Construct(PlayerStateMachine playerState, WeaponController weaponController, WindowService windowService, InteractionAnimator animator, UIActionsController uIActions)
 	{
 		_animator = animator;
 		_uiActions = uIActions;
+		_playerState = playerState;
 		_windowService = windowService;
-		_hudController = hudController;
-		_menuController = menuController;
 		_weaponController = weaponController;
 	}
 
-	private  void OnEnable()
+	private void OnEnable()
 	{
 		_uiActions.OnEnterKeyPressed += TryInteract;
 		_uiActions.OnBackKeyPressed += TryStopInteract;
-		_menuController.OnGamePause += OnGamePause;
+		_playerState.OnPause += Pause;
+		_playerState.OnInteract += Interact;
 	}
 
 	private void OnDisable()
 	{
 		_uiActions.OnEnterKeyPressed -= TryInteract;
 		_uiActions.OnBackKeyPressed -= TryStopInteract;
-		_menuController.OnGamePause -= OnGamePause;
+		_playerState.OnPause -= Pause;
+		_playerState.OnInteract -= Interact;
 	}
 
 	public void SetInformation(QuestDatabase quest, bool canTrade, GameObject npc)
@@ -70,7 +68,7 @@ public class InteractionSystem : MonoBehaviour
 		_quest = quest;
 		_npc = npc.GetComponent<NpcInteractionService>();
 		_canTrade = canTrade;
-		
+
 		SetQuest?.Invoke(_quest);
 		if (_quest != null) _animator.ShowTalk();
 	}
@@ -80,7 +78,7 @@ public class InteractionSystem : MonoBehaviour
 		_quest = null;
 		_npc = null;
 		_canTrade = false;
-		
+
 		_animator.HideTalk();
 		_animator.RotateToDefault();
 		OnResetDialogue?.Invoke();
@@ -92,18 +90,18 @@ public class InteractionSystem : MonoBehaviour
 		{
 			if (!_isInteracting)
 			{
+				_playerState.Interact();
+
 				_isInteracting = true;
 				_inDialogue = true;
-				
+
 				_dialogueCamera.Target.LookAtTarget = _npc.LookAt;
 				_dialogueCamera.gameObject.SetActive(true);
 
 				_animator.HideTalk();
 				_animator.LookAtEachOther(_player.transform);
 
-				_weaponController.UnequipWeapon();
-				_hudController.SwitchOverlay();
-				_menuController.SwitchDialogue(true);
+				if (_weaponController.CurrentWeaponType == EWeaponType.Melee) _weaponController.UnequipWeapon();
 
 				SwitchWindows(_dialogueWindow);
 				if (_canTrade)
@@ -111,7 +109,7 @@ public class InteractionSystem : MonoBehaviour
 					_uiActions.OnTradeKeyPressed += TradeButton;
 					OnCanTrade?.Invoke();
 				}
-				
+
 				return;
 			}
 
@@ -134,14 +132,14 @@ public class InteractionSystem : MonoBehaviour
 		{
 			_isInteracting = false;
 
+			_playerState.Explore();
+
 			if (_canTrade) _uiActions.OnTradeKeyPressed -= TradeButton;
 
 			EndInteracting?.Invoke();
 			_windowService.CloseActiveWindow();
 
 			_animator.ShowTalk();
-			_hudController.SwitchOverlay(1);
-			_menuController.SwitchDialogue(false);
 
 			_dialogueCamera.gameObject.SetActive(false);
 			_dialogueCamera.Target.LookAtTarget = null;
@@ -153,14 +151,9 @@ public class InteractionSystem : MonoBehaviour
 		_windowService.CloseActiveWindow();
 		_windowService.TryOpenWindow(window);
 		_lastOpenned = window;
-		
+
 		_inDialogue = window == _dialogueWindow;
 		if (_inDialogue) OnInteracting?.Invoke(false);
-	}
-
-	public InventoryDatabase GetPlayerInventory() 
-	{
-		return _playerInventory;
 	}
 
 	public string GetName()
@@ -173,17 +166,32 @@ public class InteractionSystem : MonoBehaviour
 		OnButtonClick?.Invoke();
 	}
 
-	private void OnGamePause(bool paused)
+	private void Pause()
 	{
-		if (paused)
+		_uiActions.OnBackKeyPressed -= TryStopInteract;
+	}
+
+	private void Interact()
+	{
+		_uiActions.OnBackKeyPressed += TryStopInteract;
+		_windowService.TryOpenWindow(_lastOpenned);
+		OnInteracting?.Invoke(false);
+	}
+
+	private void SwitchInteract(EState state)
+	{
+		if (_isInteracting)
 		{
-			_uiActions.OnBackKeyPressed -= TryStopInteract;
-		}
-		else
-		{
-			_uiActions.OnBackKeyPressed += TryStopInteract;
-			_windowService.TryOpenWindow(_lastOpenned);
-			OnInteracting?.Invoke(false);
+			if (state == EState.Pause)
+			{
+				_uiActions.OnBackKeyPressed -= TryStopInteract;
+			}
+			else
+			{
+				_uiActions.OnBackKeyPressed += TryStopInteract;
+				_windowService.TryOpenWindow(_lastOpenned);
+				OnInteracting?.Invoke(false);
+			}
 		}
 	}
 }
