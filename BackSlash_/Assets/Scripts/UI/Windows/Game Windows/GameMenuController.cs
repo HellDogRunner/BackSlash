@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using Zenject;
+using static PlayerStates;
 
 namespace RedMoonGames.Window
 {
@@ -69,21 +70,9 @@ namespace RedMoonGames.Window
 			TryOpenWindow(_pauseWindow);
 		}
 
-		private void HideWindow()
-		{
-			if (_animator.GetCanOpenWindow())
-			{
-				var window = _windowService.GetActiveWindow();
-				_windowService.HideWindow(window);
-
-				_playerState.Explore();
-				EventsOnGame();
-			}
-		}
-
 		private void OpenMenu(int index)
 		{
-			if (_windowService.GetActiveWindow() != _menuWindow)
+			if (_playerState.CurrentState != EState.Pause)
 			{
 				_playerState.Pause();
 				EventsOnPause();
@@ -92,6 +81,19 @@ namespace RedMoonGames.Window
 			}
 
 			OpenTab?.Invoke(index);
+		}
+		
+		private void HideWindow()
+		{	
+			if (_animator.GetCanOpenWindow())
+			{
+				_playerState.Explore();
+				
+				var window = _windowService.GetActiveWindow();
+				_windowService.HideWindow(window);
+
+				EventsOnGame();
+			}
 		}
 
 		private void TryOpenWindow(WindowHandler window) 

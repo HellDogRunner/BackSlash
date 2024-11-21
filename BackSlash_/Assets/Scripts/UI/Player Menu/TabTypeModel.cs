@@ -4,13 +4,11 @@ using UnityEngine;
 
 namespace Scripts.UI.PlayerMenu
 {
-    [Serializable]
-    public class TabTypeModel : IDatabaseModelPrimaryKey<string>
-    {
-        public string Name;
-        public GameObject Prefab;
-        public int Index;
+	[Serializable]
+	public class TabTypeModel : IDatabaseModelPrimaryKey<string>
+	{
+		public GameObject Prefab;
 
-        public string PrimaryKey => Name;
-    }
+		public string PrimaryKey => Prefab.name;
+	}
 }

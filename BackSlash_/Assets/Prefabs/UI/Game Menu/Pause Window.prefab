@@ -1071,6 +1071,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _IsMainMenu: 0
+  _showDelay: 0.3
   _settingsHandler: {fileID: 11400000, guid: 53aa551dec54ecb48b774a8d1b55a4ee, type: 2}
   _continue: {fileID: 6134755145397578969}
   _settings: {fileID: 7837429032076361727}
@@ -2100,6 +2101,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _selectedOnEnable
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1132664311948754503, guid: ef7b783582fc54f40a0978509bc5290f,
+        type: 3}
+      propertyPath: m_Transition
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1549164505346458169, guid: ef7b783582fc54f40a0978509bc5290f,
         type: 3}

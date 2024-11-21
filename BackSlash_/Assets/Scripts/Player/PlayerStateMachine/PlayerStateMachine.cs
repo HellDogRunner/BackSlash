@@ -6,7 +6,7 @@ public class PlayerStateMachine : MonoBehaviour
 {
 	private bool _willInteract;
 
-	[HideInInspector] EState CurrentState;
+	[HideInInspector] public EState CurrentState;
 	
 	public event Action<EState> OnChangeState;
 	public event Action OnPause;
