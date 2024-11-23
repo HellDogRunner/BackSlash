@@ -49,10 +49,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26ead0690e74d2044bb62ca1f52f211a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dialogueWindow: {fileID: 11400000, guid: d20cb13f694b56647a1b040ff452788c, type: 2}
-  _dialogueCamera: {fileID: 0}
-  _playerInventory: {fileID: 11400000, guid: debf47b2eb05c8c4aab44a7c1f2b355b, type: 2}
-  _player: {fileID: 0}
+  _interactCamera: {fileID: 0}
+  _playerObject: {fileID: 0}
+  _windows: []
 --- !u!114 &3209041646405831007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,6 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17242e40417cbd3408cf21823ad22ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dialogueWindow: {fileID: 11400000, guid: d20cb13f694b56647a1b040ff452788c, type: 2}
 --- !u!114 &2877303253908687700
 MonoBehaviour:
   m_ObjectHideFlags: 0

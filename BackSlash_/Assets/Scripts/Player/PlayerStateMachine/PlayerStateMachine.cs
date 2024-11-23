@@ -6,7 +6,7 @@ public class PlayerStateMachine : MonoBehaviour
 {
 	private bool _willInteract;
 
-	[HideInInspector] public EState CurrentState;
+	[HideInInspector] public EState State;
 	
 	public event Action<EState> OnChangeState;
 	public event Action OnPause;
@@ -15,7 +15,7 @@ public class PlayerStateMachine : MonoBehaviour
 	
 	private void ChangeState(EState state)
 	{
-		CurrentState = state;
+		State = state;
 		OnChangeState?.Invoke(state);
 	}
 	
@@ -26,7 +26,7 @@ public class PlayerStateMachine : MonoBehaviour
 	
 	public void Pause()
 	{
-		if (CurrentState == EState.Interact) _willInteract = true;
+		if (State == EState.Interact) _willInteract = true;
 		ChangeState(EState.Pause);
 		OnPause?.Invoke();
 	}
@@ -56,7 +56,7 @@ public class PlayerStateMachine : MonoBehaviour
 	
 	public void Interact()
 	{
-		if (CurrentState != EState.Combat || CurrentState != EState.Loot)
+		if (State != EState.Combat || State != EState.Loot)
 		{
 			ChangeState(EState.Interact);
 			OnInteract?.Invoke();

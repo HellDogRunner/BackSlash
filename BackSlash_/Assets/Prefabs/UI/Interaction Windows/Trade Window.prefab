@@ -133,8 +133,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eeee421ac30e914f85ba404dc2f0971, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _IsMainMenu: 0
-  _dialogueWindow: {fileID: 11400000, guid: d20cb13f694b56647a1b040ff452788c, type: 2}
+  _close: {fileID: 5233865200057428379}
+  _dialogueHandler: {fileID: 11400000, guid: d20cb13f694b56647a1b040ff452788c, type: 2}
   _productPrefab: {fileID: 8942215995542258475, guid: ab47b2a46074d7a4484a6b0c0c019af9,
     type: 3}
   _noProductsItem: {fileID: 8721696064321061352, guid: 59e232331b074b04c80c1da9017ac5ed,
@@ -146,7 +146,6 @@ MonoBehaviour:
   _stats: {fileID: 1796678910359385308}
   _description: {fileID: 1065623608504094978}
   _currency: {fileID: 8196997017703669737}
-  _leaveButton: {fileID: 5233865200057428379}
   _buyButton: {fileID: 6214630382531421760}
   _tradeButton: {fileID: 6322730475105880450}
   _showWindowDelay: 0.05
@@ -889,10 +888,10 @@ RectTransform:
   - {fileID: 6767814072670551171}
   m_Father: {fileID: 4378715579061839733}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 430, y: -75}
-  m_SizeDelta: {x: 860, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1749479049114242835
 CanvasRenderer:
@@ -2644,10 +2643,10 @@ RectTransform:
   - {fileID: 3403196395825292692}
   m_Father: {fileID: 4378715579061839733}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 430, y: -185}
-  m_SizeDelta: {x: 860, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6808282327457582220
 CanvasRenderer:

@@ -21,8 +21,8 @@ namespace RedMoonGames.Window
 		{
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 			_pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
-			_animator.OnWindowDelayShowed += SwitchEvents;
-			_animator.OnWindowHided += CloseWindow;
+			_animator.OnShowed += SwitchEvents;
+			//_animator.OnHidingEnd += CloseWindow;
 		}
 
 		private void OnDisable()
@@ -30,8 +30,8 @@ namespace RedMoonGames.Window
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 			_pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
 			_pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
-			_animator.OnWindowDelayShowed -= SwitchEvents;
-			_animator.OnWindowHided -= CloseWindow;
+			_animator.OnShowed -= SwitchEvents;
+			//_animator.OnHidingEnd -= CloseWindow;
 		}
 
 		private void ShowStartWindow()

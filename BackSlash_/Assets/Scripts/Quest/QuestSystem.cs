@@ -46,7 +46,7 @@ public class QuestSystem : MonoBehaviour
 		var state = _activeQuests.GetStateQuest(questData);
 		var model = questData.GetModelByState(state);
 		
-		_activeQuests.GetModelByQuestData(questData).State = model.Objective;
+		_activeQuests.GetModelByQuestData(questData).State = model.OnCompleteNextState;
 	}
 	
 	private void OnDestroy()

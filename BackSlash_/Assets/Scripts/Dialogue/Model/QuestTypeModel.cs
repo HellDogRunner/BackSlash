@@ -11,7 +11,7 @@ namespace Scripts.UI.Dialogue
 		public string[] Phrases;
 		public List<QuestQuestionsModel> Questions;
 		public List<QuestEndingsModel> Endings;
-		public string Objective;
+		public string OnCompleteNextState;
 
 		public string PrimaryKey => State;
 	}

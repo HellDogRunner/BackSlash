@@ -40,70 +40,64 @@ namespace RedMoonGames.Window
 		private void OnEnable()
 		{
 			_playerState.OnPause += DisableGameInputs;
+			_playerState.OnInteract += DisableGameInputs;
 			_playerState.OnExplore += EnableGameInputs;
 			
-			_animator.OnWindowHided += CloseWindow;
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
-
-			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
+			
 			_pauseInputs.OnEscapeKeyPressed += OpenPause;
+			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
+			_windowService.OnUnpause += SetExplore;
+			_windowService.OnPause += SetPause;
 		}
 
 		private void OnDisable()
 		{
 			_playerState.OnPause -= DisableGameInputs;
+			_playerState.OnInteract -= DisableGameInputs;
 			_playerState.OnExplore -= EnableGameInputs;
 
-			_animator.OnWindowHided -= CloseWindow;
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
-			_windowService.OnUnpause -= HideWindow;
-			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
+			_pauseInputs.OnEscapeKeyPressed -= OpenPause;
 			_pauseInputs.OnMenuTabKeyPressed -= OpenMenu;
+			_windowService.OnUnpause -= SetExplore;
+			_windowService.OnPause -= SetPause;
+			
 		}
 
 		private void OpenPause()
 		{
-			_playerState.Pause();
-			EventsOnPause();
-			
-			TryOpenWindow(_pauseWindow);
+			if (_playerState.State != EState.Pause)
+			{
+				TryOpenWindow(_pauseWindow);
+			}
 		}
 
 		private void OpenMenu(int index)
 		{
-			if (_playerState.CurrentState != EState.Pause)
+			if (_playerState.State != EState.Pause)
 			{
-				_playerState.Pause();
-				EventsOnPause();
-
 				TryOpenWindow(_menuWindow);
 			}
 
 			OpenTab?.Invoke(index);
 		}
 		
-		private void HideWindow()
-		{	
-			if (_animator.GetCanOpenWindow())
-			{
-				_playerState.Explore();
-				
-				var window = _windowService.GetActiveWindow();
-				_windowService.HideWindow(window);
-
-				EventsOnGame();
-			}
-		}
-
 		private void TryOpenWindow(WindowHandler window) 
 		{
-			if (_animator.GetCanOpenWindow())
-			{
-				_windowService.CloseActiveWindow();
-				_windowService.TryOpenWindow(window);
-				_windowService.ShowWindow();
-			}
+			_windowService.TryOpenWindow(window);
+			_windowService.ShowWindow(true);
+		}
+		
+		private void SetExplore()
+		{	
+			_playerState.Explore();
+		}
+
+		private void SetPause()
+		{
+			_playerState.Pause();
 		}
 
 		private void DisableGameInputs()
@@ -125,22 +119,6 @@ namespace RedMoonGames.Window
 
 			_gameInputs.enabled = true;
 			_pauseInputs.enabled = true;
-		}
-
-		private void EventsOnPause()
-		{
-			_pauseInputs.OnEscapeKeyPressed -= OpenPause;
-			_pauseInputs.OnMenuTabKeyPressed -= OpenMenu;
-			_pauseInputs.OnEscapeKeyPressed += HideWindow;
-			_windowService.OnUnpause += HideWindow;
-		}
-
-		private void EventsOnGame()
-		{
-			_pauseInputs.OnEscapeKeyPressed += OpenPause;
-			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
-			_pauseInputs.OnEscapeKeyPressed -= HideWindow;
-			_windowService.OnUnpause -= HideWindow;
 		}
 	}
 }

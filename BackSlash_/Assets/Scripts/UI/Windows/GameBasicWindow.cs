@@ -9,46 +9,90 @@ namespace RedMoonGames.Window
 	[RequireComponent(typeof(CanvasGroup))]
 	public class GameBasicWindow : BasicWindow
 	{
-		[SerializeField] protected bool _IsMainMenu;
-		[SerializeField] protected float _showDelay = 0.3f;
-
+		[SerializeField] protected Button _close;
+		
 		protected CanvasGroup _canvasGroup;
+		protected bool _callHide;
 
 		protected WindowService _windowService;
-		protected WindowAnimator _windowAnimator;
+		protected WindowAnimator _animator;
 		protected AudioController _audioController;
-		protected UIActionsController _pauseInputs;
+		protected UIActionsController _uiInputs;
 
 		[Inject]
-		private void Construct(WindowService windowService, WindowAnimator animator, AudioController audioController, UIActionsController pauseInputs)
+		private void Construct(WindowService windowService, WindowAnimator animator, AudioController audioController, UIActionsController uiInputs)
+		{
+			_animator = animator;
+			_audioController = audioController;
+			_uiInputs = uiInputs;
+			_windowService = windowService;
+		}
+		
+		protected virtual void Awake() 
 		{
 			_canvasGroup = GetComponent<CanvasGroup>();
-
-			_windowAnimator = animator;
-			_audioController = audioController;
-			_pauseInputs = pauseInputs;
-
-			_windowService = windowService;
-			_windowService.OnHideWindow += DisablePause;
+			
+			_windowService.OnShowWindow += Show;
+			_animator.OnShowed += ShowHandler;
+			_animator.OnHided += TryClose;
+			_uiInputs.OnEscapeKeyPressed += Hide;
+			
+			if (_close) _close.onClick.AddListener(Hide);	
 		}
-
-		protected void EnablePause() 
+		
+		protected virtual void OnDestroy()
 		{
-			_windowAnimator.ShowWindow(_canvasGroup);
+			_windowService.OnShowWindow -= Show;
+			_animator.OnShowed -= ShowHandler;
+			_animator.OnHided -= TryClose;
+			_uiInputs.OnEscapeKeyPressed -= Hide;
+			
+			if (_close) _close.onClick.RemoveListener(Hide);	
 		}
-
-		protected void DisablePause(WindowHandler handler)
+		
+		protected void Show(bool pause) 
 		{
-			PlayClickSound();
-			_windowAnimator.HideWindow(_canvasGroup, handler);
+			if (!_animator.Active())
+			{
+				PlayClickSound();	// Need?
+				_animator.ShowWindow(_canvasGroup);
+				if (pause) _windowService.Pause();
+			}
 		}
-
-		public void OpenWindow(WindowHandler window)
+		
+		protected virtual void Hide()
+		{
+			if (!_animator.Active())
+			{
+				_callHide = true;
+				PlayClickSound();	// Need?
+				_animator.HideWindow(_canvasGroup);
+				_windowService.Unpause();
+			}
+		}
+		
+		protected virtual void ShowHandler() {}
+		
+		protected virtual void TryClose()
+		{
+			if (_callHide)
+			{
+				_callHide = false;
+				Close();
+			}
+		}
+		
+		public void ReplaceWindow(IWindow window, WindowHandler handler)
 		{
 			PlayClickSound();
 			
-			_windowService.CloseActiveWindow();
-			_windowService.TryOpenWindow(window);
+			window.Close();
+			_windowService.TryOpenWindow(handler);
+		}
+		
+		protected void SwitchView()
+		{
+			_canvasGroup.alpha = _canvasGroup.alpha == 0 ? 1 : 0;
 		}
 
 		protected void PlayClickSound()
@@ -65,11 +109,6 @@ namespace RedMoonGames.Window
 		{
 			PlayHoverSound();
 			value.text = (slider.value * multiplier).ToString();
-		}
-
-		private void OnDestroy()
-		{
-			_windowService.OnHideWindow -= DisablePause;
 		}
 	}
 }

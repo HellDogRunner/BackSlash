@@ -1,15 +1,15 @@
+using UnityEngine;
+
 namespace RedMoonGames.Window
 {
 	public class StartWindow : GameBasicWindow
 	{	
-		private void Awake()
-		{
-			_windowAnimator.ShowWindowWithDelay(_canvasGroup, _showDelay);
-		}
+		[SerializeField] protected float _showDelay = 0.3f;
 		
-		private void OnDestroy()
+		
+		private void OnEnable()
 		{
-			_windowService.OnHideWindow -= DisablePause;
+			_animator.ShowWindow(_canvasGroup, _showDelay);
 		}
 	}
 }

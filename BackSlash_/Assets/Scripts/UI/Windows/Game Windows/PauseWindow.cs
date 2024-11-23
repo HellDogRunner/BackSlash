@@ -4,57 +4,49 @@ using Zenject;
 
 namespace RedMoonGames.Window
 {
-    public class PauseWindow : GameBasicWindow
-    {
-        [SerializeField] private WindowHandler _settingsHandler;
+	public class PauseWindow : GameBasicWindow
+	{
+		[Header("Handlers")]
+		[SerializeField] private WindowHandler _settingsHandler;
 
-        [Header("Buttons")]
-        [SerializeField] private Button _continue;
-        [SerializeField] private Button _settings;
-        [SerializeField] private Button _exit;
+		[Header("Buttons")]
+		[SerializeField] private Button _continue;
+		[SerializeField] private Button _settings;
+		[SerializeField] private Button _exit;
 
-        [Header("Navigation Keys")]
-        [SerializeField] private Button _close;
+		private GameMenuController _menuController;
 
-        private GameMenuController _menuController;
+		[Inject]
+		private void Construct(GameMenuController menuController)
+		{
+			_menuController = menuController;
+		}
 
-        [Inject]
-        private void Construct(GameMenuController menuController)
-        {
-            _menuController = menuController;
-        }
+		private void OnEnable()
+		{
+			_continue.Select();
 
-        private void Awake()
-        {
-            _continue.Select();
+			_uiInputs.OnBackKeyPressed += Hide;
 
-            _pauseInputs.OnBackKeyPressed += _windowService.Unpause;
-            _windowService.OnShowWindow += EnablePause;
+			_continue.onClick.AddListener(Hide);
+			_settings.onClick.AddListener(SettingsButton);
+			_exit.onClick.AddListener(ExitButton);
+		}
 
-            _continue.onClick.AddListener(_windowService.Unpause);
-            _settings.onClick.AddListener(SettingsButton);
-            _exit.onClick.AddListener(ExitButton);
-            _close.onClick.AddListener(_windowService.Unpause);
-        }
+		private void OnDisable()
+		{ 
+			_uiInputs.OnBackKeyPressed -= Hide;
 
-        private void SettingsButton() { OpenWindow(_settingsHandler); }
+			_continue.onClick.RemoveListener(Hide);
+			_settings.onClick.RemoveListener(SettingsButton);
+			_exit.onClick.RemoveListener(ExitButton);
+		}
+		
+		private void SettingsButton() { ReplaceWindow(this, _settingsHandler); }
 
-        private void ExitButton()
-        {
-            _menuController.ChangeScene("StartMenu");
-        }
-
-        private void OnDestroy()
-        { 
-            _windowService.OnHideWindow -= DisablePause;
-            _windowService.OnShowWindow -= EnablePause;
-
-            _pauseInputs.OnBackKeyPressed -= _windowService.Unpause;
-
-            _continue.onClick.RemoveListener(_windowService.Unpause);
-            _settings.onClick.RemoveListener(SettingsButton);
-            _exit.onClick.RemoveListener(ExitButton);
-            _close.onClick.RemoveListener(_windowService.Unpause);
-        }
-    }
+		private void ExitButton()
+		{
+			_menuController.ChangeScene("StartMenu");
+		}
+	}
 }

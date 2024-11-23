@@ -10,7 +10,7 @@ namespace RedMoonGames.Window
 
 		private WindowModel _lastWindowModel;
 
-		public virtual void Show()
+		public virtual void  OnShow()
 		{
 			OnWindowShow?.Invoke(this);
 		}

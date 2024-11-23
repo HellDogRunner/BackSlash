@@ -14,7 +14,7 @@ namespace RedMoonGames.Window
         event Action<IWindow> OnWindowShow;
         event Action<IWindow, WindowCloseContext> OnWindowClose;
 
-        void Show();
+        void OnShow();
         void Close();
         void SetModel(WindowModel windowModel);
     }

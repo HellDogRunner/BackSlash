@@ -49,7 +49,7 @@ public class DialogueAnimator : MonoBehaviour
 			OnComplete(() => TextAnimationEnd?.Invoke());
 	}
 	
-	public bool GetTextAnimationActive() 
+	public bool TextActive() 
 	{
 		return _text.IsActive();
 	}

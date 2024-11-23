@@ -43,7 +43,7 @@ MonoBehaviour:
       State: Progress
     - Index: 6
       State: Cancel
-    Objective: 
+    OnCompleteNextState: 
   - State: Cancel
     Phrases:
     - Have you changed your mind?
@@ -60,7 +60,7 @@ MonoBehaviour:
       State: Progress
     - Index: 2
       State: Cancel
-    Objective: 
+    OnCompleteNextState: 
   - State: Progress
     Phrases:
     - Have you finished yet?
@@ -68,7 +68,7 @@ MonoBehaviour:
     Endings:
     - Index: 0
       State: Progress
-    Objective: Reward
+    OnCompleteNextState: Reward
   - State: Reward
     Phrases:
     - You did it! Here's your reward.
@@ -76,7 +76,7 @@ MonoBehaviour:
     Endings:
     - Index: 0
       State: Complete
-    Objective: 
+    OnCompleteNextState: 
   - State: Complete
     Phrases:
     - Thank you again for your help!
@@ -84,4 +84,5 @@ MonoBehaviour:
     Endings:
     - Index: 0
       State: Complete
-    Objective: 
+    OnCompleteNextState: 
+  Index: 2

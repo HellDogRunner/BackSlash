@@ -1,6 +1,5 @@
 using UnityEngine;
 using Zenject;
-using static PlayerStates;
 
 namespace RedMoonGames.Window
 {
@@ -11,15 +10,13 @@ namespace RedMoonGames.Window
 		private PlayerStateMachine _playerState;
 		private CurrencyService _currencyService;
 		private CurrencyAnimation _currencyAnimation;
-		private InteractionSystem _interactionSystem;
 
 		[Inject]
-		private void Construct(PlayerStateMachine playerState, InteractionSystem interactionSystem, CurrencyAnimation currencyAnimation, CurrencyService currencyService)
+		private void Construct(PlayerStateMachine playerState, CurrencyAnimation currencyAnimation, CurrencyService currencyService)
 		{
 			_playerState = playerState;
 			_currencyService = currencyService;
 			_currencyAnimation = currencyAnimation;
-			_interactionSystem = interactionSystem;
 		}
 
 		private void Awake()
@@ -30,10 +27,8 @@ namespace RedMoonGames.Window
 		private void OnEnable()
 		{
 			_currencyService.OnCurrencyChanged += ChangeCurrency;
-			_interactionSystem.EndInteracting += SetCurrency;
 			
-			_playerState.OnExplore += _animator.ShowHUD;
-			_playerState.OnExplore += _animator.ShowOverlay;
+			_playerState.OnExplore += ShowOverlay;
 			_playerState.OnPause += _animator.HideHUD;
 			_playerState.OnInteract += _animator.HideOverlay;	
 		}
@@ -41,12 +36,17 @@ namespace RedMoonGames.Window
 		private void OnDisable()
 		{
 			_currencyService.OnCurrencyChanged -= ChangeCurrency;
-			_interactionSystem.EndInteracting -= SetCurrency;
 			
-			_playerState.OnExplore -= _animator.ShowHUD;
-			_playerState.OnExplore -= _animator.ShowOverlay;
+			_playerState.OnExplore -= ShowOverlay;
 			_playerState.OnPause -= _animator.HideHUD;
 			_playerState.OnInteract -= _animator.HideOverlay;
+		}
+
+		private void ShowOverlay()
+		{
+			_animator.ShowHUD();
+			_animator.ShowOverlay();
+			SetCurrency();
 		}
 
 		private void SetCurrency()

@@ -45,13 +45,12 @@ namespace RedMoonGames.Window
 			_menuController = menuController;
 		}
 
-		private void Awake()
+		private void OnEnable()
 		{
-			_windowService.OnShowWindow += EnablePause;
 			_menuController.OpenTab += OpenTab;
-			_pauseInputs.OnMenuSwitchTabAction += SwitchTab;
-			_pauseInputs.OnMenuTabKeyPressed += OpenTab;
-			_pauseInputs.OnBackKeyPressed += _windowService.Unpause;
+			_uiInputs.OnMenuSwitchTabAction += SwitchTab;
+			_uiInputs.OnMenuTabKeyPressed += OpenTab;
+			_uiInputs.OnBackKeyPressed += _windowService.Unpause;
 
 			_weaponButton.onClick.AddListener(WeaponButton);
 			_combosButton.onClick.AddListener(CombosButton);
@@ -74,14 +73,12 @@ namespace RedMoonGames.Window
 			_animations.Add(_mapButton.GetComponent<MenuTabAnimationService>());
 		}
 
-		private void OnDestroy()
+		private void OnDisable()
 		{
-			_windowService.OnHideWindow -= DisablePause;
-			_windowService.OnShowWindow -= EnablePause;
 			_menuController.OpenTab -= OpenTab;
-			_pauseInputs.OnMenuSwitchTabAction -= SwitchTab;
-			_pauseInputs.OnMenuTabKeyPressed -= OpenTab;
-			_pauseInputs.OnBackKeyPressed -= _windowService.Unpause;
+			_uiInputs.OnMenuSwitchTabAction -= SwitchTab;
+			_uiInputs.OnMenuTabKeyPressed -= OpenTab;
+			_uiInputs.OnBackKeyPressed -= _windowService.Unpause;
 
 			_weaponButton.onClick.RemoveListener(WeaponButton);
 			_combosButton.onClick.RemoveListener(CombosButton);

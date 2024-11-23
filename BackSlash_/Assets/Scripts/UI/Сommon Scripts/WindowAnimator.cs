@@ -10,36 +10,33 @@ namespace RedMoonGames.Window
 		[SerializeField] private float _fadeDuration = 0.1f;
 
 		private Tween _window;
-		private Tween _windowDelay;
 
-		public event Action<WindowHandler> OnWindowHided;
-		public event Action OnWindowDelayShowed;
+		public event Action OnHided;
+		public event Action OnShowed;
 
-		public void ShowWindow(CanvasGroup cg)
-		{
-			cg.alpha = 0f;
-			_window = cg.DOFade(1f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true);
-		}
-
-		public void HideWindow(CanvasGroup cg, WindowHandler window)
-		{
-			_window = cg.DOFade(0f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true).
-			OnComplete(() => OnWindowHided?.Invoke(window));
-		}
-
-		public void ShowWindowWithDelay(CanvasGroup cg, float delay = 0)
+		public void ShowWindow(CanvasGroup cg, float delay = 0)
 		{
 			cg.alpha = 0;
-			_windowDelay = cg.DOFade(1f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true).SetDelay(delay).
-			OnComplete(() => OnWindowDelayShowed?.Invoke());
+			KillTween(_window);
+			_window = cg.DOFade(1f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true).SetDelay(delay).
+			OnComplete(() => OnShowed?.Invoke());
 		}
 
-		public bool GetCanOpenWindow()
+		public void HideWindow(CanvasGroup cg, float delay = 0)
 		{
-			if (_window.IsActive()) return false;
-			if (_windowDelay.IsActive()) return false;
-			
-			return true;
+			KillTween(_window);
+			_window = cg.DOFade(0f, _fadeDuration).SetEase(Ease.InOutSine).SetUpdate(true).SetDelay(delay).
+			OnComplete(() => OnHided?.Invoke());
+		}
+
+		public void KillTween(Tween tween)
+		{
+			if (tween.IsActive()) tween.Kill();
+		}
+
+		public bool Active()
+		{
+			return _window.IsActive() ? true : false;
 		}
 	}
 }

@@ -10,7 +10,8 @@ namespace RedMoonGames.Window
 {
 	public class TradeWindow : GameBasicWindow
 	{
-		[SerializeField] private WindowHandler _dialogueWindow;
+		[SerializeField] private WindowHandler _dialogueHandler;
+		[Space]
 		[SerializeField] private GameObject _productPrefab;
 		[SerializeField] private GameObject _noProductsItem;
 		
@@ -27,11 +28,11 @@ namespace RedMoonGames.Window
 		[SerializeField] private TMP_Text _currency;
 
 		[Header("Buttons")]
-		[SerializeField] private Button _leaveButton;
+
 		[SerializeField] private Button _buyButton;
 		[SerializeField] private Button _tradeButton;
 		[Space]
-		[SerializeField] private float _showWindowDelay = 0.02f;
+		//[SerializeField] private float _showWindowDelay = 0.02f;
 
 		private List<Product> _products = new List<Product>();
 		private Product _currentProduct;
@@ -44,14 +45,7 @@ namespace RedMoonGames.Window
 		private DiContainer _diContainer;
 
 		[Inject]
-		private void Construct(
-			TradeSystem tradeSystem,
-			InventoryDatabase playerInventory,
-			DiContainer diContainer,
-			InteractionSystem interactionSystem,
-			CurrencyService currencyService,
-			CurrencyAnimation currencyAnimation
-			)
+		private void Construct(TradeSystem tradeSystem, InventoryDatabase playerInventory, DiContainer diContainer, InteractionSystem interactionSystem, CurrencyService currencyService, CurrencyAnimation currencyAnimation)
 		{
 			_tradeSystem = tradeSystem;
 			_playerInventory = playerInventory;
@@ -61,35 +55,51 @@ namespace RedMoonGames.Window
 			_currencyAnimation = currencyAnimation;
 		}
 
-		private void Awake()
+		protected override void Awake()
 		{
-			_currencyService.OnCurrencyChanged += ChangeCurrency;
-			_interactionSystem.OnButtonClick += TradeButton;
-
-			_leaveButton.onClick.AddListener(LeaveButton);
-			_buyButton.onClick.AddListener(BuyButton);
-			_tradeButton.onClick.AddListener(TradeButton);
-
 			SetItems();
 			SetCurrency();
+			
+			_interactionSystem._windows.Add(gameObject);
+			
+			base.Awake();
 		}
 
-		private void OnDestroy()
+		private void OnEnable()
 		{
-			ResetItems();
+			_uiInputs.OnEscapeKeyPressed -= Hide;
 
-			_windowService.OnHideWindow -= DisablePause;
+			_currencyService.OnCurrencyChanged += ChangeCurrency;
+			
+			_uiInputs.OnBackKeyPressed += StopInteract;
+			_uiInputs.OnTradeKeyPressed += TradeButton;
+
+			_buyButton.onClick.AddListener(BuyButton);
+			_tradeButton.onClick.AddListener(TradeButton);
+		}
+
+		private void OnDisable()
+		{
 			_currencyService.OnCurrencyChanged -= ChangeCurrency;
-			_interactionSystem.OnButtonClick -= TradeButton;
 
-			_leaveButton.onClick.RemoveListener(LeaveButton);
+			_uiInputs.OnBackKeyPressed -= StopInteract;
+			_uiInputs.OnTradeKeyPressed -= TradeButton;
+
 			_buyButton.onClick.RemoveListener(BuyButton);
 			_tradeButton.onClick.RemoveListener(TradeButton);
 		}
 
-		private void LeaveButton()
+		protected override void OnDestroy()
 		{
-			_interactionSystem.TryStopInteract();
+			ResetItems();
+			
+			base.OnDestroy();
+		}
+
+		private void StopInteract()
+		{
+			Close();
+			_interactionSystem.SetExplore();
 		}
 
 		private void BuyButton()
@@ -100,7 +110,7 @@ namespace RedMoonGames.Window
 
 		private void TradeButton()
 		{
-			_interactionSystem.SwitchWindows(_dialogueWindow);
+			SwitchView();
 		}
 		
 		private void SetCurrency()
@@ -115,8 +125,6 @@ namespace RedMoonGames.Window
 		
 		private void SetItems()
 		{
-			_windowAnimator.ShowWindowWithDelay(_canvasGroup, _showWindowDelay);
-			
 			foreach (var item in _tradeSystem.GetItems())
 			{
 				bool bought = _playerInventory.GetItemTypeModel(item.Item) is not null ? true : false;

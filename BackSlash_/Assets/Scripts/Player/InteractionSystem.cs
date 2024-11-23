@@ -3,64 +3,57 @@ using Scripts.Player;
 using Scripts.UI.Dialogue;
 using Scripts.Weapon;
 using System;
+using System.Collections.Generic;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 using static PlayerStates;
 
 public class InteractionSystem : MonoBehaviour
 {
-	[SerializeField] private WindowHandler _dialogueWindow;
+	[SerializeField] private CinemachineCamera _interactCamera;
 	[Space]
-	[SerializeField] private CinemachineCamera _dialogueCamera;
-	[Space]
-	[SerializeField] private GameObject _player;
+	[SerializeField] private GameObject _playerObject;
 
+	public List<GameObject> _windows = new List<GameObject>();
 	private QuestDatabase _quest;
 	private NpcInteractionService _npc;
-	private WindowHandler _lastOpenned;
 
-	private bool _isInteracting;
-	private bool _inDialogue;
 	private bool _canTrade;
 
 	private WeaponController _weaponController;
 	private UIActionsController _uiActions;
 	private InteractionAnimator _animator;
 	private WindowService _windowService;
-	private PlayerStateMachine _playerState;
+	private PlayerStateMachine _playerSM;
 
 	public event Action<QuestDatabase> SetQuest;
 	public event Action OnResetDialogue;
-	public event Action EndInteracting;
-	public event Action<bool> OnInteracting;
-	public event Action OnButtonClick;
-	public event Action OnCanTrade;
+	public event Action<string, bool> OnStartInteract;
 
 	[Inject]
 	private void Construct(PlayerStateMachine playerState, WeaponController weaponController, WindowService windowService, InteractionAnimator animator, UIActionsController uIActions)
 	{
 		_animator = animator;
 		_uiActions = uIActions;
-		_playerState = playerState;
+		_playerSM = playerState;
 		_windowService = windowService;
 		_weaponController = weaponController;
 	}
 
 	private void OnEnable()
 	{
-		_uiActions.OnEnterKeyPressed += TryInteract;
-		_uiActions.OnBackKeyPressed += TryStopInteract;
-		_playerState.OnPause += Pause;
-		_playerState.OnInteract += Interact;
+		_uiActions.OnEnterKeyPressed += TryStartInteract;
+		
+		_playerSM.OnChangeState += ActivateWindows;
 	}
 
 	private void OnDisable()
 	{
-		_uiActions.OnEnterKeyPressed -= TryInteract;
-		_uiActions.OnBackKeyPressed -= TryStopInteract;
-		_playerState.OnPause -= Pause;
-		_playerState.OnInteract -= Interact;
+		_uiActions.OnEnterKeyPressed -= TryStartInteract;
+		
+		_playerSM.OnChangeState -= ActivateWindows;
 	}
 
 	public void SetInformation(QuestDatabase quest, bool canTrade, GameObject npc)
@@ -84,113 +77,64 @@ public class InteractionSystem : MonoBehaviour
 		OnResetDialogue?.Invoke();
 	}
 
-	public void TryInteract()
+	public void TryStartInteract()
 	{
 		if (CanInteract())
 		{
-			if (!_isInteracting)
-			{
-				_playerState.Interact();
+			_playerSM.Interact();
+			_animator.HideTalk();
+			_animator.LookAtEachOther(_playerObject.transform);
+			SwitchCamera(_npc.LookAt);
+			
+			if (_weaponController.CurrentWeaponType == EWeaponType.Melee) _weaponController.UnequipWeapon();
+				
+			OnStartInteract?.Invoke(_npc.name, _canTrade);			
+		}
+	}
 
-				_isInteracting = true;
-				_inDialogue = true;
-
-				_dialogueCamera.Target.LookAtTarget = _npc.LookAt;
-				_dialogueCamera.gameObject.SetActive(true);
-
-				_animator.HideTalk();
-				_animator.LookAtEachOther(_player.transform);
-
-				if (_weaponController.CurrentWeaponType == EWeaponType.Melee) _weaponController.UnequipWeapon();
-
-				SwitchWindows(_dialogueWindow);
-				if (_canTrade)
-				{
-					_uiActions.OnTradeKeyPressed += TradeButton;
-					OnCanTrade?.Invoke();
-				}
-
-				return;
-			}
-
-			if (_inDialogue) OnInteracting?.Invoke(true);
+	public void SetExplore()
+	{	
+		if (_playerSM.State != EState.Explore)
+		{
+			_playerSM.Explore();
+			_animator.ShowTalk();
+			SwitchCamera(null);
+		}
+	}
+	
+	private void SwitchCamera(Transform lookAt)
+	{
+		if (_interactCamera != null)
+		{	
+			_interactCamera.Target.LookAtTarget = lookAt;
+			_interactCamera.gameObject.SetActive(!(lookAt is null));
 		}
 	}
 
 	private bool CanInteract()
 	{
-		if (!_quest) return false;
-
-		float distance = (_player.transform.position - _npc.transform.position).magnitude;
+		if (!_quest || _playerSM.State == EState.Interact) return false;
+		
+		float distance = (_playerObject.transform.position - _npc.transform.position).magnitude;
 
 		return distance < _npc.Distance;
 	}
-
-	public void TryStopInteract()
+	
+	private void ActivateWindows(EState state) 
 	{
-		if (_isInteracting)
+		if (state == EState.Explore)
 		{
-			_isInteracting = false;
-
-			_playerState.Explore();
-
-			if (_canTrade) _uiActions.OnTradeKeyPressed -= TradeButton;
-
-			EndInteracting?.Invoke();
-			_windowService.CloseActiveWindow();
-
-			_animator.ShowTalk();
-
-			_dialogueCamera.gameObject.SetActive(false);
-			_dialogueCamera.Target.LookAtTarget = null;
+			_windows.Clear();
+			return;
 		}
-	}
-
-	public void SwitchWindows(WindowHandler window)
-	{
-		_windowService.CloseActiveWindow();
-		_windowService.TryOpenWindow(window);
-		_lastOpenned = window;
-
-		_inDialogue = window == _dialogueWindow;
-		if (_inDialogue) OnInteracting?.Invoke(false);
-	}
-
-	public string GetName()
-	{
-		return _npc.Name;
-	}
-
-	private void TradeButton()
-	{
-		OnButtonClick?.Invoke();
-	}
-
-	private void Pause()
-	{
-		_uiActions.OnBackKeyPressed -= TryStopInteract;
-	}
-
-	private void Interact()
-	{
-		_uiActions.OnBackKeyPressed += TryStopInteract;
-		_windowService.TryOpenWindow(_lastOpenned);
-		OnInteracting?.Invoke(false);
-	}
-
-	private void SwitchInteract(EState state)
-	{
-		if (_isInteracting)
+		
+		if (state == EState.Interact || state == EState.Pause)
 		{
-			if (state == EState.Pause)
+			bool activate = state == EState.Interact ? true : false;
+			
+			foreach (var window in _windows)
 			{
-				_uiActions.OnBackKeyPressed -= TryStopInteract;
-			}
-			else
-			{
-				_uiActions.OnBackKeyPressed += TryStopInteract;
-				_windowService.TryOpenWindow(_lastOpenned);
-				OnInteracting?.Invoke(false);
+				window.SetActive(activate);
 			}
 		}
 	}

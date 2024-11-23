@@ -138,7 +138,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -25, y: 0}
-  m_SizeDelta: {x: 350, y: 45}
+  m_SizeDelta: {x: 30, y: 45}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &4024700037591690492
 CanvasRenderer:
@@ -245,7 +245,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 25, y: 0}
-  m_SizeDelta: {x: 350, y: 45}
+  m_SizeDelta: {x: 30, y: 45}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7563041807161697180
 CanvasRenderer:
@@ -1631,10 +1631,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c9459b8a2e364d4eab443a069cedb42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _IsMainMenu: 0
-  _tradeWindow: {fileID: 11400000, guid: eebdf981154cdf24ebb5ff73c97e8eb0, type: 2}
-  _animator: {fileID: 3857953795100348425}
-  _backButton: {fileID: 6055663216621946354}
+  _close: {fileID: 6055663216621946354}
+  _tradeHandler: {fileID: 11400000, guid: eebdf981154cdf24ebb5ff73c97e8eb0, type: 2}
+  _dialogueAnimator: {fileID: 3857953795100348425}
   _nextButton: {fileID: 5185622333885755073}
   _tradeButton: {fileID: 576108011801492129}
   _nextTMP: {fileID: 425341648158317024}
@@ -2073,7 +2072,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0.25141907, y: 0, z: -0.12325287, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3077,7 +3076,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0.25141907, y: 0, z: -0.12325287, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3262,7 +3261,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0.25141907, y: 0, z: -0.12325287, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

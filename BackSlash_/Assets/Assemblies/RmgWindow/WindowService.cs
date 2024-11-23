@@ -18,23 +18,25 @@ namespace RedMoonGames.Window
 
 		private WindowHandler _activeWindow;
 
-		public event Action<WindowHandler> OnHideWindow;
-		public event Action OnShowWindow;
+		public event Action<bool> OnShowWindow;
 		public event Action OnUnpause;
+		public event Action OnPause;
 
 		public void Unpause()
 		{
 			OnUnpause?.Invoke();
 		}
 		
-		public void ShowWindow()
+		public void Pause()
 		{
-			OnShowWindow?.Invoke();
+			OnPause?.Invoke();
 		}
-
-		public void HideWindow(WindowHandler window)
+		
+		public void ShowWindow(bool pause = false)
 		{
-			OnHideWindow?.Invoke(window);
+			bool needPause = pause ? true : false;
+			
+			OnShowWindow?.Invoke(needPause);
 		}
 
 		public TryResult TryOpenWindow(WindowHandler window, WindowModel model = null)
@@ -59,25 +61,24 @@ namespace RedMoonGames.Window
 			}
 
 			openedWindow.SetModel(model);
-			openedWindow.Show();
+			//openedWindow.Show();
 			_activeWindow = window;
 			return TryResult.Successfully;
 		}
 
-		public void CloseWindow(IWindow window)
+		public void CloseWindow(WindowHandler handler)
 		{
-			if (!_createdWindows.ContainsKey(window))
+			if (_createdWindows.TrySearchKeyByValue(handler, out var window))
 			{
-				return;
+				_activeWindow = null;
+				window.Close();
 			}
-
-			window.Close();
 		}
 
 		private IWindow CreateWindow(CachedBehaviour prefab, WindowHandler windowHandler)
 		{
 			var windowGameObject = _diContainer.InstantiatePrefab(prefab, windowsRoot);
-			windowGameObject.SetActive(false);
+			//windowGameObject.SetActive(false);
 
 			if (!windowGameObject.TryGetComponent<IWindow>(out var window))
 			{
@@ -85,7 +86,7 @@ namespace RedMoonGames.Window
 				return null;
 			}
 
-			window.OnWindowShow += WindowShow;
+			//window.OnWindowShow += WindowShow;
 			window.OnWindowClose += WindowClose;
 
 			_createdWindows.Add(window, windowHandler);
@@ -99,7 +100,7 @@ namespace RedMoonGames.Window
 				return;
 			}
 
-			window.OnWindowShow -= WindowShow;
+			//window.OnWindowShow -= WindowShow;
 			window.OnWindowClose -= WindowClose;
 
 			_createdWindows.Remove(window);
@@ -136,11 +137,11 @@ namespace RedMoonGames.Window
 			RemoveWindow(window);
 		}
 
-		public IWindow ReturnIWindow(WindowHandler window)
+		public IWindow ReturnIWindow(WindowHandler handler)
 		{
-			if (_createdWindows.TrySearchKeyByValue(window, out var openedWindow))
+			if (_createdWindows.TrySearchKeyByValue(handler, out var window))
 			{
-				return openedWindow;
+				return window;
 			}
 			return null;
 		}
@@ -154,7 +155,7 @@ namespace RedMoonGames.Window
 			}
 		}
 		
-		public WindowHandler GetActiveWindow()
+		public WindowHandler GetActiveWindow()	// remove from main controller
 		{
 			return _activeWindow;
 		}

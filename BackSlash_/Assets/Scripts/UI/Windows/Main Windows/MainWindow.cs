@@ -6,6 +6,8 @@ namespace RedMoonGames.Window
 {
 	public class MainWindow : GameBasicWindow
 	{
+		[SerializeField] protected float _showDelay = 0.3f;
+		
 		[Header("Handlers")]
 		[SerializeField] private WindowHandler _settingsHandler;
 
@@ -22,21 +24,20 @@ namespace RedMoonGames.Window
 			_menuController = menuController;
 		}
 
-		private void Awake()
+		private void OnEnable()
 		{
-			_windowAnimator.OnWindowDelayShowed += _start.Select;
+			_animator.OnShowed += _start.Select;
 
 			_start.onClick.AddListener(StartButton);
 			_settings.onClick.AddListener(SettingsButton);
 			_exit.onClick.AddListener(ExitButton);
 			
-			_windowAnimator.ShowWindowWithDelay(_canvasGroup, _showDelay);
+			_animator.ShowWindow(_canvasGroup, _showDelay);
 		}
 		
-		private void OnDestroy()
+		private void OnDisable()
 		{
-			_windowService.OnHideWindow -= DisablePause;
-			_windowAnimator.OnWindowDelayShowed -= _start.Select;
+			_animator.OnShowed -= _start.Select;
 
 			_start.onClick.RemoveListener(StartButton);
 			_settings.onClick.RemoveListener(SettingsButton);
@@ -44,7 +45,7 @@ namespace RedMoonGames.Window
 		}
 		
 		private void StartButton() { _menuController.ChangeScene("FirstLocation"); }
-		private void SettingsButton() { OpenWindow(_settingsHandler); }
+		private void SettingsButton() { ReplaceWindow(this, _settingsHandler); }
 		private void ExitButton() { Application.Quit(); }
 	}
 }
