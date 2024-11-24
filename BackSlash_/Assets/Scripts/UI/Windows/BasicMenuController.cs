@@ -8,22 +8,17 @@ public class BasicMenuController : MonoBehaviour
 	protected SceneTransition _sceneTransition;
 	protected WindowAnimator _animator;
 	protected WindowService _windowService;
-	protected UIActionsController _pauseInputs;
+	protected UiInputsController _pauseInputs;
 
 	[Inject]
-	protected void Construct(SceneTransition sceneTransition, WindowAnimator windowAnimation, WindowService windowService, UIActionsController actionsController)
+	protected void Construct(SceneTransition sceneTransition, WindowAnimator windowAnimation, WindowService windowService, UiInputsController actionsController)
 	{
 		_windowService = windowService;
 		_animator = windowAnimation;
 		_pauseInputs = actionsController;
 		_sceneTransition = sceneTransition;
 	}
-
-	protected void CloseWindow(WindowHandler window)
-	{
-		_windowService.ReturnIWindow(window).Close();
-	}
-
+	
 	protected void SceneTransitionHide()
 	{
 		_sceneTransition.gameObject.SetActive(false);

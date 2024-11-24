@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace RedMoonGames.Window
 {
-	public class GameplayWindow : GameBasicWindow
+	public class GameplayWindow : BasicWindow
 	{
 		[Header("Handlers")]
 		[SerializeField] private WindowHandler _settingsHandler;
@@ -11,19 +11,22 @@ namespace RedMoonGames.Window
 		[Header("Navigation Keys")]
 		[SerializeField] private Button _back;
 
-		private void OnEnable()
+		protected override void OnEnable()
 		{
+			base.OnEnable();
+			
 			_uiInputs.OnBackKeyPressed += BackButton;
 			_back.onClick.AddListener(BackButton);
 		}
 
-		private void BackButton() { ReplaceWindow(this, _settingsHandler); }
-
-		private void OnDisable()
+		protected override void OnDisable()
 		{
+			base.OnDisable();
+			
 			_uiInputs.OnBackKeyPressed -= BackButton;
-
 			_back.onClick.RemoveListener(BackButton);
 		}
+		
+		private void BackButton() { ReplaceWindow(this, _settingsHandler); }
 	}
 }

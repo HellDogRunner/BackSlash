@@ -8,7 +8,7 @@ using Zenject;
 namespace RedMoonGames.Window
 {
 	[RequireComponent(typeof(CanvasGroup))]
-	public class PlayerMenuWindow : GameBasicWindow
+	public class PlayerMenuWindow : BasicWindow
 	{
 		[SerializeField] private RectTransform _tabsRoot;
 
@@ -45,8 +45,10 @@ namespace RedMoonGames.Window
 			_menuController = menuController;
 		}
 
-		private void OnEnable()
+		protected override void OnEnable()
 		{
+			base.OnDisable();
+			
 			_menuController.OpenTab += OpenTab;
 			_uiInputs.OnMenuSwitchTabAction += SwitchTab;
 			_uiInputs.OnMenuTabKeyPressed += OpenTab;
@@ -73,8 +75,10 @@ namespace RedMoonGames.Window
 			_animations.Add(_mapButton.GetComponent<MenuTabAnimationService>());
 		}
 
-		private void OnDisable()
+		protected override void OnDisable()
 		{
+			base.OnDisable();
+			
 			_menuController.OpenTab -= OpenTab;
 			_uiInputs.OnMenuSwitchTabAction -= SwitchTab;
 			_uiInputs.OnMenuTabKeyPressed -= OpenTab;

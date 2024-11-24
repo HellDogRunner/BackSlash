@@ -1,3 +1,4 @@
+using RedMoonGames.Basics;
 using RedMoonGames.Window;
 using Scripts.Player;
 using Scripts.UI.Dialogue;
@@ -5,7 +6,6 @@ using Scripts.Weapon;
 using System;
 using System.Collections.Generic;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 using static PlayerStates;
@@ -16,29 +16,28 @@ public class InteractionSystem : MonoBehaviour
 	[Space]
 	[SerializeField] private GameObject _playerObject;
 
-	public List<GameObject> _windows = new List<GameObject>();
 	private QuestDatabase _quest;
 	private NpcInteractionService _npc;
 
+	private List<IWindow> _openedWindows = new List<IWindow>();
 	private bool _canTrade;
+	private GameObject _disabledWindow;
 
 	private WeaponController _weaponController;
-	private UIActionsController _uiActions;
+	private UiInputsController _uiActions;
 	private InteractionAnimator _animator;
-	private WindowService _windowService;
 	private PlayerStateMachine _playerSM;
 
 	public event Action<QuestDatabase> SetQuest;
 	public event Action OnResetDialogue;
 	public event Action<string, bool> OnStartInteract;
-
+	
 	[Inject]
-	private void Construct(PlayerStateMachine playerState, WeaponController weaponController, WindowService windowService, InteractionAnimator animator, UIActionsController uIActions)
+	private void Construct(PlayerStateMachine playerState, WeaponController weaponController, InteractionAnimator animator, UiInputsController uIActions)
 	{
 		_animator = animator;
 		_uiActions = uIActions;
 		_playerSM = playerState;
-		_windowService = windowService;
 		_weaponController = weaponController;
 	}
 
@@ -46,14 +45,16 @@ public class InteractionSystem : MonoBehaviour
 	{
 		_uiActions.OnEnterKeyPressed += TryStartInteract;
 		
-		_playerSM.OnChangeState += ActivateWindows;
+		_playerSM.OnInteract += ActivateWindow;
+		_playerSM.OnExplore += CloseAllWindows;
 	}
 
 	private void OnDisable()
 	{
 		_uiActions.OnEnterKeyPressed -= TryStartInteract;
 		
-		_playerSM.OnChangeState -= ActivateWindows;
+		_playerSM.OnInteract -= ActivateWindow;
+		_playerSM.OnExplore -= CloseAllWindows;
 	}
 
 	public void SetInformation(QuestDatabase quest, bool canTrade, GameObject npc)
@@ -92,14 +93,10 @@ public class InteractionSystem : MonoBehaviour
 		}
 	}
 
-	public void SetExplore()
+	public void StopInteract()
 	{	
-		if (_playerSM.State != EState.Explore)
-		{
-			_playerSM.Explore();
-			_animator.ShowTalk();
-			SwitchCamera(null);
-		}
+		_animator.ShowTalk();
+		SwitchCamera(null);
 	}
 	
 	private void SwitchCamera(Transform lookAt)
@@ -120,22 +117,40 @@ public class InteractionSystem : MonoBehaviour
 		return distance < _npc.Distance;
 	}
 	
-	private void ActivateWindows(EState state) 
+	private void ActivateWindow() 
 	{
-		if (state == EState.Explore)
+		if (_disabledWindow != null)
 		{
-			_windows.Clear();
-			return;
+			_disabledWindow.SetActive(true);
+			_disabledWindow = null;
 		}
-		
-		if (state == EState.Interact || state == EState.Pause)
+	}
+	
+	public void TryAddWindow(IWindow window)
+	{
+		if (!_openedWindows.Contains(window)) _openedWindows.Add(window);
+	}
+	
+	public void TryRemoveWindow(IWindow window)
+	{
+		if (_openedWindows.Contains(window)) _openedWindows.Remove(window);
+	}
+	
+	public void CloseAllWindows()
+	{
+		foreach (var iwindow in _openedWindows)
 		{
-			bool activate = state == EState.Interact ? true : false;
-			
-			foreach (var window in _windows)
-			{
-				window.SetActive(activate);
-			}
+			// var window = iwindow as BasicInteractionWindow;
+			// window.gameObject.SetActive(true);
+			// window.HideWindow();
+			iwindow.Close();
 		}
+		_openedWindows.Clear();
+	}
+	
+	public void DisableWindow(GameObject window) 
+	{
+		_disabledWindow = window;
+		window.SetActive(false);
 	}
 }

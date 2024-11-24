@@ -5,11 +5,11 @@ namespace Scripts.Player
 {
     public class StartSceneInstaller : MonoInstaller
     {
-        [SerializeField] private UIActionsController _actionsController;
+        [SerializeField] private UiInputsController _actionsController;
 
         public override void InstallBindings()
         {
-            Container.Bind<UIActionsController>().FromInstance(_actionsController).AsSingle();
+            Container.Bind<UiInputsController>().FromInstance(_actionsController).AsSingle();
         }
     }
 }

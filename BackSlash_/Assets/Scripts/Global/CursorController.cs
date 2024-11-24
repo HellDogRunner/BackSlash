@@ -6,9 +6,9 @@ using static PlayerStates;
 public class CursorController : MonoBehaviour
 {
 	private PlayerStateMachine _playerState;
-	private UIActionsController _uiInputs;
+	private UiInputsController _uiInputs;
 
-	[Inject] private void Construct(UIActionsController uiInputs, PlayerStateMachine playerState) 
+	[Inject] private void Construct(UiInputsController uiInputs, PlayerStateMachine playerState) 
 	{
 		_uiInputs = uiInputs;
 		_playerState = playerState;

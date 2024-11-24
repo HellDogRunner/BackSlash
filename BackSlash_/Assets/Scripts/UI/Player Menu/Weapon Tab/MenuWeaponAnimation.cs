@@ -19,10 +19,10 @@ public class MenuWeaponAnimation : MonoBehaviour
 
     private Tween _weaponTween;
 
-    private UIActionsController _pauseInputs;
+    private UiInputsController _pauseInputs;
 
     [Inject]
-    private void Construct(UIActionsController pauseInputs)
+    private void Construct(UiInputsController pauseInputs)
     {
         _pauseInputs = pauseInputs;
     }

@@ -1556,7 +1556,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -1631,15 +1631,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c9459b8a2e364d4eab443a069cedb42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _close: {fileID: 6055663216621946354}
+  _close: {fileID: 0}
   _tradeHandler: {fileID: 11400000, guid: eebdf981154cdf24ebb5ff73c97e8eb0, type: 2}
   _dialogueAnimator: {fileID: 3857953795100348425}
   _nextButton: {fileID: 5185622333885755073}
   _tradeButton: {fileID: 576108011801492129}
-  _nextTMP: {fileID: 425341648158317024}
+  _leaveButton: {fileID: 6055663216621946354}
+  _nextButtonTMP: {fileID: 425341648158317024}
   _nextText: NEXT PHRASE
   _skipText: SKIP
-  _leaveText: LEAVE
   _positiveButton: {fileID: 7141027398260100536}
   _negativeButton: {fileID: 4486603218425462622}
   _positiveAnswer: {fileID: 330490611477740326}
@@ -1719,7 +1719,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 100}
+  m_SizeDelta: {x: 650, y: 100}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &8229352604963615714
 CanvasRenderer:

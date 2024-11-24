@@ -4,7 +4,7 @@ using Zenject;
 
 namespace RedMoonGames.Window
 {
-	public class MainWindow : GameBasicWindow
+	public class MainWindow : BasicWindow
 	{
 		[SerializeField] protected float _showDelay = 0.3f;
 		
@@ -24,8 +24,10 @@ namespace RedMoonGames.Window
 			_menuController = menuController;
 		}
 
-		private void OnEnable()
+		protected override void OnEnable()
 		{
+			base.OnEnable();
+			
 			_animator.OnShowed += _start.Select;
 
 			_start.onClick.AddListener(StartButton);
@@ -35,8 +37,10 @@ namespace RedMoonGames.Window
 			_animator.ShowWindow(_canvasGroup, _showDelay);
 		}
 		
-		private void OnDisable()
+		protected override void OnDisable()
 		{
+			base.OnDisable();
+			
 			_animator.OnShowed -= _start.Select;
 
 			_start.onClick.RemoveListener(StartButton);

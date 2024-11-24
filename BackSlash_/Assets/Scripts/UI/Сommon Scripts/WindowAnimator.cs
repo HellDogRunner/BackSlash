@@ -38,5 +38,10 @@ namespace RedMoonGames.Window
 		{
 			return _window.IsActive() ? true : false;
 		}
+		
+		private void OnDestroy()
+		{
+			KillTween(_window);
+		}
 	}
 }

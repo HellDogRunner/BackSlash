@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace RedMoonGames.Window
 {
-	public class AudioWindow : GameBasicWindow
+	public class AudioWindow : BasicWindow
 	{
 		[Header("Handlers")]
 		[SerializeField] private WindowHandler _settingsHandler;
@@ -24,8 +24,10 @@ namespace RedMoonGames.Window
 		[Header("Navigation Keys")]
 		[SerializeField] private Button _back;
 
-		private void OnEnable()
+		protected override void OnEnable()
 		{
+			base.OnEnable();
+			
 			_masterVolume.Select();
 
 			_uiInputs.OnBackKeyPressed += BackButton;
@@ -38,10 +40,10 @@ namespace RedMoonGames.Window
 			_back.onClick.AddListener(BackButton);
 		}
 
-		private void BackButton() { ReplaceWindow(this, _settingsHandler); }
-
-		private void OnDisable()
+		protected override void OnDisable()
 		{
+			base.OnDisable();
+			
 			_uiInputs.OnBackKeyPressed -= BackButton;
 
 			_masterVolume.onValueChanged.RemoveListener(delegate { ChangeSliderValue(_masterVolume, _masterValue, 5); });
@@ -51,5 +53,7 @@ namespace RedMoonGames.Window
 
 			_back.onClick.RemoveListener(BackButton);
 		}
+		
+		private void BackButton() { ReplaceWindow(this, _settingsHandler); }
 	}
 }

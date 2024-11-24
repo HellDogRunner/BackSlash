@@ -4,28 +4,30 @@ using UnityEngine.UI;
 
 namespace RedMoonGames.Window
 {
-    public class ManagementWindow : GameBasicWindow
-    {
-        [Header("Handlers")]
-        [SerializeField] private WindowHandler _settingsHandler;
+	public class ManagementWindow : BasicWindow
+	{
+		[Header("Handlers")]
+		[SerializeField] private WindowHandler _settingsHandler;
 
-        [Header("Navigation Keys")]
-        [SerializeField] private Button _back;
+		[Header("Navigation Keys")]
+		[SerializeField] private Button _back;
 
-        private void OnEnable()
-        {
-            _uiInputs.OnBackKeyPressed += BackButton;
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			
+			_uiInputs.OnBackKeyPressed += BackButton;
+			_back.onClick.AddListener(BackButton);
+		}
 
-            _back.onClick.AddListener(BackButton);
-        }
-
-        private void BackButton() { ReplaceWindow(this, _settingsHandler); }
-
-        private void OnDisable()
-        {
-            _uiInputs.OnBackKeyPressed -= BackButton;
-
-            _back.onClick.RemoveListener(BackButton);
-        }
-    }
+		protected override void OnDisable()
+		{
+			base.OnDisable();
+			
+			_uiInputs.OnBackKeyPressed -= BackButton;
+			_back.onClick.RemoveListener(BackButton);
+		}
+		
+		private void BackButton() { ReplaceWindow(this, _settingsHandler); }
+	}
 }

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace RedMoonGames.Window
 {
-	public class VideoWindow : GameBasicWindow
+	public class VideoWindow : BasicWindow
 	{
 		[Header("Handlers")]
 		[SerializeField] private WindowHandler _settingsHandler;
@@ -26,10 +26,15 @@ namespace RedMoonGames.Window
 
 		private GameObject _currentTab;
 
-		private void OnEnable()
+		private void Awake()
 		{
 			_currentTab = _displayTab;
 			_currentTab.SetActive(true);
+		}
+
+		protected override void OnEnable()
+		{
+			base.OnEnable();
 
 			_uiInputs.OnBackKeyPressed += BackButton;
 			_uiInputs.OnSwitchTabPressed += OnTabAction;
@@ -38,6 +43,19 @@ namespace RedMoonGames.Window
 			_graphicsButton.onClick.AddListener(GraphicsButton);
 			_switch.onClick.AddListener(OnTabAction);
 			_back.onClick.AddListener(BackButton);
+		}
+		
+		protected override void OnDisable()
+		{
+			base.OnDisable();
+			
+			_uiInputs.OnBackKeyPressed -= BackButton;
+			_uiInputs.OnSwitchTabPressed -= OnTabAction;
+
+			_displayButton.onClick.RemoveListener(DisplayButton);
+			_graphicsButton.onClick.RemoveListener(GraphicsButton);
+			_switch.onClick.RemoveListener(OnTabAction);
+			_back.onClick.RemoveListener(BackButton);
 		}
 
 		private void DisplayButton() { SwitchTab(_displayTab); }
@@ -69,17 +87,6 @@ namespace RedMoonGames.Window
 				_currentTab = tab; 
 				_currentTab.SetActive(true);
 			}
-		}
-
-		private void OnDisable()
-		{
-			_uiInputs.OnBackKeyPressed -= BackButton;
-			_uiInputs.OnSwitchTabPressed -= OnTabAction;
-
-			_displayButton.onClick.RemoveListener(DisplayButton);
-			_graphicsButton.onClick.RemoveListener(GraphicsButton);
-			_switch.onClick.RemoveListener(OnTabAction);
-			_back.onClick.RemoveListener(BackButton);
 		}
 	}
 }

@@ -4,7 +4,7 @@ using Zenject;
 
 namespace RedMoonGames.Window
 {
-	public class PauseWindow : GameBasicWindow
+	public class PauseWindow : BasicWindow
 	{
 		[Header("Handlers")]
 		[SerializeField] private WindowHandler _settingsHandler;
@@ -22,10 +22,15 @@ namespace RedMoonGames.Window
 			_menuController = menuController;
 		}
 
-		private void OnEnable()
+		private void Awake()
 		{
 			_continue.Select();
+		}
 
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			
 			_uiInputs.OnBackKeyPressed += Hide;
 
 			_continue.onClick.AddListener(Hide);
@@ -33,8 +38,10 @@ namespace RedMoonGames.Window
 			_exit.onClick.AddListener(ExitButton);
 		}
 
-		private void OnDisable()
+		protected override void OnDisable()
 		{ 
+			base.OnDisable();
+			
 			_uiInputs.OnBackKeyPressed -= Hide;
 
 			_continue.onClick.RemoveListener(Hide);

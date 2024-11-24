@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace RedMoonGames.Window
 {
-	public class SettingsWindow : GameBasicWindow
+	public class SettingsWindow : BasicWindow
 	{
 		[Header("Handlers")]
 		[SerializeField] private WindowHandler _pauseHandler;
@@ -21,10 +21,15 @@ namespace RedMoonGames.Window
 		[Header("Navigation Keys")]
 		[SerializeField] private Button _back;
 
-		private void OnEnable()
+		private void Awake()
 		{
 			_gameplay.Select();
+		}
 
+		protected override void OnEnable()
+		{
+			base.OnEnable();
+			
 			_uiInputs.OnBackKeyPressed += BackButton;
 
 			_gameplay.onClick.AddListener(GameplayButton);
@@ -33,15 +38,11 @@ namespace RedMoonGames.Window
 			_management.onClick.AddListener(ManagementButton);
 			_back.onClick.AddListener(BackButton);
 		}
-
-		private void GameplayButton() { ReplaceWindow(this, _gameplayHandler); }
-		private void AudioButton() { ReplaceWindow(this, _audioHandler); }
-		private void VideoButton() { ReplaceWindow(this, _videoHandler); }
-		private void ManagementButton() { ReplaceWindow(this, _managementHandler); }
-		private void BackButton() { ReplaceWindow(this, _pauseHandler); }
-
-		private void OnDisable()
+		
+		protected override void OnDisable()
 		{
+			base.OnDisable();
+			
 			_uiInputs.OnBackKeyPressed -= BackButton;
 
 			_gameplay.onClick.RemoveListener(GameplayButton);
@@ -50,5 +51,11 @@ namespace RedMoonGames.Window
 			_management.onClick.RemoveListener(ManagementButton);
 			_back.onClick.RemoveListener(BackButton);
 		}
+
+		private void GameplayButton() { ReplaceWindow(this, _gameplayHandler); }
+		private void AudioButton() { ReplaceWindow(this, _audioHandler); }
+		private void VideoButton() { ReplaceWindow(this, _videoHandler); }
+		private void ManagementButton() { ReplaceWindow(this, _managementHandler); }
+		private void BackButton() { ReplaceWindow(this, _pauseHandler); }
 	}
 }

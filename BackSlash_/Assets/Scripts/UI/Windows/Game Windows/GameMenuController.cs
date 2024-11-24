@@ -92,12 +92,12 @@ namespace RedMoonGames.Window
 		
 		private void SetExplore()
 		{	
-			_playerState.Explore();
+			if (_playerState.State != EState.Explore) _playerState.Explore();
 		}
 
 		private void SetPause()
 		{
-			_playerState.Pause();
+			if (_playerState.State != EState.Pause) _playerState.Pause();
 		}
 
 		private void DisableGameInputs()

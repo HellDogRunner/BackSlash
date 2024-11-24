@@ -309,15 +309,6 @@
             "id": "e1a9db05-0596-4ae7-a1fb-5908f55e3db7",
             "actions": [
                 {
-                    "name": "Back",
-                    "type": "Button",
-                    "id": "c9e88120-dd0d-497e-ad99-4a578ae80bee",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "RightClick",
                     "type": "Button",
                     "id": "0092c06f-5507-4247-bcd5-4fca55c64a46",
@@ -366,6 +357,15 @@
                     "name": "Escape",
                     "type": "Button",
                     "id": "76812fcd-86fd-420c-af6d-47982add24f4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Back",
+                    "type": "Button",
+                    "id": "c9e88120-dd0d-497e-ad99-4a578ae80bee",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -622,6 +622,17 @@
                     "name": "",
                     "id": "2e1aaf8e-1e49-4375-a6df-97558376886a",
                     "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6630693e-dbd1-47dc-984d-a02499afe43d",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
