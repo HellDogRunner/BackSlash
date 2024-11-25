@@ -24,8 +24,8 @@ namespace RedMoonGames.Window
 		{
 			_canvasGroup = GetComponent<CanvasGroup>();
 			
-			_animator = animator;
 			_audioController = audioController;
+			_animator = animator;
 			_uiInputs = uiInputs;
 			_windowService = windowService;
 		}
@@ -33,9 +33,9 @@ namespace RedMoonGames.Window
 		protected virtual void OnEnable()
 		{
 			_windowService.OnShowWindow += Show;
+			_uiInputs.OnEscapeKeyPressed += Hide;
 			_animator.OnShowed += Showed;
 			_animator.OnHided += TryClose;
-			_uiInputs.OnEscapeKeyPressed += Hide;
 			
 			if (_close) _close.onClick.AddListener(Hide);	
 		}
@@ -43,9 +43,9 @@ namespace RedMoonGames.Window
 		protected virtual void OnDisable()
 		{
 			_windowService.OnShowWindow -= Show;
+			_uiInputs.OnEscapeKeyPressed -= Hide;
 			_animator.OnShowed -= Showed;
 			_animator.OnHided -= TryClose;
-			_uiInputs.OnEscapeKeyPressed -= Hide;
 			
 			if (_close) _close.onClick.RemoveListener(Hide);	
 		}

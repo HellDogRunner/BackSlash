@@ -4,64 +4,41 @@ namespace RedMoonGames.Window
 {
 	public class MainMenuController : BasicMenuController
 	{
-		[SerializeField] private WindowHandler _startWindow;
-		[SerializeField] private WindowHandler _mainWindow;
+		[SerializeField] private WindowHandler _startHandler;
+		[SerializeField] private WindowHandler _mainHandler;
 
 		private void Awake()
 		{
 			_sceneTransition.gameObject.SetActive(true);
 
-			_pauseInputs.enabled = true;
+			_uiInputs.enabled = true;
 
 			UnpauseGame();
-			ShowStartWindow();
+			_windowService.TryOpenWindow(_startHandler);
 		}
 
 		private void OnEnable()
 		{
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
-			_pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
-			_animator.OnShowed += SwitchEvents;
-			//_animator.OnHidingEnd += CloseWindow;
+			_uiInputs.OnEscapeKeyPressed += OpenStartWindow;
 		}
 
 		private void OnDisable()
 		{
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
-			_pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
-			_pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
-			_animator.OnShowed -= SwitchEvents;
-			//_animator.OnHidingEnd -= CloseWindow;
+			_uiInputs.OnEscapeKeyPressed -= OpenStartWindow;
 		}
 
-		private void ShowStartWindow()
+		private void OpenStartWindow()
 		{
-			_windowService.CloseActiveWindow();
-			_windowService.TryOpenWindow(_startWindow);
-		}
-
-		private void ShowMainWindow()
-		{
-			_windowService.CloseActiveWindow();
-			_windowService.TryOpenWindow(_mainWindow);
-		}
-
-		private void SwitchEvents()
-		{
-			if (_windowService.GetActiveWindow() == _startWindow)
+			var window = _windowService.GetWindowByHandler(_mainHandler);
+			if (window == null)
 			{
-				_pauseInputs.OnEscapeKeyPressed -= ShowStartWindow;
-				_pauseInputs.OnAnyKeyPressed += ShowMainWindow;
-			}
-			
-			if (_windowService.GetActiveWindow() == _mainWindow)
-			{
-				_pauseInputs.OnEscapeKeyPressed += ShowStartWindow;
-				_pauseInputs.OnAnyKeyPressed -= ShowMainWindow;
+				_windowService.TryOpenWindow(_mainHandler);
 			}
 		}
 
-		private void UnpauseGame()	// Remove from this script
+		private void UnpauseGame()
 		{
 			Cursor.lockState = CursorLockMode.Confined;
 			Cursor.visible = true;

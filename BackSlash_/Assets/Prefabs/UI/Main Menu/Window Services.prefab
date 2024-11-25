@@ -61,9 +61,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad60252f16a2824cb2a7556c2840935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _startWindow: {fileID: 11400000, guid: a895f7e52c720bb4aa5b3f561a6765b3, type: 2}
-  _mainWindow: {fileID: 11400000, guid: 2c745b6d1b5c003458675efd3866d72d, type: 2}
-  _inputDelay: 0.2
+  _startHandler: {fileID: 11400000, guid: a895f7e52c720bb4aa5b3f561a6765b3, type: 2}
+  _mainHandler: {fileID: 11400000, guid: 2c745b6d1b5c003458675efd3866d72d, type: 2}
 --- !u!114 &3508688594615002127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,7 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eabab924b9e9c6d48bd00d57387c4dcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fadeDuration: 0.2
+  _fadeDuration: 0
 --- !u!114 &2190777401817641778
 MonoBehaviour:
   m_ObjectHideFlags: 0

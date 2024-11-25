@@ -45,8 +45,8 @@ namespace RedMoonGames.Window
 			
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 			
-			_pauseInputs.OnEscapeKeyPressed += OpenPause;
-			_pauseInputs.OnMenuTabKeyPressed += OpenMenu;
+			_uiInputs.OnEscapeKeyPressed += OpenPause;
+			_uiInputs.OnMenuTabKeyPressed += OpenMenu;
 			_windowService.OnUnpause += SetExplore;
 			_windowService.OnPause += SetPause;
 		}
@@ -59,11 +59,10 @@ namespace RedMoonGames.Window
 
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
-			_pauseInputs.OnEscapeKeyPressed -= OpenPause;
-			_pauseInputs.OnMenuTabKeyPressed -= OpenMenu;
+			_uiInputs.OnEscapeKeyPressed -= OpenPause;
+			_uiInputs.OnMenuTabKeyPressed -= OpenMenu;
 			_windowService.OnUnpause -= SetExplore;
-			_windowService.OnPause -= SetPause;
-			
+			_windowService.OnPause -= SetPause;		
 		}
 
 		private void OpenPause()
@@ -113,12 +112,12 @@ namespace RedMoonGames.Window
 		IEnumerator EnableInputsDelay()
 		{
 			_gameInputs.enabled = false;
-			_pauseInputs.enabled = false;
+			_uiInputs.enabled = false;
 
 			yield return new WaitForSeconds(_inputsDelay);
 
 			_gameInputs.enabled = true;
-			_pauseInputs.enabled = true;
+			_uiInputs.enabled = true;
 		}
 	}
 }

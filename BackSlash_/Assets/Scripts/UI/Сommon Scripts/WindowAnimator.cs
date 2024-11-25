@@ -10,7 +10,7 @@ namespace RedMoonGames.Window
 		[SerializeField] private float _fadeDuration = 0.1f;
 
 		private Tween _window;
-
+ 
 		public event Action OnHided;
 		public event Action OnShowed;
 

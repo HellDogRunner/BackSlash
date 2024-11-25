@@ -8,14 +8,14 @@ public class BasicMenuController : MonoBehaviour
 	protected SceneTransition _sceneTransition;
 	protected WindowAnimator _animator;
 	protected WindowService _windowService;
-	protected UiInputsController _pauseInputs;
+	protected UiInputsController _uiInputs;
 
 	[Inject]
-	protected void Construct(SceneTransition sceneTransition, WindowAnimator windowAnimation, WindowService windowService, UiInputsController actionsController)
+	protected void Construct(SceneTransition sceneTransition, WindowAnimator windowAnimation, WindowService windowService, UiInputsController uiInputs)
 	{
 		_windowService = windowService;
 		_animator = windowAnimation;
-		_pauseInputs = actionsController;
+		_uiInputs = uiInputs;
 		_sceneTransition = sceneTransition;
 	}
 	
@@ -26,17 +26,8 @@ public class BasicMenuController : MonoBehaviour
 
 	public void ChangeScene(string sceneName)
 	{
-		PrepareToChangeScene();
+		_uiInputs.enabled = false;
 		_sceneTransition.gameObject.SetActive(true);
 		_sceneTransition.SwichToScene(sceneName);
-	}
-
-	protected void PrepareToChangeScene()
-	{
-		_pauseInputs.enabled = false;
-
-		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = false;
-		Time.timeScale = 0;
 	}
 }

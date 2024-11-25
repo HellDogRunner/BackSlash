@@ -16,8 +16,6 @@ namespace RedMoonGames.Window
 		
 		protected readonly Dictionary<IWindow, WindowHandler> _createdWindows = new Dictionary<IWindow, WindowHandler>();
 
-		private WindowHandler _activeWindow;
-
 		public event Action<bool, float> OnShowWindow;
 		public event Action OnUnpause;
 		public event Action OnPause;
@@ -59,7 +57,6 @@ namespace RedMoonGames.Window
 			}
 
 			openedWindow.SetModel(model);
-			_activeWindow = window;
 			return TryResult.Successfully;
 		}
 
@@ -67,7 +64,6 @@ namespace RedMoonGames.Window
 		{
 			if (_createdWindows.TrySearchKeyByValue(handler, out var window))
 			{
-				_activeWindow = null;
 				window.Close();
 			}
 		}
@@ -108,17 +104,6 @@ namespace RedMoonGames.Window
 			Destroy(windowCachedBehaviour.gameObject);
 		}
 
-		private void WindowShow(IWindow window)
-		{
-			var windowCachedBehaviour = window as CachedBehaviour;
-			if (windowCachedBehaviour == null)
-			{
-				return;
-			}
-
-			windowCachedBehaviour.gameObject.SetActive(true);
-		}
-
 		private void WindowClose(IWindow window, WindowCloseContext closeContext)
 		{
 			var windowCachedBehaviour = window as CachedBehaviour;
@@ -138,20 +123,6 @@ namespace RedMoonGames.Window
 				return window;
 			}
 			return null;
-		}
-
-		public void CloseActiveWindow()
-		{
-			if (_createdWindows.TrySearchKeyByValue(_activeWindow, out var openedWindow))
-			{
-				_activeWindow = null;
-				openedWindow.Close();
-			}
-		}
-		
-		public WindowHandler GetActiveWindow()	// remove from main controller
-		{
-			return _activeWindow;
 		}
 	}
 }

@@ -25,24 +25,21 @@ namespace RedMoonGames.Window
 		}
 
 		protected override void OnEnable()
-		{
+		{	
 			base.OnEnable();
 			
-			_animator.OnShowed += _start.Select;
-
+			_uiInputs.OnEscapeKeyPressed -= Hide;
+			
+			_start.Select();
 			_start.onClick.AddListener(StartButton);
 			_settings.onClick.AddListener(SettingsButton);
 			_exit.onClick.AddListener(ExitButton);
-			
-			_animator.ShowWindow(_canvasGroup, _showDelay);
 		}
 		
 		protected override void OnDisable()
-		{
+		{	
 			base.OnDisable();
 			
-			_animator.OnShowed -= _start.Select;
-
 			_start.onClick.RemoveListener(StartButton);
 			_settings.onClick.RemoveListener(SettingsButton);
 			_exit.onClick.RemoveListener(ExitButton);

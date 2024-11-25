@@ -1,4 +1,3 @@
-using RedMoonGames.Basics;
 using RedMoonGames.Window;
 using Scripts.Player;
 using Scripts.UI.Dialogue;
@@ -57,11 +56,11 @@ public class InteractionSystem : MonoBehaviour
 		_playerSM.OnExplore -= CloseAllWindows;
 	}
 
-	public void SetInformation(QuestDatabase quest, bool canTrade, GameObject npc)
+	public void SetInformation(QuestDatabase quest, NpcInteractionService npc)
 	{
 		_quest = quest;
-		_npc = npc.GetComponent<NpcInteractionService>();
-		_canTrade = canTrade;
+		_npc = npc;
+		_canTrade = npc.CanTrade;
 
 		SetQuest?.Invoke(_quest);
 		if (_quest != null) _animator.ShowTalk();

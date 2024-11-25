@@ -17,6 +17,7 @@ public class NpcInteractionService : MonoBehaviour
 	private InteractionAnimator _animator;
 	private InteractionSystem _interaction;
 	
+	public bool CanTrade => _canTrade;
 	public string Name => _name;
 	public float Distance => _distance;
 	public Transform LookAt => _dialogueLookAt;
@@ -39,7 +40,7 @@ public class NpcInteractionService : MonoBehaviour
 	{
 		if (other.tag == "CharacterController")
 		{
-			_interaction.SetInformation(_quest, _canTrade, gameObject);
+			_interaction.SetInformation(_quest, this);
 			
 			_animator.SetTransform(transform, _defaultRotation);
 		}
