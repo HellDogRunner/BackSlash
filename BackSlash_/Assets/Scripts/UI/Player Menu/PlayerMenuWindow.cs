@@ -1,5 +1,4 @@
 using Scripts.UI.PlayerMenu;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +6,6 @@ using Zenject;
 
 namespace RedMoonGames.Window
 {
-	[RequireComponent(typeof(CanvasGroup))]
 	public class PlayerMenuWindow : BasicWindow
 	{
 		[SerializeField] private RectTransform _tabsRoot;
@@ -23,9 +21,7 @@ namespace RedMoonGames.Window
 		[Header("Navigation Keys")]
 		[SerializeField] private Button _prevKey;
 		[SerializeField] private Button _nextKey;
-		[SerializeField] private Button _selectButton;
 		[SerializeField] private Button _backButton;
-		[SerializeField] private Button _closeButton;
 
 		[Inject] private DiContainer _diContainer;
 
@@ -45,14 +41,19 @@ namespace RedMoonGames.Window
 			_menuController = menuController;
 		}
 
+		private void Awake()
+		{
+			Show(true, 0);
+		}
+
 		protected override void OnEnable()
 		{
-			base.OnDisable();
+			base.OnEnable();
 			
 			_menuController.OpenTab += OpenTab;
 			_uiInputs.OnMenuSwitchTabAction += SwitchTab;
 			_uiInputs.OnMenuTabKeyPressed += OpenTab;
-			_uiInputs.OnBackKeyPressed += _windowService.Unpause;
+			_uiInputs.OnBackKeyPressed += Hide;
 
 			_weaponButton.onClick.AddListener(WeaponButton);
 			_combosButton.onClick.AddListener(CombosButton);
@@ -62,8 +63,8 @@ namespace RedMoonGames.Window
 			_mapButton.onClick.AddListener(MapButton);
 			_prevKey.onClick.AddListener(PrevButton);
 			_nextKey.onClick.AddListener(NextButton);
-			_backButton.onClick.AddListener(_windowService.Unpause);
-			_closeButton.onClick.AddListener(_windowService.Unpause);
+			_backButton.onClick.AddListener(Hide);
+			_close.onClick.AddListener(Hide);
 
 			_canvasGroup.alpha = 0;
 
@@ -82,7 +83,7 @@ namespace RedMoonGames.Window
 			_menuController.OpenTab -= OpenTab;
 			_uiInputs.OnMenuSwitchTabAction -= SwitchTab;
 			_uiInputs.OnMenuTabKeyPressed -= OpenTab;
-			_uiInputs.OnBackKeyPressed -= _windowService.Unpause;
+			_uiInputs.OnBackKeyPressed -= Hide;
 
 			_weaponButton.onClick.RemoveListener(WeaponButton);
 			_combosButton.onClick.RemoveListener(CombosButton);
@@ -92,8 +93,8 @@ namespace RedMoonGames.Window
 			_mapButton.onClick.RemoveListener(MapButton);
 			_prevKey.onClick.RemoveListener(PrevButton);
 			_nextKey.onClick.RemoveListener(NextButton);
-			_backButton.onClick.RemoveListener(_windowService.Unpause);
-			_closeButton.onClick.RemoveListener(_windowService.Unpause);
+			_backButton.onClick.RemoveListener(Hide);
+			_close.onClick.RemoveListener(Hide);
 		}
 
 		private void WeaponButton() { OpenTab(0); }

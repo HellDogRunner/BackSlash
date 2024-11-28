@@ -9,10 +9,10 @@ namespace RedMoonGames.Window
 
 		private PlayerStateMachine _playerState;
 		private CurrencyService _currencyService;
-		private CurrencyAnimation _currencyAnimation;
+		private CurrencyAnimator _currencyAnimation;
 
 		[Inject]
-		private void Construct(PlayerStateMachine playerState, CurrencyAnimation currencyAnimation, CurrencyService currencyService)
+		private void Construct(PlayerStateMachine playerState, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
 		{
 			_playerState = playerState;
 			_currencyService = currencyService;
@@ -51,10 +51,7 @@ namespace RedMoonGames.Window
 
 		private void SetCurrency()
 		{
-			var value = _currencyService.Currency;
-			var target = _animator.GetCurrency();
-
-			_currencyAnimation.SetCurrency(target, value);
+			_animator.SetCurrency(_currencyService.Currency);
 		}
 
 		private void ChangeCurrency(int endValue)

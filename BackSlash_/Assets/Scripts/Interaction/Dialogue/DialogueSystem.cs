@@ -101,7 +101,7 @@ public class DialogueSystem : MonoBehaviour
 				_dialogueGone = true;
 
 				OnLastPhrase?.Invoke();
-				DialogueEnd();
+				_data.Index = 0;
 				_questSystem.ChangeQuestState(_data, end.State);
 				return;
 			}
@@ -141,11 +141,5 @@ public class DialogueSystem : MonoBehaviour
 	{
 		_waitAnswer = false;
 		_dialogueGone = false;
-	}
-
-	public void DialogueEnd()
-	{
-		_data.Index = 0;
-		//_questSystem.UpdateData(_data);
 	}
 }

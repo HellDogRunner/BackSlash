@@ -65,6 +65,11 @@ public class HUDAnimationService : MonoBehaviour
 			OnComplete(() => cg.gameObject.SetActive(false));
 	}
 
+	public void SetCurrency(int value)
+	{
+		_currency.text = value.ToString();
+	}
+
 	public TMP_Text GetCurrency()
 	{
 		return _currency;

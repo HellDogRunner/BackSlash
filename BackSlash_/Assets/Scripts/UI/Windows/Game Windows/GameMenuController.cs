@@ -75,11 +75,10 @@ namespace RedMoonGames.Window
 
 		private void OpenMenu(int index)
 		{
-			if (_playerState.State != EState.Pause)
+			if (_playerState.State != EState.Pause && _playerState.State != EState.Interact)
 			{
 				TryOpenWindow(_menuWindow);
 			}
-
 			OpenTab?.Invoke(index);
 		}
 		

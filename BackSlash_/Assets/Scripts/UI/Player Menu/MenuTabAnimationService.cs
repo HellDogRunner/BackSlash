@@ -24,7 +24,6 @@ public class MenuTabAnimationService : MonoBehaviour, IPointerEnterHandler, IPoi
 	[SerializeField] private float _selectBGAlpha = 0.05f;
 	[SerializeField] private float _glowAlpha = 0.05f;
 
-	private List<Tween> _tweens = new List<Tween>();
 	private Sequence _select;
 	private Sequence _deselect;
 	private Sequence _enable;
@@ -76,7 +75,6 @@ public class MenuTabAnimationService : MonoBehaviour, IPointerEnterHandler, IPoi
 
 	public void EnableTab()
 	{
-		Debug.Log("Enable " + gameObject.name);
 		_isActive = true;
 
 		_selectCG.alpha = _selectBGAlpha;
@@ -96,7 +94,6 @@ public class MenuTabAnimationService : MonoBehaviour, IPointerEnterHandler, IPoi
 
 	public void DisableTab()
 	{
-		Debug.Log("Disable " + gameObject.name);
 		SetDefault();
 	}
 

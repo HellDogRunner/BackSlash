@@ -139,9 +139,6 @@ public class InteractionSystem : MonoBehaviour
 	{
 		foreach (var iwindow in _openedWindows)
 		{
-			// var window = iwindow as BasicInteractionWindow;
-			// window.gameObject.SetActive(true);
-			// window.HideWindow();
 			iwindow.Close();
 		}
 		_openedWindows.Clear();

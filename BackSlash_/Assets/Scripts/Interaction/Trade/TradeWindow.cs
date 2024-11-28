@@ -40,12 +40,12 @@ namespace RedMoonGames.Window
 		
 		private InventoryDatabase _playerInventory;
 		private TradeSystem _tradeSystem;
-		private CurrencyAnimation _currencyAnimation;
+		private CurrencyAnimator _currencyAnimation;
 		private CurrencyService _currencyService;
 		private DiContainer _diContainer;
 
 		[Inject]
-		private void Construct(TradeSystem tradeSystem, InventoryDatabase playerInventory, DiContainer diContainer, CurrencyService currencyService, CurrencyAnimation currencyAnimation)
+		private void Construct(TradeSystem tradeSystem, InventoryDatabase playerInventory, DiContainer diContainer, CurrencyService currencyService, CurrencyAnimator currencyAnimation)
 		{
 			_tradeSystem = tradeSystem;
 			_playerInventory = playerInventory;
@@ -99,7 +99,7 @@ namespace RedMoonGames.Window
 	
 		private void SetCurrency()
 		{
-			_currencyAnimation.SetCurrency(_currency, _currencyService.Currency);
+			_currency.text = _currencyService.Currency.ToString();
 		}
 
 		private void ChangeCurrency(int endValue)
