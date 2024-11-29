@@ -111,7 +111,7 @@ namespace RedMoonGames.Window
 		{
 			foreach (var item in _tradeSystem.GetItems())
 			{
-				bool bought = _playerInventory.GetItemTypeModel(item.Item) is not null ? true : false;
+				bool bought = _playerInventory.GetModelByItem(item.Item) is not null ? true : false;
 				
 				var product = _diContainer.InstantiatePrefabForComponent<Product>(_productPrefab, GetRoot(item.Type));
 

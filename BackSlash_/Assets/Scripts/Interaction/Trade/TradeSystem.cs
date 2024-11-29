@@ -26,7 +26,7 @@ public class TradeSystem : MonoBehaviour
 	{
 		foreach (var item in _traderInventory.GetData())
 		{
-			if (_playerInventory.GetItemTypeModel(item.Item) != null) continue;
+			if (_playerInventory.GetModelByItem(item.Item) != null) continue;
 
 			_models.Add(item);
 		}

@@ -58,7 +58,7 @@ public class Product : MonoBehaviour, ISelectHandler, IPointerEnterHandler, IDes
 
 	public void TryBuyProduct()
 	{
-		if (_playerInventory.GetItemTypeModel(_item) != null)
+		if (_playerInventory.GetModelByItem(_item) != null)
 		{
 			_animator.Bought();
 			return;

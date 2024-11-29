@@ -14,12 +14,12 @@ namespace Scripts.Inventory
 			_data.Add(item);
 		}
 
-		public InventoryModel GetItemTypeModel(EItemType itemType)
+		public InventoryModel GetModelByType(EItemType itemType)
 		{
 			return _data.GetBy(itemModel => itemModel.Type == itemType);
 		}
 
-		public InventoryModel GetItemTypeModel(Item item)
+		public InventoryModel GetModelByItem(Item item)
 		{
 			return _data.GetBy(itemModel => itemModel.Item == item);
 		}
