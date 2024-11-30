@@ -1,6 +1,7 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Scripts.Menu
 {
@@ -12,41 +13,35 @@ namespace Scripts.Menu
 		
 		[Header("Settings")]
 		[SerializeField] private float duration;
+		[SerializeField] private float delay;
+		[Space]
+		[SerializeField] private Vector3 startScale = new Vector3(0.9f, 0.9f, 0.9f);
 		
-		private PlayerMenu menu;
-		
-		private Tween fade;
-		private Tween follow;
+		private Sequence show;
 
 		private void Awake()
 		{
-			cg.alpha = 0;
-		}
-
-		public void SetOnAwake(PlayerMenu menu)
-		{
-			this.menu = menu;
+			Hide();
 		}
 		
-		public void Show(string text)
+		public void Show(string text, Vector3 itemPos)
 		{
 			TMP.text = text;
-			transform.position = Input.mousePosition;
+			transform.position = itemPos;
 			
-			KillTween(fade);
-			fade = cg.DOFade(1, duration).SetUpdate(true);
-		}
-		
-		public void Follow()
-		{
-			KillTween(follow);
-			follow = transform.DOMove(Input.mousePosition, duration).SetUpdate(true);
+			show = DOTween.Sequence();
+			show.AppendCallback(() => 
+			{
+				cg.DOFade(1, duration).SetUpdate(true);
+				cg.transform.DOScale(1, duration).SetUpdate(true);
+			}).SetUpdate(true).SetDelay(delay).SetEase(Ease.InSine);
 		}
 		
 		public void Hide()
 		{
-			KillTween(fade);
-			fade = cg.DOFade(0, duration).SetUpdate(true);
+			KillTween(show);
+			cg.alpha = 0;
+			cg.transform.localScale = startScale;
 		}
 		
 		private void KillTween(Tween tween)
@@ -56,8 +51,7 @@ namespace Scripts.Menu
 		
 		private void OnDestroy()
 		{
-			KillTween(fade);
-			KillTween(follow);
+			KillTween(show);
 		}
 	}
 }

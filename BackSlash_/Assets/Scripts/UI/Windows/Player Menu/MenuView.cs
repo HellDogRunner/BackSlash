@@ -12,6 +12,10 @@ namespace Scripts.Menu
 		public MenuModView Guard;
 		public MenuModView Blade;
 
+		[Header("Animation Settings")]
+		public float GlowFade;
+		public float GlowDuration;
+
 		private MenuModel model;
 
 		private CurrencyService currencyService;
@@ -23,27 +27,9 @@ namespace Scripts.Menu
 		}
 
 		private void Awake()
-		{
-			Description.SetOnAwake(Menu);
-			
+		{		
 			model = Menu.Model;
-	
 			model.Currency.text = currencyService.Currency.ToString();
-		}
-
-		public void ShowDescription(string text)
-		{
-			Description.Show(text);
-		}
-
-		public void FollowingDescription()
-		{
-			Description.Follow();
-		}
-		
-		public void HideDescription() 
-		{
-			Description.Hide();
 		}
 	}
 }
