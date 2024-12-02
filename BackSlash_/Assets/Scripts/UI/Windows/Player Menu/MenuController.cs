@@ -24,9 +24,9 @@ namespace Scripts.Menu
 		{
 			var data = model.EquippedItems.GetData();
 			
-			view.Hilt.SetOnAwake(Menu, data);
-			view.Guard.SetOnAwake(Menu, data);
-			view.Blade.SetOnAwake(Menu, data);
+			view.Hilt.SetItem(data);
+			view.Guard.SetItem(data);
+			view.Blade.SetItem(data);
 		}
 	}
 }

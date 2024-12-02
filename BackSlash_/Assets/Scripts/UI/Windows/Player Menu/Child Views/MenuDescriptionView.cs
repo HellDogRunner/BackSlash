@@ -1,26 +1,33 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Scripts.Menu
 {
-	public class MenuDescriptionView : MonoBehaviour
+	public class MenuDescriptionView : MenuElement
 	{
-		[SerializeField] private CanvasGroup cg; 
+		[SerializeField] private CanvasGroup cg;
+		[SerializeField] private Transform mask;
 		[Space]
 		[SerializeField] private TMP_Text TMP;
 		
 		[Header("Settings")]
-		[SerializeField] private float duration;
-		[SerializeField] private float delay;
-		[Space]
 		[SerializeField] private Vector3 startScale = new Vector3(0.9f, 0.9f, 0.9f);
 		
-		private Sequence show;
+		private float duration;
+		private float delay;
+		
+		private MenuView view;
+		
+		private Tween fade;
+		private Tween scale;
 
-		private void Awake()
+		public void OnAwake(MenuView view)
 		{
+			this.view = view;
+			duration = view.Duration;
+			delay = view.Delay;
+			
 			Hide();
 		}
 		
@@ -29,29 +36,22 @@ namespace Scripts.Menu
 			TMP.text = text;
 			transform.position = itemPos;
 			
-			show = DOTween.Sequence();
-			show.AppendCallback(() => 
-			{
-				cg.DOFade(1, duration).SetUpdate(true);
-				cg.transform.DOScale(1, duration).SetUpdate(true);
-			}).SetUpdate(true).SetDelay(delay).SetEase(Ease.InSine);
+			fade = cg.DOFade(1, duration).SetUpdate(true).SetDelay(delay).SetEase(Ease.InSine);
+			scale = mask.DOScale(1, duration).SetUpdate(true).SetDelay(delay).SetEase(Ease.InSine);
 		}
 		
 		public void Hide()
 		{
-			KillTween(show);
+			view.KillTween(fade);
+			view.KillTween(scale);
 			cg.alpha = 0;
-			cg.transform.localScale = startScale;
-		}
-		
-		private void KillTween(Tween tween)
-		{
-			if (tween.IsActive()) tween.Kill();
+			mask.localScale = startScale;
 		}
 		
 		private void OnDestroy()
 		{
-			KillTween(show);
+			view.KillTween(fade);
+			view.KillTween(scale);
 		}
 	}
 }

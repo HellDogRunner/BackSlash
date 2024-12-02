@@ -1,51 +1,19 @@
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Scripts.Menu
 {
-	public class MenuModView : MenuElement, IPointerEnterHandler, IPointerExitHandler
+	public class MenuModView : BasicMenuChildView
 	{
-		private PlayerMenu menu;
-		private MenuView view;
-
+		[SerializeField] private Image icon;
+		[Space]
+		[SerializeField] private EItemType Type;
+		
 		private Item item;
 		
-		public EItemType Type;
-		[Space]
-		[SerializeField] private Image icon;
-		[SerializeField] private CanvasGroup glow;
-
-		private float fade;
-		private float duration;
-		
-		private void Awake()
+		public void SetItem(List<InventoryModel> data)
 		{
-			glow.alpha = 0;
-			
-			fade = view.GlowFade;
-			duration = view.GlowDuration;
-		}
-		
-		public void OnPointerEnter(PointerEventData eventData)
-		{
-			view.Description.Show(item.Stats, transform.position);
-			glow.DOFade(fade, duration).SetUpdate(true);
-		}
-
-		public void OnPointerExit(PointerEventData eventData)
-		{
-			view.Description.Hide();
-			glow.DOFade(0, duration).SetUpdate(true);
-		}
-		
-		public void SetOnAwake(PlayerMenu menu, List<InventoryModel> data)
-		{
-			this.menu = menu;
-			view = this.menu.View;
-			
 			foreach (var model in data)
 			{
 				if (model.Type == Type)
@@ -53,6 +21,7 @@ namespace Scripts.Menu
 					item = model.Item;
 					icon.sprite = item.Icon;
 					item.SetValues();
+					descriptionText = item.Stats;
 					return;
 				}
 			}
