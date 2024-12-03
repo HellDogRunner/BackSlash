@@ -40,20 +40,20 @@ public class DialogueSystem : MonoBehaviour
 
 	private void Awake()
 	{
-		_questSystem.SetData += SetDialogue;
 		_interactionSystem.OnResetDialogue += ResetDialogue;
 		_interactionSystem.OnStartInteract += OpenDialogue;
 	}
 	
 	private void OnDestroy()
 	{
-		_questSystem.SetData -= SetDialogue;
 		_interactionSystem.OnResetDialogue -= ResetDialogue;
 		_interactionSystem.OnStartInteract -= OpenDialogue;
 	}
 
-	private void SetDialogue(QuestDatabase data, string state)
+	private void SetDialogue(QuestDatabase data)
 	{
+		var state = _questSystem.GetQuestState(data);
+		Debug.Log(state);
 		_data = data;
 		var model = data.GetModelByState(state);
 
@@ -63,8 +63,9 @@ public class DialogueSystem : MonoBehaviour
 		_endings = model.Endings.ToList();
 	}
 
-	private void OpenDialogue(string name, bool canTrade)
+	private void OpenDialogue(QuestDatabase data, string name, bool canTrade)
 	{
+		SetDialogue(data);
 		_windowService.TryOpenWindow(_dialogueWindow);
 		_windowService.ShowWindow();
 		

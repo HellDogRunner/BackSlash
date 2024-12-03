@@ -29,7 +29,7 @@ public class InteractionSystem : MonoBehaviour
 
 	public event Action<QuestDatabase> SetQuest;
 	public event Action OnResetDialogue;
-	public event Action<string, bool> OnStartInteract;
+	public event Action<QuestDatabase, string, bool> OnStartInteract;
 	
 	[Inject]
 	private void Construct(PlayerStateMachine playerState, WeaponController weaponController, InteractionAnimator animator, UiInputsController uIActions)
@@ -88,7 +88,7 @@ public class InteractionSystem : MonoBehaviour
 			
 			if (_weaponController.CurrentWeaponType == EWeaponType.Melee) _weaponController.UnequipWeapon();
 				
-			OnStartInteract?.Invoke(_npc.name, _canTrade);			
+			OnStartInteract?.Invoke(_quest, _npc.name, _canTrade);			
 		}
 	}
 

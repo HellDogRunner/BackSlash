@@ -52,7 +52,7 @@ namespace RedMoonGames.Window
 			
 			_menuController.OpenTab += OpenTab;
 			_uiInputs.OnMenuSwitchTabAction += SwitchTab;
-			_uiInputs.OnMenuTabKeyPressed += OpenTab;
+			_uiInputs.OnMenuKeyPressed += OpenTab;
 			_uiInputs.OnBackKeyPressed += Hide;
 
 			_weaponButton.onClick.AddListener(WeaponButton);
@@ -82,7 +82,7 @@ namespace RedMoonGames.Window
 			
 			_menuController.OpenTab -= OpenTab;
 			_uiInputs.OnMenuSwitchTabAction -= SwitchTab;
-			_uiInputs.OnMenuTabKeyPressed -= OpenTab;
+			_uiInputs.OnMenuKeyPressed -= OpenTab;
 			_uiInputs.OnBackKeyPressed -= Hide;
 
 			_weaponButton.onClick.RemoveListener(WeaponButton);

@@ -46,7 +46,7 @@ namespace RedMoonGames.Window
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 			
 			_uiInputs.OnEscapeKeyPressed += OpenPause;
-			_uiInputs.OnMenuTabKeyPressed += OpenMenu;
+			_uiInputs.OnMenuKeyPressed += OpenMenu;
 			_windowService.OnUnpause += SetExplore;
 			_windowService.OnPause += SetPause;
 		}
@@ -60,7 +60,7 @@ namespace RedMoonGames.Window
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
 			_uiInputs.OnEscapeKeyPressed -= OpenPause;
-			_uiInputs.OnMenuTabKeyPressed -= OpenMenu;
+			_uiInputs.OnMenuKeyPressed -= OpenMenu;
 			_windowService.OnUnpause -= SetExplore;
 			_windowService.OnPause -= SetPause;		
 		}

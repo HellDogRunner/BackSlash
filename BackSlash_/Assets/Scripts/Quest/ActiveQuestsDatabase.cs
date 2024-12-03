@@ -16,11 +16,12 @@ namespace Scripts.UI.Quest
 			return _activeQuests.GetBy(model => model.QuestData == questData);
 		}
 
-		public string GetStateQuest(QuestDatabase questData)
+		public string GetStateByQuest(QuestDatabase questData)
 		{
-			if (questData == null) return null;
+			var model = GetModelByQuestData(questData); 
+			if (model == null) return null;
 			
-			return _activeQuests.GetBy(model => model.QuestData == questData).State;
+			return model.State;
 		}
 
 		public void AddQuest(QuestDatabase questData, string state)

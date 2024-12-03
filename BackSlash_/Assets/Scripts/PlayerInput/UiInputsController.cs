@@ -14,7 +14,7 @@ namespace Scripts.Player
 		public event Action OnBackKeyPressed;
 		public event Action OnAnyKeyPressed;
 		public event Action OnTradeKeyPressed;
-		public event Action<int> OnMenuTabKeyPressed;
+		public event Action<int> OnMenuKeyPressed;
 		public event Action<int> OnMenuSwitchTabAction;
 		public event Action<bool> ShowCursor;
 		public event Action<bool> OnDialogueAnswer;
@@ -64,34 +64,9 @@ namespace Scripts.Player
 			OnTradeKeyPressed?.Invoke();
 		}
 
-		private void Weapon(InputAction.CallbackContext context)
+		private void PlayerMenu(InputAction.CallbackContext context)
 		{
-			OnMenuTabKeyPressed?.Invoke(0);
-		}
-
-		private void Combos(InputAction.CallbackContext context)
-		{
-			OnMenuTabKeyPressed?.Invoke(1);
-		}
-
-		private void Abilities(InputAction.CallbackContext context)
-		{
-			OnMenuTabKeyPressed?.Invoke(2);
-		}
-
-		private void Skills(InputAction.CallbackContext context)
-		{
-			OnMenuTabKeyPressed?.Invoke(3);
-		}
-
-		private void Journal(InputAction.CallbackContext context)
-		{
-			OnMenuTabKeyPressed?.Invoke(4);
-		}
-
-		private void Map(InputAction.CallbackContext context)
-		{
-			OnMenuTabKeyPressed?.Invoke(5);
+			OnMenuKeyPressed?.Invoke(0);
 		}
 
 		private void Prev(InputAction.CallbackContext context)
@@ -127,12 +102,7 @@ namespace Scripts.Player
 			_inputActions.UI.AnyKey.performed += AnyKey;
 			_inputActions.UI.AnyKey.performed += AnyUIKey;
 
-			_inputActions.UI.Weapon.performed += Weapon;
-			_inputActions.UI.Combos.performed += Combos;
-			_inputActions.UI.Abilities.performed += Abilities;
-			_inputActions.UI.Skills.performed += Skills;
-			_inputActions.UI.Journal.performed += Journal;
-			_inputActions.UI.Map.performed += Map;
+			_inputActions.UI.Weapon.performed += PlayerMenu;
 
 			_inputActions.UI.PositiveAnswer.performed += PositiveAnswer;
 			_inputActions.UI.NegativeAnswer.performed += NegativeAnswer;
@@ -152,12 +122,7 @@ namespace Scripts.Player
 			_inputActions.UI.AnyKey.performed -= AnyKey;
 			_inputActions.UI.AnyKey.performed -= AnyUIKey;
 
-			_inputActions.UI.Weapon.performed -= Weapon;
-			_inputActions.UI.Combos.performed -= Combos;
-			_inputActions.UI.Abilities.performed -= Abilities;
-			_inputActions.UI.Skills.performed -= Skills;
-			_inputActions.UI.Journal.performed -= Journal;
-			_inputActions.UI.Map.performed -= Map;
+			_inputActions.UI.Weapon.performed -= PlayerMenu;
 
 			_inputActions.UI.PositiveAnswer.performed -= PositiveAnswer;
 			_inputActions.UI.NegativeAnswer.performed -= NegativeAnswer;

@@ -370,51 +370,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Combos"",
-                    ""type"": ""Button"",
-                    ""id"": ""3832a6f8-2d81-4bfc-8280-9c80531f271f"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Abilities"",
-                    ""type"": ""Button"",
-                    ""id"": ""eb749ba5-c921-4229-a59c-6d4370251034"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Skills"",
-                    ""type"": ""Button"",
-                    ""id"": ""04697d1e-c787-407f-b46c-d30761495de2"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Journal"",
-                    ""type"": ""Button"",
-                    ""id"": ""b8275b23-463e-4a9e-b356-0af07ecee713"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Map"",
-                    ""type"": ""Button"",
-                    ""id"": ""a2e67234-8cb2-4b77-858a-4a1fcd318e8f"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""NextTab"",
                     ""type"": ""Button"",
                     ""id"": ""0f76fe09-5a1d-418e-9e4d-d1cad3a74766"",
@@ -723,61 +678,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""dbf4a2ad-da90-4eb3-8304-089a0a41c674"",
-                    ""path"": ""<Keyboard>/o"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Combos"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3455a191-496a-4afa-962d-0a0b870ab5f1"",
-                    ""path"": ""<Keyboard>/n"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Abilities"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""7b5b1eb4-2a1e-4c49-8fc7-cd727de79514"",
-                    ""path"": ""<Keyboard>/k"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Skills"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5bd75a3a-00c6-4da6-a665-a3cac0118051"",
-                    ""path"": ""<Keyboard>/j"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Journal"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a5d601e2-a952-4258-b983-69d219c35daa"",
-                    ""path"": ""<Keyboard>/m"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Map"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""2d5d199f-3301-4632-a29c-ae35c4cc37c3"",
                     ""path"": ""<Keyboard>/x"",
                     ""interactions"": """",
@@ -882,11 +782,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_UI_Enter = m_UI.FindAction("Enter", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
         m_UI_Weapon = m_UI.FindAction("Weapon", throwIfNotFound: true);
-        m_UI_Combos = m_UI.FindAction("Combos", throwIfNotFound: true);
-        m_UI_Abilities = m_UI.FindAction("Abilities", throwIfNotFound: true);
-        m_UI_Skills = m_UI.FindAction("Skills", throwIfNotFound: true);
-        m_UI_Journal = m_UI.FindAction("Journal", throwIfNotFound: true);
-        m_UI_Map = m_UI.FindAction("Map", throwIfNotFound: true);
         m_UI_NextTab = m_UI.FindAction("NextTab", throwIfNotFound: true);
         m_UI_PrevTab = m_UI.FindAction("PrevTab", throwIfNotFound: true);
         m_UI_AnyKey = m_UI.FindAction("AnyKey", throwIfNotFound: true);
@@ -1089,11 +984,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Enter;
     private readonly InputAction m_UI_Navigate;
     private readonly InputAction m_UI_Weapon;
-    private readonly InputAction m_UI_Combos;
-    private readonly InputAction m_UI_Abilities;
-    private readonly InputAction m_UI_Skills;
-    private readonly InputAction m_UI_Journal;
-    private readonly InputAction m_UI_Map;
     private readonly InputAction m_UI_NextTab;
     private readonly InputAction m_UI_PrevTab;
     private readonly InputAction m_UI_AnyKey;
@@ -1115,11 +1005,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Enter => m_Wrapper.m_UI_Enter;
         public InputAction @Navigate => m_Wrapper.m_UI_Navigate;
         public InputAction @Weapon => m_Wrapper.m_UI_Weapon;
-        public InputAction @Combos => m_Wrapper.m_UI_Combos;
-        public InputAction @Abilities => m_Wrapper.m_UI_Abilities;
-        public InputAction @Skills => m_Wrapper.m_UI_Skills;
-        public InputAction @Journal => m_Wrapper.m_UI_Journal;
-        public InputAction @Map => m_Wrapper.m_UI_Map;
         public InputAction @NextTab => m_Wrapper.m_UI_NextTab;
         public InputAction @PrevTab => m_Wrapper.m_UI_PrevTab;
         public InputAction @AnyKey => m_Wrapper.m_UI_AnyKey;
@@ -1166,21 +1051,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Weapon.started += instance.OnWeapon;
             @Weapon.performed += instance.OnWeapon;
             @Weapon.canceled += instance.OnWeapon;
-            @Combos.started += instance.OnCombos;
-            @Combos.performed += instance.OnCombos;
-            @Combos.canceled += instance.OnCombos;
-            @Abilities.started += instance.OnAbilities;
-            @Abilities.performed += instance.OnAbilities;
-            @Abilities.canceled += instance.OnAbilities;
-            @Skills.started += instance.OnSkills;
-            @Skills.performed += instance.OnSkills;
-            @Skills.canceled += instance.OnSkills;
-            @Journal.started += instance.OnJournal;
-            @Journal.performed += instance.OnJournal;
-            @Journal.canceled += instance.OnJournal;
-            @Map.started += instance.OnMap;
-            @Map.performed += instance.OnMap;
-            @Map.canceled += instance.OnMap;
             @NextTab.started += instance.OnNextTab;
             @NextTab.performed += instance.OnNextTab;
             @NextTab.canceled += instance.OnNextTab;
@@ -1236,21 +1106,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Weapon.started -= instance.OnWeapon;
             @Weapon.performed -= instance.OnWeapon;
             @Weapon.canceled -= instance.OnWeapon;
-            @Combos.started -= instance.OnCombos;
-            @Combos.performed -= instance.OnCombos;
-            @Combos.canceled -= instance.OnCombos;
-            @Abilities.started -= instance.OnAbilities;
-            @Abilities.performed -= instance.OnAbilities;
-            @Abilities.canceled -= instance.OnAbilities;
-            @Skills.started -= instance.OnSkills;
-            @Skills.performed -= instance.OnSkills;
-            @Skills.canceled -= instance.OnSkills;
-            @Journal.started -= instance.OnJournal;
-            @Journal.performed -= instance.OnJournal;
-            @Journal.canceled -= instance.OnJournal;
-            @Map.started -= instance.OnMap;
-            @Map.performed -= instance.OnMap;
-            @Map.canceled -= instance.OnMap;
             @NextTab.started -= instance.OnNextTab;
             @NextTab.performed -= instance.OnNextTab;
             @NextTab.canceled -= instance.OnNextTab;
@@ -1314,11 +1169,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnEnter(InputAction.CallbackContext context);
         void OnNavigate(InputAction.CallbackContext context);
         void OnWeapon(InputAction.CallbackContext context);
-        void OnCombos(InputAction.CallbackContext context);
-        void OnAbilities(InputAction.CallbackContext context);
-        void OnSkills(InputAction.CallbackContext context);
-        void OnJournal(InputAction.CallbackContext context);
-        void OnMap(InputAction.CallbackContext context);
         void OnNextTab(InputAction.CallbackContext context);
         void OnPrevTab(InputAction.CallbackContext context);
         void OnAnyKey(InputAction.CallbackContext context);
