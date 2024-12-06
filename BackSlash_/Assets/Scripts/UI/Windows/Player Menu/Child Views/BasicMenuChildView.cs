@@ -10,6 +10,7 @@ namespace Scripts.Menu
 		
 		protected MenuView view;
 		
+		protected float offsetY;
 		protected string descriptionText;
 		
 		protected Tween t_frame;
@@ -22,11 +23,14 @@ namespace Scripts.Menu
 		protected virtual void Awake()
 		{
 			frame.alpha = 0;
+			
+			var rt = transform as RectTransform;
+			offsetY = rt.rect.height / 2;
 		}
 		
 		public virtual void OnPointerEnter(PointerEventData eventData)
 		{
-			view.Description.Show(descriptionText, transform.position);
+			view.Description.Show(descriptionText, transform.position, offsetY);
 			view.KillTween(t_frame);
 			t_frame = frame.DOFade(1, view.Duration).SetUpdate(true).SetDelay(view.Delay);
 		}
