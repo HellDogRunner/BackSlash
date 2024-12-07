@@ -1,5 +1,4 @@
 using Scripts.Player;
-using System;
 using System.Collections;
 using UnityEngine;
 using Zenject;
@@ -18,8 +17,6 @@ namespace RedMoonGames.Window
 
 		private InputController _gameInputs;
 		private PlayerStateMachine _playerState;
-
-		public event Action<int> OpenTab;
 
 		[Inject]
 		private void Construct(PlayerStateMachine playerState, InputController gameInputs)
@@ -73,13 +70,9 @@ namespace RedMoonGames.Window
 			}
 		}
 
-		private void OpenMenu(int index)
+		private void OpenMenu(int index)	// TODO remove int parametr from this method and <OnMenuKeyPressed> event
 		{
-			if (_playerState.State != EState.Pause && _playerState.State != EState.Interact)
-			{
-				TryOpenWindow(_menuWindow);
-			}
-			OpenTab?.Invoke(index);
+			if (_playerState.State != EState.Pause && _playerState.State != EState.Interact) TryOpenWindow(_menuWindow);
 		}
 		
 		private void TryOpenWindow(WindowHandler window) 

@@ -9,7 +9,6 @@ namespace Scripts.Menu
 		[Header("Spawn")]
 		public GameObject PlayerProjection; 
 		public GameObject WeaponProjection;
-		public Transform Root;
 		[Space]
 		public InventoryDatabase EquippedItems;
 		[Space]

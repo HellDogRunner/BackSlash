@@ -102,7 +102,7 @@ namespace Scripts.Player
 			_inputActions.UI.AnyKey.performed += AnyKey;
 			_inputActions.UI.AnyKey.performed += AnyUIKey;
 
-			_inputActions.UI.Weapon.performed += PlayerMenu;
+			_inputActions.UI.Menu.performed += PlayerMenu;
 
 			_inputActions.UI.PositiveAnswer.performed += PositiveAnswer;
 			_inputActions.UI.NegativeAnswer.performed += NegativeAnswer;
@@ -122,7 +122,7 @@ namespace Scripts.Player
 			_inputActions.UI.AnyKey.performed -= AnyKey;
 			_inputActions.UI.AnyKey.performed -= AnyUIKey;
 
-			_inputActions.UI.Weapon.performed -= PlayerMenu;
+			_inputActions.UI.Menu.performed -= PlayerMenu;
 
 			_inputActions.UI.PositiveAnswer.performed -= PositiveAnswer;
 			_inputActions.UI.NegativeAnswer.performed -= NegativeAnswer;

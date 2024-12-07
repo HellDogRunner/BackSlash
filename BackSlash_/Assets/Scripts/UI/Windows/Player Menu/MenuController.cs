@@ -1,7 +1,12 @@
+using UnityEngine;
+
 namespace Scripts.Menu
 {
 	public class MenuController : MenuElement
 	{
+		private GameObject player;
+		private GameObject weapon;
+		
 		private MenuModel model;
 		private MenuView view;
 		
@@ -16,8 +21,8 @@ namespace Scripts.Menu
 		
 		private void AwakeInstantiate()
 		{
-			Instantiate(model.PlayerProjection, model.Root);
-			Instantiate(model.WeaponProjection, model.Root);
+			player = Instantiate(model.PlayerProjection);
+			weapon = Instantiate(model.WeaponProjection);
 		}
 		
 		private void SetWeaponMods()
@@ -27,6 +32,12 @@ namespace Scripts.Menu
 			view.Hilt.SetItem(data);
 			view.Guard.SetItem(data);
 			view.Blade.SetItem(data);
+		}
+		
+		private void OnDestroy()
+		{
+			Destroy(player);
+			Destroy(weapon);
 		}
 	}
 }

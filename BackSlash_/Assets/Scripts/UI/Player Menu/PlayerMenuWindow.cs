@@ -46,11 +46,13 @@ namespace RedMoonGames.Window
 			Show(true, 0);
 		}
 
+		// TODO remove this script OR if needed clear dependencies
+
 		protected override void OnEnable()
 		{
 			base.OnEnable();
 			
-			_menuController.OpenTab += OpenTab;
+			//_menuController.OpenTab += OpenTab;
 			_uiInputs.OnMenuSwitchTabAction += SwitchTab;
 			_uiInputs.OnMenuKeyPressed += OpenTab;
 			_uiInputs.OnBackKeyPressed += Hide;
@@ -80,7 +82,7 @@ namespace RedMoonGames.Window
 		{
 			base.OnDisable();
 			
-			_menuController.OpenTab -= OpenTab;
+			//_menuController.OpenTab -= OpenTab;
 			_uiInputs.OnMenuSwitchTabAction -= SwitchTab;
 			_uiInputs.OnMenuKeyPressed -= OpenTab;
 			_uiInputs.OnBackKeyPressed -= Hide;

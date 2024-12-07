@@ -12,7 +12,6 @@ namespace Scripts.Menu
 		[SerializeField] private TMP_Text TMP;
 		
 		[Header("Settings")]
-		[SerializeField] private float distance = 10;
 		[SerializeField] private Vector3 startScale = new Vector3(0.9f, 0.9f, 0.9f);
 		
 		private float duration;
@@ -21,7 +20,7 @@ namespace Scripts.Menu
 		private MenuView view;
 		
 		private RectTransform rect;
-		private Vector2 resolution;
+
 		
 		private Tween fade;
 		private Tween scale;
@@ -32,17 +31,14 @@ namespace Scripts.Menu
 			duration = view.Duration;
 			delay = view.Delay;
 			rect = gameObject.transform as RectTransform;
-			resolution = new Vector2(Screen.width, Screen.height);
 			
 			Hide();
 		}
 		
-		public void Show(string text, Vector3 itemPos, float offsetY)
+		public void Show(string text)
 		{
 			TMP.text = text;
-			
-			SetPosition(itemPos, offsetY);
-			
+
 			fade = cg.DOFade(1, duration).SetUpdate(true).SetDelay(delay).SetEase(Ease.InSine);
 			scale = mask.DOScale(1, duration).SetUpdate(true).SetDelay(delay).SetEase(Ease.InSine);
 		}
@@ -55,18 +51,9 @@ namespace Scripts.Menu
 			mask.localScale = startScale;
 		}
 		
-		private void SetPosition(Vector3 itemPos, float offsetY)
+		public void SetPosition(Vector3 itemPos, Vector2 pivot)
 		{
-			if (itemPos.y < resolution.y / 2)
-			{
-				rect.pivot = new Vector2(0.5f, 0);
-				itemPos.y += distance + offsetY;
-			}
-			else
-			{
-				rect.pivot = new Vector2(0.5f, 1);
-				itemPos.y -= distance + offsetY;
-			}
+			rect.pivot = pivot;
 			transform.position = itemPos;
 		}
 		

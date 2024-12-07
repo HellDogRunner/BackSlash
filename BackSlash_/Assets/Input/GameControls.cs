@@ -361,7 +361,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Weapon"",
+                    ""name"": ""Menu"",
                     ""type"": ""Button"",
                     ""id"": ""78aad207-a02f-484a-9bfa-d856bd4500a3"",
                     ""expectedControlType"": """",
@@ -557,17 +557,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6630693e-dbd1-47dc-984d-a02499afe43d"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Enter"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""522caa4d-caac-4782-89ff-e5e931ea42e0"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
@@ -672,7 +661,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Weapon"",
+                    ""action"": ""Menu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -781,7 +770,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
         m_UI_Enter = m_UI.FindAction("Enter", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
-        m_UI_Weapon = m_UI.FindAction("Weapon", throwIfNotFound: true);
+        m_UI_Menu = m_UI.FindAction("Menu", throwIfNotFound: true);
         m_UI_NextTab = m_UI.FindAction("NextTab", throwIfNotFound: true);
         m_UI_PrevTab = m_UI.FindAction("PrevTab", throwIfNotFound: true);
         m_UI_AnyKey = m_UI.FindAction("AnyKey", throwIfNotFound: true);
@@ -983,7 +972,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_Back;
     private readonly InputAction m_UI_Enter;
     private readonly InputAction m_UI_Navigate;
-    private readonly InputAction m_UI_Weapon;
+    private readonly InputAction m_UI_Menu;
     private readonly InputAction m_UI_NextTab;
     private readonly InputAction m_UI_PrevTab;
     private readonly InputAction m_UI_AnyKey;
@@ -1004,7 +993,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @Back => m_Wrapper.m_UI_Back;
         public InputAction @Enter => m_Wrapper.m_UI_Enter;
         public InputAction @Navigate => m_Wrapper.m_UI_Navigate;
-        public InputAction @Weapon => m_Wrapper.m_UI_Weapon;
+        public InputAction @Menu => m_Wrapper.m_UI_Menu;
         public InputAction @NextTab => m_Wrapper.m_UI_NextTab;
         public InputAction @PrevTab => m_Wrapper.m_UI_PrevTab;
         public InputAction @AnyKey => m_Wrapper.m_UI_AnyKey;
@@ -1048,9 +1037,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Navigate.started += instance.OnNavigate;
             @Navigate.performed += instance.OnNavigate;
             @Navigate.canceled += instance.OnNavigate;
-            @Weapon.started += instance.OnWeapon;
-            @Weapon.performed += instance.OnWeapon;
-            @Weapon.canceled += instance.OnWeapon;
+            @Menu.started += instance.OnMenu;
+            @Menu.performed += instance.OnMenu;
+            @Menu.canceled += instance.OnMenu;
             @NextTab.started += instance.OnNextTab;
             @NextTab.performed += instance.OnNextTab;
             @NextTab.canceled += instance.OnNextTab;
@@ -1103,9 +1092,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Navigate.started -= instance.OnNavigate;
             @Navigate.performed -= instance.OnNavigate;
             @Navigate.canceled -= instance.OnNavigate;
-            @Weapon.started -= instance.OnWeapon;
-            @Weapon.performed -= instance.OnWeapon;
-            @Weapon.canceled -= instance.OnWeapon;
+            @Menu.started -= instance.OnMenu;
+            @Menu.performed -= instance.OnMenu;
+            @Menu.canceled -= instance.OnMenu;
             @NextTab.started -= instance.OnNextTab;
             @NextTab.performed -= instance.OnNextTab;
             @NextTab.canceled -= instance.OnNextTab;
@@ -1168,7 +1157,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnBack(InputAction.CallbackContext context);
         void OnEnter(InputAction.CallbackContext context);
         void OnNavigate(InputAction.CallbackContext context);
-        void OnWeapon(InputAction.CallbackContext context);
+        void OnMenu(InputAction.CallbackContext context);
         void OnNextTab(InputAction.CallbackContext context);
         void OnPrevTab(InputAction.CallbackContext context);
         void OnAnyKey(InputAction.CallbackContext context);

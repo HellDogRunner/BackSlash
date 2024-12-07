@@ -10,27 +10,26 @@ namespace Scripts.Menu
 		
 		protected MenuView view;
 		
-		protected float offsetY;
 		protected string descriptionText;
+		protected Vector2 DescriptionPivot;
 		
 		protected Tween t_frame;
 		
-		public virtual void SetView(MenuView view)
+		public virtual void AwakeSet(MenuView view)
 		{
 			this.view = view;
+			DescriptionPivot = view.SetPivot(transform as RectTransform);
 		}
 		
 		protected virtual void Awake()
 		{
 			frame.alpha = 0;
-			
-			var rt = transform as RectTransform;
-			offsetY = rt.rect.height / 2;
 		}
 		
 		public virtual void OnPointerEnter(PointerEventData eventData)
 		{
-			view.Description.Show(descriptionText, transform.position, offsetY);
+			view.Description.SetPosition(transform.position, DescriptionPivot);
+			view.Description.Show(descriptionText);
 			view.KillTween(t_frame);
 			t_frame = frame.DOFade(1, view.Duration).SetUpdate(true).SetDelay(view.Delay);
 		}

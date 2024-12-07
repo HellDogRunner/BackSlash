@@ -53,7 +53,6 @@ public class DialogueSystem : MonoBehaviour
 	private void SetDialogue(QuestDatabase data)
 	{
 		var state = _questSystem.GetQuestState(data);
-		Debug.Log(state);
 		_data = data;
 		var model = data.GetModelByState(state);
 
