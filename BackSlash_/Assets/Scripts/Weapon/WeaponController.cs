@@ -16,20 +16,18 @@ namespace Scripts.Weapon
 		private bool _isBlocking;
 
 		protected WeaponTypesDatabase _weaponTypesDatabase;
-
+		private EWeaponType _curentWeaponType;
 		private GameObject _currentWeapon;
+		
 		private InputController _inputController;
 		private WeaponTypeModel _weaponTypeModel;
-		private EWeaponType _curentWeaponType;
+		private DiContainer _diContainer;
 
 		public EWeaponType CurrentWeaponType => _curentWeaponType;
 
 		public event Action OnDrawWeapon;
 		public event Action OnSneathWeapon;
 		public event Action<bool> OnWeaponEquip;
-		public event Action<bool> OnBlocking;
-
-		private DiContainer _diContainer;
 
 		[Inject]
 		private void Construct(WeaponTypesDatabase weaponTypesDatabase, InputController inputController, DiContainer diContainer)
@@ -44,24 +42,17 @@ namespace Scripts.Weapon
 			_curentWeaponType = EWeaponType.None;
 			
 			_inputController.OnShowWeaponPressed += WeaponPressed;
-			_inputController.OnBlockPressed += BlockPressed;
 		}
 
 		private void OnDestroy()
 		{
 			_inputController.OnShowWeaponPressed -= WeaponPressed;
-			_inputController.OnBlockPressed -= BlockPressed;
 		}
 
 		private void Start()
 		{
 			_weaponTypeModel = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
 			_currentWeapon = _diContainer.InstantiatePrefab(_weaponTypeModel?.WeaponPrefab, _weaponOnBeltPivot.position, _weaponOnBeltPivot.rotation, _weaponOnBeltPivot.transform);
-		}
-
-		private void BlockPressed(bool pressed)
-		{
-			OnBlocking?.Invoke(pressed);
 		}
 
 		private void WeaponPressed()

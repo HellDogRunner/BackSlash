@@ -131,9 +131,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""3D Vector"",
+                    ""name"": ""2D Vector"",
                     ""id"": ""367c6c66-1885-47e3-b0f2-37aa0c6c5e43"",
-                    ""path"": ""3DVector"",
+                    ""path"": ""2DVector(mode=2)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -142,7 +142,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""up"",
+                    ""name"": ""Up"",
                     ""id"": ""7d8ad8f2-609f-4b26-8f85-a6582485214e"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
@@ -153,7 +153,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""down"",
+                    ""name"": ""Down"",
                     ""id"": ""ac24fa98-4db4-41b4-8a91-3650eff44808"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
@@ -164,7 +164,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""left"",
+                    ""name"": ""Left"",
                     ""id"": ""65fb41b1-5170-4af0-adf9-6f6bd5c61dd5"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
@@ -175,7 +175,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""right"",
+                    ""name"": ""Right"",
                     ""id"": ""8073fe80-0309-45b8-8d56-abaee07aedfc"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
@@ -243,7 +243,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3b844c81-1f4b-4ba9-8e5a-bf7c4052ec84"",
-                    ""path"": ""<Mouse>/middleButton"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
