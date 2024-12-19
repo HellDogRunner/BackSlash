@@ -8,9 +8,8 @@ namespace Scripts.Player
 	{
 		private GameControls _playerControls;
 
-		private Vector2 _moveDirection;
+		private Vector3 _moveDirection;
 
-		public event Action OnDirectionChanged;
 		public event Action<bool> OnSprintKeyPressed;
 		public event Action<bool> OnLightAttackPressed;
 		public event Action<bool> OnHeavyAtttackPressed;
@@ -20,19 +19,13 @@ namespace Scripts.Player
 		public event Action OnDodgeKeyPressed;
 		public event Action OnLockKeyPressed;
 
-		public GameControls Controls => _playerControls;
-		public Vector2 MoveDirection => _moveDirection;
+		public Vector3 MoveDirection => _moveDirection;
 
 		private void Awake()
 		{
 			_playerControls = new GameControls();
 		}
 
-		private void Update()
-		{
-			
-		}
-		
 		private void OnEnable()
 		{
 			_playerControls.Enable();
@@ -43,14 +36,13 @@ namespace Scripts.Player
 		{
 			_playerControls.Disable();
 			UnsubscribeToActions();
-			_moveDirection = Vector2.zero;
+			_moveDirection = Vector3.zero;
 		}
 
 		private void ChangeDirection(InputAction.CallbackContext context)
 		{
-			var direction = _playerControls.Gameplay.WASD.ReadValue<Vector2>();
-			_moveDirection = new Vector2(direction.x, direction.y);
-			OnDirectionChanged?.Invoke();
+			var direction = _playerControls.Gameplay.WASD.ReadValue<Vector3>();
+			_moveDirection = new Vector3(direction.x, direction.z, direction.y);
 		}
 
 		private void ShowWeapon(InputAction.CallbackContext context)

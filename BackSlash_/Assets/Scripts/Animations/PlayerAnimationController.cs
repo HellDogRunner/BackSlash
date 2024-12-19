@@ -13,23 +13,26 @@ namespace Scripts.Animations
 		[SerializeField] private AnimatorOverrideController _swordOverride;
 		[SerializeField] private AnimatorOverrideController _mainOverride;
 
+		private InputController _inputController;
 		private MovementController _movementController;
 		private TargetLock _targetLock;
 		private WeaponController _weaponController;
 		private ThirdPersonCameraController _thirdPersonController;
 
 		[Inject]
-		private void Construct(MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
+		private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
 		{
 			_weaponController = weaponController;
 			_targetLock = targetLock;
 			_movementController = movementController;
+			_inputController = inputController;
 			_thirdPersonController = thirdPersonController;
 		}
 
 		private void Awake()
 		{
 			_weaponController.OnWeaponEquip += ShowWeapon;
+			_weaponController.OnBlocking += BlockAnimation;
 			
 			_targetLock.OnSwitchLock += SwitchStrafeAnimation;
 			
@@ -37,8 +40,6 @@ namespace Scripts.Animations
 			_movementController.InAir += InAirAnimation;
 			_movementController.OnDodge += DodgeAnimation;
 			_movementController.OnSprint += SprintAnimation;
-			_movementController.OnBlock += BlockAnimation;
-			_movementController.OnMoving += Move;
 			
 			_thirdPersonController.IsAttacking += PrimaryAttackAnimation;
 		}
@@ -46,6 +47,7 @@ namespace Scripts.Animations
 		private void OnDestroy()
 		{
 			_weaponController.OnWeaponEquip -= ShowWeapon;
+			_weaponController.OnBlocking -= BlockAnimation;
 			
 			_targetLock.OnSwitchLock -= SwitchStrafeAnimation;
 
@@ -53,16 +55,15 @@ namespace Scripts.Animations
 			_movementController.InAir -= InAirAnimation;
 			_movementController.OnDodge -= DodgeAnimation;
 			_movementController.OnSprint -= SprintAnimation;
-			_movementController.OnBlock -= BlockAnimation;
-			_movementController.OnMoving -= Move;
 
 			_thirdPersonController.IsAttacking -= PrimaryAttackAnimation;
 		}
 
-		private void Move(Vector2 direction)
+		private void Update()
 		{
+			var direction = _inputController.MoveDirection;
 			_animator.SetFloat("InputX", direction.x, _smoothBlend, Time.deltaTime);
-			_animator.SetFloat("InputY", direction.y, _smoothBlend, Time.deltaTime);
+			_animator.SetFloat("InputY", direction.z, _smoothBlend, Time.deltaTime);
 		}
 
 		private void SwitchStrafeAnimation(bool value)
