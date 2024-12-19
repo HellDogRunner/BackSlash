@@ -3025,7 +3025,8 @@ MonoBehaviour:
   _dodgeCooldown: 1.167
   _dodgeDelay: -0.2
   _airForce: 6
-  _airDirectionMulti: 0.5
+  _airMulti: 0.2
+  _airDirectionMulti: 0.05
   _gravityMulti: 3.5
   _maxSlopeAngle: 30
   _maxCastDistance: 1
@@ -3033,6 +3034,7 @@ MonoBehaviour:
   _hitboxLayer:
     serializedVersion: 2
     m_Bits: 63
+  _lockedDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0

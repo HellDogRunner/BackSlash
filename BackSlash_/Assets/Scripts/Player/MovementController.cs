@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using Unity.Mathematics;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Zenject;
 
@@ -25,6 +27,7 @@ namespace Scripts.Player
 		[SerializeField] private float _dodgeDelay;
 		[Space]
 		[SerializeField] private float _airForce;
+		[SerializeField] private float _airMulti;
 		[SerializeField] private float _airDirectionMulti;
 		[SerializeField] private float _gravityMulti;
 		
@@ -56,7 +59,6 @@ namespace Scripts.Player
 		private InputController _inputController;
 		private ComboSystem _comboSystem;
 		private Transform _camera;
-		private GameControls _controls;
 
 		public event Action<Vector2> OnMoving;
 		public event Action<bool> PlaySteps;
@@ -79,7 +81,6 @@ namespace Scripts.Player
 		private void Awake()
 		{
 			_camera = Camera.main.transform;
-			_controls = _inputController.Controls;
 			_requiredForce = _runForce;
 		}
 
@@ -123,32 +124,32 @@ namespace Scripts.Player
 			{
 				_tryMove = true;
 				_requiredForce = _runForce;
-			}
+			}	
 		}
 
 		private void MovePlayer()
 		{	
 			Vector3 direction;
-			
 			OnMoving?.Invoke(_inputController.MoveDirection);
 			
 			if (_inAir)
 			{
 				_yForce += Physics.gravity.y * Time.deltaTime * _gravityMulti;
-				_lockedDirection += GetForwardDirection() * _airDirectionMulti;
-				direction = DirectionLimit(_lockedDirection);
+				_lockedDirection = TryNormalize(_lockedDirection + GetMoveDirection() * _airDirectionMulti);
+				direction = _lockedDirection * _currentForce;
 			}
 			else
 			{
 				if (!_tryMove && _currentForce != _requiredForce || _move == EMove.Attack)
 				{
+					_moveDirection /= _currentForce;
 					ChangeForce(_standMulti);
-					direction = _moveDirection.normalized * _currentForce;
+					direction = _moveDirection * _currentForce;
 				}
 				else
 				{
 					ChangeForce(_moveMulti);
-					direction = GetForwardDirection() * _currentForce;
+					direction = GetMoveDirection() * _currentForce;
 				}
 			}
 			
@@ -172,7 +173,7 @@ namespace Scripts.Player
 					break;
 				
 				case EMove.Dodge:
-					_lockedDirection = GetForwardDirection() * _runForce;
+					_lockedDirection = GetMoveDirection() * _runForce;
 					_lockedDirection.y = _yForce;
 					break;
 				
@@ -263,12 +264,12 @@ namespace Scripts.Player
 		{
 			if (!IsGrounded() && !_inAir)
 			{
+				_currentForce = _airForce;
+				_lockedDirection = GetMoveDirection();
 				_inAir = true;
 				InAir?.Invoke(true);
-				if (_isJump) _isJump = false;
+				if (_isJump) _isJump = false;		
 				else _yForce = 0;
-				_currentForce = _airForce;
-				_lockedDirection = GetForwardDirection() * _currentForce;
 				SendEvents();
 			}
 
@@ -297,35 +298,29 @@ namespace Scripts.Player
 
 		private void InvokeSteps()
 		{
-			// if ((_forwardDirection.x != 0 || _forwardDirection.z != 0) && _isLanded && _canDodge && !_isAttackGoing)
-			// {
-			// 	PlaySteps?.Invoke(true);
-			// }
-			// else
-			// {
-			// 	PlaySteps?.Invoke(false);
-			// }
+			if (_tryMove && !_inAir && _move != EMove.Attack && _move != EMove.Dodge)
+			{
+				PlaySteps?.Invoke(true);
+			}
+			else
+			{
+				PlaySteps?.Invoke(false);
+			}
 		}
 
-		public Vector3 GetForwardDirection()
+		private Vector3 TryNormalize(Vector3 dir)
+		{
+			if (Math.Abs(dir.x) > 1 || Math.Abs(dir.z) > 1) return dir.normalized;
+			return dir;
+		}
+
+		public Vector3 GetMoveDirection()
 		{
 			var direction = _inputController.MoveDirection;
 			_forwardDirection = direction.y * _camera.forward + direction.x * _camera.right;
 			return _forwardDirection.normalized;
 		}
 
-		private Vector3 DirectionLimit(Vector3 direction)
-		{
-			float force = _airForce;
-			
-			if (direction.x > force) direction.x = force;
-			if (direction.x < -force) direction.x = -force;
-			if (direction.z > force) direction.z = force;
-			if (direction.z < -force) direction.z = -force;
-			
-			return direction;
-		}
-		
 		private bool IsGrounded()
 		{
 			if (Physics.SphereCast(
