@@ -9,46 +9,40 @@ namespace Scripts.Player
 	{
 		[SerializeField] private CharacterController _characterController;
 		[Header("Monitoring")]
-		[SerializeField] private float _currentForce;
+		[SerializeField] private float _currentSpeed;
 		[SerializeField] private Vector3 _moveDirection;
-		[Header("Settings")]
-		[SerializeField] private float _walkForce;
-		[SerializeField] private float _runForce;
-		[SerializeField] private float _sprintForce;
+		[Header("Movement settings")]
+		[SerializeField] private float _walkSpeed;
+		[SerializeField] private float _runSpeed;
+		[SerializeField] private float _sprintSpeed;
 		[SerializeField] private float _moveMulti;
 		[SerializeField] private float _standMulti;
-		[Space]
+		[SerializeField] private float _attackMulti;
 		[SerializeField] private float _jumpForce;
 		[SerializeField] private float _jumpDelay;
-		[Space]
-		[SerializeField] private float _dodgeCooldown;
-		[SerializeField] private float _dodgeDelay;
-		[Space]
-		[SerializeField] private float _airForce;
+		[SerializeField] private float _airSpeedMulti;
 		[SerializeField] private float _airDirectionMulti;
 		[SerializeField] private float _gravityMulti;
-		
+		[SerializeField] private float _dodgeCooldown;
+		[SerializeField] private float _dodgeDelay;
 		[Header("SlopeAngle")]
 		[SerializeField] private float _maxSlopeAngle;
-		
 		[Header("IsGround settings")]
 		[SerializeField] private float _maxCastDistance;
 		[SerializeField] private float _sphereCastRadius;
 		[SerializeField] private LayerMask _hitboxLayer;
 
 		private enum EMove
-		{ None, Dodge, Attack, Block }
+		{ None, Stand, Move, Jump, Fall, Dodge, Attack, Block }
 
-		private EMove _move;
+		[SerializeField] private EMove _move;
 
-		private bool _tryMove;
-		private bool _inAir;
-		private bool _isJump;
+		private bool _isLanded;
 		private bool _canJump = true;
 		private bool _canDodge = true;
 
-		private float _requiredForce;
-		private float _yForce;
+		private float _requiredSpeed;
+		private float _ySpeed;
 
 		private Vector3 _forwardDirection;
 		private Vector3 _lockedDirection;
@@ -80,7 +74,7 @@ namespace Scripts.Player
 		{
 			_camera = Camera.main.transform;
 			_controls = _inputController.Controls;
-			_requiredForce = _runForce;
+			_requiredSpeed = _runSpeed;
 		}
 
 		private void OnEnable()
@@ -113,105 +107,182 @@ namespace Scripts.Player
 		private void Move() 
 		{
 			var direction = _inputController.MoveDirection;
-
-			if (direction == Vector2.zero)
+			
+			if (_move == EMove.Jump || _move == EMove.Fall)
 			{
-				_tryMove = false;
-				_requiredForce = 0;
+				if (direction == Vector2.zero) _requiredSpeed = 0;
+				else _requiredSpeed = _runSpeed;
 			}
-			else
-			{
-				_tryMove = true;
-				_requiredForce = _runForce;
-			}
+			
+			if (_move != EMove.Dodge && _move != EMove.Block && _move != EMove.Attack) ChangeMoveState();
 		}
 
 		private void MovePlayer()
 		{	
-			Vector3 direction;
-			
 			OnMoving?.Invoke(_inputController.MoveDirection);
 			
-			if (_inAir)
+			if (!IsGrounded()) _ySpeed += Physics.gravity.y * Time.deltaTime * _gravityMulti;
+			
+			if (_move == EMove.Dodge) 
 			{
-				_yForce += Physics.gravity.y * Time.deltaTime * _gravityMulti;
-				_lockedDirection += GetForwardDirection() * _airDirectionMulti;
-				direction = DirectionLimit(_lockedDirection);
+				_lockedDirection.y = _ySpeed;
+				_characterController.Move(_lockedDirection * Time.deltaTime);
+				return;
 			}
-			else
+			// FIXME при атаке в воздухе игрок навсегда зависает
+			if (_move == EMove.Attack)
 			{
-				if (!_tryMove && _currentForce != _requiredForce || _move == EMove.Attack)
-				{
-					ChangeForce(_standMulti);
-					direction = _moveDirection.normalized * _currentForce;
-				}
-				else
-				{
-					ChangeForce(_moveMulti);
-					direction = GetForwardDirection() * _currentForce;
-				}
+				ChangeSpeed(_attackMulti);
+				return;
+			}
+			if (_move == EMove.Stand && _currentSpeed != _requiredSpeed)
+			{
+				ChangeSpeed(_standMulti); 
+				_moveDirection = _forwardDirection.normalized * _currentSpeed;
+				_moveDirection.y = _ySpeed;
+				_characterController.Move(_moveDirection * Time.deltaTime);
+				return;
+			}
+			if (_move == EMove.Jump || _move == EMove.Fall)
+			{
+				ChangeSpeed(_airSpeedMulti); 
+				_moveDirection = GetForwardDirection();
+				var direction = _lockedDirection + _moveDirection * _airDirectionMulti * _currentSpeed;
+				direction.y = _ySpeed;
+				_characterController.Move(direction * Time.deltaTime);
+				return;
 			}
 			
-			if (_move == EMove.Dodge) direction = _lockedDirection;
+			if (_move == EMove.Move || _move == EMove.Block) ChangeSpeed(_moveMulti);
 			
-			direction.y = _yForce;
-			_moveDirection = direction;
+			_moveDirection = GetForwardDirection();
+			_moveDirection *= _currentSpeed;
+			_moveDirection.y = _ySpeed;
+
 			_characterController.Move(_moveDirection * Time.deltaTime);
 		}
 		
-		private void MoveState(EMove move = EMove.None)
+		private bool ChangeMoveState(EMove move = EMove.None)
 		{
-			switch (move)
+			var direction = _inputController.MoveDirection;
+			
+			if (move == EMove.None && direction == Vector2.zero && _isLanded)
 			{
-				case EMove.None:
-					_requiredForce = _runForce;
-					break;
-				
-				case EMove.Attack:
-					_requiredForce = 0;
-					break;
-				
-				case EMove.Dodge:
-					_lockedDirection = GetForwardDirection() * _runForce;
-					_lockedDirection.y = _yForce;
-					break;
-				
-				case EMove.Block:
-					_requiredForce = _walkForce;
-					break;
+				_requiredSpeed = 0;
+				_move = EMove.Stand;
+				SendEvents();
+				return true;
 			}
 			
-			_move = move;
-			SendEvents();
+			if (move == EMove.None && direction != Vector2.zero && _isLanded)
+			{
+				_requiredSpeed = _runSpeed;
+				_move = EMove.Move;
+				SendEvents();
+				return true;
+			}
+			
+			if ((move == EMove.Jump || move == EMove.Fall) && _move != EMove.Jump && _move != EMove.Dodge && _move != EMove.Attack)
+			{
+				_lockedDirection = GetForwardDirection();
+				_lockedDirection *= _currentSpeed;
+				_requiredSpeed = _runSpeed;
+				_ySpeed = move == EMove.Jump ? _jumpForce : 0;
+				_canJump = false;
+				_move = move;
+				SendEvents();
+				return true;
+			}
+			
+			if (move == EMove.Dodge && _move != EMove.Attack && _move != EMove.Jump && _move != EMove.Fall)
+			{
+				_lockedDirection = GetForwardDirection();
+				_lockedDirection *= _runSpeed;
+				_move = move;
+				SendEvents();
+				return true;
+			}
+			
+			if (move == EMove.Attack && _move != EMove.Dodge)
+			{
+				_requiredSpeed = 0;
+				_move = move;
+				SendEvents();
+				return true;
+			}
+			
+			if (move == EMove.Block && _move != EMove.Dodge && _move != EMove.Attack)
+			{
+				_requiredSpeed =  _runSpeed;
+				_move = move;
+				SendEvents();
+				return true;
+			}
+			
+			return false;
 		}
 		
 		private void SendEvents()
 		{
-			if (_move != EMove.Block || _inAir) OnBlock?.Invoke(false);
-			if (_move == EMove.Block) OnBlock?.Invoke(true);
-			OnSprint?.Invoke(false);
+			if (_move == EMove.Stand)
+			{
+				InAir?.Invoke(false);
+				OnSprint?.Invoke(false);
+				OnBlock?.Invoke(false);
+			}
+			if (_move == EMove.Move)
+			{
+				InAir?.Invoke(false);
+				OnBlock?.Invoke(false);
+			}
+			if (_move == EMove.Jump)
+			{
+				OnSprint?.Invoke(false);
+				OnBlock?.Invoke(false);
+				InAir?.Invoke(true);
+				OnJump?.Invoke();
+			}
+			if (_move == EMove.Fall)
+			{
+				OnSprint?.Invoke(false);
+				OnBlock?.Invoke(false);
+				InAir?.Invoke(true);
+			}
+			if (_move == EMove.Dodge) 
+			{
+				OnSprint?.Invoke(false);
+				OnBlock?.Invoke(false);
+				OnDodge?.Invoke();
+			}
+			if (_move == EMove.Attack)
+			{
+				OnSprint?.Invoke(false);
+				OnBlock?.Invoke(false);
+			}
+			if (_move == EMove.Block)
+			{
+				OnSprint?.Invoke(false);
+				OnBlock?.Invoke(true);
+			}
 		}
 		
-		private void ChangeForce(float multi)
+		private void ChangeSpeed(float multi)
 		{
 			float coef;
-			if (_currentForce == _requiredForce) return;
-			else if (_currentForce < _requiredForce) coef = 1;
+			if (_currentSpeed == _requiredSpeed) return;
+			else if (_currentSpeed < _requiredSpeed) coef = 1;
 			else coef = -1;
 			
-			_currentForce += coef * Time.deltaTime * 10 * multi;
+			_currentSpeed += coef * Time.deltaTime * 10 * multi;
 			
-			if (Math.Abs(_requiredForce - _currentForce) < 0.5f) _currentForce = _requiredForce;
+			if (Math.Abs(_requiredSpeed - _currentSpeed) < 0.5f) _currentSpeed = _requiredSpeed;
 		}
 		
 		private void Jump()
 		{
-			if (!_inAir && _canJump && _move != EMove.Dodge && _move != EMove.Attack)
+			if (_canJump)
 			{
-				_canJump = false;
-				_isJump = true;
-				OnJump?.Invoke();
-				_yForce = _jumpForce;
+				ChangeMoveState(EMove.Jump);
 			}
 		}
 
@@ -219,7 +290,7 @@ namespace Scripts.Player
 		// If the player does not move then play an evasion animation
 		// When the player moves, play a dodge animation
 		
-		// Speed up the animatio
+		// Speed up the animation
 		
 		// Separate evasion animations when locked on enemy
 		// * forward			| default forward roll
@@ -229,54 +300,50 @@ namespace Scripts.Player
 		// Roll may have the wrong direction
 		private void Dodge()
 		{
-			if (!_inAir && _canDodge && _move != EMove.Attack)
+			if (_canDodge && ChangeMoveState(EMove.Dodge))
 			{
 				_canDodge = false;
-				OnDodge?.Invoke();
-				MoveState(EMove.Dodge);
 				StartCoroutine(DodgeDelay());
 			}
 		}
 
 		private void Sprint(bool pressed)
-		{
-			_requiredForce = pressed ? _sprintForce : _runForce;
+		{	
+			// if (_move == EMove.Block) _requiredSpeed = pressed ? _runSpeed : _walkSpeed;
+			// if (_move == EMove.Move) _requiredSpeed = pressed ? _sprintSpeed : _runSpeed;
+			_requiredSpeed = pressed ? _sprintSpeed : _runSpeed;
 		}
 		
 		// TODO Realize block
 		// TODO Special animation for movement when block
 		private void Block(bool pressed)
 		{
-			if (pressed && _move == EMove.None) MoveState(EMove.Block);
-			if (!pressed && _move == EMove.Block) MoveState();
+			if (pressed) ChangeMoveState(EMove.Block);
+			else if (_move != EMove.Dodge) ChangeMoveState();
 		}
 
 		// TODO Start moving before the attack ends
 		// take the animation time from combo system ??
 		private void IsAttacking(bool isAttacking)
 		{
-			if (isAttacking && _move != EMove.Dodge) MoveState(EMove.Attack);
-			if (!isAttacking) MoveState();
+			if (isAttacking) ChangeMoveState(EMove.Attack);
+			else ChangeMoveState();
 		}
 
 		private void CheckLand()
 		{
-			if (!IsGrounded() && !_inAir)
+			if (_isLanded && !IsGrounded())
 			{
-				_inAir = true;
-				InAir?.Invoke(true);
-				if (_isJump) _isJump = false;
-				else _yForce = 0;
-				_currentForce = _airForce;
-				_lockedDirection = GetForwardDirection() * _currentForce;
-				SendEvents();
+				_isLanded = false;
+				ChangeMoveState(EMove.Fall);
 			}
 
-			if (IsGrounded() && _inAir)
+			if (!_isLanded && IsGrounded())
 			{
-				_inAir = false;
-				InAir?.Invoke(false);
-				_yForce = Physics.gravity.y;
+				_isLanded = true;
+				_ySpeed = Physics.gravity.y;
+				ChangeMoveState();
+				if (_controls.Gameplay.Block.IsPressed()) Block(true); 
 				StartCoroutine(JumpDelay());
 			}
 		}
@@ -291,7 +358,7 @@ namespace Scripts.Player
 		private IEnumerator DodgeDelay()
 		{
 			yield return new WaitForSeconds(_dodgeCooldown + _dodgeDelay);
-			MoveState();
+			ChangeMoveState();
 			_canDodge = true;
 		}
 
@@ -312,18 +379,6 @@ namespace Scripts.Player
 			var direction = _inputController.MoveDirection;
 			_forwardDirection = direction.y * _camera.forward + direction.x * _camera.right;
 			return _forwardDirection.normalized;
-		}
-
-		private Vector3 DirectionLimit(Vector3 direction)
-		{
-			float force = _airForce;
-			
-			if (direction.x > force) direction.x = force;
-			if (direction.x < -force) direction.x = -force;
-			if (direction.z > force) direction.z = force;
-			if (direction.z < -force) direction.z = -force;
-			
-			return direction;
 		}
 		
 		private bool IsGrounded()
@@ -367,7 +422,7 @@ namespace Scripts.Player
 
 		public bool CanRotate()
 		{
-			if (_move == EMove.Dodge || _inAir) return false;
+			if (_move == EMove.Dodge || _move == EMove.Jump || _move == EMove.Fall) return false;
 			return true;
 		}
 

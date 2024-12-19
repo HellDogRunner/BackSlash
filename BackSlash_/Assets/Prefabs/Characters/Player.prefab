@@ -3013,26 +3013,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterController: {fileID: 3184469423278028609}
-  _currentForce: 0
+  _currentSpeed: 0
   _moveDirection: {x: 0, y: 0, z: 0}
-  _walkForce: 2
-  _runForce: 6
-  _sprintForce: 8
+  _walkSpeed: 3
+  _runSpeed: 6
+  _sprintSpeed: 8
   _moveMulti: 2.5
-  _standMulti: 3
+  _standMulti: 4
+  _attackMulti: 2.5
   _jumpForce: 10
   _jumpDelay: 0.2
-  _dodgeCooldown: 1.167
-  _dodgeDelay: -0.2
-  _airForce: 6
+  _airSpeedMulti: 1.5
   _airDirectionMulti: 0.5
   _gravityMulti: 3.5
+  _dodgeCooldown: 1.167
+  _dodgeDelay: -0.2
   _maxSlopeAngle: 30
   _maxCastDistance: 1
   _sphereCastRadius: 0.25
   _hitboxLayer:
     serializedVersion: 2
     m_Bits: 63
+  _move: 0
+  _requiredSpeed: 0
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
