@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using Unity.Mathematics;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Zenject;
 
@@ -10,24 +8,26 @@ namespace Scripts.Player
 	public class MovementController : MonoBehaviour
 	{
 		[SerializeField] private CharacterController _characterController;
+		
 		[Header("Monitoring")]
-		[SerializeField] private float _currentForce;
+		[SerializeField] private float _currentSpeed;
 		[SerializeField] private Vector3 _moveDirection;
+		
 		[Header("Settings")]
-		[SerializeField] private float _walkForce;
-		[SerializeField] private float _runForce;
-		[SerializeField] private float _sprintForce;
+		[SerializeField] private float _walkSpeed;
+		[SerializeField] private float _lockedSpeed;
+		[SerializeField] private float _runSpeed;
+		[SerializeField] private float _sprintSpeed;
 		[SerializeField] private float _moveMulti;
 		[SerializeField] private float _standMulti;
 		[Space]
-		[SerializeField] private float _jumpForce;
+		[SerializeField] private float _jumpSpeed;
 		[SerializeField] private float _jumpDelay;
 		[Space]
 		[SerializeField] private float _dodgeCooldown;
 		[SerializeField] private float _dodgeDelay;
 		[Space]
-		[SerializeField] private float _airForce;
-		[SerializeField] private float _airMulti;
+		[SerializeField] private float _airSpeed;
 		[SerializeField] private float _airDirectionMulti;
 		[SerializeField] private float _gravityMulti;
 		
@@ -47,20 +47,27 @@ namespace Scripts.Player
 		private bool _tryMove;
 		private bool _inAir;
 		private bool _isJump;
+		private bool _isSprint;
+		private bool _isLock;
 		private bool _canJump = true;
 		private bool _canDodge = true;
 
-		private float _requiredForce;
+		private float _requiredSpeed;
 		private float _yForce;
 
-		private Vector3 _forwardDirection;
 		private Vector3 _lockedDirection;
 
 		private InputController _inputController;
 		private ComboSystem _comboSystem;
+		private TargetLock _targetLock;
 		private Transform _camera;
 
-		public event Action<Vector2> OnMoving;
+		public bool IsSprint => _isSprint;
+		// public float Speed => _currentSpeed;
+
+		public event Action<Vector2> OnLockMove;
+		public event Action<float> OnFreeMove;
+		public event Action<bool> OnTryMove;
 		public event Action<bool> PlaySteps;
 		public event Action<bool> OnSprint;
 		public event Action<bool> OnBlock;
@@ -72,16 +79,17 @@ namespace Scripts.Player
 		private float _currenthitdisance;
 
 		[Inject]
-		private void Construct(InputController inputController, ComboSystem comboSystem)
+		private void Construct(InputController inputController, ComboSystem comboSystem, TargetLock targetLock)
 		{
 			_inputController = inputController;
 			_comboSystem = comboSystem;
+			_targetLock = targetLock;
 		}
 
 		private void Awake()
 		{
 			_camera = Camera.main.transform;
-			_requiredForce = _runForce;
+			_requiredSpeed = _runSpeed;
 		}
 
 		private void OnEnable()
@@ -92,6 +100,7 @@ namespace Scripts.Player
 			_inputController.OnDodgeKeyPressed += Dodge;
 			_inputController.OnBlockPressed += Block;
 			_comboSystem.IsAttacking += IsAttacking;
+			_targetLock.OnSwitchLock += Lock;
 		}
 
 		private void OnDisable()
@@ -102,6 +111,7 @@ namespace Scripts.Player
 			_inputController.OnDodgeKeyPressed -= Dodge;
 			_inputController.OnBlockPressed -= Block;
 			_comboSystem.IsAttacking -= IsAttacking;
+			_targetLock.OnSwitchLock -= Lock;
 		}
 
 		private void Update()
@@ -118,38 +128,54 @@ namespace Scripts.Player
 			if (direction == Vector2.zero)
 			{
 				_tryMove = false;
-				_requiredForce = 0;
+				_requiredSpeed = 0;
 			}
 			else
 			{
 				_tryMove = true;
-				_requiredForce = _runForce;
-			}	
+				_requiredSpeed = _runSpeed;
+				if (_inAir) _requiredSpeed = _airSpeed;
+				if (_isLock)
+				{
+					if (direction.x != 0 || direction.y == -1) _requiredSpeed = _lockedSpeed;
+				}
+				if (_isSprint) _requiredSpeed = _sprintSpeed;
+			}
+			
+			OnTryMove?.Invoke(_tryMove);
 		}
 
 		private void MovePlayer()
 		{	
 			Vector3 direction;
-			OnMoving?.Invoke(_inputController.MoveDirection);
 			
+			_requiredSpeed = _isSprint ? 3 : 2;
+			if (_move == EMove.Block) _requiredSpeed = 1;
+			if (!_tryMove)_requiredSpeed = 0;
+			ChangeSpeed(_moveMulti);
+			
+			var moveDirection = _inputController.MoveDirection;
+			OnLockMove?.Invoke(moveDirection * _currentSpeed);	
+			OnFreeMove?.Invoke(_currentSpeed);
+
 			if (_inAir)
 			{
 				_yForce += Physics.gravity.y * Time.deltaTime * _gravityMulti;
 				_lockedDirection = TryNormalize(_lockedDirection + GetMoveDirection() * _airDirectionMulti);
-				direction = _lockedDirection * _currentForce;
+				direction = _lockedDirection * _currentSpeed;
 			}
 			else
 			{
-				if (!_tryMove && _currentForce != _requiredForce || _move == EMove.Attack)
+				if (!_tryMove && _currentSpeed != _requiredSpeed || _move == EMove.Attack)
 				{
-					_moveDirection /= _currentForce;
-					ChangeForce(_standMulti);
-					direction = _moveDirection * _currentForce;
+					_moveDirection /= _currentSpeed;
+					//ChangeForce(_standMulti);
+					direction = _moveDirection * _currentSpeed;
 				}
 				else
 				{
-					ChangeForce(_moveMulti);
-					direction = GetMoveDirection() * _currentForce;
+					//ChangeForce(_moveMulti);
+					direction = GetMoveDirection() * _currentSpeed;
 				}
 			}
 			
@@ -157,7 +183,7 @@ namespace Scripts.Player
 			
 			direction.y = _yForce;
 			_moveDirection = direction;
-			_characterController.Move(_moveDirection * Time.deltaTime);
+			_characterController.Move(new Vector3(0, _yForce, 0) * Time.deltaTime);
 		}
 		
 		private void MoveState(EMove move = EMove.None)
@@ -165,20 +191,20 @@ namespace Scripts.Player
 			switch (move)
 			{
 				case EMove.None:
-					_requiredForce = _runForce;
+					_requiredSpeed = _runSpeed;
 					break;
 				
 				case EMove.Attack:
-					_requiredForce = 0;
+					_requiredSpeed = 0;
 					break;
 				
 				case EMove.Dodge:
-					_lockedDirection = GetMoveDirection() * _runForce;
+					_lockedDirection = GetMoveDirection() * _runSpeed;
 					_lockedDirection.y = _yForce;
 					break;
 				
 				case EMove.Block:
-					_requiredForce = _walkForce;
+					_requiredSpeed = _walkSpeed;
 					break;
 			}
 			
@@ -193,16 +219,16 @@ namespace Scripts.Player
 			OnSprint?.Invoke(false);
 		}
 		
-		private void ChangeForce(float multi)
+		private void ChangeSpeed(float multi)
 		{
 			float coef;
-			if (_currentForce == _requiredForce) return;
-			else if (_currentForce < _requiredForce) coef = 1;
+			if (_currentSpeed == _requiredSpeed) return;
+			else if (_currentSpeed < _requiredSpeed) coef = 1;
 			else coef = -1;
 			
-			_currentForce += coef * Time.deltaTime * 10 * multi;
+			_currentSpeed += coef * Time.deltaTime * 10 * multi;
 			
-			if (Math.Abs(_requiredForce - _currentForce) < 0.5f) _currentForce = _requiredForce;
+			if (Math.Abs(_requiredSpeed - _currentSpeed) < 0.5f) _currentSpeed = _requiredSpeed;
 		}
 		
 		private void Jump()
@@ -212,7 +238,7 @@ namespace Scripts.Player
 				_canJump = false;
 				_isJump = true;
 				OnJump?.Invoke();
-				_yForce = _jumpForce;
+				_yForce = _jumpSpeed;
 			}
 		}
 
@@ -241,7 +267,8 @@ namespace Scripts.Player
 
 		private void Sprint(bool pressed)
 		{
-			_requiredForce = pressed ? _sprintForce : _runForce;
+			_isSprint = pressed ? true : false;
+			Move();
 		}
 		
 		// TODO Realize block
@@ -260,11 +287,17 @@ namespace Scripts.Player
 			if (!isAttacking) MoveState();
 		}
 
+		private void Lock(bool locked)
+		{
+			_isLock = locked ? true : false;
+			Move();
+		}
+
 		private void CheckLand()
 		{
 			if (!IsGrounded() && !_inAir)
 			{
-				_currentForce = _airForce;
+				_currentSpeed = _airSpeed;
 				_lockedDirection = GetMoveDirection();
 				_inAir = true;
 				InAir?.Invoke(true);
@@ -317,8 +350,7 @@ namespace Scripts.Player
 		public Vector3 GetMoveDirection()
 		{
 			var direction = _inputController.MoveDirection;
-			_forwardDirection = direction.y * _camera.forward + direction.x * _camera.right;
-			return _forwardDirection.normalized;
+			return (direction.y * _camera.forward + direction.x * _camera.right).normalized;
 		}
 
 		private bool IsGrounded()

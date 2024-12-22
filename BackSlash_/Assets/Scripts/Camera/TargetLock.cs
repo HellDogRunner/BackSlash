@@ -60,7 +60,7 @@ public class TargetLock : MonoBehaviour
 		   }).AddTo(this);
 	}
 
-	private void Update()
+	private void FixedUpdate()
 	{
 		if (_currentTarget)
 		{

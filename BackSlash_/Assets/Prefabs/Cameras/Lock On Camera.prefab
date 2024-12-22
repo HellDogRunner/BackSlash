@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8434345467027976708}
   - component: {fileID: 432056560207686025}
-  - component: {fileID: 1230935717740370295}
-  - component: {fileID: 541735125515752033}
+  - component: {fileID: 6037700167640687370}
+  - component: {fileID: 5023716986896793146}
   m_Layer: 0
   m_Name: Lock On Camera
   m_TagString: Untagged
@@ -27,13 +27,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9026180572280313718}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.028499706, y: -4.814441e-16, z: 1.12442995e-17, w: 0.9995938}
+  m_LocalRotation: {x: 0.028497342, y: 0, z: 0, w: 0.9995939}
   m_LocalPosition: {x: 10, y: 3, z: -9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 3.266, y: 0, z: 0}
 --- !u!114 &432056560207686025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 12
---- !u!114 &1230935717740370295
+--- !u!114 &6037700167640687370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,17 +86,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 9026180572280313718}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b617507da6d07e749b7efdb34e1173e1, type: 3}
+  m_Script: {fileID: 11500000, guid: 625c14eee3ad46c99df7c7c891ef668a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TrackerSettings:
-    BindingMode: 1
-    PositionDamping: {x: 1, y: 1, z: 1}
-    AngularDampingMode: 0
-    RotationDamping: {x: 1, y: 1, z: 1}
-    QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 3, z: -4}
---- !u!114 &541735125515752033
+  Damping: {x: 1, y: 1, z: 1}
+  ShoulderOffset: {x: 0, y: 1, z: -3}
+  VerticalArmLength: 0
+  CameraSide: 0
+  CameraDistance: 0
+  AvoidObstacles:
+    Enabled: 0
+    CollisionFilter:
+      serializedVersion: 2
+      m_Bits: 1
+    IgnoreTag: 
+    CameraRadius: 0.2
+    DampingIntoCollision: 0
+    DampingFromCollision: 0.5
+--- !u!114 &5023716986896793146
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,7 +126,7 @@ MonoBehaviour:
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 1.3, z: 0}
-  Damping: {x: 1, y: 1}
+  Damping: {x: 0.3, y: 0.3}
   Lookahead:
     Enabled: 0
     Time: 0

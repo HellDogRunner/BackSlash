@@ -1092,7 +1092,7 @@ GameObject:
   - component: {fileID: 1980477631159129699}
   - component: {fileID: 962996716132711058}
   m_Layer: 0
-  m_Name: SM_Chr_Mercenary_Male_01
+  m_Name: Model
   m_TagString: CharacterController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3013,19 +3013,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterController: {fileID: 3184469423278028609}
-  _currentForce: 0
+  _currentSpeed: 0
   _moveDirection: {x: 0, y: 0, z: 0}
-  _walkForce: 2
-  _runForce: 6
-  _sprintForce: 8
-  _moveMulti: 2.5
+  _walkSpeed: 1.5
+  _lockedSpeed: 3.4
+  _runSpeed: 4.5
+  _sprintSpeed: 6
+  _moveMulti: 2
   _standMulti: 3
-  _jumpForce: 10
+  _jumpSpeed: 10
   _jumpDelay: 0.2
   _dodgeCooldown: 1.167
   _dodgeDelay: -0.2
-  _airForce: 6
-  _airMulti: 0.2
+  _airSpeed: 4.5
   _airDirectionMulti: 0.05
   _gravityMulti: 3.5
   _maxSlopeAngle: 30
@@ -3034,7 +3034,6 @@ MonoBehaviour:
   _hitboxLayer:
     serializedVersion: 2
     m_Bits: 63
-  _lockedDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3090,9 +3089,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b803daacd1629764fbd1a29bab1987a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseOrientation: {fileID: 655372459109497677}
-  _rotationTime: 30
-  _turnSpeed: 25
+  _lookAt: {fileID: 8912080351853966069}
+  _rotationTime: 0.6
+  _turnTime: 0.15
   _delayRotationTime: 2
 --- !u!114 &4037733144099541882
 MonoBehaviour:

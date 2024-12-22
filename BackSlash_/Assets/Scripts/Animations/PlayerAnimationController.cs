@@ -31,14 +31,16 @@ namespace Scripts.Animations
 		{
 			_weaponController.OnWeaponEquip += ShowWeapon;
 			
-			_targetLock.OnSwitchLock += SwitchStrafeAnimation;
+			_targetLock.OnSwitchLock += SwitchLock;
 			
 			_movementController.OnJump += JumpAnimation;
 			_movementController.InAir += InAirAnimation;
 			_movementController.OnDodge += DodgeAnimation;
 			_movementController.OnSprint += SprintAnimation;
 			_movementController.OnBlock += BlockAnimation;
-			_movementController.OnMoving += Move;
+			_movementController.OnLockMove += LockMove;
+			_movementController.OnFreeMove += FreeMove;
+			_movementController.OnTryMove += TryMove;
 			
 			_thirdPersonController.IsAttacking += PrimaryAttackAnimation;
 		}
@@ -47,25 +49,37 @@ namespace Scripts.Animations
 		{
 			_weaponController.OnWeaponEquip -= ShowWeapon;
 			
-			_targetLock.OnSwitchLock -= SwitchStrafeAnimation;
+			_targetLock.OnSwitchLock -= SwitchLock;
 
 			_movementController.OnJump -= JumpAnimation;
 			_movementController.InAir -= InAirAnimation;
 			_movementController.OnDodge -= DodgeAnimation;
 			_movementController.OnSprint -= SprintAnimation;
 			_movementController.OnBlock -= BlockAnimation;
-			_movementController.OnMoving -= Move;
+			_movementController.OnLockMove -= LockMove;
+			_movementController.OnFreeMove -= FreeMove;
+			_movementController.OnTryMove -= TryMove;
 
 			_thirdPersonController.IsAttacking -= PrimaryAttackAnimation;
 		}
 
-		private void Move(Vector2 direction)
+		private void LockMove(Vector2 direction)
 		{
 			_animator.SetFloat("InputX", direction.x, _smoothBlend, Time.deltaTime);
 			_animator.SetFloat("InputY", direction.y, _smoothBlend, Time.deltaTime);
 		}
 
-		private void SwitchStrafeAnimation(bool value)
+		private void FreeMove(float speed)
+		{
+			_animator.SetFloat("Speed", speed, _smoothBlend, Time.deltaTime);
+		}
+
+		private void TryMove(bool move)
+		{
+			_animator.SetBool("Move", move);
+		}
+
+		private void SwitchLock(bool value)
 		{
 			_animator.SetBool("TargetLock", value);
 		}
@@ -88,21 +102,26 @@ namespace Scripts.Animations
 
 		private void DodgeAnimation()
 		{
-			_animator.Play("Dodge");
+			_animator.SetTrigger("Dodge");
+			//_animator.Play("Dodge");
 		}
 
 		private void ShowWeapon(bool equip)
 		{
 			if (equip)
 			{
-				_animator.SetTrigger("Equip");
-				_animator.runtimeAnimatorController = _swordOverride;
+				//_animator.Play("Equip");
+				//_animator.runtimeAnimatorController = _swordOverride;
 			}
 			else 
 			{
-				_animator.SetTrigger("Unequip");
-				_animator.runtimeAnimatorController = _mainOverride;
+				//_animator.SetTrigger("Unequip");
+				//_animator.runtimeAnimatorController = ;
 			}
+			
+			_animator.runtimeAnimatorController = equip ? _swordOverride : _mainOverride;
+			_animator.SetBool("Armed", equip);
+			_animator.SetTrigger("Equip");
 		}
 
 		private void PrimaryAttackAnimation(bool isAttacking)
