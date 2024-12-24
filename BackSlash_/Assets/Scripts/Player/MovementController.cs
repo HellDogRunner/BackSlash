@@ -11,6 +11,7 @@ namespace Scripts.Player
 		
 		[Header("Monitoring")]
 		[SerializeField] private float _currentSpeed;
+		[SerializeField] private Vector2 _movePlayer;
 		[SerializeField] private Vector3 _moveDirection;
 		
 		[Header("Settings")]
@@ -19,7 +20,7 @@ namespace Scripts.Player
 		[SerializeField] private float _runSpeed;
 		[SerializeField] private float _sprintSpeed;
 		[SerializeField] private float _moveMulti;
-		[SerializeField] private float _standMulti;
+		[SerializeField] private float _lockedMulti;
 		[Space]
 		[SerializeField] private float _jumpSpeed;
 		[SerializeField] private float _jumpDelay;
@@ -56,6 +57,7 @@ namespace Scripts.Player
 		private float _yForce;
 
 		private Vector3 _lockedDirection;
+		[SerializeField] private Vector2 _offsetDirection;
 
 		private InputController _inputController;
 		private ComboSystem _comboSystem;
@@ -147,16 +149,13 @@ namespace Scripts.Player
 
 		private void MovePlayer()
 		{	
-			Vector3 direction;
+			var direction = Vector3.zero;
 			
-			_requiredSpeed = _isSprint ? 3 : 2;
-			if (_move == EMove.Block) _requiredSpeed = 1;
-			if (!_tryMove)_requiredSpeed = 0;
-			ChangeSpeed(_moveMulti);
+			_requiredSpeed = _isSprint ? 2 : 1;
+			if (!_tryMove) _requiredSpeed = 0;
 			
-			var moveDirection = _inputController.MoveDirection;
-			OnLockMove?.Invoke(moveDirection * _currentSpeed);	
-			OnFreeMove?.Invoke(_currentSpeed);
+			OnLockMove?.Invoke(_inputController.MoveDirection);
+			OnFreeMove?.Invoke(_requiredSpeed);
 
 			if (_inAir)
 			{
@@ -168,22 +167,22 @@ namespace Scripts.Player
 			{
 				if (!_tryMove && _currentSpeed != _requiredSpeed || _move == EMove.Attack)
 				{
-					_moveDirection /= _currentSpeed;
+					//_moveDirection /= _currentSpeed;
 					//ChangeForce(_standMulti);
-					direction = _moveDirection * _currentSpeed;
+					//direction = _moveDirection * _currentSpeed;
 				}
 				else
 				{
 					//ChangeForce(_moveMulti);
-					direction = GetMoveDirection() * _currentSpeed;
+					//direction = GetMoveDirection() * _currentSpeed;
 				}
 			}
 			
-			if (_move == EMove.Dodge) direction = _lockedDirection;
+			if (_move == EMove.Dodge) //direction = _lockedDirection; блочить направление при додже
 			
 			direction.y = _yForce;
 			_moveDirection = direction;
-			_characterController.Move(new Vector3(0, _yForce, 0) * Time.deltaTime);
+			_characterController.Move(_moveDirection * Time.deltaTime);
 		}
 		
 		private void MoveState(EMove move = EMove.None)
@@ -223,12 +222,12 @@ namespace Scripts.Player
 		{
 			float coef;
 			if (_currentSpeed == _requiredSpeed) return;
-			else if (_currentSpeed < _requiredSpeed) coef = 1;
-			else coef = -1;
+			else coef = _currentSpeed < _requiredSpeed ? 1 : -1;
 			
-			_currentSpeed += coef * Time.deltaTime * 10 * multi;
+			coef = coef * Time.deltaTime * multi;
+			_currentSpeed += coef;
 			
-			if (Math.Abs(_requiredSpeed - _currentSpeed) < 0.5f) _currentSpeed = _requiredSpeed;
+			if (Math.Abs(_requiredSpeed - _currentSpeed) <= coef) _currentSpeed = _requiredSpeed;
 		}
 		
 		private void Jump()
@@ -268,6 +267,7 @@ namespace Scripts.Player
 		private void Sprint(bool pressed)
 		{
 			_isSprint = pressed ? true : false;
+			OnSprint?.Invoke(pressed);
 			Move();
 		}
 		

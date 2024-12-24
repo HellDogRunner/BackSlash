@@ -9,10 +9,9 @@ namespace Scripts.Animations
 	public class PlayerAnimationController : MonoBehaviour
 	{
 		[SerializeField] private Animator _animator;
-		[SerializeField] private float _smoothBlend = 0.1f;
 		[SerializeField] private AnimatorOverrideController _swordOverride;
 		[SerializeField] private AnimatorOverrideController _mainOverride;
-
+		[SerializeField] private float _smoothBlend;
 		private MovementController _movementController;
 		private TargetLock _targetLock;
 		private WeaponController _weaponController;
@@ -103,22 +102,10 @@ namespace Scripts.Animations
 		private void DodgeAnimation()
 		{
 			_animator.SetTrigger("Dodge");
-			//_animator.Play("Dodge");
 		}
 
 		private void ShowWeapon(bool equip)
 		{
-			if (equip)
-			{
-				//_animator.Play("Equip");
-				//_animator.runtimeAnimatorController = _swordOverride;
-			}
-			else 
-			{
-				//_animator.SetTrigger("Unequip");
-				//_animator.runtimeAnimatorController = ;
-			}
-			
 			_animator.runtimeAnimatorController = equip ? _swordOverride : _mainOverride;
 			_animator.SetBool("Armed", equip);
 			_animator.SetTrigger("Equip");

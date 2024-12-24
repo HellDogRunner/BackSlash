@@ -60,13 +60,12 @@ public class TargetLock : MonoBehaviour
 		   }).AddTo(this);
 	}
 
-	private void FixedUpdate()
+	private void Update()
 	{
 		if (_currentTarget)
 		{
-			Vector3 aimTarget = _currentTarget.transform.position + TargetOffsetY;
-			if (_aimIcon != null) _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(aimTarget);
-		}
+			if (_aimIcon != null) _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(_currentTarget.LookAt);
+		}	
 	}
 
 	private void AddTargets(Collider other)

@@ -3014,17 +3014,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterController: {fileID: 3184469423278028609}
   _currentSpeed: 0
+  _movePlayer: {x: 0, y: 0}
   _moveDirection: {x: 0, y: 0, z: 0}
   _walkSpeed: 1.5
   _lockedSpeed: 3.4
   _runSpeed: 4.5
   _sprintSpeed: 6
-  _moveMulti: 2
-  _standMulti: 3
+  _moveMulti: 5
+  _lockedMulti: 0.05
   _jumpSpeed: 10
   _jumpDelay: 0.2
-  _dodgeCooldown: 1.167
-  _dodgeDelay: -0.2
+  _dodgeCooldown: 0
+  _dodgeDelay: 0
   _airSpeed: 4.5
   _airDirectionMulti: 0.05
   _gravityMulti: 3.5
@@ -3034,6 +3035,7 @@ MonoBehaviour:
   _hitboxLayer:
     serializedVersion: 2
     m_Bits: 63
+  _offsetDirection: {x: 0, y: 0}
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3074,9 +3076,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 1259562901829629793}
-  _smoothBlend: 0.05
   _swordOverride: {fileID: 22100000, guid: 2b3567552a7c86f4db0e4520f4cc4dea, type: 2}
   _mainOverride: {fileID: 22100000, guid: 76317af943e834842bef78f0de7bfbd5, type: 2}
+  _smoothBlend: 0.05
 --- !u!114 &4003745565070631084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3090,8 +3092,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lookAt: {fileID: 8912080351853966069}
-  _rotationTime: 0.6
-  _turnTime: 0.15
+  _rotationTime: 0.7
+  _turnTime: 0.2
   _delayRotationTime: 2
 --- !u!114 &4037733144099541882
 MonoBehaviour:

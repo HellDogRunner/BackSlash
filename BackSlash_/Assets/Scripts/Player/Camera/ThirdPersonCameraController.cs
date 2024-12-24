@@ -65,7 +65,8 @@ namespace Scripts.Player.camera
 			IsAttacking?.Invoke(_isAttacking);
 		}
 		
-		// TODO delay before RotateToTarget() [?]
+		// TODO delay before RotateToTarget() [?!!]
+		
 		private void Update()
 		{
 			if (_targetLock.Target != null)
