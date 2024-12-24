@@ -14,16 +14,16 @@ namespace Scripts.Animations
 		[SerializeField] private float _smoothBlend;
 		private MovementController _movementController;
 		private TargetLock _targetLock;
+		private PlayerStateController _playerState;
 		private WeaponController _weaponController;
-		private ThirdPersonCameraController _thirdPersonController;
 
 		[Inject]
-		private void Construct(MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
+		private void Construct(PlayerStateController playerState, MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
 		{
+			_movementController = movementController;
 			_weaponController = weaponController;
 			_targetLock = targetLock;
-			_movementController = movementController;
-			_thirdPersonController = thirdPersonController;
+			_playerState = playerState;
 		}
 
 		private void Awake()
@@ -31,17 +31,17 @@ namespace Scripts.Animations
 			_weaponController.OnWeaponEquip += ShowWeapon;
 			
 			_targetLock.OnSwitchLock += SwitchLock;
-			
-			_movementController.OnJump += JumpAnimation;
-			_movementController.InAir += InAirAnimation;
-			_movementController.OnDodge += DodgeAnimation;
-			_movementController.OnSprint += SprintAnimation;
-			_movementController.OnBlock += BlockAnimation;
+
+			_movementController.OnJump += Jump;
+			_movementController.InAir += InAir;
+			_movementController.OnSprint += Sprint;
 			_movementController.OnLockMove += LockMove;
 			_movementController.OnFreeMove += FreeMove;
 			_movementController.OnTryMove += TryMove;
 			
-			_thirdPersonController.IsAttacking += PrimaryAttackAnimation;
+			_playerState.OnAttack += PrimaryAttack;
+			_playerState.OnBlock += Block;
+			_playerState.OnDodge += Dodge;
 		}
 
 		private void OnDestroy()
@@ -50,16 +50,22 @@ namespace Scripts.Animations
 			
 			_targetLock.OnSwitchLock -= SwitchLock;
 
-			_movementController.OnJump -= JumpAnimation;
-			_movementController.InAir -= InAirAnimation;
-			_movementController.OnDodge -= DodgeAnimation;
-			_movementController.OnSprint -= SprintAnimation;
-			_movementController.OnBlock -= BlockAnimation;
+			_movementController.OnJump -= Jump;
+			_movementController.InAir -= InAir;
+			_movementController.OnSprint -= Sprint;
 			_movementController.OnLockMove -= LockMove;
 			_movementController.OnFreeMove -= FreeMove;
 			_movementController.OnTryMove -= TryMove;
+			
+			_playerState.OnAttack -= PrimaryAttack;
+			_playerState.OnBlock -= Block;
+			_playerState.OnDodge -= Dodge;
+		}
 
-			_thirdPersonController.IsAttacking -= PrimaryAttackAnimation;
+		private void Update() 
+		{
+			var state = _animator.GetCurrentAnimatorStateInfo(0);
+			//Debug.Log(state.length);
 		}
 
 		private void LockMove(Vector2 direction)
@@ -83,23 +89,23 @@ namespace Scripts.Animations
 			_animator.SetBool("TargetLock", value);
 		}
 
-		private void SprintAnimation(bool isPressed)
+		private void Sprint(bool isPressed)
 		{
 			_animator.SetBool("IsSprint", isPressed);
 		}
 
-		private void JumpAnimation()
+		private void Jump()
 		{
 			_animator.Play("Jump");
 		}
 
-		private void InAirAnimation(bool isInAir)
+		private void InAir(bool isInAir)
 		{
 			_animator.SetBool("InAir", isInAir);
 			_animator.applyRootMotion = !isInAir;
 		}
 
-		private void DodgeAnimation()
+		private void Dodge(bool _)
 		{
 			_animator.SetTrigger("Dodge");
 		}
@@ -111,7 +117,7 @@ namespace Scripts.Animations
 			_animator.SetTrigger("Equip");
 		}
 
-		private void PrimaryAttackAnimation(bool isAttacking)
+		private void PrimaryAttack(bool isAttacking)
 		{
 			_animator.SetBool("Attacking", isAttacking);
 		}
@@ -126,7 +132,7 @@ namespace Scripts.Animations
 			_animator.SetTrigger("JumpCombo");
 		}
 
-		private void BlockAnimation(bool isBlocking)
+		private void Block(bool isBlocking)
 		{
 			_animator.SetBool("Block", isBlocking);
 		}

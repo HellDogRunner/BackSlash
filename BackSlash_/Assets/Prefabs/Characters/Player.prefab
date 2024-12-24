@@ -2949,6 +2949,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9154375475347445579}
   - component: {fileID: 7302232660279339191}
+  - component: {fileID: 3388258529717852234}
   - component: {fileID: 9087614315155568461}
   - component: {fileID: 1177957657704111061}
   - component: {fileID: 5530042786574198228}
@@ -3000,6 +3001,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   State: 0
+--- !u!114 &3388258529717852234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 168d644d85e9a374fb82f778ccd021c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  State: 0
 --- !u!114 &9087614315155568461
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3014,7 +3028,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterController: {fileID: 3184469423278028609}
   _currentSpeed: 0
-  _movePlayer: {x: 0, y: 0}
   _moveDirection: {x: 0, y: 0, z: 0}
   _walkSpeed: 1.5
   _lockedSpeed: 3.4
@@ -3029,7 +3042,6 @@ MonoBehaviour:
   _airSpeed: 4.5
   _airDirectionMulti: 0.05
   _gravityMulti: 3.5
-  _maxSlopeAngle: 30
   _maxCastDistance: 1
   _sphereCastRadius: 0.25
   _hitboxLayer:
@@ -3224,6 +3236,7 @@ MonoBehaviour:
   - {fileID: 5300293899505624239}
   - {fileID: 1177957657704111061}
   - {fileID: 7302232660279339191}
+  - {fileID: 3388258529717852234}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}

@@ -23,7 +23,7 @@ public class ComboSystem : MonoBehaviour
 	private ComboDatabase _comboData;
 	private WeaponController _weaponController;
 	private PlayerAnimationController _playerAnimationController;
-	private MovementController _movement;
+	private PlayerStateController _stateController;
 
 	private bool _ComboProgress = false;
 	private bool _isCanceling = false;
@@ -42,9 +42,9 @@ public class ComboSystem : MonoBehaviour
 	public event Action OnCannotAttack;
 
 	[Inject]
-	private void Construct(MovementController movement, ComboDatabase comboDatabase, WeaponController weaponController, PlayerAnimationController playerAnimationController)
+	private void Construct(PlayerStateController stateController, ComboDatabase comboDatabase, WeaponController weaponController, PlayerAnimationController playerAnimationController)
 	{
-		_movement = movement;
+		_stateController = stateController;
 		_comboData = comboDatabase;
 		_weaponController = weaponController;
 		_playerAnimationController = playerAnimationController;
@@ -86,7 +86,7 @@ public class ComboSystem : MonoBehaviour
 
 	private void RegisterInput(InputActionReference attackInput)
 	{
-		if (_weaponController.CurrentWeaponType != EWeaponType.None && Time.timeScale == 1 && _movement.CanAttack())
+		if (_weaponController.CurrentWeaponType != EWeaponType.None && Time.timeScale == 1 && _stateController.CanAttack())
 		{
 			if (_attackInterval != null) StopCoroutine(_attackInterval);
 

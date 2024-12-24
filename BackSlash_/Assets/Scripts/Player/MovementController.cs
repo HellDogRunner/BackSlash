@@ -11,7 +11,6 @@ namespace Scripts.Player
 		
 		[Header("Monitoring")]
 		[SerializeField] private float _currentSpeed;
-		[SerializeField] private Vector2 _movePlayer;
 		[SerializeField] private Vector3 _moveDirection;
 		
 		[Header("Settings")]
@@ -32,24 +31,15 @@ namespace Scripts.Player
 		[SerializeField] private float _airDirectionMulti;
 		[SerializeField] private float _gravityMulti;
 		
-		[Header("SlopeAngle")]
-		[SerializeField] private float _maxSlopeAngle;
-		
 		[Header("IsGround settings")]
 		[SerializeField] private float _maxCastDistance;
 		[SerializeField] private float _sphereCastRadius;
 		[SerializeField] private LayerMask _hitboxLayer;
 
-		private enum EMove
-		{ None, Dodge, Attack, Block }
-
-		private EMove _move;
-
 		private bool _tryMove;
 		private bool _inAir;
 		private bool _isJump;
 		private bool _isSprint;
-		private bool _isLock;
 		private bool _canJump = true;
 		private bool _canDodge = true;
 
@@ -60,11 +50,12 @@ namespace Scripts.Player
 		[SerializeField] private Vector2 _offsetDirection;
 
 		private InputController _inputController;
+		private PlayerStateController _state;
 		private ComboSystem _comboSystem;
-		private TargetLock _targetLock;
 		private Transform _camera;
 
 		public bool IsSprint => _isSprint;
+		public bool Air => _inAir;
 		// public float Speed => _currentSpeed;
 
 		public event Action<Vector2> OnLockMove;
@@ -72,20 +63,18 @@ namespace Scripts.Player
 		public event Action<bool> OnTryMove;
 		public event Action<bool> PlaySteps;
 		public event Action<bool> OnSprint;
-		public event Action<bool> OnBlock;
 		public event Action<bool> InAir;
-		public event Action OnDodge;
 		public event Action OnJump;
 
 		//debug gizmo parameter delete later
 		private float _currenthitdisance;
 
 		[Inject]
-		private void Construct(InputController inputController, ComboSystem comboSystem, TargetLock targetLock)
+		private void Construct(PlayerStateController stateController, InputController inputController, ComboSystem comboSystem)
 		{
 			_inputController = inputController;
+			_state = stateController;
 			_comboSystem = comboSystem;
-			_targetLock = targetLock;
 		}
 
 		private void Awake()
@@ -102,7 +91,6 @@ namespace Scripts.Player
 			_inputController.OnDodgeKeyPressed += Dodge;
 			_inputController.OnBlockPressed += Block;
 			_comboSystem.IsAttacking += IsAttacking;
-			_targetLock.OnSwitchLock += Lock;
 		}
 
 		private void OnDisable()
@@ -113,7 +101,6 @@ namespace Scripts.Player
 			_inputController.OnDodgeKeyPressed -= Dodge;
 			_inputController.OnBlockPressed -= Block;
 			_comboSystem.IsAttacking -= IsAttacking;
-			_targetLock.OnSwitchLock -= Lock;
 		}
 
 		private void Update()
@@ -125,25 +112,7 @@ namespace Scripts.Player
 		
 		private void Move() 
 		{
-			var direction = _inputController.MoveDirection;
-
-			if (direction == Vector2.zero)
-			{
-				_tryMove = false;
-				_requiredSpeed = 0;
-			}
-			else
-			{
-				_tryMove = true;
-				_requiredSpeed = _runSpeed;
-				if (_inAir) _requiredSpeed = _airSpeed;
-				if (_isLock)
-				{
-					if (direction.x != 0 || direction.y == -1) _requiredSpeed = _lockedSpeed;
-				}
-				if (_isSprint) _requiredSpeed = _sprintSpeed;
-			}
-			
+			_tryMove = _inputController.MoveDirection != Vector2.zero ? true : false;
 			OnTryMove?.Invoke(_tryMove);
 		}
 
@@ -163,61 +132,17 @@ namespace Scripts.Player
 				_lockedDirection = TryNormalize(_lockedDirection + GetMoveDirection() * _airDirectionMulti);
 				direction = _lockedDirection * _currentSpeed;
 			}
-			else
-			{
-				if (!_tryMove && _currentSpeed != _requiredSpeed || _move == EMove.Attack)
-				{
-					//_moveDirection /= _currentSpeed;
-					//ChangeForce(_standMulti);
-					//direction = _moveDirection * _currentSpeed;
-				}
-				else
-				{
-					//ChangeForce(_moveMulti);
-					//direction = GetMoveDirection() * _currentSpeed;
-				}
-			}
-			
-			if (_move == EMove.Dodge) //direction = _lockedDirection; блочить направление при додже
+			// FIXME игрок после прыжка не приземляется
+			// баг с левитацией
+			// починить доджи и остальныйе стейты
+			// интеракшн и пайза 100 проц сломались
+			if (_state.State == EPlayerState.Dodge) //direction = _lockedDirection; блочить направление при додже
 			
 			direction.y = _yForce;
 			_moveDirection = direction;
 			_characterController.Move(_moveDirection * Time.deltaTime);
 		}
-		
-		private void MoveState(EMove move = EMove.None)
-		{
-			switch (move)
-			{
-				case EMove.None:
-					_requiredSpeed = _runSpeed;
-					break;
-				
-				case EMove.Attack:
-					_requiredSpeed = 0;
-					break;
-				
-				case EMove.Dodge:
-					_lockedDirection = GetMoveDirection() * _runSpeed;
-					_lockedDirection.y = _yForce;
-					break;
-				
-				case EMove.Block:
-					_requiredSpeed = _walkSpeed;
-					break;
-			}
-			
-			_move = move;
-			SendEvents();
-		}
-		
-		private void SendEvents()
-		{
-			if (_move != EMove.Block || _inAir) OnBlock?.Invoke(false);
-			if (_move == EMove.Block) OnBlock?.Invoke(true);
-			OnSprint?.Invoke(false);
-		}
-		
+
 		private void ChangeSpeed(float multi)
 		{
 			float coef;
@@ -232,7 +157,7 @@ namespace Scripts.Player
 		
 		private void Jump()
 		{
-			if (!_inAir && _canJump && _move != EMove.Dodge && _move != EMove.Attack)
+			if (!_inAir && _canJump && _state.CanJump())
 			{
 				_canJump = false;
 				_isJump = true;
@@ -241,25 +166,12 @@ namespace Scripts.Player
 			}
 		}
 
-		// TODO Evasion animation
-		// If the player does not move then play an evasion animation
-		// When the player moves, play a dodge animation
-		
-		// Speed up the animatio
-		
-		// Separate evasion animations when locked on enemy
-		// * forward			| default forward roll
-		// * left, right, back	| a small leap in the direction
-		
-		// FIXME Rotate player when spam dodge
-		// Roll may have the wrong direction
 		private void Dodge()
 		{
-			if (!_inAir && _canDodge && _move != EMove.Attack)
+			if (!_inAir && _canDodge && _state.CanDodge())
 			{
 				_canDodge = false;
-				OnDodge?.Invoke();
-				MoveState(EMove.Dodge);
+				_state.Dodge();
 				StartCoroutine(DodgeDelay());
 			}
 		}
@@ -268,29 +180,22 @@ namespace Scripts.Player
 		{
 			_isSprint = pressed ? true : false;
 			OnSprint?.Invoke(pressed);
-			Move();
 		}
 		
 		// TODO Realize block
 		// TODO Special animation for movement when block
 		private void Block(bool pressed)
 		{
-			if (pressed && _move == EMove.None) MoveState(EMove.Block);
-			if (!pressed && _move == EMove.Block) MoveState();
+			if (pressed) _state.Block();
+			else _state.None();
 		}
 
 		// TODO Start moving before the attack ends
 		// take the animation time from combo system ??
 		private void IsAttacking(bool isAttacking)
 		{
-			if (isAttacking && _move != EMove.Dodge) MoveState(EMove.Attack);
-			if (!isAttacking) MoveState();
-		}
-
-		private void Lock(bool locked)
-		{
-			_isLock = locked ? true : false;
-			Move();
+			if (isAttacking) _state.Attack();
+			else _state.None();
 		}
 
 		private void CheckLand()
@@ -303,7 +208,6 @@ namespace Scripts.Player
 				InAir?.Invoke(true);
 				if (_isJump) _isJump = false;		
 				else _yForce = 0;
-				SendEvents();
 			}
 
 			if (IsGrounded() && _inAir)
@@ -311,6 +215,7 @@ namespace Scripts.Player
 				_inAir = false;
 				InAir?.Invoke(false);
 				_yForce = Physics.gravity.y;
+				Debug.Log("grounded");
 				StartCoroutine(JumpDelay());
 			}
 		}
@@ -318,6 +223,7 @@ namespace Scripts.Player
 		private IEnumerator JumpDelay()
 		{
 			yield return new WaitForSeconds(_jumpDelay);
+			Debug.Log("can jump delay");
 			_canJump = true;
 		}
 
@@ -325,20 +231,12 @@ namespace Scripts.Player
 		private IEnumerator DodgeDelay()
 		{
 			yield return new WaitForSeconds(_dodgeCooldown + _dodgeDelay);
-			MoveState();
 			_canDodge = true;
 		}
 
 		private void InvokeSteps()
 		{
-			if (_tryMove && !_inAir && _move != EMove.Attack && _move != EMove.Dodge)
-			{
-				PlaySteps?.Invoke(true);
-			}
-			else
-			{
-				PlaySteps?.Invoke(false);
-			}
+			PlaySteps?.Invoke(!_inAir && _state.State == EPlayerState.None);
 		}
 
 		private Vector3 TryNormalize(Vector3 dir)
@@ -371,31 +269,6 @@ namespace Scripts.Player
 				_currenthitdisance = _maxCastDistance;
 				return false;
 			}
-		}
-
-		private bool OnSlope()
-		{
-			if (Physics.Raycast(transform.position, Vector3.down, out var _slopeHit, _characterController.height * 0.5f + 1.5f))
-			{
-				float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
-				if (angle > _maxSlopeAngle)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-		
-		public bool CanAttack()
-		{
-			if (_move == EMove.Dodge) return false;
-			return true;
-		}
-
-		public bool CanRotate()
-		{
-			if (_move == EMove.Dodge || _inAir) return false;
-			return true;
 		}
 
 		private void OnDrawGizmosSelected()

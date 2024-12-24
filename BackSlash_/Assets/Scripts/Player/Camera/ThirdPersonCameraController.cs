@@ -15,7 +15,8 @@ namespace Scripts.Player.camera
 		[SerializeField] private float _delayRotationTime;
 
 		private float _timeToRotate;
-
+		
+		private PlayerStateController _stateController;
 		private MovementController _movement;
 		private InputController _inputController;
 		private TargetLock _targetLock;
@@ -29,12 +30,13 @@ namespace Scripts.Player.camera
 		public event Action<bool> IsAttacking;
 
 		[Inject]
-		private void Construct(MovementController movement, InputController inputController, TargetLock targetLock, ComboSystem comboSystem)
+		private void Construct(PlayerStateController stateController, MovementController movement, InputController inputController, TargetLock targetLock, ComboSystem comboSystem)
 		{
-			_movement = movement;
 			_inputController = inputController;
-			_targetLock = targetLock;
+			_stateController = stateController;
 			_comboSystem = comboSystem;
+			_targetLock = targetLock;
+			_movement = movement;
 		}
 
 		private void OnEnable()
@@ -71,14 +73,14 @@ namespace Scripts.Player.camera
 		{
 			if (_targetLock.Target != null)
 			{
-				if (_movement.CanRotate() && _movement.IsSprint) RotatePlayer();
+				if (_stateController.CanRotate() && _movement.IsSprint) RotatePlayer();
 				else RotateToTarget();
 				_lookAt.LookAt(_targetLock.Target.transform.position);
 			}
 			else
 			{
 				if (_isAttacking) RotatePlayerForward();
-				else if (_movement.CanRotate()) RotatePlayer();
+				else if (_stateController.CanRotate()) RotatePlayer();
 			}
 		}
 
