@@ -4,11 +4,11 @@ using UnityEngine.InputSystem;
 
 namespace Scripts.Player
 {
-	public class InputController : MonoBehaviour
+	public class 	InputController : MonoBehaviour
 	{
 		private GameControls _playerControls;
 
-		private Vector3 _moveDirection;
+		private Vector2 _moveDirection;
 
 		public event Action<bool> OnSprintKeyPressed;
 		public event Action<bool> OnLightAttackPressed;
@@ -18,8 +18,9 @@ namespace Scripts.Player
 		public event Action OnJumpKeyPressed;
 		public event Action OnDodgeKeyPressed;
 		public event Action OnLockKeyPressed;
+		public event Action OnDirectionChanged;
 
-		public Vector3 MoveDirection => _moveDirection;
+		public Vector2 MoveDirection => _moveDirection;
 
 		private void Awake()
 		{
@@ -36,13 +37,15 @@ namespace Scripts.Player
 		{
 			_playerControls.Disable();
 			UnsubscribeToActions();
-			_moveDirection = Vector3.zero;
+			_moveDirection = Vector2.zero;
+			OnDirectionChanged?.Invoke();
 		}
 
 		private void ChangeDirection(InputAction.CallbackContext context)
 		{
 			var direction = _playerControls.Gameplay.WASD.ReadValue<Vector3>();
-			_moveDirection = new Vector3(direction.x, direction.z, direction.y);
+			_moveDirection = new Vector2(direction.x, direction.y);
+			OnDirectionChanged?.Invoke();
 		}
 
 		private void ShowWeapon(InputAction.CallbackContext context)

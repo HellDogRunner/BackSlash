@@ -62,12 +62,6 @@ namespace Scripts.Animations
 			_playerState.OnDodge -= Dodge;
 		}
 
-		private void Update() 
-		{
-			var state = _animator.GetCurrentAnimatorStateInfo(0);
-			//Debug.Log(state.length);
-		}
-
 		private void LockMove(Vector2 direction)
 		{
 			_animator.SetFloat("InputX", direction.x, _smoothBlend, Time.deltaTime);
@@ -105,8 +99,9 @@ namespace Scripts.Animations
 			_animator.applyRootMotion = !isInAir;
 		}
 
-		private void Dodge(bool _)
+		private void Dodge()
 		{
+			
 			_animator.SetTrigger("Dodge");
 		}
 

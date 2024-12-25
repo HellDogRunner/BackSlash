@@ -2,12 +2,11 @@ namespace Scripts.Player
 {
 	public class NoneState : IPlayerState
 	{
-		protected PlayerStateController _player;
+		private PlayerStateController _player;
+		private EPlayerState state = EPlayerState.None;
 		
-		public NoneState(PlayerStateController player)
-		{
-			_player = player;
-		}
+		public NoneState(PlayerStateController player){ _player = player; }
+		public EPlayerState GetState() { return state; }
 
 		public bool CanEnter()
 		{
@@ -16,7 +15,7 @@ namespace Scripts.Player
 
 		public void Enter()
 		{
-			_player.State = EPlayerState.None;
+			_player.State = state;
 			_player.SendNone(true);
 		}
 

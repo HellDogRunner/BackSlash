@@ -1,34 +1,43 @@
 using Scripts.Player;
 using UnityEngine;
 using Zenject;
-using static PlayerStates;
 
 public class CursorController : MonoBehaviour
 {
-	private PlayerStateMachine _playerState;
+	private PlayerStateController _stateController;
 	private UiInputsController _uiInputs;
+	private TimeController _time;
 
-	[Inject] private void Construct(UiInputsController uiInputs, PlayerStateMachine playerState) 
+	[Inject] private void Construct(TimeController time, UiInputsController uiInputs, PlayerStateController stateController) 
 	{
+		_time = time;
 		_uiInputs = uiInputs;
-		_playerState = playerState;
+		_stateController = stateController;
 	}
 
 	private void OnEnable()
 	{
-		_playerState.OnChangeState += SwitchCursor;
+		_stateController.OnInteract += Interact;
+		_time.OnPause += Pause;
 		_uiInputs.ShowCursor += Visible;
 	}
 	
 	private void OnDisable()
 	{
-		_playerState.OnChangeState -= SwitchCursor;
+		_stateController.OnInteract -= Interact;
+		_time.OnPause -= Pause;
 		_uiInputs.ShowCursor -= Visible;
 	}
 
-	private void SwitchCursor(EState state)
+	public void Pause(bool value)
 	{
-		if (state == EState.Pause || state == EState.Interact) Confine();
+		if (value) Confine();
+		else if (_stateController.State != EPlayerState.Interact) Lock();
+	}
+	
+	private void Interact(bool value)
+	{
+		if (value) Confine();
 		else Lock();
 	}
 

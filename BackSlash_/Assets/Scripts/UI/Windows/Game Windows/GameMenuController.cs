@@ -1,8 +1,8 @@
 using Scripts.Player;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Zenject;
-using static PlayerStates;
 
 namespace RedMoonGames.Window
 {
@@ -16,63 +16,62 @@ namespace RedMoonGames.Window
 		[SerializeField] private float _inputsDelay = 1;
 
 		private InputController _gameInputs;
-		private PlayerStateMachine _playerState;
+		private PlayerStateController _stateController;
+		private CursorController _cursor;
+		private TimeController _time;
 
 		[Inject]
-		private void Construct(PlayerStateMachine playerState, InputController gameInputs)
+		private void Construct(CursorController cursor, TimeController time, PlayerStateController stateController, InputController gameInputs)
 		{
+			_stateController = stateController;
 			_gameInputs = gameInputs;
-			_playerState = playerState;
+			_cursor = cursor;
+			_time = time;
 		}
 
 		private void Awake()
 		{
 			_sceneTransition.gameObject.SetActive(true);
 			_playerHUD.SetActive(true);
-			
-			_playerState.Explore();
 			StartCoroutine(EnableInputsDelay());
+			SetPause(false);
+			_cursor.Pause(false);
 		}
 
 		private void OnEnable()
 		{
-			_playerState.OnPause += DisableGameInputs;
-			_playerState.OnInteract += DisableGameInputs;
-			_playerState.OnExplore += EnableGameInputs;
+			_time.OnPause += Pause;
+			_stateController.OnInteract += Interact;
 			
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 			
 			_uiInputs.OnEscapeKeyPressed += OpenPause;
 			_uiInputs.OnMenuKeyPressed += OpenMenu;
-			_windowService.OnUnpause += SetExplore;
 			_windowService.OnPause += SetPause;
 		}
 
 		private void OnDisable()
 		{
-			_playerState.OnPause -= DisableGameInputs;
-			_playerState.OnInteract -= DisableGameInputs;
-			_playerState.OnExplore -= EnableGameInputs;
+			_time.OnPause -= Pause;
+			_stateController.OnInteract -= Interact;
 
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
 			_uiInputs.OnEscapeKeyPressed -= OpenPause;
 			_uiInputs.OnMenuKeyPressed -= OpenMenu;
-			_windowService.OnUnpause -= SetExplore;
 			_windowService.OnPause -= SetPause;		
 		}
 
 		private void OpenPause()
 		{
-			if (_playerState.State != EState.Pause)
-			{
-				TryOpenWindow(_pauseWindow);
-			}
+			if (!_time.Paused) TryOpenWindow(_pauseWindow);
 		}
 
-		private void OpenMenu(int index)	// TODO remove int parametr from this method and <OnMenuKeyPressed> event
+		private void OpenMenu()
 		{
-			if (_playerState.State != EState.Pause && _playerState.State != EState.Interact) TryOpenWindow(_menuWindow);
+			// FIXME can the player open the menu during the dialogue?
+			//if (_stateController.State != EState.Pause && _stateController.State != EState.Interact)
+			if (!_time.Paused) TryOpenWindow(_menuWindow);
 		}
 		
 		private void TryOpenWindow(WindowHandler window) 
@@ -80,27 +79,23 @@ namespace RedMoonGames.Window
 			_windowService.TryOpenWindow(window);
 			_windowService.ShowWindow(true);
 		}
+
+		private void SetPause(bool pause)
+		{
+			_time.Pause(pause);
+		}
+
+		private void Pause(bool value)
+		{
+			if (value) _gameInputs.enabled = !value;
+			else if (_stateController.State != EPlayerState.Interact) _gameInputs.enabled = !value;
+		}
+
+		private void Interact(bool value)
+		{
+			_gameInputs.enabled = !value;
+		}
 		
-		private void SetExplore()
-		{	
-			if (_playerState.State != EState.Explore) _playerState.Explore();
-		}
-
-		private void SetPause()
-		{
-			if (_playerState.State != EState.Pause) _playerState.Pause();
-		}
-
-		private void DisableGameInputs()
-		{
-			_gameInputs.enabled = false;
-		}
-
-		private void EnableGameInputs()
-		{
-			_gameInputs.enabled = true;
-		}
-
 		IEnumerator EnableInputsDelay()
 		{
 			_gameInputs.enabled = false;

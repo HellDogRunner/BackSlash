@@ -37,7 +37,7 @@ namespace Scripts.Player
 		[SerializeField] private LayerMask _hitboxLayer;
 
 		private bool _tryMove;
-		private bool _inAir;
+		[SerializeField] private bool _inAir;
 		private bool _isJump;
 		private bool _isSprint;
 		private bool _canJump = true;
@@ -47,15 +47,15 @@ namespace Scripts.Player
 		private float _yForce;
 
 		private Vector3 _lockedDirection;
-		[SerializeField] private Vector2 _offsetDirection;
 
 		private InputController _inputController;
-		private PlayerStateController _state;
+		private PlayerStateController _stateController;
 		private ComboSystem _comboSystem;
 		private Transform _camera;
 
 		public bool IsSprint => _isSprint;
 		public bool Air => _inAir;
+		//public bool CanDodge => _canDodge;
 		// public float Speed => _currentSpeed;
 
 		public event Action<Vector2> OnLockMove;
@@ -69,11 +69,13 @@ namespace Scripts.Player
 		//debug gizmo parameter delete later
 		private float _currenthitdisance;
 
+		// TODO clean up useless fields
+
 		[Inject]
 		private void Construct(PlayerStateController stateController, InputController inputController, ComboSystem comboSystem)
 		{
 			_inputController = inputController;
-			_state = stateController;
+			_stateController = stateController;
 			_comboSystem = comboSystem;
 		}
 
@@ -112,7 +114,7 @@ namespace Scripts.Player
 		
 		private void Move() 
 		{
-			_tryMove = _inputController.MoveDirection != Vector2.zero ? true : false;
+			_tryMove = _inputController.MoveDirection != Vector2.zero;
 			OnTryMove?.Invoke(_tryMove);
 		}
 
@@ -132,32 +134,18 @@ namespace Scripts.Player
 				_lockedDirection = TryNormalize(_lockedDirection + GetMoveDirection() * _airDirectionMulti);
 				direction = _lockedDirection * _currentSpeed;
 			}
-			// FIXME игрок после прыжка не приземляется
-			// баг с левитацией
-			// починить доджи и остальныйе стейты
-			// интеракшн и пайза 100 проц сломались
-			if (_state.State == EPlayerState.Dodge) //direction = _lockedDirection; блочить направление при додже
+			// FIXME jump with root animations not raises player collider
+			// TODO control player in air
+			// accept button-held events
 			
 			direction.y = _yForce;
 			_moveDirection = direction;
 			_characterController.Move(_moveDirection * Time.deltaTime);
 		}
 
-		private void ChangeSpeed(float multi)
-		{
-			float coef;
-			if (_currentSpeed == _requiredSpeed) return;
-			else coef = _currentSpeed < _requiredSpeed ? 1 : -1;
-			
-			coef = coef * Time.deltaTime * multi;
-			_currentSpeed += coef;
-			
-			if (Math.Abs(_requiredSpeed - _currentSpeed) <= coef) _currentSpeed = _requiredSpeed;
-		}
-		
 		private void Jump()
 		{
-			if (!_inAir && _canJump && _state.CanJump())
+			if (!_inAir && _canJump && _stateController.CanJump())
 			{
 				_canJump = false;
 				_isJump = true;
@@ -165,15 +153,14 @@ namespace Scripts.Player
 				_yForce = _jumpSpeed;
 			}
 		}
+		// TODO Animator event handlers
+		private void EndAnimationEvent() { _stateController.SetNone(); }
+		
+		private void DodgeAnimationEvent(int value) { _canDodge = value == 1; }
 
 		private void Dodge()
 		{
-			if (!_inAir && _canDodge && _state.CanDodge())
-			{
-				_canDodge = false;
-				_state.Dodge();
-				StartCoroutine(DodgeDelay());
-			}
+			if (!_inAir && _canDodge) _stateController.SetDodge();
 		}
 
 		private void Sprint(bool pressed)
@@ -183,19 +170,18 @@ namespace Scripts.Player
 		}
 		
 		// TODO Realize block
-		// TODO Special animation for movement when block
 		private void Block(bool pressed)
 		{
-			if (pressed) _state.Block();
-			else _state.None();
+			if (pressed) _stateController.SetBlock();
+			else if (_stateController.State == EPlayerState.Block) _stateController.SetNone();
 		}
 
 		// TODO Start moving before the attack ends
 		// take the animation time from combo system ??
 		private void IsAttacking(bool isAttacking)
 		{
-			if (isAttacking) _state.Attack();
-			else _state.None();
+			if (isAttacking) _stateController.SetAttack();
+			else _stateController.SetNone();
 		}
 
 		private void CheckLand()
@@ -227,16 +213,9 @@ namespace Scripts.Player
 			_canJump = true;
 		}
 
-		// TODO Invoke after dodge or get the rolling animation time
-		private IEnumerator DodgeDelay()
-		{
-			yield return new WaitForSeconds(_dodgeCooldown + _dodgeDelay);
-			_canDodge = true;
-		}
-
 		private void InvokeSteps()
 		{
-			PlaySteps?.Invoke(!_inAir && _state.State == EPlayerState.None);
+			PlaySteps?.Invoke(!_inAir && _stateController.State == EPlayerState.None);
 		}
 
 		private Vector3 TryNormalize(Vector3 dir)

@@ -2,27 +2,26 @@ namespace Scripts.Player
 {
 	public class DodgeState : IPlayerState
 	{
-		protected PlayerStateController _player;
+		private PlayerStateController _player;
+		private EPlayerState state = EPlayerState.Dodge;
 		
-		public DodgeState(PlayerStateController player)
-		{
-			_player = player;
-		}
-
+		public DodgeState(PlayerStateController player){ _player = player; }
+		public EPlayerState GetState() { return state; }
+		
 		public bool CanEnter()
 		{
-			return (_player.State == EPlayerState.None || _player.State == EPlayerState.Block) && !_player.Movement.Air;
+			return _player.State == state || _player.State == EPlayerState.None || _player.State == EPlayerState.Block;
 		}
 
 		public void Enter()
 		{
-			_player.State = EPlayerState.Dodge;
-			_player.SendDodge(true);
+			_player.State = state;
+			_player.SendDodge();
 		}
 
 		public void Exit()
 		{
-			_player.SendDodge(false);
+			
 		}
 	}
 }

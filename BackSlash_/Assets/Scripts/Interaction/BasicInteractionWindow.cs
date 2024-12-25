@@ -1,18 +1,18 @@
 using RedMoonGames.Basics;
 using RedMoonGames.Window;
-using UnityEngine;
+using Scripts.Player;
 using Zenject;
 
 public class BasicInteractionWindow : BasicWindow
 {
 	protected InteractionSystem _interactionSystem;
-	protected PlayerStateMachine _playerSM;
+	protected TimeController _time;
 
 	[Inject]
-	private void Construct(PlayerStateMachine playerState, InteractionSystem interactionSystem)
+	private void Construct(TimeController time, InteractionSystem interactionSystem)
 	{
 		_interactionSystem = interactionSystem;
-		_playerSM = playerState;
+		_time = time;
 	}
 
 	protected override void OnEnable()
@@ -21,13 +21,13 @@ public class BasicInteractionWindow : BasicWindow
 		_interactionSystem.TryRemoveWindow(this);
 		
 		_uiInputs.OnEscapeKeyPressed -= Hide;
-		_playerSM.OnPause += Pause;
+		_time.OnPause += Pause;
 	}
 
 	protected override void OnDisable()
 	{
 		base.OnDisable();
-		_playerSM.OnPause -= Pause;
+		_time.OnPause -= Pause;
 	}
 
 	protected void OpenWindow(WindowHandler handler)
@@ -48,8 +48,8 @@ public class BasicInteractionWindow : BasicWindow
 		Hide();
 	}
 	
-	protected void Pause()
+	protected void Pause(bool pause)
 	{
-		_interactionSystem.DisableWindow(gameObject);
+		if (pause) _interactionSystem.DisableWindow(pause, gameObject);
 	}
 }

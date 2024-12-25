@@ -2,21 +2,20 @@ namespace Scripts.Player
 {
 	public class LootState : IPlayerState
 	{
-		protected PlayerStateController _player;
+		private PlayerStateController _player;
+		private EPlayerState state = EPlayerState.Loot;
 		
-		public LootState(PlayerStateController player)
-		{
-			_player = player;
-		}
-
+		public LootState(PlayerStateController player){ _player = player; }
+		public EPlayerState GetState() { return state; }
+		
 		public bool CanEnter()
 		{
-			return !_player.Movement.Air && _player.TargetLock.Target == null;
+			return _player.State == EPlayerState.None;
 		}
 
 		public void Enter()
 		{
-			_player.State = EPlayerState.Loot;
+			_player.State = state;
 			_player.SendLoot(true);
 		}
 

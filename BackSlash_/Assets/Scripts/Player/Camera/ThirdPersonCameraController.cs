@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Zenject;
@@ -27,8 +26,6 @@ namespace Scripts.Player.camera
 
 		private bool _isAttacking;
 
-		public event Action<bool> IsAttacking;
-
 		[Inject]
 		private void Construct(PlayerStateController stateController, MovementController movement, InputController inputController, TargetLock targetLock, ComboSystem comboSystem)
 		{
@@ -53,18 +50,16 @@ namespace Scripts.Player.camera
 		{
 			_camera = Camera.main.transform;
 		}
-
+		// TODO Rotate player after attack ?
 		private void FixedUpdate()
 		{
-			_timeToRotate += Time.deltaTime;
+			// _timeToRotate += Time.deltaTime;
 			
-			if (_timeToRotate >= _delayRotationTime) 
-			{
-				_timeToRotate = 0;
-				_isAttacking = false;
-			}
-
-			IsAttacking?.Invoke(_isAttacking);
+			// if (_timeToRotate >= _delayRotationTime) 
+			// {
+			// 	_timeToRotate = 0;
+			// 	_isAttacking = false;
+			// }
 		}
 		
 		// TODO delay before RotateToTarget() [?!!]
@@ -111,11 +106,13 @@ namespace Scripts.Player.camera
 
 		private void OnAttack(bool attack) 
 		{
-			if (attack)
-			{
-				_isAttacking = true;
-				_timeToRotate = 0;
-			}
+			_isAttacking = attack;
+			
+			// if (attack)
+			// {
+			// 	_isAttacking = true;
+			// 	_timeToRotate = 0;
+			// }
 		}
 
 		private IEnumerator DelayRotation(float delaySecounds)

@@ -4,7 +4,6 @@ using System;
 public enum EPlayerState
 {
 	None,
-	Pause,
 	Interact,
 	Loot,
 	Attack,

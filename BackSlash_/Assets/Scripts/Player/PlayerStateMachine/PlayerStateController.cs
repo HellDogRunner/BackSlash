@@ -12,16 +12,14 @@ namespace Scripts.Player
 		private IPlayerState _currentState;
 		public EPlayerState State;
 
-		public MovementController Movement => _movement;
-		public TargetLock TargetLock => _targetLock;
+		public Target TargetLock => _targetLock.Target;
 
 		public event Action<bool> OnNone;
-		public event Action<bool> OnPause;
 		public event Action<bool> OnInteract;
 		public event Action<bool> OnLoot;
 		public event Action<bool> OnAttack;
 		public event Action<bool> OnBlock;
-		public event Action<bool> OnDodge;
+		public event Action OnDodge;
 
 		[Inject]
 		private void Construct(TargetLock targetLock, MovementController movement)
@@ -39,48 +37,51 @@ namespace Scripts.Player
 		{
 			if (_currentState != null && newState.CanEnter())
 			{
-				Debug.Log("EXIT => " + _currentState);
-				_currentState.Exit();
-				_currentState = newState;
+				if (newState.GetState() != _currentState.GetState())
+				{
+					//Debug.Log(_currentState + " => " + newState);
+					_currentState.Exit();
+					_currentState = newState;
+				}
 				_currentState.Enter();
-				Debug.Log("Enter => " + _currentState);
+				//Debug.Log("ENTER => " + _currentState);
 			}
 		}
 		
 		public void SendInteract(bool invoke) { OnInteract?.Invoke(invoke); }
 		public void SendAttack(bool invoke) { OnAttack?.Invoke(invoke); }
-		public void SendPause(bool invoke) { OnPause?.Invoke(invoke); }
 		public void SendBlock(bool invoke) { OnBlock?.Invoke(invoke); }
-		public void SendDodge(bool invoke) { OnDodge?.Invoke(invoke); }
 		public void SendNone(bool invoke) { OnNone?.Invoke(invoke); }
 		public void SendLoot(bool invoke) { OnLoot?.Invoke(invoke); }
+		public void SendDodge() { OnDodge?.Invoke(); }
 
-		public void Interact() { SetState(new InteractState(this)); }
-		public void Attack() { SetState(new AttackState(this)); }
-		public void Pause() { SetState(new PauseState(this)); }
-		public void Dodge() { SetState(new DodgeState(this)); }
-		public void Block() { SetState(new BlockState(this)); }
-		public void None() { SetState(new NoneState(this)); }
-		public void Loot() { SetState(new LootState(this)); }
+		public void SetInteract() { SetState(new InteractState(this)); }
+		public void SetAttack() { SetState(new AttackState(this)); }
+		public void SetDodge() { SetState(new DodgeState(this)); }
+		public void SetBlock() { SetState(new BlockState(this)); }
+		public void SetNone() { SetState(new NoneState(this)); }
+		public void SetLoot() { SetState(new LootState(this)); }
 
 		public bool CanJump()
 		{
 			return State != EPlayerState.Dodge && State != EPlayerState.Attack;
 		}
-
-		public bool CanAttack()
-		{
-			return State == EPlayerState.None || State == EPlayerState.Block || State == EPlayerState.Attack;
-		}
-
-		public bool CanDodge()
-		{
-			return State == EPlayerState.None || State == EPlayerState.Block;
-		}
-
+		
+		// TODO can player rotate in dodge state?
+		// maybe player can rotate in dodge state after small delay?
 		public bool CanRotate()
 		{
-			return (State == EPlayerState.None || State == EPlayerState.Attack || State == EPlayerState.Block) && !_movement.Air;
+			return (State == EPlayerState.None || State == EPlayerState.Block || State == EPlayerState.Dodge) && !_movement.Air;
+		}
+		
+		public bool CanAttack()
+		{
+			return new AttackState(this).CanEnter();
+		}
+		
+		public bool CanInteract()
+		{
+			return State == EPlayerState.None && !_movement.Air && TargetLock == null;
 		}
 	}
 }

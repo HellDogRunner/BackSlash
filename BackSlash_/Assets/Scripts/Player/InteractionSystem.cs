@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
-using static PlayerStates;
 
 public class InteractionSystem : MonoBehaviour
 {
@@ -25,35 +24,33 @@ public class InteractionSystem : MonoBehaviour
 	private WeaponController _weaponController;
 	private UiInputsController _uiActions;
 	private InteractionAnimator _animator;
-	private PlayerStateMachine _playerSM;
+	private PlayerStateController _stateController;
+	private TimeController _time;
 
 	public event Action<QuestDatabase> SetQuest;
 	public event Action OnResetDialogue;
 	public event Action<QuestDatabase, string, bool> OnStartInteract;
 	
 	[Inject]
-	private void Construct(PlayerStateMachine playerState, WeaponController weaponController, InteractionAnimator animator, UiInputsController uIActions)
+	private void Construct(TimeController time, PlayerStateController stateController, WeaponController weaponController, InteractionAnimator animator, UiInputsController uIActions)
 	{
+		_time = time;
 		_animator = animator;
 		_uiActions = uIActions;
-		_playerSM = playerState;
+		_stateController = stateController;
 		_weaponController = weaponController;
 	}
 
 	private void OnEnable()
 	{
 		_uiActions.OnEnterKeyPressed += TryStartInteract;
-		
-		_playerSM.OnInteract += ActivateWindow;
-		_playerSM.OnExplore += CloseAllWindows;
+		_time.OnPause += Pause;
 	}
 
 	private void OnDisable()
 	{
 		_uiActions.OnEnterKeyPressed -= TryStartInteract;
-		
-		_playerSM.OnInteract -= ActivateWindow;
-		_playerSM.OnExplore -= CloseAllWindows;
+		_time.OnPause -= Pause;
 	}
 
 	public void SetInformation(QuestDatabase quest, NpcInteractionService npc)
@@ -81,7 +78,7 @@ public class InteractionSystem : MonoBehaviour
 	{
 		if (CanInteract())
 		{
-			_playerSM.Interact();
+			_stateController.SetInteract();
 			_animator.HideTalk();
 			_animator.LookAtEachOther(_playerObject.transform);
 			SwitchCamera(_npc.LookAt);
@@ -94,6 +91,7 @@ public class InteractionSystem : MonoBehaviour
 
 	public void StopInteract()
 	{	
+		_stateController.SetNone();
 		_animator.ShowTalk();
 		SwitchCamera(null);
 	}
@@ -109,20 +107,11 @@ public class InteractionSystem : MonoBehaviour
 
 	private bool CanInteract()
 	{
-		if (!_quest || _playerSM.State == EState.Interact) return false;
+		if (!_quest || !_stateController.CanInteract()) return false;
 		
 		float distance = (_playerObject.transform.position - _npc.transform.position).magnitude;
 
 		return distance < _npc.Distance;
-	}
-	
-	private void ActivateWindow() 
-	{
-		if (_disabledWindow != null)
-		{
-			_disabledWindow.SetActive(true);
-			_disabledWindow = null;
-		}
 	}
 	
 	public void TryAddWindow(IWindow window)
@@ -135,7 +124,22 @@ public class InteractionSystem : MonoBehaviour
 		if (_openedWindows.Contains(window)) _openedWindows.Remove(window);
 	}
 	
-	public void CloseAllWindows()
+	private void Pause(bool pause)
+	{
+		if (pause) CloseAllWindows();
+		else ActivateWindow();
+	}
+	
+	private void ActivateWindow() 
+	{
+		if (_disabledWindow != null)
+		{
+			_disabledWindow.SetActive(true);
+			_disabledWindow = null;
+		}
+	}
+	
+	private void CloseAllWindows()
 	{
 		foreach (var iwindow in _openedWindows)
 		{
@@ -144,9 +148,9 @@ public class InteractionSystem : MonoBehaviour
 		_openedWindows.Clear();
 	}
 	
-	public void DisableWindow(GameObject window) 
+	public void DisableWindow(bool pause, GameObject window) 
 	{
 		_disabledWindow = window;
-		window.SetActive(false);
+		window.SetActive(!pause);
 	}
 }

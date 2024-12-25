@@ -17,17 +17,11 @@ namespace RedMoonGames.Window
 		protected readonly Dictionary<IWindow, WindowHandler> _createdWindows = new Dictionary<IWindow, WindowHandler>();
 
 		public event Action<bool, float> OnShowWindow;
-		public event Action OnUnpause;
-		public event Action OnPause;
-
-		public void Unpause()
-		{
-			OnUnpause?.Invoke();
-		}
+		public event Action<bool> OnPause;
 		
-		public void Pause()
+		public void Pause(bool pause)
 		{
-			OnPause?.Invoke();
+			OnPause?.Invoke(pause);
 		}
 		
 		public void ShowWindow(bool pause = false, float delay = 0)
