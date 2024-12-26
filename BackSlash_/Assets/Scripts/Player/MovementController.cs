@@ -8,37 +8,29 @@ namespace Scripts.Player
 	public class MovementController : MonoBehaviour
 	{
 		[SerializeField] private CharacterController _characterController;
-		
+
 		[Header("Monitoring")]
-		[SerializeField] private float _currentSpeed;
 		[SerializeField] private Vector3 _moveDirection;
-		
+
 		[Header("Settings")]
-		[SerializeField] private float _walkSpeed;
-		[SerializeField] private float _lockedSpeed;
-		[SerializeField] private float _runSpeed;
-		[SerializeField] private float _sprintSpeed;
-		[SerializeField] private float _moveMulti;
-		[SerializeField] private float _lockedMulti;
-		[Space]
 		[SerializeField] private float _jumpSpeed;
 		[SerializeField] private float _jumpDelay;
-		[Space]
-		[SerializeField] private float _dodgeCooldown;
-		[SerializeField] private float _dodgeDelay;
 		[Space]
 		[SerializeField] private float _airSpeed;
 		[SerializeField] private float _airDirectionMulti;
 		[SerializeField] private float _gravityMulti;
-		
+		[SerializeField] private float _yMaxSpeed;
+
 		[Header("IsGround settings")]
 		[SerializeField] private float _maxCastDistance;
 		[SerializeField] private float _sphereCastRadius;
 		[SerializeField] private LayerMask _hitboxLayer;
 
 		private bool _tryMove;
-		[SerializeField] private bool _inAir;
+		private bool _inAir;
 		private bool _isJump;
+		private bool _isFall = false;
+		private bool _animateFall = false;
 		private bool _isSprint;
 		private bool _canJump = true;
 		private bool _canDodge = true;
@@ -55,8 +47,6 @@ namespace Scripts.Player
 
 		public bool IsSprint => _isSprint;
 		public bool Air => _inAir;
-		//public bool CanDodge => _canDodge;
-		// public float Speed => _currentSpeed;
 
 		public event Action<Vector2> OnLockMove;
 		public event Action<float> OnFreeMove;
@@ -64,12 +54,13 @@ namespace Scripts.Player
 		public event Action<bool> PlaySteps;
 		public event Action<bool> OnSprint;
 		public event Action<bool> InAir;
+		public event Action OnFalling;
+		public event Action OnFall;
+		public event Action OnLanding;
 		public event Action OnJump;
 
 		//debug gizmo parameter delete later
 		private float _currenthitdisance;
-
-		// TODO clean up useless fields
 
 		[Inject]
 		private void Construct(PlayerStateController stateController, InputController inputController, ComboSystem comboSystem)
@@ -82,7 +73,6 @@ namespace Scripts.Player
 		private void Awake()
 		{
 			_camera = Camera.main.transform;
-			_requiredSpeed = _runSpeed;
 		}
 
 		private void OnEnable()
@@ -111,33 +101,34 @@ namespace Scripts.Player
 			MovePlayer();
 			InvokeSteps();
 		}
-		
-		private void Move() 
+
+		private void Move()
 		{
 			_tryMove = _inputController.MoveDirection != Vector2.zero;
 			OnTryMove?.Invoke(_tryMove);
 		}
 
 		private void MovePlayer()
-		{	
+		{
 			var direction = Vector3.zero;
-			
+
 			_requiredSpeed = _isSprint ? 2 : 1;
 			if (!_tryMove) _requiredSpeed = 0;
-			
+
 			OnLockMove?.Invoke(_inputController.MoveDirection);
 			OnFreeMove?.Invoke(_requiredSpeed);
 
 			if (_inAir)
 			{
-				_yForce += Physics.gravity.y * Time.deltaTime * _gravityMulti;
+				if (_yForce <= Physics.gravity.y && !_isFall) _isFall = true;
+
+				_yForce = Mathf.Lerp(_yForce, _yMaxSpeed, Time.deltaTime * _gravityMulti);
 				_lockedDirection = TryNormalize(_lockedDirection + GetMoveDirection() * _airDirectionMulti);
-				direction = _lockedDirection * _currentSpeed;
+				direction = _lockedDirection * _airSpeed;
 			}
-			// FIXME jump with root animations not raises player collider
-			// TODO control player in air
-			// accept button-held events
 			
+			if (_animateFall) OnFalling?.Invoke();
+
 			direction.y = _yForce;
 			_moveDirection = direction;
 			_characterController.Move(_moveDirection * Time.deltaTime);
@@ -153,9 +144,17 @@ namespace Scripts.Player
 				_yForce = _jumpSpeed;
 			}
 		}
-		// TODO Animator event handlers
-		private void EndAnimationEvent() { _stateController.SetNone(); }
 		
+		private void JumpEnd()
+		{
+			if (_inAir)
+			{
+				OnFall?.Invoke();
+				_animateFall = true;
+			}
+		}
+		
+		private void EndAnimationEvent() { _stateController.SetNone(); }
 		private void DodgeAnimationEvent(int value) { _canDodge = value == 1; }
 
 		private void Dodge()
@@ -168,7 +167,7 @@ namespace Scripts.Player
 			_isSprint = pressed ? true : false;
 			OnSprint?.Invoke(pressed);
 		}
-		
+
 		// TODO Realize block
 		private void Block(bool pressed)
 		{
@@ -176,8 +175,8 @@ namespace Scripts.Player
 			else if (_stateController.State == EPlayerState.Block) _stateController.SetNone();
 		}
 
-		// TODO Start moving before the attack ends
-		// take the animation time from combo system ??
+		// TODO Start moving before the attack ends?
+		// take the animation time from combo system?
 		private void IsAttacking(bool isAttacking)
 		{
 			if (isAttacking) _stateController.SetAttack();
@@ -188,20 +187,29 @@ namespace Scripts.Player
 		{
 			if (!IsGrounded() && !_inAir)
 			{
-				_currentSpeed = _airSpeed;
-				_lockedDirection = GetMoveDirection();
+				_lockedDirection = GetJumpDirection();
 				_inAir = true;
 				InAir?.Invoke(true);
-				if (_isJump) _isJump = false;		
-				else _yForce = 0;
+				if (_isJump) _isJump = false;
+				else
+				{
+					_yForce = 0;
+					OnFall?.Invoke();
+					_animateFall = true;
+				}
 			}
 
 			if (IsGrounded() && _inAir)
 			{
 				_inAir = false;
+				_animateFall = false;
+				if (_isFall)
+				{
+					OnLanding?.Invoke();
+					_isFall = false;
+				}
 				InAir?.Invoke(false);
 				_yForce = Physics.gravity.y;
-				Debug.Log("grounded");
 				StartCoroutine(JumpDelay());
 			}
 		}
@@ -209,7 +217,6 @@ namespace Scripts.Player
 		private IEnumerator JumpDelay()
 		{
 			yield return new WaitForSeconds(_jumpDelay);
-			Debug.Log("can jump delay");
 			_canJump = true;
 		}
 
@@ -224,10 +231,15 @@ namespace Scripts.Player
 			return dir;
 		}
 
-		public Vector3 GetMoveDirection()
+		private Vector3 GetMoveDirection()
 		{
 			var direction = _inputController.MoveDirection;
 			return (direction.y * _camera.forward + direction.x * _camera.right).normalized;
+		}
+
+		private Vector3 GetJumpDirection()
+		{
+			return _inputController.MoveDirection == Vector2.zero ? Vector2.zero : transform.forward.normalized;
 		}
 
 		private bool IsGrounded()

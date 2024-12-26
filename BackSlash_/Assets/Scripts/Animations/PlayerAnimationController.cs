@@ -11,7 +11,10 @@ namespace Scripts.Animations
 		[SerializeField] private Animator _animator;
 		[SerializeField] private AnimatorOverrideController _swordOverride;
 		[SerializeField] private AnimatorOverrideController _mainOverride;
+		[Space]
 		[SerializeField] private float _smoothBlend;
+		[SerializeField] private float _smoothFall;
+		
 		private MovementController _movementController;
 		private TargetLock _targetLock;
 		private PlayerStateController _playerState;
@@ -38,6 +41,9 @@ namespace Scripts.Animations
 			_movementController.OnLockMove += LockMove;
 			_movementController.OnFreeMove += FreeMove;
 			_movementController.OnTryMove += TryMove;
+			_movementController.OnFall += Fall;
+			_movementController.OnFalling += Falling;
+			_movementController.OnLanding += Landing;
 			
 			_playerState.OnAttack += PrimaryAttack;
 			_playerState.OnBlock += Block;
@@ -56,6 +62,9 @@ namespace Scripts.Animations
 			_movementController.OnLockMove -= LockMove;
 			_movementController.OnFreeMove -= FreeMove;
 			_movementController.OnTryMove -= TryMove;
+			_movementController.OnFall -= Fall;
+			_movementController.OnFalling -= Falling;
+			_movementController.OnLanding -= Landing;
 			
 			_playerState.OnAttack -= PrimaryAttack;
 			_playerState.OnBlock -= Block;
@@ -90,18 +99,33 @@ namespace Scripts.Animations
 
 		private void Jump()
 		{
-			_animator.Play("Jump");
+			_animator.SetTrigger("Jump");
 		}
-
+		
+		private void Falling()
+		{
+			_animator.SetFloat("Fall Speed", 1, _smoothFall, Time.deltaTime);
+		}
+		
+		private void Landing()
+		{
+			_animator.SetTrigger("Landing");
+		}
+		
+		private void Fall()
+		{
+			_animator.SetFloat("Fall Speed", 0);
+			_animator.SetTrigger("Fall");
+		}
+		
 		private void InAir(bool isInAir)
 		{
 			_animator.SetBool("InAir", isInAir);
 			_animator.applyRootMotion = !isInAir;
 		}
-
+		
 		private void Dodge()
 		{
-			
 			_animator.SetTrigger("Dodge");
 		}
 

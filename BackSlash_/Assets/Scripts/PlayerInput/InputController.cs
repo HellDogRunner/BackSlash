@@ -27,6 +27,19 @@ namespace Scripts.Player
 			_playerControls = new GameControls();
 		}
 
+		private void Update()
+		{
+			if (_playerControls.Gameplay.Sprint.IsPressed())
+			{
+				OnSprintKeyPressed?.Invoke(true);
+			}
+			
+			if (_playerControls.Gameplay.Block.IsPressed())
+			{
+				OnBlockPressed?.Invoke(true);
+			}
+		}
+
 		private void OnEnable()
 		{
 			_playerControls.Enable();
@@ -55,8 +68,10 @@ namespace Scripts.Player
 
 		private void Sprint(InputAction.CallbackContext context)
 		{
-			var isPressed = _playerControls.Gameplay.Sprint.IsPressed();
-			OnSprintKeyPressed?.Invoke(isPressed);
+			if (!_playerControls.Gameplay.Sprint.IsPressed())
+			{
+				OnSprintKeyPressed?.Invoke(false);
+			}
 		}
 
 		private void Dodge(InputAction.CallbackContext context)
@@ -83,8 +98,10 @@ namespace Scripts.Player
 
 		private void Block(InputAction.CallbackContext context)
 		{
-			var isPressed = _playerControls.Gameplay.Block.IsPressed();
-			OnBlockPressed?.Invoke(isPressed);
+			if (!_playerControls.Gameplay.Block.IsPressed())
+			{
+				OnBlockPressed?.Invoke(false);
+			}
 		}
 
 		private void Lock(InputAction.CallbackContext context)

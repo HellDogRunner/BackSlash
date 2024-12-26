@@ -64,7 +64,7 @@ namespace Scripts.Player
 
 		public bool CanJump()
 		{
-			return State != EPlayerState.Dodge && State != EPlayerState.Attack;
+			return State == EPlayerState.None || State != EPlayerState.Block;
 		}
 		
 		// TODO can player rotate in dodge state?
