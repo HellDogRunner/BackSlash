@@ -13,7 +13,6 @@ public class TargetLock : MonoBehaviour
 {
 	[Header("Objects")]
 	[SerializeField] private CinemachineCamera _lockOnCamera;
-	[SerializeField] private CinemachineRotationComposer _rotationComposer;
 	[SerializeField] private SphereCollider _triggerCollider;
 	[Space]
 	[SerializeField] private Image _aimIcon;
@@ -25,27 +24,25 @@ public class TargetLock : MonoBehaviour
 
 	private Camera _mainCamera;
 	private Target _currentTarget;
-	private Vector3 TargetOffsetY;
 	private bool isTargeting = false;
 
-	private InputController _inputService;
-
-	public event Action<bool> OnSwitchLock;
+	private InputController _inputController;
 
 	public Target Target => _currentTarget;
+	
+	public event Action<bool> OnSwitchLock;
 
 	[Inject]
 	private void Construct(InputController inputService)
 	{
-		_inputService = inputService;
-		_inputService.OnLockKeyPressed += AssignTarget;
+		_inputController = inputService;
+		_inputController.OnLockKeyPressed += AssignTarget;
 	}
 
 	private void Awake()
 	{
 		_mainCamera = Camera.main;
 		_triggerCollider.radius = _maxDistance;
-		TargetOffsetY = new Vector3(0, _rotationComposer.TargetOffset.y, 0);
 
 		_triggerCollider.OnTriggerEnterAsObservable()
 		   .Subscribe(other =>
@@ -91,7 +88,7 @@ public class TargetLock : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		_inputService.OnLockKeyPressed -= AssignTarget;
+		_inputController.OnLockKeyPressed -= AssignTarget;
 	}
 
 	private void AssignTarget()

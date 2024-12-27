@@ -44,7 +44,7 @@ namespace Scripts.Player
 					_currentState = newState;
 				}
 				_currentState.Enter();
-				//Debug.Log("ENTER => " + _currentState);
+				//Debug.Log("ENTER => " + _currentState.ToString());
 			}
 		}
 		
@@ -69,9 +69,14 @@ namespace Scripts.Player
 		
 		// TODO can player rotate in dodge state?
 		// maybe player can rotate in dodge state after small delay?
-		public bool CanRotate()
+		public bool LockedRotate()
 		{
-			return (State == EPlayerState.None || State == EPlayerState.Block || State == EPlayerState.Dodge) && !_movement.Air;
+			return State == EPlayerState.None && !_movement.Air  && _movement.TrySprint;
+		}
+		
+		public bool SlowedRotate()
+		{
+			return State == EPlayerState.Block || State == EPlayerState.Dodge || _movement.Air;
 		}
 		
 		public bool CanAttack()

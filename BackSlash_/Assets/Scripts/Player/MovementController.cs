@@ -27,11 +27,11 @@ namespace Scripts.Player
 		[SerializeField] private LayerMask _hitboxLayer;
 
 		private bool _tryMove;
-		private bool _inAir;
+		private bool _trySprint;
 		private bool _isJump;
-		private bool _isFall = false;
-		private bool _animateFall = false;
-		private bool _isSprint;
+		private bool _inAir;
+		private bool _isFall;
+		private bool _animateFall;
 		private bool _canJump = true;
 		private bool _canDodge = true;
 
@@ -40,12 +40,13 @@ namespace Scripts.Player
 
 		private Vector3 _lockedDirection;
 
+		private Transform _camera;
+		private TargetLock _targetLock;
+		private ComboSystem _comboSystem;
 		private InputController _inputController;
 		private PlayerStateController _stateController;
-		private ComboSystem _comboSystem;
-		private Transform _camera;
 
-		public bool IsSprint => _isSprint;
+		public bool TrySprint => _trySprint;
 		public bool Air => _inAir;
 
 		public event Action<Vector2> OnLockMove;
@@ -54,20 +55,22 @@ namespace Scripts.Player
 		public event Action<bool> PlaySteps;
 		public event Action<bool> OnSprint;
 		public event Action<bool> InAir;
-		public event Action OnFalling;
-		public event Action OnFall;
 		public event Action OnLanding;
+		public event Action OnFalling;
+		public event Action OnDodge;
+		public event Action OnFall;
 		public event Action OnJump;
 
 		//debug gizmo parameter delete later
 		private float _currenthitdisance;
 
 		[Inject]
-		private void Construct(PlayerStateController stateController, InputController inputController, ComboSystem comboSystem)
+		private void Construct(TargetLock targetLock, PlayerStateController stateController, InputController inputController, ComboSystem comboSystem)
 		{
 			_inputController = inputController;
 			_stateController = stateController;
 			_comboSystem = comboSystem;
+			_targetLock = targetLock;
 		}
 
 		private void Awake()
@@ -77,20 +80,20 @@ namespace Scripts.Player
 
 		private void OnEnable()
 		{
-			_inputController.OnDirectionChanged += Move;
 			_inputController.OnSprintKeyPressed += Sprint;
-			_inputController.OnJumpKeyPressed += Jump;
 			_inputController.OnDodgeKeyPressed += Dodge;
+			_inputController.OnDirectionChanged += Move;
+			_inputController.OnJumpKeyPressed += Jump;
 			_inputController.OnBlockPressed += Block;
 			_comboSystem.IsAttacking += IsAttacking;
 		}
 
 		private void OnDisable()
 		{
-			_inputController.OnDirectionChanged -= Move;
 			_inputController.OnSprintKeyPressed -= Sprint;
-			_inputController.OnJumpKeyPressed -= Jump;
 			_inputController.OnDodgeKeyPressed -= Dodge;
+			_inputController.OnDirectionChanged -= Move;
+			_inputController.OnJumpKeyPressed -= Jump;
 			_inputController.OnBlockPressed -= Block;
 			_comboSystem.IsAttacking -= IsAttacking;
 		}
@@ -112,11 +115,12 @@ namespace Scripts.Player
 		{
 			var direction = Vector3.zero;
 
-			_requiredSpeed = _isSprint ? 2 : 1;
+			_requiredSpeed = _trySprint ? 2 : 1;
 			if (!_tryMove) _requiredSpeed = 0;
 
-			OnLockMove?.Invoke(_inputController.MoveDirection);
 			OnFreeMove?.Invoke(_requiredSpeed);
+			OnLockMove?.Invoke(_inputController.MoveDirection);
+			if (!_canDodge) OnDodge?.Invoke();
 
 			if (_inAir)
 			{
@@ -154,17 +158,27 @@ namespace Scripts.Player
 			}
 		}
 		
-		private void EndAnimationEvent() { _stateController.SetNone(); }
+		private void EndAnimationEvent()
+		{ 
+			if (_canDodge)
+			{
+				//Debug.Log("end dodge");
+				_stateController.SetNone(); 
+			}
+		}
 		private void DodgeAnimationEvent(int value) { _canDodge = value == 1; }
 
 		private void Dodge()
 		{
-			if (!_inAir && _canDodge) _stateController.SetDodge();
+			if (!_inAir && _canDodge)
+			{
+				_stateController.SetDodge();
+			}
 		}
 
 		private void Sprint(bool pressed)
 		{
-			_isSprint = pressed ? true : false;
+			_trySprint = pressed ? true : false;
 			OnSprint?.Invoke(pressed);
 		}
 
@@ -187,7 +201,7 @@ namespace Scripts.Player
 		{
 			if (!IsGrounded() && !_inAir)
 			{
-				_lockedDirection = GetJumpDirection();
+				_lockedDirection = _targetLock.Target ? GetMoveDirection() : GetJumpDirection();
 				_inAir = true;
 				InAir?.Invoke(true);
 				if (_isJump) _isJump = false;

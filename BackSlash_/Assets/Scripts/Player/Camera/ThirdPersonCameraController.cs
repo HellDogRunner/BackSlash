@@ -9,9 +9,10 @@ namespace Scripts.Player.camera
 		[SerializeField] private Transform _lookAt;
 		
 		[Header("References")]
-		[SerializeField] private float _rotationTime;
-		[SerializeField] private float _turnTime;
-		[SerializeField] private float _delayRotationTime;
+		[SerializeField] private float _freeTurnTime;
+		[SerializeField] private float _lockedTurnTime;
+		[SerializeField] private float _slowedTurnTime;
+		//[SerializeField] private float _delayRotationTime;
 
 		private float _timeToRotate;
 		
@@ -50,9 +51,11 @@ namespace Scripts.Player.camera
 		{
 			_camera = Camera.main.transform;
 		}
-		// TODO Rotate player after attack ?
+		
 		private void FixedUpdate()
 		{
+			// TODO Rotate player after attack ?
+			
 			// _timeToRotate += Time.deltaTime;
 			
 			// if (_timeToRotate >= _delayRotationTime) 
@@ -63,23 +66,26 @@ namespace Scripts.Player.camera
 		}
 		
 		// TODO delay before RotateToTarget() [?!!]
-		
 		private void Update()
 		{
 			if (_targetLock.Target != null)
 			{
-				if (_stateController.CanRotate() && _movement.IsSprint) RotatePlayer();
+				if (_stateController.LockedRotate()) RotatePlayer(_freeTurnTime);
 				else RotateToTarget();
 				_lookAt.LookAt(_targetLock.Target.transform.position);
 			}
 			else
 			{
 				if (_isAttacking) RotatePlayerForward();
-				else if (_stateController.CanRotate()) RotatePlayer();
+				else
+				{
+					if (_stateController.SlowedRotate()) RotatePlayer(_slowedTurnTime);
+					else RotatePlayer(_freeTurnTime);	
+				}
 			}
 		}
 
-		private void RotatePlayer()
+		private void RotatePlayer(float time)
 		{
 			var direction = _inputController.MoveDirection;
 
@@ -87,7 +93,7 @@ namespace Scripts.Player.camera
 			{
 				Vector3 moveDirection = direction.y * _camera.forward + direction.x * _camera.right;
 				moveDirection.y = 0;
-				transform.forward = Vector3.Lerp(moveDirection, transform.forward, _rotationTime);
+				transform.forward = Vector3.Lerp(moveDirection, transform.forward, time);
 			}
 		}
 
@@ -95,13 +101,13 @@ namespace Scripts.Player.camera
 		{
 			var target = _targetLock.Target.transform.position - gameObject.transform.position;
 			target.y = 0;
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target), _turnTime);
+			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target), _lockedTurnTime);
 		}
 
 		private void RotatePlayerForward()
 		{
 			float cameraYaw = _camera.eulerAngles.y;
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), _turnTime);
+			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), _lockedTurnTime);
 		}
 
 		private void OnAttack(bool attack) 
@@ -118,7 +124,6 @@ namespace Scripts.Player.camera
 		private IEnumerator DelayRotation(float delaySecounds)
 		{
 			yield return new WaitForSeconds(delaySecounds);
-
 			_isAttacking = false;
 		}
 	}
