@@ -48,7 +48,11 @@ public class LocationController
     {
         foreach (var other in platformPositions)
         {
-            if (Vector3.Distance(position, other) < 10f)
+            // Получаем размеры платформы, например через её коллайдер
+            Vector3 platformSize = view.PlatformPrefabCollider.bounds.size;
+
+            // Если расстояние между платформами меньше, чем сумма их радиусов, то они слишком близко
+            if (Vector3.Distance(position, other) < Mathf.Max(platformSize.x, platformSize.z) + 10f)
                 return true;
         }
         return false;

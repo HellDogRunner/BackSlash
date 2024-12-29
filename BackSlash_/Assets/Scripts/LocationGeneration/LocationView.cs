@@ -8,6 +8,9 @@ public class LocationView : MonoBehaviour
 
     private List<GameObject> generatedObjects = new List<GameObject>();
 
+    // Экспонируем коллайдер платформы, чтобы мы могли использовать его размер
+    public Collider PlatformPrefabCollider => platformPrefab.GetComponent<Collider>();
+
     public void ClearLocation()
     {
         foreach (var obj in generatedObjects)
@@ -27,7 +30,7 @@ public class LocationView : MonoBehaviour
     {
         var bridge = Instantiate(bridgePrefab, (startPosition + endPosition) / 2, Quaternion.identity, transform);
         bridge.transform.LookAt(endPosition);
-        bridge.transform.localScale = new Vector3(1, 1, Vector3.Distance(startPosition, endPosition));
+        bridge.transform.localScale = new Vector3(1, bridge.transform.localScale.y, Vector3.Distance(startPosition, endPosition));
         generatedObjects.Add(bridge);
     }
 }
