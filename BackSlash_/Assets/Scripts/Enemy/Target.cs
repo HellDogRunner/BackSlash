@@ -9,7 +9,7 @@ public class Target : MonoBehaviour
 
 	private HealthController _health;
 
-	public Vector3 LookAt => _lookAt.position;
+	public Transform LookAt => _lookAt;
 	public bool IsValid => isValid;
 
 	public event Action<Target> OnTargetDeath;

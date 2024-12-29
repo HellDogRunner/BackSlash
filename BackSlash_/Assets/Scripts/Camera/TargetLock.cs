@@ -4,18 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UniRx.Triggers;
-using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public class TargetLock : MonoBehaviour
 {
-	[Header("Objects")]
-	[SerializeField] private CinemachineCamera _lockOnCamera;
 	[SerializeField] private SphereCollider _triggerCollider;
-	[Space]
-	[SerializeField] private Image _aimIcon;
 
 	[Header("Settings")]
 	[SerializeField] private float _maxDistance;
@@ -57,14 +51,6 @@ public class TargetLock : MonoBehaviour
 		   }).AddTo(this);
 	}
 
-	private void Update()
-	{
-		if (_currentTarget)
-		{
-			if (_aimIcon != null) _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(_currentTarget.LookAt);
-		}	
-	}
-
 	private void AddTargets(Collider other)
 	{
 		if (!other.TryGetComponent<Target>(out Target target)) return;
@@ -96,9 +82,8 @@ public class TargetLock : MonoBehaviour
 		if (isTargeting)
 		{
 			isTargeting = false;
-			ShowIcon(false);
 			_currentTarget = null;
-			UnlockCamera();
+			OnSwitchLock?.Invoke(false);
 			return;
 		}
 
@@ -107,32 +92,8 @@ public class TargetLock : MonoBehaviour
 		if (_currentTarget)
 		{
 			isTargeting = true;
-			ShowIcon(true);
-			LockOnTarget(_currentTarget.transform);
+			OnSwitchLock?.Invoke(true);
 		}
-	}
-
-	private void LockOnTarget(Transform target)
-	{
-		_lockOnCamera.Target.LookAtTarget = target;
-		_lockOnCamera.gameObject.SetActive(true);
-		OnSwitchLock?.Invoke(true);
-	}
-
-	private void UnlockCamera()
-	{
-		_lockOnCamera.gameObject.SetActive(false);
-		OnSwitchLock?.Invoke(false);
-	}
-
-	private void ShowIcon(bool show)
-	{
-		if (_aimIcon == null)
-		{
-			Debug.LogWarning("Aim Icon not set");
-			return;
-		}
-		_aimIcon.gameObject.SetActive(show);
 	}
 
 	private void ForceUnlock(Target target)
@@ -140,10 +101,8 @@ public class TargetLock : MonoBehaviour
 		if (target)
 		{
 			_currentTarget = null;
-
-			_aimIcon.transform.position = new Vector3(0, 0, 0);
 			
-			UnlockCamera();
+			OnSwitchLock?.Invoke(false);
 
 			_targets.Remove(target);
 			target.OnTargetDeath -= ForceUnlock;

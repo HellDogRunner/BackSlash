@@ -3026,7 +3026,6 @@ MonoBehaviour:
   _hitboxLayer:
     serializedVersion: 2
     m_Bits: 63
-  _trySprint: 0
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3084,10 +3083,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b803daacd1629764fbd1a29bab1987a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _lockCamera: {fileID: 0}
+  _rotationComposer: {fileID: 0}
   _lookAt: {fileID: 8912080351853966069}
   _freeTurnTime: 0.7
   _lockedTurnTime: 0.2
   _slowedTurnTime: 0.95
+  _screenPositionY: -0.25
+  _distance: 5
 --- !u!114 &4037733144099541882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3140,10 +3143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569198f987bf4f34d8e56a3a5cb172a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lockOnCamera: {fileID: 0}
-  _rotationComposer: {fileID: 0}
   _triggerCollider: {fileID: 962996716132711058}
-  _aimIcon: {fileID: 0}
   _maxDistance: 20
   _targetAngle: 70
   _targets: []

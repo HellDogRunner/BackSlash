@@ -25,7 +25,7 @@ namespace Scripts.Animations
 		private TargetLock _targetLock;
 
 		[Inject]
-		private void Construct(InputController inputController, PlayerStateController playerState, MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
+		private void Construct(InputController inputController, PlayerStateController playerState, MovementController movementController, TargetLock targetLock, WeaponController weaponController, CameraController thirdPersonController)
 		{
 			_movementController = movementController;
 			_weaponController = weaponController;
