@@ -33,4 +33,16 @@ public class LocationView : MonoBehaviour
         bridge.transform.localScale = new Vector3(1, bridge.transform.localScale.y, Vector3.Distance(startPosition, endPosition));
         generatedObjects.Add(bridge);
     }
+
+    public Collider GetPlatformColliderAtPosition(Vector3 position)
+    {
+        // Создаем платформу в нужной позиции, чтобы взять ее коллайдер
+        var platform = Instantiate(platformPrefab, position, Quaternion.identity);
+        Collider platformCollider = platform.GetComponent<Collider>();
+
+        // Удаляем платформу, так как нам нужно только ее коллайдер
+        Destroy(platform);
+
+        return platformCollider;
+    }
 }

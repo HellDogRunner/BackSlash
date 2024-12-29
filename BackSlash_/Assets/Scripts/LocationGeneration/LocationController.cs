@@ -82,8 +82,9 @@ public class LocationController
                     queue.Enqueue(target);
                     connected.Add(target);
 
-                    var startEdge = GetEdgePosition(current, target);
-                    var endEdge = GetEdgePosition(target, current);
+                    // Получаем крайние точки платформ для создания моста
+                    Vector3 startEdge = GetPlatformEdgePosition(current, target);
+                    Vector3 endEdge = GetPlatformEdgePosition(target, current);
 
                     view.GenerateBridge(startEdge, endEdge);
                 }
@@ -99,8 +100,9 @@ public class LocationController
                 {
                     connected.Add(platform);
 
-                    var startEdge = GetEdgePosition(platform, nearest.Value);
-                    var endEdge = GetEdgePosition(nearest.Value, platform);
+                    // Получаем крайние точки платформ для создания моста
+                    Vector3 startEdge = GetPlatformEdgePosition(platform, nearest.Value);
+                    Vector3 endEdge = GetPlatformEdgePosition(nearest.Value, platform);
 
                     view.GenerateBridge(startEdge, endEdge);
                 }
@@ -108,12 +110,17 @@ public class LocationController
         }
     }
 
-    private Vector3 GetEdgePosition(Vector3 from, Vector3 to)
+    private Vector3 GetPlatformEdgePosition(Vector3 from, Vector3 to)
     {
-        Vector3 direction = (to - from).normalized;
-        Vector3 edge = from + direction * 5f; // Статическое расстояние от центра платформы
-        edge.y = from.y;
-        return edge;
+        // Получаем коллайдер платформы, чтобы вычислить ее размер
+        Collider fromCollider = view.GetPlatformColliderAtPosition(from);
+        Collider toCollider = view.GetPlatformColliderAtPosition(to);
+
+        // Вычисляем смещение от центра платформы до ее края по осям X и Z
+        Vector3 fromEdge = from + (to - from).normalized * (Mathf.Max(fromCollider.bounds.extents.x, fromCollider.bounds.extents.z));
+        fromEdge.y = from.y; // Сохраняем ту же высоту
+
+        return fromEdge;
     }
 
     private Vector3? FindNearestPlatform(Vector3 from, HashSet<Vector3> connected)
