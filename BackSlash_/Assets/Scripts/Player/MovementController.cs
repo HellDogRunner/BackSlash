@@ -38,7 +38,7 @@ namespace Scripts.Player
 		private float _requiredSpeed;
 		private float _yForce;
 
-		private Vector3 _lockedDirection;
+		private Vector3 _airDirection;
 
 		private Transform _camera;
 		private TargetLock _targetLock;
@@ -124,11 +124,11 @@ namespace Scripts.Player
 
 			if (_inAir)
 			{
-				if (_yForce <= Physics.gravity.y && !_isFall) _isFall = true;
+				if (_yForce <= Physics.gravity.y && !_isFall && _stateController.CanFall()) _isFall = true;
 
 				_yForce = Mathf.Lerp(_yForce, _yMaxSpeed, Time.deltaTime * _gravityMulti);
-				_lockedDirection = TryNormalize(_lockedDirection + GetMoveDirection() * _airDirectionMulti);
-				direction = _lockedDirection * _airSpeed;
+				_airDirection = TryNormalize(_airDirection + GetMoveDirection() * _airDirectionMulti);
+				direction = _airDirection * _airSpeed;
 			}
 			
 			if (_animateFall) OnFalling?.Invoke();
@@ -160,13 +160,18 @@ namespace Scripts.Player
 		
 		private void EndAnimationEvent()
 		{ 
-			if (_canDodge)
+			if (_canDodge) _stateController.SetNone();
+		}
+		private void DodgeAnimationEvent(int value)
+		{ 
+			_canDodge = value == 1;
+			if (_inAir)
 			{
-				//Debug.Log("end dodge");
-				_stateController.SetNone(); 
+				OnFall?.Invoke();
+				_animateFall = true;
+				_stateController.SetNone();
 			}
 		}
-		private void DodgeAnimationEvent(int value) { _canDodge = value == 1; }
 
 		private void Dodge()
 		{
@@ -201,15 +206,18 @@ namespace Scripts.Player
 		{
 			if (!IsGrounded() && !_inAir)
 			{
-				_lockedDirection = _targetLock.Target ? GetMoveDirection() : GetJumpDirection();
+				_airDirection = _targetLock.Target ? GetMoveDirection() : GetJumpDirection();
 				_inAir = true;
 				InAir?.Invoke(true);
 				if (_isJump) _isJump = false;
 				else
 				{
 					_yForce = 0;
-					OnFall?.Invoke();
-					_animateFall = true;
+					if (_stateController.CanFall())
+					{
+						OnFall?.Invoke();
+						_animateFall = true;
+					}
 				}
 			}
 

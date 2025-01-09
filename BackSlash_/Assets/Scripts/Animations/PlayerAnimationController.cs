@@ -46,7 +46,7 @@ namespace Scripts.Animations
 			_movementController.InAir += InAir;
 			_movementController.OnFall += Fall;
 			
-			_playerState.OnAttack += PrimaryAttack;
+			_playerState.OnAttack += Attack;
 			_playerState.OnBlock += Block;
 			_playerState.OnDodge += Dodge;
 			
@@ -67,7 +67,7 @@ namespace Scripts.Animations
 			_movementController.InAir -= InAir;
 			_movementController.OnFall -= Fall;
 			
-			_playerState.OnAttack -= PrimaryAttack;
+			_playerState.OnAttack -= Attack;
 			_playerState.OnBlock -= Block;
 			_playerState.OnDodge -= Dodge;
 			
@@ -105,6 +105,7 @@ namespace Scripts.Animations
 		private void Jump()
 		{
 			_animator.SetTrigger("Jump");
+			_animator.applyRootMotion = false;
 		}
 		
 		private void Falling()
@@ -123,10 +124,10 @@ namespace Scripts.Animations
 			_animator.SetTrigger("Fall");
 		}
 		
-		private void InAir(bool isInAir)
+		private void InAir(bool inAir)
 		{
-			_animator.SetBool("InAir", isInAir);
-			_animator.applyRootMotion = !isInAir;
+			_animator.SetBool("InAir", inAir);
+			if (!inAir) _animator.applyRootMotion = true;
 		}
 		
 		private int CalculateDirection()
@@ -148,10 +149,14 @@ namespace Scripts.Animations
 			return value;
 		}
 		
-		private void Dodge()
+		private void Dodge(bool value)
 		{
-			_animator.SetInteger("DodgeD", CalculateDirection());
-			_animator.SetTrigger("Dodge");
+			if (value)
+			{	
+				_animator.SetInteger("DodgeD", CalculateDirection());
+				_animator.SetTrigger("Dodge");
+			}
+			_animator.SetBool("Dodging", value);
 		}
 
 		private void ShowWeapon(bool equip)
@@ -161,7 +166,7 @@ namespace Scripts.Animations
 			_animator.SetTrigger("Equip");
 		}
 
-		private void PrimaryAttack(bool isAttacking)
+		private void Attack(bool isAttacking)
 		{
 			_animator.SetBool("Attacking", isAttacking);
 		}

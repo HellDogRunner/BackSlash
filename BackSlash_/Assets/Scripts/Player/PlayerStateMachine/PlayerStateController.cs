@@ -19,7 +19,7 @@ namespace Scripts.Player
 		public event Action<bool> OnLoot;
 		public event Action<bool> OnAttack;
 		public event Action<bool> OnBlock;
-		public event Action OnDodge;
+		public event Action<bool> OnDodge;
 
 		[Inject]
 		private void Construct(TargetLock targetLock, MovementController movement)
@@ -53,7 +53,7 @@ namespace Scripts.Player
 		public void SendBlock(bool invoke) { OnBlock?.Invoke(invoke); }
 		public void SendNone(bool invoke) { OnNone?.Invoke(invoke); }
 		public void SendLoot(bool invoke) { OnLoot?.Invoke(invoke); }
-		public void SendDodge() { OnDodge?.Invoke(); }
+		public void SendDodge(bool invoke) { OnDodge?.Invoke(invoke); }
 
 		public void SetInteract() { SetState(new InteractState(this)); }
 		public void SetAttack() { SetState(new AttackState(this)); }
@@ -64,7 +64,7 @@ namespace Scripts.Player
 
 		public bool CanJump()
 		{
-			return State == EPlayerState.None || State != EPlayerState.Block;
+			return State == EPlayerState.None || State == EPlayerState.Block;
 		}
 		
 		// TODO can player rotate in dodge state?
@@ -87,6 +87,11 @@ namespace Scripts.Player
 		public bool CanInteract()
 		{
 			return State == EPlayerState.None && !_movement.Air && TargetLock == null;
+		}
+		
+		public bool CanFall()
+		{
+			return State == EPlayerState.None || State == EPlayerState.Block;
 		}
 	}
 }

@@ -20,12 +20,12 @@ namespace Scripts.Player
 		public void Enter()
 		{
 			_player.State = state;
-			_player.SendDodge();
+			_player.SendDodge(true);
 		}
 
 		public void Exit()
 		{
-			
+			_player.SendDodge(false);
 		}
 	}
 }
