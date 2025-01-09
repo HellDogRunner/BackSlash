@@ -2079,6 +2079,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: Dodging
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: TargetLock
     m_Type: 4
     m_DefaultFloat: 0
@@ -2629,7 +2635,9 @@ AnimatorStateMachine:
   - {fileID: 8432733756986666694}
   - {fileID: 8973635510255488331}
   m_EntryTransitions: []
-  m_StateMachineTransitions: {}
+  m_StateMachineTransitions:
+  - first: {fileID: 4521938058167766539}
+    second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 920, y: 640, z: 0}
   m_EntryPosition: {x: 130, y: 460, z: 0}
