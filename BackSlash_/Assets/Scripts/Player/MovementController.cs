@@ -36,7 +36,7 @@ namespace Scripts.Player
 		private bool _canDodge = true;
 
 		private float _requiredSpeed;
-		private float _yForce;
+		private float _ySpeed;
 
 		private Vector3 _airDirection;
 
@@ -124,16 +124,16 @@ namespace Scripts.Player
 
 			if (_inAir)
 			{
-				if (_yForce <= Physics.gravity.y && !_isFall && _stateController.CanFall()) _isFall = true;
+				if (_ySpeed <= Physics.gravity.y && !_isFall && _stateController.CanFall()) _isFall = true;
 
-				_yForce = Mathf.Lerp(_yForce, _yMaxSpeed, Time.deltaTime * _gravityMulti);
+				_ySpeed = Mathf.Lerp(_ySpeed, _yMaxSpeed, Time.deltaTime * _gravityMulti);
 				_airDirection = TryNormalize(_airDirection + GetMoveDirection() * _airDirectionMulti);
 				direction = _airDirection * _airSpeed;
 			}
 			
 			if (_animateFall) OnFalling?.Invoke();
 
-			direction.y = _yForce;
+			direction.y = _ySpeed;
 			_moveDirection = direction;
 			_characterController.Move(_moveDirection * Time.deltaTime);
 		}
@@ -145,8 +145,12 @@ namespace Scripts.Player
 				_canJump = false;
 				_isJump = true;
 				OnJump?.Invoke();
-				_yForce = _jumpSpeed;
 			}
+		}
+		
+		private void JumpStart()
+		{
+			_ySpeed = _jumpSpeed;
 		}
 		
 		private void JumpEnd()
@@ -212,7 +216,7 @@ namespace Scripts.Player
 				if (_isJump) _isJump = false;
 				else
 				{
-					_yForce = 0;
+					_ySpeed = 0;
 					if (_stateController.CanFall())
 					{
 						OnFall?.Invoke();
@@ -231,7 +235,7 @@ namespace Scripts.Player
 					_isFall = false;
 				}
 				InAir?.Invoke(false);
-				_yForce = Physics.gravity.y;
+				_ySpeed = Physics.gravity.y;
 				StartCoroutine(JumpDelay());
 			}
 		}

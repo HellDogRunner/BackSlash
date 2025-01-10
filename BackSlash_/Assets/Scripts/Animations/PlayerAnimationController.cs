@@ -104,6 +104,7 @@ namespace Scripts.Animations
 
 		private void Jump()
 		{
+			_animator.SetInteger("Input Direction", CalculateDirection());
 			_animator.SetTrigger("Jump");
 			_animator.applyRootMotion = false;
 		}
@@ -130,30 +131,11 @@ namespace Scripts.Animations
 			if (!inAir) _animator.applyRootMotion = true;
 		}
 		
-		private int CalculateDirection()
-		{
-			var direction = _inputController.MoveDirection;
-			int value;
-			
-			if (direction == Vector2.zero) return 3;
-			
-			if (direction.x != 0)
-			{
-				value = direction.x == -1 ? 1 : 2;
-			}
-			else
-			{
-				value = direction.y == 1 ? 3 : 4;
-			}
-			
-			return value;
-		}
-		
 		private void Dodge(bool value)
 		{
 			if (value)
 			{	
-				_animator.SetInteger("DodgeD", CalculateDirection());
+				_animator.SetInteger("Input Direction", CalculateDirection());
 				_animator.SetTrigger("Dodge");
 			}
 			_animator.SetBool("Dodging", value);
@@ -189,6 +171,25 @@ namespace Scripts.Animations
 		public void TriggerAnimationByName(string name)
 		{
 			_animator.SetTrigger(name);
+		}
+		
+		private int CalculateDirection()
+		{
+			var direction = _inputController.MoveDirection;
+			int value;
+			
+			if (direction == Vector2.zero) return 0;
+			
+			if (direction.x != 0)
+			{
+				value = direction.x == -1 ? 1 : 2;
+			}
+			else
+			{
+				value = direction.y == 1 ? 3 : 4;
+			}
+			
+			return value;
 		}
 	}
 }
