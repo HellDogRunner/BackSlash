@@ -752,7 +752,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.05
+  m_TransitionDuration: 0.1
   m_TransitionOffset: 0
   m_ExitTime: 0.7580645
   m_HasExitTime: 0
@@ -1116,7 +1116,7 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.1
   m_TransitionOffset: 0
   m_ExitTime: 0.9747475
   m_HasExitTime: 0
@@ -2260,7 +2260,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: Speed
-    m_EventTreshold: 0.5
+    m_EventTreshold: 1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -984464993340007697}
   m_Solo: 0
@@ -3005,14 +3005,14 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.25
+  m_TransitionDuration: 0.2
   m_TransitionOffset: 0
   m_ExitTime: 0.36720407
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &2528192709049196316
 AnimatorState:
   serializedVersion: 6
@@ -3083,7 +3083,7 @@ AnimatorStateMachine:
     m_Position: {x: 880, y: 800, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8664927779464711433}
-    m_Position: {x: 880, y: 740, z: 0}
+    m_Position: {x: 880, y: 720, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6548433661093104203}
     m_Position: {x: 630, y: 670, z: 0}
@@ -4356,7 +4356,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fall
+  m_Name: Fall blend
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -4503,7 +4503,7 @@ BlendTree:
     m_Motion: {fileID: 7400000, guid: 9a771d8ce67477b4fb05875c032c5163, type: 2}
     m_Threshold: 0.8
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 0.5
+    m_TimeScale: 0.2
     m_CycleOffset: 0
     m_DirectBlendParameter: Speed
     m_Mirror: 0

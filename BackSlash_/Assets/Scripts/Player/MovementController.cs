@@ -165,14 +165,21 @@ namespace Scripts.Player
 		private void EndAnimationEvent()
 		{ 
 			if (_canDodge) _stateController.SetNone();
+			
+			if (_inAir)
+			{
+				OnFall?.Invoke();
+				_animateFall = true;
+			}
 		}
+		
 		private void DodgeAnimationEvent(int value)
 		{ 
 			_canDodge = value == 1;
 			if (_inAir)
 			{
-				OnFall?.Invoke();
-				_animateFall = true;
+				// OnFall?.Invoke();
+				// _animateFall = true;
 				_stateController.SetNone();
 			}
 		}

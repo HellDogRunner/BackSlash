@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class HUDAnimationService : MonoBehaviour
 {
 	[SerializeField] private TMP_Text _currency;
+	[SerializeField] private TMP_Text _fps;
 	[SerializeField] private Image _targetIcon;
 	
 	[Header("Canvas Groups")]
@@ -15,6 +16,9 @@ public class HUDAnimationService : MonoBehaviour
 	[Header("Animation Settings")]
 	[SerializeField] private float _showDelay = 1f;
 	[SerializeField] private float _fadeDuration = 0.5f;
+
+	private int _index;
+	private bool _updateFPS;
 
 	private Transform _target;
 	private Camera _camera;
@@ -28,6 +32,27 @@ public class HUDAnimationService : MonoBehaviour
 		
 		_hudCG.alpha = 1;
 		_overlayCG.alpha = 0;
+		
+		_targetIcon.gameObject.SetActive(false);
+	}
+	
+	private void FixedUpdate()
+	{
+		_index++;
+		if (_index == 5)
+		{
+			_index = 0;
+			_updateFPS = true;
+		}
+	}
+	
+	private void Update()
+	{
+		if (_updateFPS)
+		{
+			_updateFPS = false;
+			_fps.text = ((int)(1 / Time.deltaTime)).ToString();
+		}
 	}
 	
 	public void ShowOverlay()

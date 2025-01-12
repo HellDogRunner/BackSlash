@@ -93,7 +93,7 @@ namespace Scripts.Player.camera
 			{
 				Vector3 moveDirection = direction.y * _camera.forward + direction.x * _camera.right;
 				moveDirection.y = 0;
-				transform.forward = Vector3.Lerp(moveDirection, transform.forward, time);
+				transform.forward = Vector3.Lerp(transform.forward, moveDirection, time * Time.deltaTime);
 			}
 		}
 
@@ -101,13 +101,13 @@ namespace Scripts.Player.camera
 		{
 			var target = _target.position - gameObject.transform.position;
 			target.y = 0;
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target), _lockedTurnTime);
+			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(target), _lockedTurnTime * Time.deltaTime);
 		}
 
 		private void RotatePlayerForward()
 		{
 			float cameraYaw = _camera.eulerAngles.y;
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), _lockedTurnTime);
+			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), _lockedTurnTime * Time.deltaTime);
 		}
 
 		private void OnAttack(bool attack) 
