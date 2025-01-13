@@ -2959,6 +2959,7 @@ GameObject:
   - component: {fileID: 5300293899505624239}
   - component: {fileID: 1417933816927670133}
   - component: {fileID: 1945681995266547424}
+  - component: {fileID: 7106624667016867772}
   - component: {fileID: 1259562901829629793}
   - component: {fileID: 3184469423278028609}
   - component: {fileID: 8507639596095695501}
@@ -3022,7 +3023,7 @@ MonoBehaviour:
   _gravityMulti: 2
   _yMaxSpeed: -15
   _maxCastDistance: 0.85
-  _sphereCastRadius: 0.25
+  _sphereCastRadius: 0.3
   _hitboxLayer:
     serializedVersion: 2
     m_Bits: 63
@@ -3148,6 +3149,28 @@ MonoBehaviour:
   _maxDistance: 20
   _targetAngle: 70
   _targets: []
+--- !u!114 &7106624667016867772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8540106101222958762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcc22325213a92c4ea5eda96d4d23460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 1259562901829629793}
+  _characterController: {fileID: 3184469423278028609}
+  _layer:
+    serializedVersion: 2
+    m_Bits: 9
+  _rayLength: 1.25
+  _distanceToGround: 0.06
+  _speed: 5
+  _maxFootAngle: 35
+  _standCollider: {x: 0, y: 1, z: 0}
 --- !u!95 &1259562901829629793
 Animator:
   serializedVersion: 7

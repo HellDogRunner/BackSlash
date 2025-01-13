@@ -16,8 +16,6 @@ namespace Scripts.Animations
 		[SerializeField] private float _smoothFreeMove;
 		[SerializeField] private float _smoothFall;
 		
-		private Vector2 _dodgeDirection;
-		
 		private MovementController _movementController;
 		private PlayerStateController _playerState;
 		private WeaponController _weaponController;
