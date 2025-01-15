@@ -4,27 +4,23 @@ using Zenject;
 
 public class CursorController : MonoBehaviour
 {
-	private PlayerStateController _stateController;
 	private UiInputsController _uiInputs;
 	private TimeController _time;
 
-	[Inject] private void Construct(TimeController time, UiInputsController uiInputs, PlayerStateController stateController) 
+	[Inject] private void Construct(TimeController time, UiInputsController uiInputs) 
 	{
 		_time = time;
 		_uiInputs = uiInputs;
-		_stateController = stateController;
 	}
 
 	private void OnEnable()
 	{
-		_stateController.OnInteract += Interact;
 		_time.OnPause += Pause;
 		_uiInputs.ShowCursor += Visible;
 	}
 	
 	private void OnDisable()
 	{
-		_stateController.OnInteract -= Interact;
 		_time.OnPause -= Pause;
 		_uiInputs.ShowCursor -= Visible;
 	}
@@ -32,10 +28,10 @@ public class CursorController : MonoBehaviour
 	public void Pause(bool value)
 	{
 		if (value) Confine();
-		else if (_stateController.State != EPlayerState.Interact) Lock();
+		else Lock();
 	}
 	
-	private void Interact(bool value)
+	public void Interact(bool value)
 	{
 		if (value) Confine();
 		else Lock();

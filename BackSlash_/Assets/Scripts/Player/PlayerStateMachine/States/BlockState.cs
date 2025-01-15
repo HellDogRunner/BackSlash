@@ -1,27 +1,45 @@
 namespace Scripts.Player
 {
-	public class BlockState : IPlayerState
+	public class BlockState : BasicState, IPlayerState
 	{
-		private PlayerStateController _player;
-		private EPlayerState state = EPlayerState.Block;
-		
-		public BlockState(PlayerStateController player){ _player = player; }
-		public EPlayerState GetState() { return state; }
-
-		public bool CanEnter()
+		public BlockState(PlayerStateController player)
 		{
-			return _player.State == EPlayerState.None;
+			_player = player;
 		}
 
 		public void Enter()
 		{
-			_player.State = state;
-			_player.SendBlock(true);
+			_isActive = true;
+			_interruptible = true;
+			_player.State = EPlayerState.Block;
+			_player.Animator.Block(true);
+		}
+
+		public void Update()
+		{
+			if (!_isActive) _player.SetState(new NoneState(_player));
+			// TODO Realize block
+			// block time ect.
 		}
 
 		public void Exit()
 		{
-			_player.SendBlock(false);
+			_player.Animator.Block(false);
+		}
+
+		public bool CanEnterInAir()
+		{
+			return true;
+		}
+
+		public bool CanJump()
+		{
+			return true;
+		}
+		
+		public bool CanMove()
+		{
+			return true;
 		}
 	}
 }

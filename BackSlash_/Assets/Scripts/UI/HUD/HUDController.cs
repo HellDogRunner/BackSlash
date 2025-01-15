@@ -10,18 +10,16 @@ namespace RedMoonGames.Window
 
 		private bool _isLocked;
 
-		private PlayerStateController _stateController;
 		private CurrencyAnimator _currencyAnimation;
 		private CurrencyService _currencyService;
 		private TargetLock _targetLock;
 		private TimeController _time;
 
 		[Inject]
-		private void Construct(TargetLock targetLock, TimeController time, PlayerStateController stateController, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
+		private void Construct(TargetLock targetLock, TimeController time, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
 		{
 			_time = time;
 			_targetLock = targetLock;
-			_stateController = stateController;
 			_currencyService = currencyService;
 			_currencyAnimation = currencyAnimation;
 		}
@@ -34,7 +32,6 @@ namespace RedMoonGames.Window
 		private void OnEnable()
 		{
 			_currencyService.OnCurrencyChanged += ChangeCurrency;
-			_stateController.OnInteract += Interact;	
 			_targetLock.OnSwitchLock += SwitchLock;
 			_time.OnPause += Pause;
 		}
@@ -42,7 +39,6 @@ namespace RedMoonGames.Window
 		private void OnDisable()
 		{
 			_currencyService.OnCurrencyChanged -= ChangeCurrency;
-			_stateController.OnInteract -= Interact;
 			_targetLock.OnSwitchLock -= SwitchLock;
 			_time.OnPause -= Pause;
 		}
@@ -70,9 +66,9 @@ namespace RedMoonGames.Window
 			}
 		}
 
-		private void Interact(bool interact)
+		public void Interact()
 		{
-			if (interact) _animator.HideOverlay();
+			_animator.HideOverlay();
 		}
 
 		private void SetCurrency()

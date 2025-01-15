@@ -1,28 +1,34 @@
 namespace Scripts.Player
 {
-	public class NoneState : IPlayerState
+	public class NoneState : BasicState, IPlayerState
 	{
-		private PlayerStateController _player;
-		private EPlayerState state = EPlayerState.None;
-		
-		public NoneState(PlayerStateController player) { _player = player; }
-		public EPlayerState GetState() { return state; }
-
-		public bool CanEnter()
+		public NoneState(PlayerStateController player)
 		{
-			return true;
+			_player = player;
 		}
 
 		public void Enter()
 		{
-			_player.State = state;
-			_player.SendNone(true);
+			_interruptible = true;
+			_player.State = EPlayerState.None;
+		}
+		public void Update() {}
+		
+		public void Exit() {}
+		
+		public bool CanEnterInAir()
+		{
+			return true;
 		}
 
-		public void Exit()
+		public bool CanJump()
 		{
-			_player.SendNone(false);
+			return true;
 		}
 		
+		public bool CanMove()
+		{
+			return true;
+		}
 	}
 }

@@ -25,8 +25,8 @@ public class ComboSystem : MonoBehaviour
 	private PlayerAnimationController _playerAnimationController;
 	private PlayerStateController _stateController;
 
-	private bool _ComboProgress = false;
-	private bool _isCanceling = false;
+	private bool _comboProgress;
+	private bool _isCanceling;
 	private bool _canAttack = true;
 
 	public event Action<bool> IsAttacking;
@@ -153,7 +153,7 @@ public class ComboSystem : MonoBehaviour
 
 	private IEnumerator PerformCombo(ComboTypeModel combo)
 	{
-		_ComboProgress = true;
+		_comboProgress = true;
 		IsAttacking?.Invoke(true);
 		_playerAnimationController.TriggerAnimationByName(combo.AnimationTrigger);
 		OnComboSound.Invoke();
@@ -182,7 +182,7 @@ public class ComboSystem : MonoBehaviour
 
 	private IEnumerator CancelCombo()
 	{
-		if (!_isCanceling && !_ComboProgress)
+		if (!_isCanceling && !_comboProgress)
 		{
 			_isCanceling = true;
 			_canAttack = false;
@@ -255,6 +255,6 @@ public class ComboSystem : MonoBehaviour
 		_inputBuffer.Clear();
 		FillComboList();
 		_canAttack = true;
-		_ComboProgress = false;
+		_comboProgress = false;
 	}
 }

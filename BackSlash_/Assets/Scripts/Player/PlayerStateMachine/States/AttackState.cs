@@ -1,27 +1,56 @@
 namespace Scripts.Player
 {
-	public class AttackState : IPlayerState
+	public class AttackState : BasicState, IPlayerState
 	{
-		private PlayerStateController _player;
-		private EPlayerState state = EPlayerState.Attack;
-		
-		public AttackState(PlayerStateController player){ _player = player; }
-		public EPlayerState GetState() { return state; }
-
-		public bool CanEnter()
+		public AttackState(PlayerStateController player)
 		{
-			return _player.State == state || _player.State == EPlayerState.None || _player.State == EPlayerState.Block;
+			_player = player;
 		}
 
 		public void Enter()
 		{
-			_player.State = state;
-			_player.SendAttack(true);
+			_isActive = true;
+			_player.ComboSystem.IsAttacking += Attack;
+			_player.State = EPlayerState.Attack;
+			_player.Animator.Attack(true);
+		}
+		
+		public void Update() 
+		{
+			AirCheck();
+			if (!_isActive) _player.SetState(new NoneState(_player));
+			// TODO Start moving before the attack ends?
+			// take the animation time from combo system?
 		}
 
 		public void Exit()
 		{
-			_player.SendAttack(false);
+			_player.Animator.Attack(false);
+			_player.ComboSystem.IsAttacking -= Attack;
+		}
+		
+		private void Attack(bool value)
+		{
+			if (!value)
+			{
+				_interruptible = true;
+				_player.SetState(new NoneState(_player));
+			}
+		}
+		
+		public bool CanEnterInAir()
+		{
+			return true;
+		}
+
+		public bool CanJump()
+		{
+			return false;
+		}
+				
+		public bool CanMove()
+		{
+			return false;
 		}
 	}
 }

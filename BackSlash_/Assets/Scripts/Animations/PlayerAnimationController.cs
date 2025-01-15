@@ -16,19 +16,19 @@ namespace Scripts.Animations
 		[SerializeField] private float _smoothFreeMove;
 		[SerializeField] private float _smoothFall;
 		
+		private bool _fall;
+		
 		private MovementController _movementController;
-		private PlayerStateController _playerState;
 		private WeaponController _weaponController;
 		private InputController _inputController;
 		private TargetLock _targetLock;
 
 		[Inject]
-		private void Construct(InputController inputController, PlayerStateController playerState, MovementController movementController, TargetLock targetLock, WeaponController weaponController, CameraController thirdPersonController)
+		private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController, CameraController thirdPersonController)
 		{
 			_movementController = movementController;
 			_weaponController = weaponController;
 			_inputController = inputController;
-			_playerState = playerState;
 			_targetLock = targetLock;
 		}
 
@@ -37,16 +37,11 @@ namespace Scripts.Animations
 			_movementController.OnLockMove += LockMove;
 			_movementController.OnFreeMove += FreeMove;
 			_movementController.OnTryMove += TryMove;
-			_movementController.OnFalling += Falling;
 			_movementController.OnLanding += Landing;
 			_movementController.OnSprint += Sprint;
 			_movementController.OnJump += Jump;
 			_movementController.InAir += InAir;
 			_movementController.OnFall += Fall;
-			
-			_playerState.OnAttack += Attack;
-			_playerState.OnBlock += Block;
-			_playerState.OnDodge += Dodge;
 			
 			_weaponController.OnWeaponEquip += ShowWeapon;
 			
@@ -58,20 +53,24 @@ namespace Scripts.Animations
 			_movementController.OnLockMove -= LockMove;
 			_movementController.OnFreeMove -= FreeMove;
 			_movementController.OnTryMove -= TryMove;
-			_movementController.OnFalling -= Falling;
 			_movementController.OnLanding -= Landing;
 			_movementController.OnSprint -= Sprint;
 			_movementController.OnJump -= Jump;
 			_movementController.InAir -= InAir;
 			_movementController.OnFall -= Fall;
 			
-			_playerState.OnAttack -= Attack;
-			_playerState.OnBlock -= Block;
-			_playerState.OnDodge -= Dodge;
-			
 			_weaponController.OnWeaponEquip -= ShowWeapon;
 			
 			_targetLock.OnSwitchLock -= SwitchLock;
+		}
+
+		private void Update()
+		{
+			if (_fall)
+			{
+				_animator.SetFloat("Fall Speed", 1, _smoothFall, Time.deltaTime);
+				if (!_animator.GetBool("InAir")) _fall = false;
+			}
 		}
 
 		private void LockMove(Vector2 direction)
@@ -106,21 +105,17 @@ namespace Scripts.Animations
 			_animator.SetTrigger("Jump");
 			_animator.applyRootMotion = false;
 		}
-		
-		private void Falling()
+
+		public void Fall()
 		{
-			_animator.SetFloat("Fall Speed", 1, _smoothFall, Time.deltaTime);
+			_fall = true;
+			_animator.SetFloat("Fall Speed", 0);
+			_animator.SetTrigger("Fall");
 		}
 		
 		private void Landing()
 		{
 			_animator.SetTrigger("Landing");
-		}
-		
-		private void Fall()
-		{
-			_animator.SetFloat("Fall Speed", 0);
-			_animator.SetTrigger("Fall");
 		}
 		
 		private void InAir(bool inAir)
@@ -129,14 +124,10 @@ namespace Scripts.Animations
 			if (!inAir) _animator.applyRootMotion = true;
 		}
 		
-		private void Dodge(bool value)
+		public void Dodge()
 		{
-			if (value)
-			{	
-				_animator.SetInteger("Input Direction", CalculateDirection());
-				_animator.SetTrigger("Dodge");
-			}
-			_animator.SetBool("Dodging", value);
+			_animator.SetInteger("Input Direction", CalculateDirection());
+			_animator.SetTrigger("Dodge");
 		}
 
 		private void ShowWeapon(bool equip)
@@ -146,7 +137,7 @@ namespace Scripts.Animations
 			_animator.SetTrigger("Equip");
 		}
 
-		private void Attack(bool isAttacking)
+		public void Attack(bool isAttacking)
 		{
 			_animator.SetBool("Attacking", isAttacking);
 		}
@@ -161,7 +152,7 @@ namespace Scripts.Animations
 			_animator.SetTrigger("JumpCombo");
 		}
 
-		private void Block(bool isBlocking)
+		public void Block(bool isBlocking)
 		{
 			_animator.SetBool("Block", isBlocking);
 		}

@@ -1,27 +1,47 @@
 namespace Scripts.Player
 {
-	public class InteractState : IPlayerState
+	public class InteractState : BasicState, IPlayerState
 	{
-		private PlayerStateController _player;
-		private EPlayerState state = EPlayerState.Interact;
-		
-		public InteractState(PlayerStateController player){ _player = player; }
-		public EPlayerState GetState() { return state; }
-
-		public bool CanEnter()
+		public InteractState(PlayerStateController player)
 		{
-			return _player.State == EPlayerState.None && _player.TargetLock == null;
+			_player = player;
 		}
 
 		public void Enter()
 		{
-			_player.State = state;
-			_player.SendInteract(true);
+			_isActive = true;
+			_player.State = EPlayerState.Interact;
+			_player.Cursor.Interact(true);
+			_player.HUD.Interact();
+			// send start interact
+		}
+
+		public void Update()
+		{
+			AirCheck();
+			if (!_isActive) _player.SetState(new NoneState(_player));
 		}
 
 		public void Exit()
 		{
-			_player.SendInteract(false);
+			_player.Cursor.Interact(false);
+			
+			// send end interact
+		}
+		
+		public bool CanEnterInAir()
+		{
+			return !_player.Movement.Air;
+		}
+
+		public bool CanJump()
+		{
+			return false;
+		}
+				
+		public bool CanMove()
+		{
+			return false;
 		}
 	}
 }

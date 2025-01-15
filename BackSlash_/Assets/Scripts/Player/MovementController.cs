@@ -28,12 +28,8 @@ namespace Scripts.Player
 
 		private bool _tryMove;
 		private bool _trySprint;
-		private bool _isJump;
 		private bool _inAir;
-		private bool _isFall;
-		private bool _animateFall;
 		private bool _canJump = true;
-		private bool _canDodge = true;
 
 		private float _requiredSpeed;
 		private float _ySpeed;
@@ -42,7 +38,6 @@ namespace Scripts.Player
 
 		private Transform _camera;
 		private TargetLock _targetLock;
-		private ComboSystem _comboSystem;
 		private InputController _inputController;
 		private PlayerStateController _stateController;
 
@@ -56,8 +51,6 @@ namespace Scripts.Player
 		public event Action<bool> OnSprint;
 		public event Action<bool> InAir;
 		public event Action OnLanding;
-		public event Action OnFalling;
-		public event Action OnDodge;
 		public event Action OnFall;
 		public event Action OnJump;
 
@@ -65,11 +58,10 @@ namespace Scripts.Player
 		private float _currenthitdisance;
 
 		[Inject]
-		private void Construct(TargetLock targetLock, PlayerStateController stateController, InputController inputController, ComboSystem comboSystem)
+		private void Construct(PlayerStateController playerStateController, TargetLock targetLock, InputController inputController)
 		{
+			_stateController = playerStateController;
 			_inputController = inputController;
-			_stateController = stateController;
-			_comboSystem = comboSystem;
 			_targetLock = targetLock;
 		}
 
@@ -81,21 +73,15 @@ namespace Scripts.Player
 		private void OnEnable()
 		{
 			_inputController.OnSprintKeyPressed += Sprint;
-			_inputController.OnDodgeKeyPressed += Dodge;
 			_inputController.OnDirectionChanged += Move;
 			_inputController.OnJumpKeyPressed += Jump;
-			_inputController.OnBlockPressed += Block;
-			_comboSystem.IsAttacking += IsAttacking;
 		}
 
 		private void OnDisable()
 		{
 			_inputController.OnSprintKeyPressed -= Sprint;
-			_inputController.OnDodgeKeyPressed -= Dodge;
 			_inputController.OnDirectionChanged -= Move;
 			_inputController.OnJumpKeyPressed -= Jump;
-			_inputController.OnBlockPressed -= Block;
-			_comboSystem.IsAttacking -= IsAttacking;
 		}
 
 		private void Update()
@@ -117,21 +103,19 @@ namespace Scripts.Player
 
 			_requiredSpeed = _trySprint ? 2 : 1;
 			if (!_tryMove) _requiredSpeed = 0;
-
-			OnFreeMove?.Invoke(_requiredSpeed);
-			OnLockMove?.Invoke(_inputController.MoveDirection);
-			if (!_canDodge) OnDodge?.Invoke();
+			if (_stateController.CanMove())
+			{
+				OnFreeMove?.Invoke(_requiredSpeed);
+				OnLockMove?.Invoke(_inputController.MoveDirection);	
+			}
 
 			if (_inAir)
 			{
-				if (_ySpeed <= Physics.gravity.y && !_isFall && _stateController.CanFall()) _isFall = true;
-
 				_ySpeed = Mathf.Lerp(_ySpeed, _yMaxSpeed, Time.deltaTime * _gravityMulti);
 				_airDirection = TryNormalize(_airDirection + GetMoveDirection() * _airDirectionMulti);
 				direction = _airDirection * _airSpeed;
 			}
-			
-			if (_animateFall) OnFalling?.Invoke();
+			else if (_ySpeed > Physics.gravity.y) _ySpeed = Mathf.Lerp(_ySpeed, _yMaxSpeed, Time.deltaTime * _gravityMulti);
 
 			direction.y = _ySpeed;
 			_moveDirection = direction;
@@ -143,7 +127,6 @@ namespace Scripts.Player
 			if (!_inAir && _canJump && _stateController.CanJump())
 			{
 				_canJump = false;
-				_isJump = true;
 				OnJump?.Invoke();
 			}
 		}
@@ -158,37 +141,6 @@ namespace Scripts.Player
 			if (_inAir)
 			{
 				OnFall?.Invoke();
-				_animateFall = true;
-			}
-		}
-		
-		private void EndAnimationEvent()
-		{ 
-			if (_canDodge) _stateController.SetNone();
-			
-			if (_inAir)
-			{
-				OnFall?.Invoke();
-				_animateFall = true;
-			}
-		}
-		
-		private void DodgeAnimationEvent(int value)
-		{ 
-			_canDodge = value == 1;
-			if (_inAir)
-			{
-				// OnFall?.Invoke();
-				// _animateFall = true;
-				_stateController.SetNone();
-			}
-		}
-
-		private void Dodge()
-		{
-			if (!_inAir && _canDodge)
-			{
-				_stateController.SetDodge();
 			}
 		}
 
@@ -198,21 +150,6 @@ namespace Scripts.Player
 			OnSprint?.Invoke(pressed);
 		}
 
-		// TODO Realize block
-		private void Block(bool pressed)
-		{
-			if (pressed) _stateController.SetBlock();
-			else if (_stateController.State == EPlayerState.Block) _stateController.SetNone();
-		}
-
-		// TODO Start moving before the attack ends?
-		// take the animation time from combo system?
-		private void IsAttacking(bool isAttacking)
-		{
-			if (isAttacking) _stateController.SetAttack();
-			else _stateController.SetNone();
-		}
-
 		private void CheckLand()
 		{
 			if (!IsGrounded() && !_inAir)
@@ -220,35 +157,30 @@ namespace Scripts.Player
 				_airDirection = _targetLock.Target ? GetMoveDirection() : GetJumpDirection();
 				_inAir = true;
 				InAir?.Invoke(true);
-				if (_isJump) _isJump = false;
-				else
+				
+				if (_canJump)
 				{
 					_ySpeed = 0;
-					if (_stateController.CanFall())
-					{
-						OnFall?.Invoke();
-						_animateFall = true;
-					}
+					if (_stateController.State == EPlayerState.None) OnFall?.Invoke();
 				}
 			}
 
 			if (IsGrounded() && _inAir)
 			{
 				_inAir = false;
-				_animateFall = false;
-				if (_isFall)
+				InAir?.Invoke(false);
+				if (Physics.gravity.y >= _ySpeed)
 				{
 					OnLanding?.Invoke();
-					_isFall = false;
+					_ySpeed = Physics.gravity.y;
 				}
-				InAir?.Invoke(false);
-				_ySpeed = Physics.gravity.y;
 				StartCoroutine(JumpDelay());
 			}
 		}
 
 		private IEnumerator JumpDelay()
 		{
+			_canJump = false;
 			yield return new WaitForSeconds(_jumpDelay);
 			_canJump = true;
 		}
@@ -258,10 +190,10 @@ namespace Scripts.Player
 			PlaySteps?.Invoke(!_inAir && _stateController.State == EPlayerState.None);
 		}
 
-		private Vector3 TryNormalize(Vector3 dir)
+		private Vector3 TryNormalize(Vector3 direction)
 		{
-			if (Math.Abs(dir.x) > 1 || Math.Abs(dir.z) > 1) return dir.normalized;
-			return dir;
+			if (Math.Abs(direction.x) > 1 || Math.Abs(direction.z) > 1) return direction.normalized;
+			return direction;
 		}
 
 		private Vector3 GetMoveDirection()

@@ -1,27 +1,44 @@
 namespace Scripts.Player
 {
-	public class LootState : IPlayerState
+	public class LootState : BasicState, IPlayerState
 	{
-		private PlayerStateController _player;
-		private EPlayerState state = EPlayerState.Loot;
-		
-		public LootState(PlayerStateController player){ _player = player; }
-		public EPlayerState GetState() { return state; }
-		
-		public bool CanEnter()
+		public LootState(PlayerStateController player)
 		{
-			return _player.State == EPlayerState.None;
+			_player = player;
 		}
 
 		public void Enter()
 		{
-			_player.State = state;
-			_player.SendLoot(true);
+			_isActive = true;
+			_player.State = EPlayerState.Loot;
+			// send start loot state
+
+		}
+
+		public void Update()
+		{
+			AirCheck();
+			if (!_isActive) _player.SetState(new NoneState(_player));
 		}
 
 		public void Exit()
 		{
-			_player.SendLoot(false);
+			// send end loot state
+		}
+		
+		public bool CanEnterInAir()
+		{
+			return !_player.Movement.Air;
+		}
+
+		public bool CanJump()
+		{
+			return false;
+		}
+		
+		public bool CanMove()
+		{
+			return false;
 		}
 	}
 }

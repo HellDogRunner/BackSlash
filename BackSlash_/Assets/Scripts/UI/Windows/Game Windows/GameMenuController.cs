@@ -41,7 +41,6 @@ namespace RedMoonGames.Window
 		private void OnEnable()
 		{
 			_time.OnPause += Pause;
-			_stateController.OnInteract += Interact;
 			
 			_sceneTransition.OnWindowHide += SceneTransitionHide;
 			
@@ -53,7 +52,6 @@ namespace RedMoonGames.Window
 		private void OnDisable()
 		{
 			_time.OnPause -= Pause;
-			_stateController.OnInteract -= Interact;
 
 			_sceneTransition.OnWindowHide -= SceneTransitionHide;
 
@@ -85,15 +83,11 @@ namespace RedMoonGames.Window
 			_time.Pause(pause);
 		}
 
+		// TODO убрать зависимость от контроллера состояний и не выключать скрипт инпутов в паузе
 		private void Pause(bool value)
 		{
 			if (value) _gameInputs.enabled = !value;
 			else if (_stateController.State != EPlayerState.Interact) _gameInputs.enabled = !value;
-		}
-
-		private void Interact(bool value)
-		{
-			_gameInputs.enabled = !value;
 		}
 		
 		IEnumerator EnableInputsDelay()

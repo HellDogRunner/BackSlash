@@ -1,31 +1,46 @@
-
-
-using UnityEngine;
-
 namespace Scripts.Player
 {
-	public class DodgeState : IPlayerState
+	public class DodgeState : BasicState, IPlayerState
 	{
-		private PlayerStateController _player;
-		private EPlayerState state = EPlayerState.Dodge;
-		
-		public DodgeState(PlayerStateController player){ _player = player; }
-		public EPlayerState GetState() { return state; }
-		
-		public bool CanEnter()
+		public DodgeState(PlayerStateController player)
 		{
-			return _player.State == state || _player.State == EPlayerState.None || _player.State == EPlayerState.Block;
+			_player = player;
 		}
 
 		public void Enter()
 		{
-			_player.State = state;
-			_player.SendDodge(true);
+			_isActive = true;
+			_player.State = EPlayerState.Dodge;
+			_player.Animator.Dodge();
+		}
+
+		public void Update()
+		{
+			AirCheck();
+			if (!_isActive) _player.SetState(new NoneState(_player));
+			
+			// TODO Realize Doddge
+			// save frames etc.
 		}
 
 		public void Exit()
 		{
-			_player.SendDodge(false);
+			//_player.Animator.Dodge(false);
+		}
+
+		public bool CanEnterInAir()
+		{
+			return !_player.Movement.Air;
+		}
+
+		public bool CanJump()
+		{
+			return false;
+		}
+		
+		public bool CanMove()
+		{
+			return true;
 		}
 	}
 }

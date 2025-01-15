@@ -1,9 +1,12 @@
-using System;
-
 public interface IPlayerState
 {
-	EPlayerState GetState();
-	bool CanEnter();
 	void Enter();
+	void Update();
 	void Exit();
+	void SetInterruptible();
+	void SetInactive();
+	bool CanBeInterrupt();
+	bool CanEnterInAir();
+	bool CanJump();
+	bool CanMove();
 }
