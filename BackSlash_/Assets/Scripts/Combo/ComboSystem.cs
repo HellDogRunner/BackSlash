@@ -98,7 +98,6 @@ public class ComboSystem : MonoBehaviour
 				if (matchedCombo != null) _currentAttackRoutine = StartCoroutine(PerformCombo(matchedCombo));
 				else _currentAttackRoutine = StartCoroutine(PerformSimpleMove(attackInput));
 			}
-			
 			else StartCoroutine(CancelCombo());
 		}
 	}

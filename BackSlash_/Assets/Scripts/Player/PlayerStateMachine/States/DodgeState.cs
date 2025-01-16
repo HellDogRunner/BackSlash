@@ -12,6 +12,10 @@ namespace Scripts.Player
 			_isActive = true;
 			_player.State = EPlayerState.Dodge;
 			_player.Animator.Dodge();
+			_player.Camera.SetCanRotate(true);
+			_player.Movement.SetCanFall(false);
+			_player.Movement.SetCanJump(false);
+			_player.Movement.SetCanSprint(false);
 		}
 
 		public void Update()
@@ -25,22 +29,12 @@ namespace Scripts.Player
 
 		public void Exit()
 		{
-			//_player.Animator.Dodge(false);
+			
 		}
 
 		public bool CanEnterInAir()
 		{
 			return !_player.Movement.Air;
-		}
-
-		public bool CanJump()
-		{
-			return false;
-		}
-		
-		public bool CanMove()
-		{
-			return true;
 		}
 	}
 }

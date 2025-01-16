@@ -7,6 +7,4 @@ public interface IPlayerState
 	void SetInactive();
 	bool CanBeInterrupt();
 	bool CanEnterInAir();
-	bool CanJump();
-	bool CanMove();
 }

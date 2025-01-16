@@ -91,6 +91,7 @@ public class InteractionSystem : MonoBehaviour
 
 	public void StopInteract()
 	{	
+		_stateController.SetBeInterrupt();
 		_stateController.SetNone();
 		_animator.ShowTalk();
 		SwitchCamera(null);

@@ -9,22 +9,27 @@ namespace Scripts.Player
 
 		public void Enter()
 		{
-			_isActive = true;
 			_player.State = EPlayerState.Interact;
-			_player.Cursor.Interact(true);
 			_player.HUD.Interact();
+			_player.Cursor.Interact(true);
+			_player.Movement.SetCanFall(true);
+			_player.Animator.SetCanMove(false);
+			_player.Movement.SetCanJump(false);
+			_player.Camera.SetCanRotate(false);
+			_player.Movement.SetCanSprint(false);
 			// send start interact
 		}
 
 		public void Update()
 		{
 			AirCheck();
-			if (!_isActive) _player.SetState(new NoneState(_player));
 		}
 
 		public void Exit()
 		{
 			_player.Cursor.Interact(false);
+			_player.Animator.SetCanMove(true);
+			_player.Camera.SetCanRotate(true);
 			
 			// send end interact
 		}
@@ -32,16 +37,6 @@ namespace Scripts.Player
 		public bool CanEnterInAir()
 		{
 			return !_player.Movement.Air;
-		}
-
-		public bool CanJump()
-		{
-			return false;
-		}
-				
-		public bool CanMove()
-		{
-			return false;
 		}
 	}
 }

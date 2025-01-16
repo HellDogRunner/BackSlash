@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Scripts.Player.camera
 {
-	class CameraController : MonoBehaviour
+public class CameraController : MonoBehaviour
 	{
 		[SerializeField] private CinemachineCamera _lockCamera;
 		[SerializeField] private CinemachineRotationComposer _rotationComposer;
@@ -23,38 +23,38 @@ namespace Scripts.Player.camera
 		
 		private PlayerStateController _stateController;
 		private InputController _inputController;
+		private MovementController _movement;
 		private TargetLock _targetLock;
-		private ComboSystem _comboSystem;
 
 		private Transform _camera;
 		private Transform _target;
 		
 		private bool _isTargeting;
 		private bool _isAttacking;
+		private bool _canRotate;
 
 		[Inject]
-		private void Construct(PlayerStateController stateController, InputController inputController, TargetLock targetLock, ComboSystem comboSystem)
+		private void Construct(MovementController movement, PlayerStateController stateController, InputController inputController, TargetLock targetLock)
 		{
 			_inputController = inputController;
 			_stateController = stateController;
-			_comboSystem = comboSystem;
+			_movement = movement;
 			_targetLock = targetLock;
 		}
 
 		private void OnEnable()
 		{
 			_targetLock.OnSwitchLock += SwitchLockCamera;
-			_comboSystem.IsAttacking += OnAttack;
 		}
 
 		private void OnDisable()
 		{
 			_targetLock.OnSwitchLock -= SwitchLockCamera;
-			_comboSystem.IsAttacking -= OnAttack;
 		}
 
 		private void Awake()
 		{
+			_canRotate = true;
 			_camera = Camera.main.transform;
 		}
 		
@@ -69,28 +69,25 @@ namespace Scripts.Player.camera
 				}
 				else _rotationComposer.Composition.ScreenPosition.y = _screenPositionY;
 				
-				if (_stateController.LockedRotate()) RotatePlayer(_freeTurnTime);
+				if (_movement.CanLockedRotate()) RotatePlayer();
 				else RotateToTarget();
 			}
 			else
 			{
 				if (_isAttacking) RotatePlayerForward();
-				else
-				{
-					if (_stateController.SlowedRotate()) RotatePlayer(_slowedTurnTime);
-					else RotatePlayer(_freeTurnTime);	
-				}
+				else RotatePlayer();	
 			}
 			
 			if (_target) _lookAt.LookAt(_target.position);
 		}
 
-		private void RotatePlayer(float time)
+		private void RotatePlayer()
 		{
 			var direction = _inputController.MoveDirection;
 
-			if (direction != Vector2.zero)
+			if (direction != Vector2.zero && _canRotate)
 			{
+				var time = _stateController.SlowedRotate() || _movement.Air ? _slowedTurnTime : _freeTurnTime;
 				Vector3 moveDirection = direction.y * _camera.forward + direction.x * _camera.right;
 				moveDirection.y = 0;
 				transform.forward = Vector3.Lerp(transform.forward, moveDirection, time * Time.deltaTime);
@@ -110,11 +107,6 @@ namespace Scripts.Player.camera
 			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, cameraYaw, 0), _lockedTurnTime * Time.deltaTime);
 		}
 
-		private void OnAttack(bool attack) 
-		{
-			_isAttacking = attack;
-		}
-
 		private void SwitchLockCamera(bool value)
 		{
 			if (value)
@@ -132,6 +124,16 @@ namespace Scripts.Player.camera
 		{
 			yield return new WaitForSeconds(_targetingDelay);
 			_target = null;
+		}
+		
+		public void SetCanRotate(bool value)
+		{
+			_canRotate = value;
+		}
+		
+		public void SetAttack(bool value)
+		{
+			_isAttacking = value;
 		}
 	}
 }

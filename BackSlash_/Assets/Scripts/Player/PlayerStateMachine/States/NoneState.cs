@@ -11,22 +11,16 @@ namespace Scripts.Player
 		{
 			_interruptible = true;
 			_player.State = EPlayerState.None;
+			_player.Camera.SetCanRotate(true);
+			_player.Movement.SetCanFall(true);
+			_player.Movement.SetCanJump(true);
+			_player.Movement.SetCanSprint(true);
 		}
 		public void Update() {}
 		
 		public void Exit() {}
 		
 		public bool CanEnterInAir()
-		{
-			return true;
-		}
-
-		public bool CanJump()
-		{
-			return true;
-		}
-		
-		public bool CanMove()
 		{
 			return true;
 		}

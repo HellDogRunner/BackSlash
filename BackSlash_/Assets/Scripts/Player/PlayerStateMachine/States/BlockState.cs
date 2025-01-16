@@ -13,6 +13,10 @@ namespace Scripts.Player
 			_interruptible = true;
 			_player.State = EPlayerState.Block;
 			_player.Animator.Block(true);
+			_player.Camera.SetCanRotate(true);
+			_player.Movement.SetCanFall(true);
+			_player.Movement.SetCanJump(true);
+			_player.Movement.SetCanSprint(false);
 		}
 
 		public void Update()
@@ -28,16 +32,6 @@ namespace Scripts.Player
 		}
 
 		public bool CanEnterInAir()
-		{
-			return true;
-		}
-
-		public bool CanJump()
-		{
-			return true;
-		}
-		
-		public bool CanMove()
 		{
 			return true;
 		}

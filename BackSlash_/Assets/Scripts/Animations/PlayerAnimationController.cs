@@ -17,6 +17,7 @@ namespace Scripts.Animations
 		[SerializeField] private float _smoothFall;
 		
 		private bool _fall;
+		private bool _canMove;
 		
 		private MovementController _movementController;
 		private WeaponController _weaponController;
@@ -34,6 +35,8 @@ namespace Scripts.Animations
 
 		private void Awake()
 		{
+			_canMove = true;
+			
 			_movementController.OnLockMove += LockMove;
 			_movementController.OnFreeMove += FreeMove;
 			_movementController.OnTryMove += TryMove;
@@ -73,20 +76,28 @@ namespace Scripts.Animations
 			}
 		}
 
-		private void LockMove(Vector2 direction)
+		private void LockMove(Vector2 value)
 		{
+			var direction = _canMove ? value : Vector2.zero;
 			_animator.SetFloat("InputX", direction.x, _smoothBlend, Time.deltaTime);
 			_animator.SetFloat("InputY", direction.y, _smoothBlend, Time.deltaTime);
 		}
 
-		private void FreeMove(float speed)
+		private void FreeMove(float value)
 		{
+			var speed = _canMove ? value : 0;
 			_animator.SetFloat("Speed", speed, _smoothFreeMove, Time.deltaTime);
 		}
 
 		private void TryMove(bool move)
 		{
-			_animator.SetBool("Move", move);
+			if (_canMove) _animator.SetBool("Move", move);
+		}
+
+		public void SetCanMove(bool value)
+		{
+			_canMove = value;
+			_animator.SetBool("Move", value);
 		}
 
 		private void SwitchLock(bool value)

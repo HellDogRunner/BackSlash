@@ -27,9 +27,12 @@ namespace Scripts.Player
 		[SerializeField] private LayerMask _hitboxLayer;
 
 		private bool _tryMove;
-		private bool _trySprint;
+		private bool _isSprint;
 		private bool _inAir;
-		private bool _canJump = true;
+		private bool _inJump;
+		private bool _canJump;
+		private bool _canFall;
+		private bool _canSprint;
 
 		private float _requiredSpeed;
 		private float _ySpeed;
@@ -39,9 +42,7 @@ namespace Scripts.Player
 		private Transform _camera;
 		private TargetLock _targetLock;
 		private InputController _inputController;
-		private PlayerStateController _stateController;
 
-		public bool TrySprint => _trySprint;
 		public bool Air => _inAir;
 
 		public event Action<Vector2> OnLockMove;
@@ -58,9 +59,8 @@ namespace Scripts.Player
 		private float _currenthitdisance;
 
 		[Inject]
-		private void Construct(PlayerStateController playerStateController, TargetLock targetLock, InputController inputController)
+		private void Construct(TargetLock targetLock, InputController inputController)
 		{
-			_stateController = playerStateController;
 			_inputController = inputController;
 			_targetLock = targetLock;
 		}
@@ -83,7 +83,7 @@ namespace Scripts.Player
 			_inputController.OnDirectionChanged -= Move;
 			_inputController.OnJumpKeyPressed -= Jump;
 		}
-
+		
 		private void Update()
 		{
 			CheckLand();
@@ -101,13 +101,11 @@ namespace Scripts.Player
 		{
 			var direction = Vector3.zero;
 
-			_requiredSpeed = _trySprint ? 2 : 1;
+			_requiredSpeed = _isSprint ? 2 : 1;
 			if (!_tryMove) _requiredSpeed = 0;
-			if (_stateController.CanMove())
-			{
-				OnFreeMove?.Invoke(_requiredSpeed);
-				OnLockMove?.Invoke(_inputController.MoveDirection);	
-			}
+
+			OnFreeMove?.Invoke(_requiredSpeed);
+			OnLockMove?.Invoke(_inputController.MoveDirection);	
 
 			if (_inAir)
 			{
@@ -124,9 +122,9 @@ namespace Scripts.Player
 
 		private void Jump()
 		{
-			if (!_inAir && _canJump && _stateController.CanJump())
+			if (!_inAir && !_inJump && _canJump)
 			{
-				_canJump = false;
+				_inJump = true;
 				OnJump?.Invoke();
 			}
 		}
@@ -146,8 +144,36 @@ namespace Scripts.Player
 
 		private void Sprint(bool pressed)
 		{
-			_trySprint = pressed ? true : false;
-			OnSprint?.Invoke(pressed);
+			if (_canSprint && !_inAir)
+			{
+				_isSprint = pressed ? true : false;
+				OnSprint?.Invoke(pressed);
+			}
+		}
+
+		public bool CanLockedRotate()
+		{
+			return _isSprint && !_inAir;
+		}
+		
+		public void SetCanJump(bool value)
+		{
+			_canJump = value;
+		}
+		
+		public void SetCanFall(bool value)
+		{
+			_canFall = value;
+		}
+		
+		public void SetCanSprint(bool value)
+		{
+			_canSprint = value;
+			if (!value)
+			{
+				OnSprint?.Invoke(false);
+				_isSprint = false;	
+			}
 		}
 
 		private void CheckLand()
@@ -158,10 +184,10 @@ namespace Scripts.Player
 				_inAir = true;
 				InAir?.Invoke(true);
 				
-				if (_canJump)
+				if (!_inJump)
 				{
 					_ySpeed = 0;
-					if (_stateController.State == EPlayerState.None) OnFall?.Invoke();
+					if (_canFall) OnFall?.Invoke();
 				}
 			}
 
@@ -169,7 +195,7 @@ namespace Scripts.Player
 			{
 				_inAir = false;
 				InAir?.Invoke(false);
-				if (Physics.gravity.y >= _ySpeed)
+				if (Physics.gravity.y > _ySpeed)
 				{
 					OnLanding?.Invoke();
 					_ySpeed = Physics.gravity.y;
@@ -180,14 +206,14 @@ namespace Scripts.Player
 
 		private IEnumerator JumpDelay()
 		{
-			_canJump = false;
+			_inJump = true;
 			yield return new WaitForSeconds(_jumpDelay);
-			_canJump = true;
+			_inJump = false;
 		}
 
 		private void InvokeSteps()
 		{
-			PlaySteps?.Invoke(!_inAir && _stateController.State == EPlayerState.None);
+			PlaySteps?.Invoke(!_inAir && _canFall);
 		}
 
 		private Vector3 TryNormalize(Vector3 direction)

@@ -9,9 +9,16 @@ namespace Scripts.Player
 
 		public void Enter()
 		{
-			_isActive = true;
 			_player.ComboSystem.IsAttacking += Attack;
+			
+			_isActive = true;
 			_player.State = EPlayerState.Attack;
+			_player.Movement.SetCanFall(false);
+			_player.Movement.SetCanJump(false);
+			_player.Animator.SetCanMove(false);
+			_player.Camera.SetCanRotate(false);
+			_player.Movement.SetCanSprint(false);
+			_player.Camera.SetAttack(true);
 			_player.Animator.Attack(true);
 		}
 		
@@ -25,8 +32,11 @@ namespace Scripts.Player
 
 		public void Exit()
 		{
-			_player.Animator.Attack(false);
 			_player.ComboSystem.IsAttacking -= Attack;
+			
+			_player.Camera.SetAttack(false);
+			_player.Animator.Attack(false);
+			_player.Animator.SetCanMove(true);
 		}
 		
 		private void Attack(bool value)
@@ -41,16 +51,6 @@ namespace Scripts.Player
 		public bool CanEnterInAir()
 		{
 			return true;
-		}
-
-		public bool CanJump()
-		{
-			return false;
-		}
-				
-		public bool CanMove()
-		{
-			return false;
 		}
 	}
 }

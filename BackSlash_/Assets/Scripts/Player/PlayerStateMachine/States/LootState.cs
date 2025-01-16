@@ -11,6 +11,11 @@ namespace Scripts.Player
 		{
 			_isActive = true;
 			_player.State = EPlayerState.Loot;
+			_player.Movement.SetCanFall(true);
+			_player.Animator.SetCanMove(false);
+			_player.Movement.SetCanJump(false);
+			_player.Camera.SetCanRotate(false);
+			_player.Movement.SetCanSprint(false);
 			// send start loot state
 
 		}
@@ -23,22 +28,14 @@ namespace Scripts.Player
 
 		public void Exit()
 		{
+			_player.Animator.SetCanMove(true);
+			
 			// send end loot state
 		}
 		
 		public bool CanEnterInAir()
 		{
 			return !_player.Movement.Air;
-		}
-
-		public bool CanJump()
-		{
-			return false;
-		}
-		
-		public bool CanMove()
-		{
-			return false;
 		}
 	}
 }

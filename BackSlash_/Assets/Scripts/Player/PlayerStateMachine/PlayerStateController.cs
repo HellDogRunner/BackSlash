@@ -1,5 +1,6 @@
 using RedMoonGames.Window;
 using Scripts.Animations;
+using Scripts.Player.camera;
 using UnityEngine;
 using Zenject;
 
@@ -14,21 +15,23 @@ namespace Scripts.Player
 		private HUDController _hudController;
 		private InputController _inputController;
 		private PlayerAnimationController _animator;
+		private CameraController _cameraController;
 
 		private IPlayerState _currentState;
 		
 		public EPlayerState State;
-
-		public Target TargetLock => _targetLock.Target;
-		public MovementController Movement => _movement;
+		
 		public PlayerAnimationController Animator => _animator;
+		public CameraController Camera => _cameraController;
+		public MovementController Movement => _movement;
 		public ComboSystem ComboSystem => _comboSystem;
-		public CursorController Cursor => _cursor;
 		public HUDController HUD => _hudController;
+		public CursorController Cursor => _cursor;
 
 		[Inject]
-		private void Construct(HUDController hudController, CursorController cursor, InputController inputController, ComboSystem comboSystem, PlayerAnimationController animator, TargetLock targetLock, MovementController movement)
+		private void Construct(CameraController cameraController, HUDController hudController, CursorController cursor, InputController inputController, ComboSystem comboSystem, PlayerAnimationController animator, TargetLock targetLock, MovementController movement)
 		{
+			_cameraController = cameraController;
 			_inputController = inputController;
 			_hudController = hudController;
 			_comboSystem = comboSystem;
@@ -73,19 +76,19 @@ namespace Scripts.Player
 			}
 		}
 
-		public void Attack(bool input) { if (input) SetState(new AttackState(this)); }
+		private void Attack(bool input) { if (input) SetState(new AttackState(this)); }
 		public void SetInteract() { SetState(new InteractState(this)); }
 		public void SetNone() { SetState(new NoneState(this)); }
 		public void SetLoot() { SetState(new LootState(this)); }
-		public void Dodge() { SetState(new DodgeState(this)); }
+		private void Dodge() { SetState(new DodgeState(this)); }
 		
-		public void Block(bool input)
+		private void Block(bool input)
 		{
 			if (input) SetState(new BlockState(this));
 			else SetState(new NoneState(this));
 		}
 
-		private void CanBeInterrupt()
+		public void SetBeInterrupt()
 		{
 			_currentState.SetInterruptible();
 		}
@@ -95,37 +98,20 @@ namespace Scripts.Player
 			_currentState.SetInactive();
 		}
 		
-		public bool CanJump()
-		{
-			return _currentState.CanJump();
-		}
-		
-		public bool CanMove()
-		{
-			return _currentState.CanMove();
-		}
-		
-		///
-		public bool LockedRotate()
-		{
-			return State == EPlayerState.None && !_movement.Air && _movement.TrySprint;
-		}
-		
 		public bool SlowedRotate()
 		{
-			return State == EPlayerState.Block || State == EPlayerState.Dodge || _movement.Air;
+			return State == EPlayerState.Block || State == EPlayerState.Dodge;
 		}
-		///
-		// TODO then player rotation slowed??
 		
 		public bool CanAttack()
 		{
 			return _currentState.CanBeInterrupt() || State == EPlayerState.Attack;	/// check transitions
 		}
 		
+		// FIXME 
 		public bool CanInteract()
 		{
-			return TargetLock == null;
+			return _targetLock.Target == null && _currentState.CanBeInterrupt();
 		}
 	}
 }
