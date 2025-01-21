@@ -9,9 +9,6 @@ namespace Scripts.Player
 	{
 		[SerializeField] private CharacterController _characterController;
 
-		[Header("Monitoring")]
-		[SerializeField] private Vector3 _moveDirection;
-
 		[Header("Settings")]
 		[SerializeField] private float _jumpSpeed;
 		[SerializeField] private float _jumpDelay;
@@ -37,7 +34,7 @@ namespace Scripts.Player
 		private float _requiredSpeed;
 		private float _ySpeed;
 
-		private Vector3 _airDirection;
+		private Vector3 _airDirection, _moveDirection;
 
 		private Transform _camera;
 		private TargetLock _targetLock;
