@@ -67,7 +67,7 @@ public class PlayerSoundController : MonoBehaviour
 			{
 				_playerFootsteps.start();
 			}
-			if (playbackState.Equals(PLAYBACK_STATE.PLAYING) && Time.timeScale == 0)
+			if (Time.timeScale == 0)
 			{
 				_playerFootsteps.stop(STOP_MODE.IMMEDIATE);
 			}

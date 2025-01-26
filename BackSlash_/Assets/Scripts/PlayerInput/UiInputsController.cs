@@ -14,7 +14,7 @@ namespace Scripts.Player
 		public event Action OnBackKeyPressed;
 		public event Action OnAnyKeyPressed;
 		public event Action OnTradeKeyPressed;
-		public event Action<int> OnMenuKeyPressed;
+		public event Action OnMenuKeyPressed;
 		public event Action<int> OnMenuSwitchTabAction;
 		public event Action<bool> ShowCursor;
 		public event Action<bool> OnDialogueAnswer;
@@ -66,7 +66,7 @@ namespace Scripts.Player
 
 		private void PlayerMenu(InputAction.CallbackContext context)
 		{
-			OnMenuKeyPressed?.Invoke(0);
+			OnMenuKeyPressed?.Invoke();
 		}
 
 		private void Prev(InputAction.CallbackContext context)

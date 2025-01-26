@@ -9,103 +9,146 @@ namespace Scripts.Animations
 	public class PlayerAnimationController : MonoBehaviour
 	{
 		[SerializeField] private Animator _animator;
-		[SerializeField] private float _smoothBlend = 0.1f;
 		[SerializeField] private AnimatorOverrideController _swordOverride;
 		[SerializeField] private AnimatorOverrideController _mainOverride;
-
+		[Space]
+		[SerializeField] private float _smoothBlend;
+		[SerializeField] private float _smoothFreeMove;
+		[SerializeField] private float _smoothFall;
+		
+		private bool _fall;
+		private bool _canMove;
+		
 		private MovementController _movementController;
-		private TargetLock _targetLock;
 		private WeaponController _weaponController;
-		private ThirdPersonCameraController _thirdPersonController;
+		private InputController _inputController;
+		private TargetLock _targetLock;
 
 		[Inject]
-		private void Construct(MovementController movementController, TargetLock targetLock, WeaponController weaponController, ThirdPersonCameraController thirdPersonController)
+		private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController, CameraController thirdPersonController)
 		{
-			_weaponController = weaponController;
-			_targetLock = targetLock;
 			_movementController = movementController;
-			_thirdPersonController = thirdPersonController;
+			_weaponController = weaponController;
+			_inputController = inputController;
+			_targetLock = targetLock;
 		}
 
 		private void Awake()
 		{
+			_canMove = true;
+			
+			_movementController.OnLockMove += LockMove;
+			_movementController.OnFreeMove += FreeMove;
+			_movementController.OnTryMove += TryMove;
+			_movementController.OnLanding += Landing;
+			_movementController.OnSprint += Sprint;
+			_movementController.OnJump += Jump;
+			_movementController.InAir += InAir;
+			_movementController.OnFall += Fall;
+			
 			_weaponController.OnWeaponEquip += ShowWeapon;
 			
-			_targetLock.OnSwitchLock += SwitchStrafeAnimation;
-			
-			_movementController.OnJump += JumpAnimation;
-			_movementController.InAir += InAirAnimation;
-			_movementController.OnDodge += DodgeAnimation;
-			_movementController.OnSprint += SprintAnimation;
-			_movementController.OnBlock += BlockAnimation;
-			_movementController.OnMoving += Move;
-			
-			_thirdPersonController.IsAttacking += PrimaryAttackAnimation;
+			_targetLock.OnSwitchLock += SwitchLock;
 		}
 
 		private void OnDestroy()
 		{
+			_movementController.OnLockMove -= LockMove;
+			_movementController.OnFreeMove -= FreeMove;
+			_movementController.OnTryMove -= TryMove;
+			_movementController.OnLanding -= Landing;
+			_movementController.OnSprint -= Sprint;
+			_movementController.OnJump -= Jump;
+			_movementController.InAir -= InAir;
+			_movementController.OnFall -= Fall;
+			
 			_weaponController.OnWeaponEquip -= ShowWeapon;
 			
-			_targetLock.OnSwitchLock -= SwitchStrafeAnimation;
-
-			_movementController.OnJump -= JumpAnimation;
-			_movementController.InAir -= InAirAnimation;
-			_movementController.OnDodge -= DodgeAnimation;
-			_movementController.OnSprint -= SprintAnimation;
-			_movementController.OnBlock -= BlockAnimation;
-			_movementController.OnMoving -= Move;
-
-			_thirdPersonController.IsAttacking -= PrimaryAttackAnimation;
+			_targetLock.OnSwitchLock -= SwitchLock;
 		}
 
-		private void Move(Vector2 direction)
+		private void Update()
 		{
+			if (_fall)
+			{
+				_animator.SetFloat("Fall Speed", 1, _smoothFall, Time.deltaTime);
+				if (!_animator.GetBool("InAir")) _fall = false;
+			}
+		}
+
+		private void LockMove(Vector2 value)
+		{
+			var direction = _canMove ? value : Vector2.zero;
 			_animator.SetFloat("InputX", direction.x, _smoothBlend, Time.deltaTime);
 			_animator.SetFloat("InputY", direction.y, _smoothBlend, Time.deltaTime);
 		}
 
-		private void SwitchStrafeAnimation(bool value)
+		private void FreeMove(float value)
+		{
+			var speed = _canMove ? value : 0;
+			_animator.SetFloat("Speed", speed, _smoothFreeMove, Time.deltaTime);
+		}
+
+		private void TryMove(bool move)
+		{
+			if (_canMove) _animator.SetBool("Move", move);
+		}
+
+		public void SetCanMove(bool value)
+		{
+			_canMove = value;
+			_animator.SetBool("Move", value);
+		}
+
+		private void SwitchLock(bool value)
 		{
 			_animator.SetBool("TargetLock", value);
 		}
 
-		private void SprintAnimation(bool isPressed)
+		private void Sprint(bool isPressed)
 		{
 			_animator.SetBool("IsSprint", isPressed);
 		}
 
-		private void JumpAnimation()
+		private void Jump()
 		{
-			_animator.Play("Jump");
+			_animator.SetInteger("Input Direction", CalculateDirection());
+			_animator.SetTrigger("Jump");
+			_animator.applyRootMotion = false;
 		}
 
-		private void InAirAnimation(bool isInAir)
+		public void Fall()
 		{
-			_animator.SetBool("InAir", isInAir);
-			_animator.applyRootMotion = !isInAir;
+			_fall = true;
+			_animator.SetFloat("Fall Speed", 0);
+			_animator.SetTrigger("Fall");
 		}
-
-		private void DodgeAnimation()
+		
+		private void Landing()
 		{
-			_animator.Play("Dodge");
+			_animator.SetTrigger("Landing");
+		}
+		
+		private void InAir(bool inAir)
+		{
+			_animator.SetBool("InAir", inAir);
+			if (!inAir) _animator.applyRootMotion = true;
+		}
+		
+		public void Dodge()
+		{
+			_animator.SetInteger("Input Direction", CalculateDirection());
+			_animator.SetTrigger("Dodge");
 		}
 
 		private void ShowWeapon(bool equip)
 		{
-			if (equip)
-			{
-				_animator.SetTrigger("Equip");
-				_animator.runtimeAnimatorController = _swordOverride;
-			}
-			else 
-			{
-				_animator.SetTrigger("Unequip");
-				_animator.runtimeAnimatorController = _mainOverride;
-			}
+			_animator.runtimeAnimatorController = equip ? _swordOverride : _mainOverride;
+			_animator.SetBool("Armed", equip);
+			_animator.SetTrigger("Equip");
 		}
 
-		private void PrimaryAttackAnimation(bool isAttacking)
+		public void Attack(bool isAttacking)
 		{
 			_animator.SetBool("Attacking", isAttacking);
 		}
@@ -120,7 +163,7 @@ namespace Scripts.Animations
 			_animator.SetTrigger("JumpCombo");
 		}
 
-		private void BlockAnimation(bool isBlocking)
+		public void Block(bool isBlocking)
 		{
 			_animator.SetBool("Block", isBlocking);
 		}
@@ -128,6 +171,25 @@ namespace Scripts.Animations
 		public void TriggerAnimationByName(string name)
 		{
 			_animator.SetTrigger(name);
+		}
+		
+		private int CalculateDirection()
+		{
+			var direction = _inputController.MoveDirection;
+			int value;
+			
+			if (direction == Vector2.zero) return 0;
+			
+			if (direction.x != 0)
+			{
+				value = direction.x == -1 ? 1 : 2;
+			}
+			else
+			{
+				value = direction.y == 1 ? 3 : 4;
+			}
+			
+			return value;
 		}
 	}
 }

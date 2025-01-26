@@ -1,3 +1,4 @@
+using Scripts.Player;
 using UnityEngine;
 using Zenject;
 
@@ -7,14 +8,18 @@ namespace RedMoonGames.Window
 	{
 		[SerializeField] private HUDAnimationService _animator;
 
-		private PlayerStateMachine _playerState;
-		private CurrencyService _currencyService;
+		private bool _isLocked;
+
 		private CurrencyAnimator _currencyAnimation;
+		private CurrencyService _currencyService;
+		private TargetLock _targetLock;
+		private TimeController _time;
 
 		[Inject]
-		private void Construct(PlayerStateMachine playerState, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
+		private void Construct(TargetLock targetLock, TimeController time, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
 		{
-			_playerState = playerState;
+			_time = time;
+			_targetLock = targetLock;
 			_currencyService = currencyService;
 			_currencyAnimation = currencyAnimation;
 		}
@@ -27,26 +32,43 @@ namespace RedMoonGames.Window
 		private void OnEnable()
 		{
 			_currencyService.OnCurrencyChanged += ChangeCurrency;
-			
-			_playerState.OnExplore += ShowOverlay;
-			_playerState.OnPause += _animator.HideHUD;
-			_playerState.OnInteract += _animator.HideOverlay;	
+			_targetLock.OnSwitchLock += SwitchLock;
+			_time.OnPause += Pause;
 		}
 
 		private void OnDisable()
 		{
 			_currencyService.OnCurrencyChanged -= ChangeCurrency;
-			
-			_playerState.OnExplore -= ShowOverlay;
-			_playerState.OnPause -= _animator.HideHUD;
-			_playerState.OnInteract -= _animator.HideOverlay;
+			_targetLock.OnSwitchLock -= SwitchLock;
+			_time.OnPause -= Pause;
 		}
 
-		private void ShowOverlay()
+		private void Update()
 		{
-			_animator.ShowHUD();
-			_animator.ShowOverlay();
-			SetCurrency();
+			if (_isLocked) _animator.Targeting();
+		}
+
+		private void SwitchLock(bool value)
+		{
+			if (value) _animator.SetTarget(_targetLock.Target.LookAt);
+			_animator.ShowTargetIcon(value);
+			_isLocked = value;
+		}
+
+		private void Pause(bool pause)
+		{
+			if (pause)_animator.HideHUD();
+			else 
+			{
+				_animator.ShowHUD();
+				_animator.ShowOverlay();
+				SetCurrency();	
+			}
+		}
+
+		public void Interact()
+		{
+			_animator.HideOverlay();
 		}
 
 		private void SetCurrency()

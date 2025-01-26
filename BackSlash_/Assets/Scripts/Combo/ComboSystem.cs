@@ -23,10 +23,10 @@ public class ComboSystem : MonoBehaviour
 	private ComboDatabase _comboData;
 	private WeaponController _weaponController;
 	private PlayerAnimationController _playerAnimationController;
-	private MovementController _movement;
+	private PlayerStateController _stateController;
 
-	private bool _ComboProgress = false;
-	private bool _isCanceling = false;
+	private bool _comboProgress;
+	private bool _isCanceling;
 	private bool _canAttack = true;
 
 	public event Action<bool> IsAttacking;
@@ -42,9 +42,9 @@ public class ComboSystem : MonoBehaviour
 	public event Action OnCannotAttack;
 
 	[Inject]
-	private void Construct(MovementController movement, ComboDatabase comboDatabase, WeaponController weaponController, PlayerAnimationController playerAnimationController)
+	private void Construct(PlayerStateController stateController, ComboDatabase comboDatabase, WeaponController weaponController, PlayerAnimationController playerAnimationController)
 	{
-		_movement = movement;
+		_stateController = stateController;
 		_comboData = comboDatabase;
 		_weaponController = weaponController;
 		_playerAnimationController = playerAnimationController;
@@ -86,7 +86,7 @@ public class ComboSystem : MonoBehaviour
 
 	private void RegisterInput(InputActionReference attackInput)
 	{
-		if (_weaponController.CurrentWeaponType != EWeaponType.None && Time.timeScale == 1 && _movement.CanAttack())
+		if (_weaponController.CurrentWeaponType != EWeaponType.None && Time.timeScale == 1 && _stateController.CanAttack())
 		{
 			if (_attackInterval != null) StopCoroutine(_attackInterval);
 
@@ -98,7 +98,6 @@ public class ComboSystem : MonoBehaviour
 				if (matchedCombo != null) _currentAttackRoutine = StartCoroutine(PerformCombo(matchedCombo));
 				else _currentAttackRoutine = StartCoroutine(PerformSimpleMove(attackInput));
 			}
-			
 			else StartCoroutine(CancelCombo());
 		}
 	}
@@ -153,7 +152,7 @@ public class ComboSystem : MonoBehaviour
 
 	private IEnumerator PerformCombo(ComboTypeModel combo)
 	{
-		_ComboProgress = true;
+		_comboProgress = true;
 		IsAttacking?.Invoke(true);
 		_playerAnimationController.TriggerAnimationByName(combo.AnimationTrigger);
 		OnComboSound.Invoke();
@@ -182,7 +181,7 @@ public class ComboSystem : MonoBehaviour
 
 	private IEnumerator CancelCombo()
 	{
-		if (!_isCanceling && !_ComboProgress)
+		if (!_isCanceling && !_comboProgress)
 		{
 			_isCanceling = true;
 			_canAttack = false;
@@ -255,6 +254,6 @@ public class ComboSystem : MonoBehaviour
 		_inputBuffer.Clear();
 		FillComboList();
 		_canAttack = true;
-		_ComboProgress = false;
+		_comboProgress = false;
 	}
 }

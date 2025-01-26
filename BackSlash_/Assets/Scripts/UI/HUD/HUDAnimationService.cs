@@ -1,11 +1,13 @@
 using DG.Tweening;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HUDAnimationService : MonoBehaviour
 {
 	[SerializeField] private TMP_Text _currency;
+	[SerializeField] private TMP_Text _fps;
+	[SerializeField] private Image _targetIcon;
 	
 	[Header("Canvas Groups")]
 	[SerializeField] private CanvasGroup _hudCG;
@@ -15,13 +17,42 @@ public class HUDAnimationService : MonoBehaviour
 	[SerializeField] private float _showDelay = 1f;
 	[SerializeField] private float _fadeDuration = 0.5f;
 
+	private int _index;
+	private bool _updateFPS;
+
+	private Transform _target;
+	private Camera _camera;
+
 	private Tween _overlay;
 	private Tween _hud;
 
 	private void Awake()
 	{
+		_camera = Camera.main;
+		
 		_hudCG.alpha = 1;
 		_overlayCG.alpha = 0;
+		
+		_targetIcon.gameObject.SetActive(false);
+	}
+	
+	private void FixedUpdate()
+	{
+		_index++;
+		if (_index == 5)
+		{
+			_index = 0;
+			_updateFPS = true;
+		}
+	}
+	
+	private void Update()
+	{
+		if (_updateFPS)
+		{
+			_updateFPS = false;
+			_fps.text = ((int)(1 / Time.deltaTime)).ToString();
+		}
 	}
 	
 	public void ShowOverlay()
@@ -63,6 +94,21 @@ public class HUDAnimationService : MonoBehaviour
 		
 		tween = cg.DOFade(0, _fadeDuration).SetEase(Ease.InQuart).
 			OnComplete(() => cg.gameObject.SetActive(false));
+	}
+	
+	public void SetTarget(Transform target)
+	{
+		_target = target;
+	}
+
+	public void Targeting() 
+	{
+		_targetIcon.transform.position = _camera.WorldToScreenPoint(_target.position);
+	}
+	
+	public void ShowTargetIcon(bool show)
+	{
+		_targetIcon.gameObject.SetActive(show);
 	}
 
 	public void SetCurrency(int value)

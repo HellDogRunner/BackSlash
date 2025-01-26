@@ -4,19 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UniRx.Triggers;
-using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public class TargetLock : MonoBehaviour
 {
-	[Header("Objects")]
-	[SerializeField] private CinemachineCamera _lockOnCamera;
-	[SerializeField] private CinemachineRotationComposer _rotationComposer;
 	[SerializeField] private SphereCollider _triggerCollider;
-	[Space]
-	[SerializeField] private Image _aimIcon;
 
 	[Header("Settings")]
 	[SerializeField] private float _maxDistance;
@@ -25,27 +18,25 @@ public class TargetLock : MonoBehaviour
 
 	private Camera _mainCamera;
 	private Target _currentTarget;
-	private Vector3 TargetOffsetY;
 	private bool isTargeting = false;
 
-	private InputController _inputService;
-
-	public event Action<bool> OnSwitchLock;
+	private InputController _inputController;
 
 	public Target Target => _currentTarget;
+	
+	public event Action<bool> OnSwitchLock;
 
 	[Inject]
 	private void Construct(InputController inputService)
 	{
-		_inputService = inputService;
-		_inputService.OnLockKeyPressed += AssignTarget;
+		_inputController = inputService;
+		_inputController.OnLockKeyPressed += AssignTarget;
 	}
 
 	private void Awake()
 	{
 		_mainCamera = Camera.main;
 		_triggerCollider.radius = _maxDistance;
-		TargetOffsetY = new Vector3(0, _rotationComposer.TargetOffset.y, 0);
 
 		_triggerCollider.OnTriggerEnterAsObservable()
 		   .Subscribe(other =>
@@ -58,15 +49,6 @@ public class TargetLock : MonoBehaviour
 		   {
 			   RemoveTargets(other);
 		   }).AddTo(this);
-	}
-
-	private void Update()
-	{
-		if (_currentTarget)
-		{
-			Vector3 aimTarget = _currentTarget.transform.position + TargetOffsetY;
-			if (_aimIcon != null) _aimIcon.transform.position = _mainCamera.WorldToScreenPoint(aimTarget);
-		}
 	}
 
 	private void AddTargets(Collider other)
@@ -92,7 +74,7 @@ public class TargetLock : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		_inputService.OnLockKeyPressed -= AssignTarget;
+		_inputController.OnLockKeyPressed -= AssignTarget;
 	}
 
 	private void AssignTarget()
@@ -100,9 +82,8 @@ public class TargetLock : MonoBehaviour
 		if (isTargeting)
 		{
 			isTargeting = false;
-			ShowIcon(false);
 			_currentTarget = null;
-			UnlockCamera();
+			OnSwitchLock?.Invoke(false);
 			return;
 		}
 
@@ -111,32 +92,8 @@ public class TargetLock : MonoBehaviour
 		if (_currentTarget)
 		{
 			isTargeting = true;
-			ShowIcon(true);
-			LockOnTarget(_currentTarget.transform);
+			OnSwitchLock?.Invoke(true);
 		}
-	}
-
-	private void LockOnTarget(Transform target)
-	{
-		_lockOnCamera.Target.LookAtTarget = target;
-		_lockOnCamera.gameObject.SetActive(true);
-		OnSwitchLock?.Invoke(true);
-	}
-
-	private void UnlockCamera()
-	{
-		_lockOnCamera.gameObject.SetActive(false);
-		OnSwitchLock?.Invoke(false);
-	}
-
-	private void ShowIcon(bool show)
-	{
-		if (_aimIcon == null)
-		{
-			Debug.LogWarning("Aim Icon not set");
-			return;
-		}
-		_aimIcon.gameObject.SetActive(show);
 	}
 
 	private void ForceUnlock(Target target)
@@ -144,10 +101,8 @@ public class TargetLock : MonoBehaviour
 		if (target)
 		{
 			_currentTarget = null;
-
-			_aimIcon.transform.position = new Vector3(0, 0, 0);
 			
-			UnlockCamera();
+			OnSwitchLock?.Invoke(false);
 
 			_targets.Remove(target);
 			target.OnTargetDeath -= ForceUnlock;

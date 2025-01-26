@@ -4,13 +4,12 @@ using UnityEngine.InputSystem;
 
 namespace Scripts.Player
 {
-	public class InputController : MonoBehaviour
+	public class 	InputController : MonoBehaviour
 	{
 		private GameControls _playerControls;
 
 		private Vector2 _moveDirection;
 
-		public event Action OnDirectionChanged;
 		public event Action<bool> OnSprintKeyPressed;
 		public event Action<bool> OnLightAttackPressed;
 		public event Action<bool> OnHeavyAtttackPressed;
@@ -19,8 +18,8 @@ namespace Scripts.Player
 		public event Action OnJumpKeyPressed;
 		public event Action OnDodgeKeyPressed;
 		public event Action OnLockKeyPressed;
+		public event Action OnDirectionChanged;
 
-		public GameControls Controls => _playerControls;
 		public Vector2 MoveDirection => _moveDirection;
 
 		private void Awake()
@@ -30,9 +29,17 @@ namespace Scripts.Player
 
 		private void Update()
 		{
+			if (_playerControls.Gameplay.Sprint.IsPressed())
+			{
+				OnSprintKeyPressed?.Invoke(true);
+			}
 			
+			if (_playerControls.Gameplay.Block.IsPressed())
+			{
+				OnBlockPressed?.Invoke(true);
+			}
 		}
-		
+
 		private void OnEnable()
 		{
 			_playerControls.Enable();
@@ -44,11 +51,12 @@ namespace Scripts.Player
 			_playerControls.Disable();
 			UnsubscribeToActions();
 			_moveDirection = Vector2.zero;
+			OnDirectionChanged?.Invoke();
 		}
 
 		private void ChangeDirection(InputAction.CallbackContext context)
 		{
-			var direction = _playerControls.Gameplay.WASD.ReadValue<Vector2>();
+			var direction = _playerControls.Gameplay.WASD.ReadValue<Vector3>();
 			_moveDirection = new Vector2(direction.x, direction.y);
 			OnDirectionChanged?.Invoke();
 		}
@@ -60,8 +68,10 @@ namespace Scripts.Player
 
 		private void Sprint(InputAction.CallbackContext context)
 		{
-			var isPressed = _playerControls.Gameplay.Sprint.IsPressed();
-			OnSprintKeyPressed?.Invoke(isPressed);
+			if (!_playerControls.Gameplay.Sprint.IsPressed())
+			{
+				OnSprintKeyPressed?.Invoke(false);
+			}
 		}
 
 		private void Dodge(InputAction.CallbackContext context)
@@ -88,8 +98,10 @@ namespace Scripts.Player
 
 		private void Block(InputAction.CallbackContext context)
 		{
-			var isPressed = _playerControls.Gameplay.Block.IsPressed();
-			OnBlockPressed?.Invoke(isPressed);
+			if (!_playerControls.Gameplay.Block.IsPressed())
+			{
+				OnBlockPressed?.Invoke(false);
+			}
 		}
 
 		private void Lock(InputAction.CallbackContext context)

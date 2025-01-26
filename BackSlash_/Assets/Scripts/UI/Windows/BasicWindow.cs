@@ -56,7 +56,7 @@ namespace RedMoonGames.Window
 			{
 				PlayClickSound();	// Need?
 				_animator.ShowWindow(_canvasGroup, delay);
-				if (pause) _windowService.Pause();
+				if (pause) _windowService.Pause(true);
 			}
 		}
 		
@@ -67,7 +67,7 @@ namespace RedMoonGames.Window
 				_callClose = true;
 				PlayClickSound();	// Need?
 				_animator.HideWindow(_canvasGroup);
-				_windowService.Unpause();
+				_windowService.Pause(false);
 			}
 		}
 		

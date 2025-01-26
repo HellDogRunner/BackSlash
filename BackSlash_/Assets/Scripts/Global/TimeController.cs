@@ -1,36 +1,19 @@
+using System;
 using UnityEngine;
 using Zenject;
-using static PlayerStates;
 
 public class TimeController : MonoBehaviour
 {
-	private PlayerStateMachine _playerState;
+	private bool _paused;
 	
-	[Inject] private void Construct(PlayerStateMachine playerState)
-	{
-		_playerState = playerState;
-	}
+	public bool Paused => _paused;
 	
-	private void OnEnable()
-	{
-		_playerState.OnPause += Pause;
-		_playerState.OnChangeState += Unpause;
-	}
+	public event Action<bool> OnPause;
 	
-	private void OnDisable()
+	public void Pause(bool pause)
 	{
-		_playerState.OnPause -= Pause;
-		_playerState.OnChangeState -= Unpause;
-	}
-	
-	private void Pause()
-	{
-		Time.timeScale = 0;
-	}
-	
-	private void Unpause(EState state)
-	{
-		if (state != EState.Pause)
-			Time.timeScale = 1;
+		_paused = pause;
+		Time.timeScale = pause ? 0 : 1;
+		OnPause?.Invoke(pause);
 	}
 }
