@@ -11,7 +11,6 @@ namespace Scripts.Player
 		{
 			_player.State = EPlayerState.Interact;
 			_player.HUD.Interact();
-			_player.Cursor.Interact(true);
 			_player.Movement.SetCanFall(true);
 			_player.Animator.SetCanMove(false);
 			_player.Movement.SetCanJump(false);
@@ -27,7 +26,6 @@ namespace Scripts.Player
 
 		public void Exit()
 		{
-			_player.Cursor.Interact(false);
 			_player.Animator.SetCanMove(true);
 			_player.Camera.SetCanRotate(true);
 			

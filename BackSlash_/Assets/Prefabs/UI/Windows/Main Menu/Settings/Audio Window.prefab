@@ -208,7 +208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a5a18173856954488fe09b569ca8a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _IsMainMenu: 1
+  _isMainMenu: 1
+  _close: {fileID: 0}
   _settingsHandler: {fileID: 11400000, guid: 3498f0be62fdfee4dbef0bf11b98fa7a, type: 2}
   _masterVolume: {fileID: 1199604317013974095}
   _musicVolume: {fileID: 7250936237125414499}
@@ -219,7 +220,6 @@ MonoBehaviour:
   _embientValue: {fileID: 5638173512156486290}
   _sfxValue: {fileID: 6366612571607048489}
   _back: {fileID: 1044730398137518466}
-  _close: {fileID: 0}
 --- !u!114 &4099266755280911968
 MonoBehaviour:
   m_ObjectHideFlags: 0

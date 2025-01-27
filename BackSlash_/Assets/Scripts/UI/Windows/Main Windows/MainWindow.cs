@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -6,9 +7,10 @@ namespace RedMoonGames.Window
 {
 	public class MainWindow : BasicWindow
 	{
-		[SerializeField] protected float _showDelay = 0.3f;
+		[SerializeField] protected float _selectDelay = 0.05f;
 		
 		[Header("Handlers")]
+		[SerializeField] private WindowHandler _startHandler;
 		[SerializeField] private WindowHandler _settingsHandler;
 
 		[Header("Buttons")]
@@ -16,37 +18,72 @@ namespace RedMoonGames.Window
 		[SerializeField] private Button _settings;
 		[SerializeField] private Button _exit;
 
-		private MainMenuController _menuController;
+		private bool _canStart = false;
+
+		private SceneTransition _sceneTransition;
 
 		[Inject]
-		private void Construct(MainMenuController menuController)
+		private void Construct(SceneTransition sceneTransition)
 		{
-			_menuController = menuController;
+			_sceneTransition = sceneTransition;
 		}
-
+		
+		private void Awake()
+		{
+			StartCoroutine(SelectDelay());
+		}
+		
 		protected override void OnEnable()
-		{	
+		{
 			base.OnEnable();
-			
-			_uiInputs.OnEscapeKeyPressed -= Hide;
-			
 			_start.Select();
+			_exit.onClick.AddListener(ExitButton);
 			_start.onClick.AddListener(StartButton);
 			_settings.onClick.AddListener(SettingsButton);
-			_exit.onClick.AddListener(ExitButton);
 		}
 		
 		protected override void OnDisable()
 		{	
 			base.OnDisable();
-			
+			_exit.onClick.RemoveListener(ExitButton);
 			_start.onClick.RemoveListener(StartButton);
 			_settings.onClick.RemoveListener(SettingsButton);
-			_exit.onClick.RemoveListener(ExitButton);
+		}
+
+		protected override void Hide()
+		{
+			if (!_animator.Active())
+			{
+				_windowService.TryOpenWindow(_startHandler);
+				_windowService.ShowWindow(_startHandler);
+				Close();
+			}
 		}
 		
-		private void StartButton() { _menuController.ChangeScene("FirstLocation"); }
-		private void SettingsButton() { ReplaceWindow(this, _settingsHandler); }
-		private void ExitButton() { Application.Quit(); }
+		private void StartButton()
+		{
+			if (_canStart)
+			{
+				_sceneTransition.gameObject.SetActive(true);
+				_sceneTransition.SwichToScene("FirstLocation");
+				Close();
+			}
+		}
+		
+		private void SettingsButton()
+		{
+			ReplaceWindow(this, _settingsHandler);
+		}
+		
+		private void ExitButton()
+		{
+			Application.Quit();
+		}
+		
+		IEnumerator SelectDelay()
+		{
+			yield return new WaitForSeconds(_selectDelay);
+			_canStart = true;
+		}
 	}
 }

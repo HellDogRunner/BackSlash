@@ -558,7 +558,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8f8d472a80c97b49924e7b4aa78a1dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _IsMainMenu: 1
+  _isMainMenu: 1
+  _close: {fileID: 0}
   _settingsHandler: {fileID: 11400000, guid: 3498f0be62fdfee4dbef0bf11b98fa7a, type: 2}
   _displayButton: {fileID: 2668820670921197689}
   _graphicsButton: {fileID: 9084486313155706516}
@@ -566,7 +567,6 @@ MonoBehaviour:
   _graphicsTab: {fileID: 1400708169436759482}
   _switch: {fileID: 8390524848140659734}
   _back: {fileID: 1212834720658045182}
-  _close: {fileID: 0}
   _displayAnimation: {fileID: 4405988561738235460}
   _graphicsAnimation: {fileID: 8857001882632231454}
 --- !u!114 &5622578463003875771

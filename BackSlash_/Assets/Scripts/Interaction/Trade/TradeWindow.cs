@@ -1,5 +1,6 @@
 using RedMoonGames.Basics;
 using Scripts.Inventory;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -26,14 +27,13 @@ namespace RedMoonGames.Window
 		[SerializeField] private TMP_Text _description;
 		[Space]
 		[SerializeField] private TMP_Text _currency;
-
+		
 		[Header("Buttons")]
-
 		[SerializeField] private Button _buyButton;
 		[SerializeField] private Button _tradeButton;
 		[SerializeField] private Button _leaveButton;
 		[Space]
-		[SerializeField] private float _showDelay = 0.1f;
+		[SerializeField] private float _showDelay; 
 
 		private List<Product> _products = new List<Product>();
 		private Product _currentProduct;
@@ -55,41 +55,44 @@ namespace RedMoonGames.Window
 		}
 
 		private void Awake()
-		{;
+		{
 			SetItems();
 			SetCurrency();
-			Show(false, _showDelay);
+			StartCoroutine(ShowDelay());
 		}
 
 		protected override void OnEnable()
 		{	
 			base.OnEnable();
 			
-			_uiInputs.OnBackKeyPressed += HideWindow;
+			_uiInputs.OnBackKeyPressed += StopInteract;
 			_uiInputs.OnTradeKeyPressed += TradeButton;
 
 			_currencyService.OnCurrencyChanged += ChangeCurrency;
 			
 			_buyButton.onClick.AddListener(BuyButton);
 			_tradeButton.onClick.AddListener(TradeButton);
-			_leaveButton.onClick.AddListener(HideWindow);
+			_leaveButton.onClick.AddListener(StopInteract);
 		}
 
 		protected override void OnDisable()
 		{
 			base.OnDisable();
 			
-			_uiInputs.OnBackKeyPressed -= HideWindow;
+			_uiInputs.OnBackKeyPressed -= StopInteract;
 			_uiInputs.OnTradeKeyPressed -= TradeButton;
 
 			_currencyService.OnCurrencyChanged -= ChangeCurrency;
 
 			_buyButton.onClick.RemoveListener(BuyButton);
 			_tradeButton.onClick.RemoveListener(TradeButton);
-			_leaveButton.onClick.RemoveListener(HideWindow);
+			_leaveButton.onClick.RemoveListener(StopInteract);
 		}
 
-		private void TradeButton() { OpenWindow(_dialogueWindow); }
+		private void TradeButton()
+		{
+			ReplaceWindow(this, _dialogueWindow);
+		}
 		
 		private void BuyButton()
 		{
@@ -178,6 +181,13 @@ namespace RedMoonGames.Window
 			_price.text = string.Format("Price: {0}", item.Price);
 			_description.text = string.Format("DESCRIPTION\n{0}", item.Description);
 			_stats.text = string.Format("STATS\n{0}", item.Stats);
+		}
+		
+		IEnumerator ShowDelay()
+		{
+			_canvasGroup.alpha = 0;
+			yield return new WaitForSeconds(_showDelay);
+			_canvasGroup.alpha = 1;
 		}
 		
 		private void OnDestroy()

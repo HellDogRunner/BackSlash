@@ -376,9 +376,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ba085a294107048ab6f58004bbbc51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _showOnAwake: 1
+  _isMainMenu: 1
+  _close: {fileID: 0}
   _showDelay: 0.3
+  _startHandler: {fileID: 11400000, guid: a895f7e52c720bb4aa5b3f561a6765b3, type: 2}
   _settingsHandler: {fileID: 11400000, guid: 3498f0be62fdfee4dbef0bf11b98fa7a, type: 2}
+  _sceneTransitionHandler: {fileID: 11400000, guid: 758cf03581635ab478f2d3d13230512d,
+    type: 2}
   _start: {fileID: 1481994727615599244}
   _settings: {fileID: 2663627968828926772}
   _exit: {fileID: 8678913668449102798}

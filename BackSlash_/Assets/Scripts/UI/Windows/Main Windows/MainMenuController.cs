@@ -1,48 +1,43 @@
+using RedMoonGames.Window;
 using UnityEngine;
 
-namespace RedMoonGames.Window
+public class MainMenuController : BasicMenuController
 {
-	public class MainMenuController : BasicMenuController
+	[SerializeField] private WindowHandler _startHandler;
+	[SerializeField] private WindowHandler _mainHandler;
+
+	private void Awake()
 	{
-		[SerializeField] private WindowHandler _startHandler;
-		[SerializeField] private WindowHandler _mainHandler;
+		UnpauseGame();
+		_windowService.TryOpenWindow(_startHandler);
+		_windowService.ShowWindow(_startHandler);
+	}
 
-		private void Awake()
+	private void OnEnable()
+	{
+		_uiInputs.OnEscapeKeyPressed += OpenMainWindow;
+	}
+
+	private void OnDisable()
+	{
+		_uiInputs.OnEscapeKeyPressed -= OpenMainWindow;
+	}
+
+	private void OpenMainWindow()
+	{
+		var startWindow = _windowService.GetWindowByHandler(_startHandler);
+		var mainWindow = _windowService.GetWindowByHandler(_mainHandler);
+
+		if (startWindow == null && mainWindow == null)
 		{
-			_sceneTransition.gameObject.SetActive(true);
-
-			_uiInputs.enabled = true;
-
-			UnpauseGame();
-			_windowService.TryOpenWindow(_startHandler);
+			_windowService.TryOpenWindow(_mainHandler);
 		}
+	}
 
-		private void OnEnable()
-		{
-			_sceneTransition.OnWindowHide += SceneTransitionHide;
-			_uiInputs.OnEscapeKeyPressed += OpenStartWindow;
-		}
-
-		private void OnDisable()
-		{
-			_sceneTransition.OnWindowHide -= SceneTransitionHide;
-			_uiInputs.OnEscapeKeyPressed -= OpenStartWindow;
-		}
-
-		private void OpenStartWindow()
-		{
-			var window = _windowService.GetWindowByHandler(_mainHandler);
-			if (window == null)
-			{
-				_windowService.TryOpenWindow(_mainHandler);
-			}
-		}
-
-		private void UnpauseGame()
-		{
-			Cursor.lockState = CursorLockMode.Confined;
-			Cursor.visible = true;
-			Time.timeScale = 1;
-		}
+	private void UnpauseGame()
+	{
+		Cursor.lockState = CursorLockMode.Confined;
+		Cursor.visible = true;
+		Time.timeScale = 1;
 	}
 }

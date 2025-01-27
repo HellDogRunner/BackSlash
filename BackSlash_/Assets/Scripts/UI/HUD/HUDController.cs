@@ -13,12 +13,11 @@ namespace RedMoonGames.Window
 		private CurrencyAnimator _currencyAnimation;
 		private CurrencyService _currencyService;
 		private TargetLock _targetLock;
-		private TimeController _time;
 
 		[Inject]
-		private void Construct(TargetLock targetLock, TimeController time, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
+		private void Construct(TargetLock targetLock, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
 		{
-			_time = time;
+
 			_targetLock = targetLock;
 			_currencyService = currencyService;
 			_currencyAnimation = currencyAnimation;
@@ -33,14 +32,12 @@ namespace RedMoonGames.Window
 		{
 			_currencyService.OnCurrencyChanged += ChangeCurrency;
 			_targetLock.OnSwitchLock += SwitchLock;
-			_time.OnPause += Pause;
 		}
 
 		private void OnDisable()
 		{
 			_currencyService.OnCurrencyChanged -= ChangeCurrency;
 			_targetLock.OnSwitchLock -= SwitchLock;
-			_time.OnPause -= Pause;
 		}
 
 		private void Update()

@@ -1,33 +1,18 @@
 using Scripts.UI.Dialogue;
 using Scripts.UI.Quest;
 using UnityEngine;
-using Zenject;
 
 public class QuestSystem : MonoBehaviour
 {
 	[SerializeField] private ActiveQuestsDatabase _activeQuests;
 
-	private InteractionSystem _interactionSystem;
-
-	[Inject]
-	private void Construct(InteractionSystem interactionSystem)
-	{
-		_interactionSystem = interactionSystem;
-	}
-
-	private void Awake()
-	{
-		_interactionSystem.SetQuest += UpdateData;
-	}
-
-	public void UpdateData(QuestDatabase dialogueData)
+	public void TryUpdateData(QuestDatabase dialogueData)
 	{
 		var model = _activeQuests.GetModelByQuestData(dialogueData);
 
 		if (model == null)
 		{
 			_activeQuests.AddQuest(dialogueData, dialogueData.GetDefaultState());
-			model = _activeQuests.GetModelByQuestData(dialogueData);
 		}
 	}
 
@@ -49,10 +34,5 @@ public class QuestSystem : MonoBehaviour
 	public string GetQuestState(QuestDatabase data)
 	{
 		return _activeQuests.GetStateByQuest(data);
-	}
-	
-	private void OnDestroy()
-	{
-		_interactionSystem.SetQuest -= UpdateData;  
 	}
 }

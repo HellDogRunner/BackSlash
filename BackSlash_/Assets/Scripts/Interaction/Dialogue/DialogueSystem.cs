@@ -66,7 +66,7 @@ public class DialogueSystem : MonoBehaviour
 	{
 		SetDialogue(data);
 		_windowService.TryOpenWindow(_dialogueWindow);
-		_windowService.ShowWindow();
+		_windowService.ShowWindow(_dialogueWindow);
 		
 		OnOpenWindow?.Invoke(name, canTrade);
 		_index = _data.Index;

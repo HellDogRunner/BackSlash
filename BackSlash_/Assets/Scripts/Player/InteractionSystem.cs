@@ -1,9 +1,7 @@
-using RedMoonGames.Window;
 using Scripts.Player;
 using Scripts.UI.Dialogue;
 using Scripts.Weapon;
 using System;
-using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
@@ -11,32 +9,31 @@ using Zenject;
 public class InteractionSystem : MonoBehaviour
 {
 	[SerializeField] private CinemachineCamera _interactCamera;
-	[Space]
-	[SerializeField] private GameObject _playerObject;
+	[Header("Settings")]
+	[SerializeField] private float _angleToInteract;
+	
+	private bool _interacting = false;
+	private NpcInteractable _npc;
 
-	private QuestDatabase _quest;
-	private NpcInteractionService _npc;
-
-	private List<IWindow> _openedWindows = new List<IWindow>();
-	private bool _canTrade;
-	private GameObject _disabledWindow;
-
+	private GameObject _activeWindow;
+	
+	private QuestSystem _questSystem;
 	private WeaponController _weaponController;
 	private UiInputsController _uiActions;
 	private InteractionAnimator _animator;
+	private GameMenuController _menuController;
 	private PlayerStateController _stateController;
-	private TimeController _time;
-
-	public event Action<QuestDatabase> SetQuest;
+	
 	public event Action OnResetDialogue;
 	public event Action<QuestDatabase, string, bool> OnStartInteract;
 	
 	[Inject]
-	private void Construct(TimeController time, PlayerStateController stateController, WeaponController weaponController, InteractionAnimator animator, UiInputsController uIActions)
+	private void Construct(GameMenuController menuController, QuestSystem questSystem, PlayerStateController stateController, WeaponController weaponController, InteractionAnimator animator, UiInputsController uIActions)
 	{
-		_time = time;
 		_animator = animator;
 		_uiActions = uIActions;
+		_questSystem = questSystem;
+		_menuController = menuController;
 		_stateController = stateController;
 		_weaponController = weaponController;
 	}
@@ -44,57 +41,72 @@ public class InteractionSystem : MonoBehaviour
 	private void OnEnable()
 	{
 		_uiActions.OnEnterKeyPressed += TryStartInteract;
-		_time.OnPause += Pause;
+		_menuController.BeforePaused += SwitchWindow;
 	}
 
 	private void OnDisable()
 	{
 		_uiActions.OnEnterKeyPressed -= TryStartInteract;
-		_time.OnPause -= Pause;
+		_menuController.BeforePaused -= SwitchWindow;
 	}
 
-	public void SetInformation(QuestDatabase quest, NpcInteractionService npc)
+	private void OnTriggerEnter(Collider other)
 	{
-		_quest = quest;
-		_npc = npc;
-		_canTrade = npc.CanTrade;
-
-		SetQuest?.Invoke(_quest);
-		if (_quest != null) _animator.ShowTalk();
+		if (other.tag == "NPC")
+		{
+			other.gameObject.TryGetComponent(out _npc);
+		}
 	}
 
-	public void ResetInformation()
+	private void OnTriggerExit(Collider other)
 	{
-		_quest = null;
-		_npc = null;
-		_canTrade = false;
+		if (other.tag == "NPC")
+		{
+			_npc = null;
+		}
+	}
 
-		_animator.HideTalk();
-		_animator.RotateToDefault();
-		OnResetDialogue?.Invoke();
+	private void Update()
+	{
+		if (CanInteract() && !_interacting)
+		{
+			_animator.ShowTalk();
+		}
+		else
+		{
+			_animator.HideTalk();
+		}
 	}
 
 	public void TryStartInteract()
 	{
 		if (CanInteract())
 		{
+			_interacting = true;
 			_stateController.SetInteract();
 			_animator.HideTalk();
-			_animator.LookAtEachOther(_playerObject.transform);
+			_animator.SetRotation(_npc.DefaultRotation);
+			_animator.LookAtEachOther(transform, _npc.transform);
 			SwitchCamera(_npc.LookAt);
 			
+			//TODO убирать оружие по смене стейта на интеракшн в вепон конторолере
 			if (_weaponController.CurrentWeaponType == EWeaponType.Melee) _weaponController.UnequipWeapon();
-				
-			OnStartInteract?.Invoke(_quest, _npc.name, _canTrade);			
+			
+			_questSystem.TryUpdateData(_npc.Quest);
+			OnStartInteract?.Invoke(_npc.Quest, _npc.Name, _npc.CanTrade);			
 		}
 	}
 
 	public void StopInteract()
 	{	
+		_interacting = false;
 		_stateController.SetBeInterrupt();
 		_stateController.SetNone();
+		_animator.RotateToDefault(_npc.transform);
 		_animator.ShowTalk();
 		SwitchCamera(null);
+		
+		OnResetDialogue?.Invoke();
 	}
 	
 	private void SwitchCamera(Transform lookAt)
@@ -108,50 +120,22 @@ public class InteractionSystem : MonoBehaviour
 
 	private bool CanInteract()
 	{
-		if (!_quest || !_stateController.CanInteract()) return false;
-		
-		float distance = (_playerObject.transform.position - _npc.transform.position).magnitude;
-
-		return distance < _npc.Distance;
+		if (!_npc || !_npc.Quest || !_stateController.CanInteract() || _interacting) return false;
+		var angleToNPC = (_npc.transform.position - transform.position).normalized;
+		var correctAngle = Vector3.Angle(angleToNPC, transform.forward) < _angleToInteract;
+		return correctAngle;
 	}
 	
-	public void TryAddWindow(IWindow window)
+	public void SetActiveWindow(GameObject window)
 	{
-		if (!_openedWindows.Contains(window)) _openedWindows.Add(window);
+		_activeWindow = window;
 	}
 	
-	public void TryRemoveWindow(IWindow window)
+	public void SwitchWindow(bool value)
 	{
-		if (_openedWindows.Contains(window)) _openedWindows.Remove(window);
-	}
-	
-	private void Pause(bool pause)
-	{
-		if (pause) CloseAllWindows();
-		else ActivateWindow();
-	}
-	
-	private void ActivateWindow() 
-	{
-		if (_disabledWindow != null)
+		if (_interacting)
 		{
-			_disabledWindow.SetActive(true);
-			_disabledWindow = null;
+			_activeWindow.SetActive(!value);
 		}
-	}
-	
-	private void CloseAllWindows()
-	{
-		foreach (var iwindow in _openedWindows)
-		{
-			iwindow.Close();
-		}
-		_openedWindows.Clear();
-	}
-	
-	public void DisableWindow(bool pause, GameObject window) 
-	{
-		_disabledWindow = window;
-		window.SetActive(!pause);
 	}
 }

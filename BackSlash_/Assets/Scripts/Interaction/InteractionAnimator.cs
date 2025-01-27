@@ -10,7 +10,6 @@ public class InteractionAnimator : MonoBehaviour
 	[SerializeField] private float _hideDuration = 0.1f;
 	[SerializeField] private float _lookAtDuration = 0.3f;
 
-	private Transform _npcTR;
 	private Vector3 _defaultRotation;
 
 	private Tween _talk;
@@ -23,38 +22,43 @@ public class InteractionAnimator : MonoBehaviour
 
 	public void ShowTalk()
 	{
-		TryKillTween(_talk);
-		
-		_talkCG.gameObject.SetActive(true);
-		_talk = _talkCG.DOFade(1, _showDuration);
+		if (_talkCG.alpha == 0)
+		{
+			TryKillTween(_talk);
+			
+			_talkCG.gameObject.SetActive(true);
+			_talk = _talkCG.DOFade(1, _showDuration);
+		}
 	}
 
 	public void HideTalk()
 	{
-		TryKillTween(_talk);
-		
-		_talk = _talkCG.DOFade(0, _hideDuration).
-		OnComplete(() => _talkCG.gameObject.SetActive(false));
+		if (_talkCG.alpha == 1)
+		{
+			TryKillTween(_talk);
+			
+			_talk = _talkCG.DOFade(0, _hideDuration).
+			OnComplete(() => _talkCG.gameObject.SetActive(false));	
+		}
 	}
 
-	public void SetTransform(Transform transform, Vector3 rotation)
+	public void SetRotation(Vector3 rotation)
 	{
-		_npcTR = transform;
 		_defaultRotation = rotation;
 	}
 
-	public void LookAtEachOther(Transform playerTR)
+	public void LookAtEachOther(Transform playerTR, Transform npcTR)
 	{
-		Vector3 playerPos = new Vector3(playerTR.position.x, _npcTR.position.y, playerTR.position.z);
-		Vector3 npcPos = new Vector3(_npcTR.position.x, playerTR.position.y, _npcTR.position.z);
+		Vector3 playerPos = new Vector3(playerTR.position.x, npcTR.position.y, playerTR.position.z);
+		Vector3 npcPos = new Vector3(npcTR.position.x, playerTR.position.y, npcTR.position.z);
 
-		_npcTR.DOLookAt(playerPos, _lookAtDuration);
+		npcTR.DOLookAt(playerPos, _lookAtDuration);
 		playerTR.DOLookAt(npcPos, _lookAtDuration);
 	}
 
-	public void RotateToDefault()
+	public void RotateToDefault(Transform npcTR)
 	{
-		_npcTR.DORotate(_defaultRotation, _lookAtDuration);
+		npcTR.DORotate(_defaultRotation, _lookAtDuration);
 	}
 	
 	private void TryKillTween(Tween tween)

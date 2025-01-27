@@ -91,8 +91,22 @@ namespace RedMoonGames.Window
 		private void ButtonPositive() { DialogueAnswer(true); }
 		private void ButtonNegative() { DialogueAnswer(false); }
 		private void NextButton() { _interactionSystem.TryStartInteract(); }
-		private void LeaveButton() { if (_dialodueEnd) HideWindow(); }
-		private void TradeButton() { if (!_dialogueAnimator.TextActive()) OpenWindow(_tradeHandler); }
+		
+		private void LeaveButton()
+		{
+			if (_dialodueEnd)
+			{
+				StopInteract();
+			}
+		}
+		
+		private void TradeButton()
+		{
+			if (!_dialogueAnimator.TextActive())
+			{
+				ReplaceWindow(this, _tradeHandler);
+			}
+		}
 		
 		private void SetDialogue(string name, bool canTrade)
 		{

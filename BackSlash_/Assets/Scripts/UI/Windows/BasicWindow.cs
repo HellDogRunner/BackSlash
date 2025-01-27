@@ -7,12 +7,13 @@ using Zenject;
 namespace RedMoonGames.Window
 {
 	[RequireComponent(typeof(CanvasGroup))]
-	public class BasicWindow : IBasicWindow
+	public abstract class BasicWindow : IBasicWindow
 	{
+		[SerializeField] protected bool _isMainMenu;
 		[SerializeField] protected Button _close;
 		
 		protected CanvasGroup _canvasGroup;
-		protected bool _callClose;
+		protected WindowHandler _thisHandler;
 
 		protected WindowService _windowService;
 		protected WindowAnimator _animator;
@@ -23,68 +24,72 @@ namespace RedMoonGames.Window
 		private void Construct(WindowService windowService, WindowAnimator animator, AudioController audioController, UiInputsController uiInputs)
 		{
 			_canvasGroup = GetComponent<CanvasGroup>();
-			
 			_audioController = audioController;
+			_windowService = windowService;
 			_animator = animator;
 			_uiInputs = uiInputs;
-			_windowService = windowService;
 		}
 		
 		protected virtual void OnEnable()
 		{
-			_windowService.OnShowWindow += Show;
 			_uiInputs.OnEscapeKeyPressed += Hide;
 			_animator.OnShowed += Showed;
-			_animator.OnHided += TryClose;
+			_animator.OnHided += Hided;
 			
 			if (_close) _close.onClick.AddListener(Hide);	
 		}
 		
 		protected virtual void OnDisable()
 		{
-			_windowService.OnShowWindow -= Show;
 			_uiInputs.OnEscapeKeyPressed -= Hide;
 			_animator.OnShowed -= Showed;
-			_animator.OnHided -= TryClose;
+			_animator.OnHided -= Hided;
 			
 			if (_close) _close.onClick.RemoveListener(Hide);	
 		}
 		
-		protected virtual void Show(bool pause, float delay) 
+		public override void SetHandler(WindowHandler handler)
+		{
+			_thisHandler = handler;
+		}
+		
+		public override void Show(bool delay = false) 
 		{
 			if (!_animator.Active())
 			{
-				PlayClickSound();	// Need?
-				_animator.ShowWindow(_canvasGroup, delay);
-				if (pause) _windowService.Pause(true);
+				_animator.ShowWindow(_thisHandler, _canvasGroup, delay);
+				//PlayClickSound();	// Need?
 			}
+		}
+		
+		protected virtual void Showed(WindowHandler handler)
+		{
 		}
 		
 		protected virtual void Hide()
 		{
-			if (!_animator.Active())
+			if (_isMainMenu)
 			{
-				_callClose = true;
-				PlayClickSound();	// Need?
-				_animator.HideWindow(_canvasGroup);
-				_windowService.Pause(false);
+				Close();
+			}
+			else if (!_animator.Active())
+			{
+				_animator.HideWindow(_thisHandler, _canvasGroup);	
+				//PlayClickSound();	// Need?
 			}
 		}
 		
-		protected virtual void Showed() {}
-		
-		protected virtual void TryClose()
+		protected virtual void Hided(WindowHandler handler)
 		{
-			if (_callClose)
+			if (handler == _thisHandler)
 			{
-				_callClose = false;
 				Close();
 			}
 		}
 		
 		protected void ReplaceWindow(IWindow window, WindowHandler handler)
 		{
-			PlayClickSound();
+			//PlayClickSound();
 			
 			window.Close();
 			_windowService.TryOpenWindow(handler);

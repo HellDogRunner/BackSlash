@@ -10,7 +10,6 @@ namespace Scripts.Player
 	{
 		private TargetLock _targetLock;
 		private ComboSystem _comboSystem;
-		private CursorController _cursor;
 		private MovementController _movement;
 		private HUDController _hudController;
 		private InputController _inputController;
@@ -26,10 +25,9 @@ namespace Scripts.Player
 		public MovementController Movement => _movement;
 		public ComboSystem ComboSystem => _comboSystem;
 		public HUDController HUD => _hudController;
-		public CursorController Cursor => _cursor;
 
 		[Inject]
-		private void Construct(CameraController cameraController, HUDController hudController, CursorController cursor, InputController inputController, ComboSystem comboSystem, PlayerAnimationController animator, TargetLock targetLock, MovementController movement)
+		private void Construct(CameraController cameraController, HUDController hudController, InputController inputController, ComboSystem comboSystem, PlayerAnimationController animator, TargetLock targetLock, MovementController movement)
 		{
 			_cameraController = cameraController;
 			_inputController = inputController;
@@ -38,7 +36,6 @@ namespace Scripts.Player
 			_targetLock = targetLock;
 			_movement = movement;
 			_animator = animator;
-			_cursor = cursor;
 		}
 
 		private void OnEnable()

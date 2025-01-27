@@ -1,5 +1,4 @@
 using RedMoonGames.Basics;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -15,20 +14,9 @@ namespace RedMoonGames.Window
 		[Inject] private DiContainer _diContainer;
 		
 		protected readonly Dictionary<IWindow, WindowHandler> _createdWindows = new Dictionary<IWindow, WindowHandler>();
-
-		public event Action<bool, float> OnShowWindow;
-		public event Action<bool> OnPause;
 		
-		public void Pause(bool pause)
-		{
-			OnPause?.Invoke(pause);
-		}
+		public int WindowsCount => _createdWindows.Count;
 		
-		public void ShowWindow(bool pause = false, float delay = 0)
-		{
-			OnShowWindow?.Invoke(pause, delay);
-		}
-
 		public TryResult TryOpenWindow(WindowHandler window, WindowModel model = null)
 		{
 			if (settings == null)
@@ -50,10 +38,19 @@ namespace RedMoonGames.Window
 				}
 			}
 
+			openedWindow.SetHandler(window);
 			openedWindow.SetModel(model);
 			return TryResult.Successfully;
 		}
 
+		public void ShowWindow(WindowHandler handler)
+		{
+			if (_createdWindows.TrySearchKeyByValue(handler, out var window))
+			{
+				window.Show();
+			}
+		}
+		
 		public void CloseWindow(WindowHandler handler)
 		{
 			if (_createdWindows.TrySearchKeyByValue(handler, out var window))

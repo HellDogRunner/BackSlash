@@ -1,104 +1,124 @@
-using Scripts.Player;
-using System.Collections;
+using System;
+using RedMoonGames.Window;
 using UnityEngine;
-using UnityEngine.Rendering;
 using Zenject;
 
-namespace RedMoonGames.Window
+public class GameMenuController : BasicMenuController
 {
-	public class GameMenuController : BasicMenuController
+	[SerializeField] private WindowHandler _pauseHandler;
+	[SerializeField] private WindowHandler _menuHandler;
+
+	private HUDController _hudController;
+	
+	public event Action<bool> OnPaused;
+	public event Action<bool> BeforePaused;
+
+	[Inject]
+	private void Construct(HUDController hudController)
 	{
-		[SerializeField] private GameObject _playerHUD;
-		[Space]
-		[SerializeField] private WindowHandler _pauseWindow;
-		[SerializeField] private WindowHandler _menuWindow;
-		[Space]
-		[SerializeField] private float _inputsDelay = 1;
+		_hudController = hudController;
+	}
 
-		private InputController _gameInputs;
-		private PlayerStateController _stateController;
-		private CursorController _cursor;
-		private TimeController _time;
+	private void Awake()
+	{
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+		Time.timeScale = 1;
+		_hudController.gameObject.SetActive(true);
+	}
 
-		[Inject]
-		private void Construct(CursorController cursor, TimeController time, PlayerStateController stateController, InputController gameInputs)
-		{
-			_stateController = stateController;
-			_gameInputs = gameInputs;
-			_cursor = cursor;
-			_time = time;
-		}
+	private void OnEnable()
+	{
+		_uiInputs.OnEscapeKeyPressed += OpenPause;
+		_uiInputs.OnMenuKeyPressed += OpenMenu;
+		_uiInputs.ShowCursor += ShowCursor;
+		_animator.OnShowing += WindowShowing;
+		_animator.OnShowed += WindowShowed;
+		_animator.OnHiding += WindowHiding;
+		_animator.OnHided += WindowHided;
+	}
 
-		private void Awake()
-		{
-			_sceneTransition.gameObject.SetActive(true);
-			_playerHUD.SetActive(true);
-			StartCoroutine(EnableInputsDelay());
-			SetPause(false);
-			_cursor.Pause(false);
-		}
+	private void OnDisable()
+	{
+		_uiInputs.OnEscapeKeyPressed -= OpenPause;
+		_uiInputs.OnMenuKeyPressed -= OpenMenu;
+		_uiInputs.ShowCursor -= ShowCursor;
+		_animator.OnShowing -= WindowShowing;
+		_animator.OnShowed -= WindowShowed;
+		_animator.OnHiding -= WindowHiding;
+		_animator.OnHided -= WindowHided;
+	}
 
-		private void OnEnable()
-		{
-			_time.OnPause += Pause;
-			
-			_sceneTransition.OnWindowHide += SceneTransitionHide;
-			
-			_uiInputs.OnEscapeKeyPressed += OpenPause;
-			_uiInputs.OnMenuKeyPressed += OpenMenu;
-			_windowService.OnPause += SetPause;
-		}
+	private void OpenPause()
+	{
+		TryOpenWindow(_pauseHandler);
+	}
 
-		private void OnDisable()
-		{
-			_time.OnPause -= Pause;
+	private void OpenMenu()
+	{
+		TryOpenWindow(_menuHandler);
+	}
 
-			_sceneTransition.OnWindowHide -= SceneTransitionHide;
-
-			_uiInputs.OnEscapeKeyPressed -= OpenPause;
-			_uiInputs.OnMenuKeyPressed -= OpenMenu;
-			_windowService.OnPause -= SetPause;		
-		}
-
-		private void OpenPause()
-		{
-			if (!_time.Paused) TryOpenWindow(_pauseWindow);
-		}
-
-		private void OpenMenu()
-		{
-			// FIXME can the player open the menu during the dialogue?
-			//if (_stateController.State != EState.Pause && _stateController.State != EState.Interact)
-			if (!_time.Paused) TryOpenWindow(_menuWindow);
-		}
+	private void TryOpenWindow(WindowHandler window)
+	{
+		var pauseWindow = _windowService.GetWindowByHandler(_pauseHandler);
+		var menuWindow = _windowService.GetWindowByHandler(_menuHandler);
 		
-		private void TryOpenWindow(WindowHandler window) 
+		if (pauseWindow == null && menuWindow == null && Time.timeScale == 1)
 		{
 			_windowService.TryOpenWindow(window);
-			_windowService.ShowWindow(true);
+			_windowService.ShowWindow(window);
 		}
-
-		private void SetPause(bool pause)
+	}
+	
+	private void WindowShowing(WindowHandler handler)
+	{
+		if (_menuHandler == handler || _pauseHandler == handler)
 		{
-			_time.Pause(pause);
+			BeforePaused?.Invoke(true);
 		}
-
-		// TODO убрать зависимость от контроллера состояний и не выключать скрипт инпутов в паузе
-		private void Pause(bool value)
+	}
+	
+	private void WindowShowed(WindowHandler handler)
+	{
+		SetCursor(true);
+		if (_menuHandler == handler || _pauseHandler == handler)
 		{
-			if (value) _gameInputs.enabled = !value;
-			else if (_stateController.State != EPlayerState.Interact) _gameInputs.enabled = !value;
+			SetPause(true);
 		}
-		
-		IEnumerator EnableInputsDelay()
+	}
+
+	private void WindowHiding(WindowHandler handler)
+	{
+		SetCursor(false);
+		SetPause(false);
+	}
+	
+	private void WindowHided(WindowHandler handler)
+	{
+		BeforePaused?.Invoke(false);
+	}
+	
+	private void SetPause(bool value)
+	{
+		Time.timeScale = value ? 0 : 1;
+		OnPaused?.Invoke(value);
+	}
+	
+	private void SetCursor(bool showed)
+	{
+		if (_windowService.WindowsCount == 0 || _windowService.WindowsCount == 1 && !showed)
 		{
-			_gameInputs.enabled = false;
-			_uiInputs.enabled = false;
-
-			yield return new WaitForSeconds(_inputsDelay);
-
-			_gameInputs.enabled = true;
-			_uiInputs.enabled = true;
+			Cursor.lockState = CursorLockMode.Locked;
 		}
+		else
+		{
+			Cursor.lockState = CursorLockMode.Confined;
+		}
+	}
+	
+	private void ShowCursor(bool value)
+	{
+		Cursor.visible = value;
 	}
 }

@@ -5,27 +5,31 @@ namespace RedMoonGames.Window
 	public class StartWindow : BasicWindow
 	{	
 		[SerializeField] private WindowHandler _mainHandler;
-		[SerializeField] protected float _showDelay = 0.3f;
-
-		private void Awake()
-		{
-			_windowService.ShowWindow(false, _showDelay);
-		}
 
 		protected override void OnEnable()
 		{
-			_uiInputs.OnAnyKeyPressed += AnyKey;
+			base.OnEnable();
+			
+			_uiInputs.OnEscapeKeyPressed -= Hide;
 		}
 
-		protected override void OnDisable()
-		{		
-			_uiInputs.OnAnyKeyPressed -= AnyKey;
+		protected override void Showed(WindowHandler handler)
+		{
+			if (_thisHandler == handler)
+			{
+				_uiInputs.OnAnyKeyPressed += AnyKey;
+			}
 		}
-		
+				
 		private void AnyKey()
 		{
-			Hide();
-			_windowService.TryOpenWindow(_mainHandler);
+			if (!_animator.Active())
+			{
+				_uiInputs.OnAnyKeyPressed -= AnyKey;
+				_windowService.TryOpenWindow(_mainHandler);
+				_windowService.ShowWindow(_mainHandler);
+				Close();
+			}
 		}
 	}
 }

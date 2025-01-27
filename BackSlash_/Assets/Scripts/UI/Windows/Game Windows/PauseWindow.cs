@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace RedMoonGames.Window
 {
@@ -13,14 +12,6 @@ namespace RedMoonGames.Window
 		[SerializeField] private Button _continue;
 		[SerializeField] private Button _settings;
 		[SerializeField] private Button _exit;
-
-		private GameMenuController _menuController;
-
-		[Inject]
-		private void Construct(GameMenuController menuController)
-		{
-			_menuController = menuController;
-		}
 
 		private void Awake()
 		{
@@ -53,7 +44,7 @@ namespace RedMoonGames.Window
 
 		private void ExitButton()
 		{
-			_menuController.ChangeScene("StartMenu");
+			//_menuController.ChangeScene("StartMenu");
 		}
 	}
 }

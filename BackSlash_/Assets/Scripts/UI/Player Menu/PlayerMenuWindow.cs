@@ -31,19 +31,17 @@ namespace RedMoonGames.Window
 		private int _animationIndex = -1;
 		private GameObject _activeTab;
 
-		private GameMenuController _menuController;
 		private TabDatabase _tabData;
 
 		[Inject]
-		private void Construct(TabDatabase tabData, GameMenuController menuController)
+		private void Construct(TabDatabase tabData)
 		{
 			_tabData = tabData;
-			_menuController = menuController;
 		}
 
 		private void Awake()
 		{
-			Show(true, 0);
+			Show();
 		}
 
 		// TODO remove this script OR if needed clear dependencies

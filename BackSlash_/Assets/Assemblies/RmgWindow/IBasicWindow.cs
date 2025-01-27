@@ -10,7 +10,7 @@ namespace RedMoonGames.Window
 
 		private WindowModel _lastWindowModel;
 
-		public virtual void  OnShow()
+		public virtual void Show(bool delay = false)
 		{
 			OnWindowShow?.Invoke(this);
 		}
@@ -25,9 +25,13 @@ namespace RedMoonGames.Window
 			OnWindowClose?.Invoke(this, closeContext);
 		}
 
+        public virtual void SetHandler(WindowHandler windowHandler)
+        {
+        }
+
 		public virtual void SetModel(WindowModel windowModel)
 		{
 			_lastWindowModel = windowModel;
 		}
-	}
+    }
 }

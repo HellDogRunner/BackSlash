@@ -1017,7 +1017,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3df20da6919034ebd0c9284928f520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _IsMainMenu: 1
+  _isMainMenu: 1
+  _close: {fileID: 0}
   _pauseHandler: {fileID: 11400000, guid: 2c745b6d1b5c003458675efd3866d72d, type: 2}
   _gameplayHandler: {fileID: 11400000, guid: 76e7041b409f5d5449fbd47aed2d5e47, type: 2}
   _audioHandler: {fileID: 11400000, guid: e14b0b00178ee9e41b23e9a70310f3ef, type: 2}
@@ -1028,7 +1029,6 @@ MonoBehaviour:
   _video: {fileID: 8633626984912729519}
   _management: {fileID: 2563550720665816854}
   _back: {fileID: 2158913249364117440}
-  _close: {fileID: 0}
 --- !u!114 &3132079052276489590
 MonoBehaviour:
   m_ObjectHideFlags: 0
