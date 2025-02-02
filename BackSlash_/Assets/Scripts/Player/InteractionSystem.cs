@@ -49,6 +49,14 @@ public class InteractionSystem : MonoBehaviour
 		_uiActions.OnEnterKeyPressed -= TryStartInteract;
 		_menuController.BeforePaused -= SwitchWindow;
 	}
+	
+	private void OnDestroy()
+	{
+		if (_npc)
+		{
+			_npc.Quest.Index = 0;
+		}
+	}
 
 	private void OnTriggerEnter(Collider other)
 	{
