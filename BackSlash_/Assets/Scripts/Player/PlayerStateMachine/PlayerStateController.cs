@@ -65,19 +65,23 @@ namespace Scripts.Player
 
 		public void SetState(IPlayerState newState)
 		{
-			if (_currentState.CanBeInterrupt() && newState.CanEnterInAir())
+			if (_currentState.CanBeInterrupt() && newState.CanEnterInAir() && Time.timeScale != 0)
 			{
 				if (_currentState != null) _currentState.Exit();
 				_currentState = newState;
 				_currentState.Enter();
 			}
 		}
-
-		private void Attack(bool input) { if (input) SetState(new AttackState(this)); }
+		
 		public void SetInteract() { SetState(new InteractState(this)); }
 		public void SetNone() { SetState(new NoneState(this)); }
 		public void SetLoot() { SetState(new LootState(this)); }
 		private void Dodge() { SetState(new DodgeState(this)); }
+
+		private void Attack(bool input)
+		{
+			if (input) SetState(new AttackState(this));
+		}
 		
 		private void Block(bool input)
 		{

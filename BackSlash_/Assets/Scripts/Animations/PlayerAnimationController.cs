@@ -21,15 +21,13 @@ namespace Scripts.Animations
 		
 		private MovementController _movementController;
 		private WeaponController _weaponController;
-		private InputController _inputController;
 		private TargetLock _targetLock;
 
 		[Inject]
-		private void Construct(InputController inputController, MovementController movementController, TargetLock targetLock, WeaponController weaponController, CameraController thirdPersonController)
+		private void Construct(MovementController movementController, TargetLock targetLock, WeaponController weaponController, CameraController thirdPersonController)
 		{
 			_movementController = movementController;
 			_weaponController = weaponController;
-			_inputController = inputController;
 			_targetLock = targetLock;
 		}
 
@@ -173,9 +171,15 @@ namespace Scripts.Animations
 			_animator.SetTrigger(name);
 		}
 		
+		public bool NeedInactiveIkFoot()
+		{
+			var state = _animator.GetCurrentAnimatorStateInfo(0);
+			return state.IsTag("Air");
+		}
+		
 		private int CalculateDirection()
 		{
-			var direction = _inputController.MoveDirection;
+			var direction = _movementController.InputDirection;
 			int value;
 			
 			if (direction == Vector2.zero) return 0;

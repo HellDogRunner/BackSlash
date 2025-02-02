@@ -15,9 +15,9 @@ namespace Scripts.Player
 			_player.State = EPlayerState.Attack;
 			_player.Movement.SetCanFall(false);
 			_player.Movement.SetCanJump(false);
+			_player.Movement.SetCanSprint(false);
 			_player.Animator.SetCanMove(false);
 			_player.Camera.SetCanRotate(false);
-			_player.Movement.SetCanSprint(false);
 			_player.Camera.SetAttack(true);
 			_player.Animator.Attack(true);
 		}

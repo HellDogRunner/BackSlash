@@ -1,4 +1,7 @@
+using Scripts.Animations;
+using Scripts.Player;
 using UnityEngine;
+using Zenject;
 
 public class IKFootPlacement : MonoBehaviour
 {
@@ -18,10 +21,21 @@ public class IKFootPlacement : MonoBehaviour
 	[Space]
 	[SerializeField] private float _pelvisOffset;
 	[SerializeField] private float _maxFootOffset;
+	[SerializeField] [Range(0, 1)] private float _weightLimit;
 	[SerializeField] private float _maxFootAngle;
 	[Space]
 	[SerializeField] private float _minIkDistance;
 	[SerializeField] private float _maxIkDistance;
+	
+	private MovementController _movement;
+	private PlayerAnimationController _playerAnimator;
+	
+	[Inject]
+	private void Construct(MovementController movement, PlayerAnimationController playerAnimator)
+	{
+		_movement = movement;
+		_playerAnimator = playerAnimator;
+	}
 	
 	private void Update()
 	{
@@ -29,7 +43,7 @@ public class IKFootPlacement : MonoBehaviour
 		AdjustFeetTarget(ref leftFootPosition, HumanBodyBones.LeftFoot);
 		
 		FeetPositionSolver(rightFootPosition, ref rightFootIkPosition);
-		FeetPositionSolver(leftFootPosition, ref leftFootIkPosition);
+		FeetPositionSolver(leftFootPosition, ref leftFootIkPosition);	
 	}
 	
 	private void OnAnimatorIK()
@@ -48,12 +62,14 @@ public class IKFootPlacement : MonoBehaviour
 		Physics.Raycast(_animator.GetIKPosition(foot) + Vector3.up * 0.15f, Vector3.down, out var hit, _maxIkDistance, _layer);
 		float weight;
 		
-		if (hit.distance == 0) weight = 0;
+		if (hit.distance == 0 || _playerAnimator.NeedInactiveIkFoot()) weight = 0;
 		else if (hit.distance < _minIkDistance) weight = 1;
 		else weight = 1 - (hit.distance - _minIkDistance) / (_maxIkDistance - _minIkDistance);
 		
 		footWeight = Mathf.Lerp(footWeight, weight, _weightSpeed * Time.deltaTime);
 		
+		//if (_movement.Air) footWeight = 0; 
+				
 		_animator.SetIKPositionWeight(foot, footWeight);
 		_animator.SetIKRotationWeight(foot, footWeight);
 	}
@@ -112,11 +128,18 @@ public class IKFootPlacement : MonoBehaviour
 		float lOffsetPosition = leftFootIkPosition.y - transform.position.y;
 		float rOffsetPosition = rightFootIkPosition.y - transform.position.y;
 		float totalOffset = Mathf.Min(lOffsetPosition, rOffsetPosition);
-		totalOffset = totalOffset > _maxFootOffset ? totalOffset : _maxFootOffset;
+		float offset = CheckIkWeight() || _playerAnimator.NeedInactiveIkFoot() ? _maxFootOffset : _pelvisOffset;
+		
+		totalOffset = totalOffset > offset ? totalOffset : offset;
 		Vector3 newPelvisPosition = _animator.bodyPosition + Vector3.up * totalOffset;
 		
 		newPelvisPosition.y = Mathf.Lerp(lastPevisPositionY, newPelvisPosition.y, _pelvisSpeed * Time.deltaTime);	
 		_animator.bodyPosition = newPelvisPosition;
 		lastPevisPositionY = _animator.bodyPosition.y;
+	}
+	
+	private bool CheckIkWeight()
+	{
+		return _leftWeight > _weightLimit && _rightWeight > _weightLimit;
 	}
 }

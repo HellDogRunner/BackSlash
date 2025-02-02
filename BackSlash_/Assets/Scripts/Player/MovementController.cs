@@ -23,8 +23,8 @@ namespace Scripts.Player
 		[SerializeField] private float _sphereCastRadius;
 		[SerializeField] private LayerMask _hitboxLayer;
 
-		private bool _tryMove;
-		private bool _isSprint;
+		[SerializeField] private bool _tryMove;
+		[SerializeField] private bool _isSprint;
 		private bool _inAir;
 		private bool _inJump;
 		private bool _canJump;
@@ -35,12 +35,14 @@ namespace Scripts.Player
 		private float _ySpeed;
 
 		private Vector3 _airDirection, _moveDirection;
+		private Vector2 _inputDirection;
 
 		private Transform _camera;
 		private TargetLock _targetLock;
 		private InputController _inputController;
 
 		public bool Air => _inAir;
+		public Vector2 InputDirection => _inputDirection;
 
 		public event Action<Vector2> OnLockMove;
 		public event Action<float> OnFreeMove;
@@ -90,7 +92,8 @@ namespace Scripts.Player
 
 		private void Move()
 		{
-			_tryMove = _inputController.MoveDirection != Vector2.zero;
+			_inputDirection = _inputController.MoveDirection;
+			_tryMove = _inputDirection != Vector2.zero;
 			OnTryMove?.Invoke(_tryMove);
 		}
 
@@ -119,7 +122,7 @@ namespace Scripts.Player
 
 		private void Jump()
 		{
-			if (!_inAir && !_inJump && _canJump)
+			if (!_inAir && !_inJump && _canJump && Time.timeScale != 0)
 			{
 				_inJump = true;
 				OnJump?.Invoke();
@@ -210,7 +213,7 @@ namespace Scripts.Player
 
 		private void InvokeSteps()
 		{
-			PlaySteps?.Invoke(!_inAir && _canFall);
+			PlaySteps?.Invoke(!_inAir && _tryMove);
 		}
 
 		private Vector3 TryNormalize(Vector3 direction)
