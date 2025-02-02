@@ -13,13 +13,15 @@ public class MainMenuController : BasicMenuController
 		_windowService.ShowWindow(_startHandler);
 	}
 
-	private void OnEnable()
+	protected override void OnEnable()
 	{
+		base.OnEnable();
 		_uiInputs.OnEscapeKeyPressed += OpenMainWindow;
 	}
 
-	private void OnDisable()
+	protected override void OnDisable()
 	{
+		base.OnDisable();
 		_uiInputs.OnEscapeKeyPressed -= OpenMainWindow;
 	}
 

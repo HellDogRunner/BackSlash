@@ -17,14 +17,14 @@ public class SelectableAnimationService : MonoBehaviour, IPointerEnterHandler, I
 	[SerializeField] private RectTransform _pointRect;
 	[SerializeField] private TMP_Text _text;
 
-	[Header("Settings")]
+	[Header("Frame settings")]
 	[SerializeField] private float _fadeDuration = 0.35f;
 	[SerializeField] private Vector2 _minStartAnchor = new Vector2(0.3f, 0);
 	[SerializeField] private Vector2 _maxStartAnchor = new Vector2(0.7f, 1);
 	[SerializeField] private Color _textSelectedColor;
 	[SerializeField] private Color _textDeselectedColor;
 
-	[Header("Indicator Animation")]
+	[Header("Indicator settings")]
 	[SerializeField] private Vector2 _punch = new Vector2(-15f, 0);
 	[SerializeField] private int _vibrato = 12;
 

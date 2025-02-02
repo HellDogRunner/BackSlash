@@ -8,7 +8,7 @@ namespace RedMoonGames.Window
 	{
 		[SerializeField] private LoadingSceneAnimation _animations;
 		[Space]
-		[SerializeField] private bool _playOpening;
+		[SerializeField] private static bool _playOpening = false;
 
 		private string _sceneName;
 
@@ -30,11 +30,19 @@ namespace RedMoonGames.Window
 			_animations.OnClosingEnd -= LoadScene;
 		}
 
-		private void Start()
+		private void Awake()
 		{
 			if (_playOpening)
 			{
 				_animations.AnimateOpening();
+			}
+		}
+		
+		private void Start()
+		{
+			if (!_playOpening)
+			{
+				OnWindowHide?.Invoke();
 			}
 		}
 
@@ -58,6 +66,7 @@ namespace RedMoonGames.Window
 
 		private void ChangeScene()
 		{
+			_playOpening = true;
 			_loadingScene.allowSceneActivation = true;
 		}
 

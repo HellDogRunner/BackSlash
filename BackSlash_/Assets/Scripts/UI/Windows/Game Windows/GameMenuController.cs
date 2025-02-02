@@ -10,8 +10,11 @@ public class GameMenuController : BasicMenuController
 
 	private HUDController _hudController;
 	
+	private bool _windowHiding;
+	
 	public event Action<bool> OnPaused;
 	public event Action<bool> BeforePaused;
+	public event Action<bool> OnShowUI;
 
 	[Inject]
 	private void Construct(HUDController hudController)
@@ -27,8 +30,9 @@ public class GameMenuController : BasicMenuController
 		_hudController.gameObject.SetActive(true);
 	}
 
-	private void OnEnable()
+	protected override void OnEnable()
 	{
+		base.OnEnable();
 		_uiInputs.OnEscapeKeyPressed += OpenPause;
 		_uiInputs.OnMenuKeyPressed += OpenMenu;
 		_uiInputs.ShowCursor += ShowCursor;
@@ -38,8 +42,9 @@ public class GameMenuController : BasicMenuController
 		_animator.OnHided += WindowHided;
 	}
 
-	private void OnDisable()
+	protected override void OnDisable()
 	{
+		base.OnDisable();
 		_uiInputs.OnEscapeKeyPressed -= OpenPause;
 		_uiInputs.OnMenuKeyPressed -= OpenMenu;
 		_uiInputs.ShowCursor -= ShowCursor;
@@ -81,7 +86,8 @@ public class GameMenuController : BasicMenuController
 	
 	private void WindowShowed(WindowHandler handler)
 	{
-		SetCursor(true);
+		OnShowUI?.Invoke(!GetNoWindows());
+		SetCursor();
 		if (_menuHandler == handler || _pauseHandler == handler)
 		{
 			SetPause(true);
@@ -90,12 +96,15 @@ public class GameMenuController : BasicMenuController
 
 	private void WindowHiding(WindowHandler handler)
 	{
-		SetCursor(false);
+		_windowHiding = true;
+		OnShowUI?.Invoke(!GetNoWindows());
+		SetCursor();
 		SetPause(false);
 	}
 	
 	private void WindowHided(WindowHandler handler)
 	{
+		_windowHiding = false;
 		BeforePaused?.Invoke(false);
 	}
 	
@@ -105,20 +114,18 @@ public class GameMenuController : BasicMenuController
 		OnPaused?.Invoke(value);
 	}
 	
-	private void SetCursor(bool showed)
+	private void SetCursor()
 	{
-		if (_windowService.WindowsCount == 0 || _windowService.WindowsCount == 1 && !showed)
-		{
-			Cursor.lockState = CursorLockMode.Locked;
-		}
-		else
-		{
-			Cursor.lockState = CursorLockMode.Confined;
-		}
+		Cursor.lockState = GetNoWindows() ? CursorLockMode.Locked : CursorLockMode.Confined;
 	}
 	
 	private void ShowCursor(bool value)
 	{
 		Cursor.visible = value;
+	}
+	
+	private bool GetNoWindows()
+	{
+		return _windowService.WindowsCount == 0 || _windowService.WindowsCount == 1 && _windowHiding;
 	}
 }

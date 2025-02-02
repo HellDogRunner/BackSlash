@@ -10,7 +10,6 @@ namespace Scripts.Player
 		public void Enter()
 		{
 			_player.State = EPlayerState.Interact;
-			_player.HUD.Interact();
 			_player.Movement.SetCanFall(true);
 			_player.Animator.SetCanMove(false);
 			_player.Movement.SetCanJump(false);

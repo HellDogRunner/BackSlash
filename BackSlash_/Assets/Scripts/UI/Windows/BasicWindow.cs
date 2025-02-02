@@ -58,7 +58,7 @@ namespace RedMoonGames.Window
 			if (!_animator.Active())
 			{
 				_animator.ShowWindow(_thisHandler, _canvasGroup, delay);
-				//PlayClickSound();	// Need?
+				PlayClickSound();
 			}
 		}
 		
@@ -75,7 +75,7 @@ namespace RedMoonGames.Window
 			else if (!_animator.Active())
 			{
 				_animator.HideWindow(_thisHandler, _canvasGroup);	
-				//PlayClickSound();	// Need?
+				PlayClickSound();
 			}
 		}
 		
@@ -89,8 +89,7 @@ namespace RedMoonGames.Window
 		
 		protected void ReplaceWindow(IWindow window, WindowHandler handler)
 		{
-			//PlayClickSound();
-			
+			PlayClickSound();
 			window.Close();
 			_windowService.TryOpenWindow(handler);
 		}

@@ -17,21 +17,20 @@ public class HUDAnimationService : MonoBehaviour
 	[SerializeField] private float _showDelay = 1f;
 	[SerializeField] private float _fadeDuration = 0.5f;
 
-	private int _index;
-	private bool _updateFPS;
-
 	private Transform _target;
 	private Camera _camera;
-
-	private Tween _overlay;
+	
+	private int _index;
+	private bool _updateFPS;
+	
 	private Tween _hud;
 
 	private void Awake()
 	{
 		_camera = Camera.main;
 		
-		_hudCG.alpha = 1;
-		_overlayCG.alpha = 0;
+		_hudCG.alpha = 0;
+		_overlayCG.alpha = 1;
 		
 		_targetIcon.gameObject.SetActive(false);
 	}
@@ -55,23 +54,9 @@ public class HUDAnimationService : MonoBehaviour
 		}
 	}
 	
-	public void ShowOverlay()
-	{
-		ShowAnimation(_overlayCG, _overlay);
-	}
-
-	public void HideOverlay()
-	{
-		HideAnimation(_overlayCG, _overlay);
-	}
-	
 	public void ShowHUD()
 	{
-		// TryKillTween(_hud);
-		
-		// _hud = _hudCG.DOFade(1, _fadeDuration);
-		// _hudCG.alpha = 1;
-		ShowAnimation(_hudCG, _hud, false);
+		ShowAnimation(_hudCG, ref _hud);
 	}
 
 	public void HideHUD()
@@ -79,8 +64,10 @@ public class HUDAnimationService : MonoBehaviour
 		_hudCG.alpha = 0;
 	}
 
-	private void ShowAnimation(CanvasGroup cg, Tween tween, bool doDelay = true)
+	private void ShowAnimation(CanvasGroup cg, ref Tween tween, bool doDelay = true)
 	{
+		TryKillTween(tween);
+		
 		if (!cg.gameObject.activeSelf) cg.gameObject.SetActive(true);
 		var delay = doDelay ? _showDelay : 0;
 		TryKillTween(tween);

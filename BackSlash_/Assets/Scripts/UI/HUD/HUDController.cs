@@ -1,4 +1,3 @@
-using Scripts.Player;
 using UnityEngine;
 using Zenject;
 
@@ -9,16 +8,17 @@ namespace RedMoonGames.Window
 		[SerializeField] private HUDAnimationService _animator;
 
 		private bool _isLocked;
-
+		
+		private GameMenuController _menuController;
 		private CurrencyAnimator _currencyAnimation;
 		private CurrencyService _currencyService;
 		private TargetLock _targetLock;
 
 		[Inject]
-		private void Construct(TargetLock targetLock, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
+		private void Construct(GameMenuController menuController, TargetLock targetLock, CurrencyAnimator currencyAnimation, CurrencyService currencyService)
 		{
-
 			_targetLock = targetLock;
+			_menuController = menuController;
 			_currencyService = currencyService;
 			_currencyAnimation = currencyAnimation;
 		}
@@ -26,18 +26,21 @@ namespace RedMoonGames.Window
 		private void Awake()
 		{
 			SetCurrency();
+			_animator.ShowHUD();
 		}
 
 		private void OnEnable()
 		{
 			_currencyService.OnCurrencyChanged += ChangeCurrency;
 			_targetLock.OnSwitchLock += SwitchLock;
+			_menuController.OnShowUI += ShowHUD;
 		}
 
 		private void OnDisable()
 		{
 			_currencyService.OnCurrencyChanged -= ChangeCurrency;
 			_targetLock.OnSwitchLock -= SwitchLock;
+			_menuController.OnShowUI -= ShowHUD;
 		}
 
 		private void Update()
@@ -52,20 +55,17 @@ namespace RedMoonGames.Window
 			_isLocked = value;
 		}
 
-		private void Pause(bool pause)
+		private void ShowHUD(bool value)
 		{
-			if (pause)_animator.HideHUD();
-			else 
+			if (value)
+			{
+				_animator.HideHUD();
+			}
+			else
 			{
 				_animator.ShowHUD();
-				_animator.ShowOverlay();
-				SetCurrency();	
 			}
-		}
-
-		public void Interact()
-		{
-			_animator.HideOverlay();
+			
 		}
 
 		private void SetCurrency()
