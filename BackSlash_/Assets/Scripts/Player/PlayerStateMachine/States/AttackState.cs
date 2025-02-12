@@ -16,7 +16,7 @@ namespace Scripts.Player
 			_player.Movement.SetCanFall(false);
 			_player.Movement.SetCanJump(false);
 			_player.Movement.SetCanSprint(false);
-			_player.Animator.SetCanMove(false);
+			_player.Movement.SetCanMove(false);
 			_player.Camera.SetCanRotate(false);
 			_player.Camera.SetAttack(true);
 			_player.Animator.Attack(true);
@@ -36,7 +36,7 @@ namespace Scripts.Player
 			
 			_player.Camera.SetAttack(false);
 			_player.Animator.Attack(false);
-			_player.Animator.SetCanMove(true);
+			_player.Movement.SetCanMove(true);
 		}
 		
 		private void Attack(bool value)

@@ -12,7 +12,7 @@ namespace Scripts.Player
 			_isActive = true;
 			_player.State = EPlayerState.Loot;
 			_player.Movement.SetCanFall(true);
-			_player.Animator.SetCanMove(false);
+			_player.Movement.SetCanMove(false);
 			_player.Movement.SetCanJump(false);
 			_player.Camera.SetCanRotate(false);
 			_player.Movement.SetCanSprint(false);
@@ -28,7 +28,7 @@ namespace Scripts.Player
 
 		public void Exit()
 		{
-			_player.Animator.SetCanMove(true);
+			_player.Movement.SetCanMove(true);
 			
 			// send end loot state
 		}

@@ -17,7 +17,6 @@ namespace Scripts.Animations
 		[SerializeField] private float _smoothFall;
 		
 		private bool _fall;
-		private bool _canMove;
 		
 		private MovementController _movementController;
 		private WeaponController _weaponController;
@@ -33,11 +32,9 @@ namespace Scripts.Animations
 
 		private void Awake()
 		{
-			_canMove = true;
-			
 			_movementController.OnLockMove += LockMove;
 			_movementController.OnFreeMove += FreeMove;
-			_movementController.OnTryMove += TryMove;
+			_movementController.OnSetMove += SetMove;
 			_movementController.OnLanding += Landing;
 			_movementController.OnSprint += Sprint;
 			_movementController.OnJump += Jump;
@@ -53,7 +50,7 @@ namespace Scripts.Animations
 		{
 			_movementController.OnLockMove -= LockMove;
 			_movementController.OnFreeMove -= FreeMove;
-			_movementController.OnTryMove -= TryMove;
+			_movementController.OnSetMove -= SetMove;
 			_movementController.OnLanding -= Landing;
 			_movementController.OnSprint -= Sprint;
 			_movementController.OnJump -= Jump;
@@ -76,26 +73,20 @@ namespace Scripts.Animations
 
 		private void LockMove(Vector2 value)
 		{
-			var direction = _canMove ? value : Vector2.zero;
+			var direction = GetMove() ? value : Vector2.zero;
 			_animator.SetFloat("InputX", direction.x, _smoothBlend, Time.deltaTime);
 			_animator.SetFloat("InputY", direction.y, _smoothBlend, Time.deltaTime);
 		}
 
 		private void FreeMove(float value)
 		{
-			var speed = _canMove ? value : 0;
+			var speed = GetMove() ? value : 0;
 			_animator.SetFloat("Speed", speed, _smoothFreeMove, Time.deltaTime);
 		}
 
-		private void TryMove(bool move)
+		private void SetMove(bool move)
 		{
-			if (_canMove) _animator.SetBool("Move", move);
-		}
-
-		public void SetCanMove(bool value)
-		{
-			_canMove = value;
-			_animator.SetBool("Move", value);
+			_animator.SetBool("Move", move);
 		}
 
 		private void SwitchLock(bool value)
@@ -171,10 +162,9 @@ namespace Scripts.Animations
 			_animator.SetTrigger(name);
 		}
 		
-		public bool NeedInactiveIkFoot()
+		public bool GetMove()
 		{
-			var state = _animator.GetCurrentAnimatorStateInfo(0);
-			return state.IsTag("Air");
+			return _animator.GetBool("Move");
 		}
 		
 		private int CalculateDirection()

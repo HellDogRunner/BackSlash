@@ -3111,23 +3111,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcc22325213a92c4ea5eda96d4d23460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _leftWeight: 0
-  _rightWeight: 0
   _animator: {fileID: 1259562901829629793}
   _layer:
     serializedVersion: 2
     m_Bits: 1
-  _toGroundHeight: 0.5
-  _raycastDistance: 30
+  _toGroundHeight: 0.4
+  _raycastDistance: 0.8
   _weightSpeed: 40
   _footSpeed: 25
   _pelvisSpeed: 15
-  _pelvisOffset: -0.025
-  _maxFootOffset: -0.2
-  _weightLimit: 0.5
+  _footOffset: -0.025
+  _stayPelvisOffset: -0.4
+  _movePelvisOffset: -0.1
   _maxFootAngle: 35
-  _minIkDistance: 0.6
-  _maxIkDistance: 2
 --- !u!95 &1259562901829629793
 Animator:
   serializedVersion: 7

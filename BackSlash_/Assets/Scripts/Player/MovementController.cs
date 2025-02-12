@@ -23,12 +23,13 @@ namespace Scripts.Player
 		[SerializeField] private float _sphereCastRadius;
 		[SerializeField] private LayerMask _hitboxLayer;
 
-		[SerializeField] private bool _tryMove;
-		[SerializeField] private bool _isSprint;
+		private bool _tryMove;
+		private bool _isSprint;
 		private bool _inAir;
 		private bool _inJump;
 		private bool _canJump;
 		private bool _canFall;
+		private bool _canMove;
 		private bool _canSprint;
 
 		private float _requiredSpeed;
@@ -41,12 +42,13 @@ namespace Scripts.Player
 		private TargetLock _targetLock;
 		private InputController _inputController;
 
+		public bool CanMove => _canMove;
 		public bool Air => _inAir;
 		public Vector2 InputDirection => _inputDirection;
 
 		public event Action<Vector2> OnLockMove;
 		public event Action<float> OnFreeMove;
-		public event Action<bool> OnTryMove;
+		public event Action<bool> OnSetMove;
 		public event Action<bool> PlaySteps;
 		public event Action<bool> OnSprint;
 		public event Action<bool> InAir;
@@ -66,6 +68,7 @@ namespace Scripts.Player
 
 		private void Awake()
 		{
+			_canMove = true;
 			_camera = Camera.main.transform;
 		}
 
@@ -94,7 +97,7 @@ namespace Scripts.Player
 		{
 			_inputDirection = _inputController.MoveDirection;
 			_tryMove = _inputDirection != Vector2.zero;
-			OnTryMove?.Invoke(_tryMove);
+			if (_canMove) OnSetMove?.Invoke(_tryMove);
 		}
 
 		private void MovePlayer()
@@ -175,7 +178,12 @@ namespace Scripts.Player
 				_isSprint = false;	
 			}
 		}
-
+		
+		public void SetCanMove(bool value)
+		{
+			_canMove = value;
+		}
+		
 		private void CheckLand()
 		{
 			if (!IsGrounded() && !_inAir)
