@@ -93,25 +93,25 @@ public class IKFootPlacement : MonoBehaviour
 		}
 	}
 	
-	private void FeetPositionSolver(Vector3 footPosition, ref Vector3 IkPosition)
+	private void FeetPositionSolver(Vector3 footPosition, ref Vector3 ikPosition)
 	{
 		Debug.DrawLine(footPosition, footPosition + Vector3.down * (_raycastDistance + _toGroundHeight), Color.red);
 		
 		if (Physics.Raycast(footPosition, Vector3.down, out var feetHit, _raycastDistance + _toGroundHeight, _layer))
 		{
-			IkPosition = footPosition;
-			IkPosition.y = feetHit.point.y + _footOffset;
+			ikPosition = footPosition;
+			ikPosition.y = feetHit.point.y + _footOffset;
 		}
 		else
 		{
-			IkPosition = Vector3.zero;
+			ikPosition = Vector3.zero;
 		}
 	}
 	
 	private void AdjustFeetTarget(ref Vector3 feetPosition, HumanBodyBones foot)
 	{
 		feetPosition = _animator.GetBoneTransform(foot).position;
-		feetPosition.y = transform.position.y + _toGroundHeight;
+		feetPosition.y += _footOffset + _toGroundHeight;
 	}
 	
 	private void MovePelvisHeight()

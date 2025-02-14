@@ -10,13 +10,12 @@ namespace Scripts.Player
 		[SerializeField] private CharacterController _characterController;
 
 		[Header("Settings")]
-		[SerializeField] private float _jumpSpeed;
+		[SerializeField] private float _jumpTime;
+		[SerializeField] private float _jumpHeight;
 		[SerializeField] private float _jumpDelay;
 		[Space]
 		[SerializeField] private float _airSpeed;
 		[SerializeField] private float _airDirectionMulti;
-		[SerializeField] private float _gravityMulti;
-		[SerializeField] private float _yMaxSpeed;
 
 		[Header("IsGround settings")]
 		[SerializeField] private float _maxCastDistance;
@@ -32,10 +31,12 @@ namespace Scripts.Player
 		private bool _canMove;
 		private bool _canSprint;
 
+		private float _gravityForce;
+		private float _startJumpVelocity;
 		private float _requiredSpeed;
 		private float _ySpeed;
 
-		private Vector3 _airDirection, _moveDirection;
+		private Vector3 _airDirection;
 		private Vector2 _inputDirection;
 
 		private Transform _camera;
@@ -55,9 +56,6 @@ namespace Scripts.Player
 		public event Action OnLanding;
 		public event Action OnFall;
 		public event Action OnJump;
-
-		//debug gizmo parameter delete later
-		private float _currenthitdisance;
 
 		[Inject]
 		private void Construct(TargetLock targetLock, InputController inputController)
@@ -112,21 +110,27 @@ namespace Scripts.Player
 
 			if (_inAir)
 			{
-				_ySpeed = Mathf.Lerp(_ySpeed, _yMaxSpeed, Time.deltaTime * _gravityMulti);
+				_ySpeed -= _gravityForce * Time.deltaTime;
 				_airDirection = TryNormalize(_airDirection + GetMoveDirection() * _airDirectionMulti);
 				direction = _airDirection * _airSpeed;
 			}
-			else if (_ySpeed > Physics.gravity.y) _ySpeed = Mathf.Lerp(_ySpeed, _yMaxSpeed, Time.deltaTime * _gravityMulti);
+			else
+			{
+				if (!_inJump) _ySpeed = Physics.gravity.y;
+			}
 
 			direction.y = _ySpeed;
-			_moveDirection = direction;
-			_characterController.Move(_moveDirection * Time.deltaTime);
+			_characterController.Move(direction * Time.deltaTime);
 		}
 
 		private void Jump()
 		{
 			if (!_inAir && !_inJump && _canJump && Time.timeScale != 0)
 			{
+				float heightTime = _jumpTime / 2;
+				_gravityForce = 2 * _jumpHeight / Mathf.Pow(heightTime, 2);
+				_startJumpVelocity = 2 * _jumpHeight / heightTime;
+				
 				_inJump = true;
 				OnJump?.Invoke();
 			}
@@ -134,7 +138,7 @@ namespace Scripts.Player
 		
 		private void JumpStart()
 		{
-			_ySpeed = _jumpSpeed;
+			_ySpeed = _startJumpVelocity;
 		}
 		
 		private void JumpEnd()
@@ -251,21 +255,12 @@ namespace Scripts.Player
 				_hitboxLayer,
 				QueryTriggerInteraction.Ignore))
 			{
-				_currenthitdisance = hitInfo.distance;
 				return true;
 			}
 			else
 			{
-				_currenthitdisance = _maxCastDistance;
 				return false;
 			}
-		}
-
-		private void OnDrawGizmosSelected()
-		{
-			Gizmos.color = Color.red;
-			Debug.DrawLine(gameObject.transform.position + _characterController.center + (Vector3.up * 0.1f), gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * _currenthitdisance, Color.yellow);
-			Gizmos.DrawWireSphere(gameObject.transform.position + (_characterController.center + (Vector3.up * 0.1f)) + Vector3.down * _currenthitdisance, _sphereCastRadius);
 		}
 	}
 }
