@@ -7,7 +7,7 @@ public class IKFootPlacement : MonoBehaviour
 {
 	private Vector3 rightFootPosition, leftFootPosition, rightFootIkPosition, leftFootIkPosition;
 	private float lastPevisPositionY, lastRightFootPositionY, lastLeftFootPositionY;
-	[SerializeField] [Range(0, 1)] private float ikWeight;
+	[Range(0, 1)] private float ikWeight;
 	
 	[SerializeField] private Animator _animator;
 	[SerializeField] private LayerMask _layer;
@@ -59,8 +59,8 @@ public class IKFootPlacement : MonoBehaviour
 	private void SetIkWeight()
 	{
 		float requiredWeight = _movement.Air ? 0 : 1;
-
-		ikWeight =  Mathf.Lerp(ikWeight, requiredWeight, _weightSpeed * Time.deltaTime);
+		
+		ikWeight = Mathf.Lerp(ikWeight, requiredWeight, _weightSpeed * Time.deltaTime);
 		
 		_animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, ikWeight);
 		_animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, ikWeight);
@@ -82,7 +82,7 @@ public class IKFootPlacement : MonoBehaviour
 			
 			ikPosition = transform.TransformPoint(ikPosition);
 			
-			Physics.Raycast(ikPosition + Vector3.up * _toGroundHeight, Vector3.down, out var hit, _raycastDistance, _layer);
+			Physics.Raycast(ikPosition + Vector3.up * _toGroundHeight, Vector3.down, out var hit, _raycastDistance + _toGroundHeight, _layer);
 			
 			var angle = Vector3.Angle(Vector3.up, hit.normal);
 			if (angle > _maxFootAngle) angle = _maxFootAngle;
@@ -95,8 +95,6 @@ public class IKFootPlacement : MonoBehaviour
 	
 	private void FeetPositionSolver(Vector3 footPosition, ref Vector3 ikPosition)
 	{
-		Debug.DrawLine(footPosition, footPosition + Vector3.down * (_raycastDistance + _toGroundHeight), Color.red);
-		
 		if (Physics.Raycast(footPosition, Vector3.down, out var feetHit, _raycastDistance + _toGroundHeight, _layer))
 		{
 			ikPosition = footPosition;
@@ -116,7 +114,7 @@ public class IKFootPlacement : MonoBehaviour
 	
 	private void MovePelvisHeight()
 	{
-		if (_movement.Air || lastPevisPositionY == 0)
+		if (lastPevisPositionY == 0)
 		{
 			lastPevisPositionY = _animator.bodyPosition.y;	
 			return;
@@ -131,7 +129,7 @@ public class IKFootPlacement : MonoBehaviour
 	
 	private float GetPelvisOffset()
 	{
-		if (rightFootIkPosition == Vector3.zero || leftFootIkPosition == Vector3.zero)
+		if (rightFootIkPosition == Vector3.zero || leftFootIkPosition == Vector3.zero || _movement.Air)
 		{
 			return 0;
 		}
