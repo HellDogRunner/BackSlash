@@ -2966,11 +2966,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterController: {fileID: 3184469423278028609}
-  _jumpTime: 0.507
-  _jumpHeight: 1
-  _jumpDelay: 0
-  _airSpeed: 6
-  _airDirectionMulti: 0.05
+  _jumpTime: 0.5
+  _jumpHeight: 1.5
+  _jumpDelay: 0.2
+  _airRunSpeed: 4
+  _airSpintSpeed: 6
+  _airDirectionMulti: 3
   _maxCastDistance: 0.85
   _sphereCastRadius: 0.25
   _hitboxLayer:
@@ -3110,7 +3111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcc22325213a92c4ea5eda96d4d23460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ikWeight: 0
   _animator: {fileID: 1259562901829629793}
   _layer:
     serializedVersion: 2

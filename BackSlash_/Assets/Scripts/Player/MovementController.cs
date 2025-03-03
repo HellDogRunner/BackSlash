@@ -14,7 +14,8 @@ namespace Scripts.Player
 		[SerializeField] private float _jumpHeight;
 		[SerializeField] private float _jumpDelay;
 		[Space]
-		[SerializeField] private float _airSpeed;
+		[SerializeField] private float _airRunSpeed;
+		[SerializeField] private float _airSpintSpeed;
 		[SerializeField] private float _airDirectionMulti;
 
 		[Header("IsGround settings")]
@@ -35,6 +36,7 @@ namespace Scripts.Player
 		private float _startJumpVelocity;
 		private float _requiredSpeed;
 		private float _ySpeed;
+		private float _airSpeed;
 
 		private Vector3 _airDirection;
 		private Vector2 _inputDirection;
@@ -111,8 +113,7 @@ namespace Scripts.Player
 			if (_inAir)
 			{
 				_ySpeed -= _gravityForce * Time.deltaTime;
-				_airDirection = TryNormalize(_airDirection + GetMoveDirection() * _airDirectionMulti);
-				direction = _airDirection * _airSpeed;
+				direction = _airDirection * _airSpeed + GetInputDirection() * _airDirectionMulti;
 			}
 			else
 			{
@@ -192,7 +193,8 @@ namespace Scripts.Player
 		{
 			if (!IsGrounded() && !_inAir)
 			{
-				_airDirection = _targetLock.Target ? GetMoveDirection() : GetJumpDirection();
+				CalculateAirSpeed();
+				_airDirection = _targetLock.Target ? GetInputDirection() : GetJumpDirection();
 				_inAir = true;
 				InAir?.Invoke(true);
 				
@@ -228,13 +230,23 @@ namespace Scripts.Player
 			PlaySteps?.Invoke(!_inAir && _tryMove);
 		}
 
-		private Vector3 TryNormalize(Vector3 direction)
+		private void CalculateAirSpeed()
 		{
-			if (Math.Abs(direction.x) > 1 || Math.Abs(direction.z) > 1) return direction.normalized;
-			return direction;
+			if (_isSprint)
+			{
+			    _airSpeed = _airSpintSpeed;
+			}
+			else if (_tryMove || _canMove)
+			{
+			    _airSpeed = _airRunSpeed;
+			}
+			else
+			{
+			    _airSpeed = 0;
+			}
 		}
 
-		private Vector3 GetMoveDirection()
+		private Vector3 GetInputDirection()
 		{
 			var direction = _inputController.MoveDirection;
 			return (direction.y * _camera.forward + direction.x * _camera.right).normalized;
