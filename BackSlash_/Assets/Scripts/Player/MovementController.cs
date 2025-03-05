@@ -17,6 +17,8 @@ namespace Scripts.Player
 		[SerializeField] private float _airRunSpeed;
 		[SerializeField] private float _airSpintSpeed;
 		[SerializeField] private float _airDirectionMulti;
+		[Space]
+		[SerializeField] private float _fallDelay;
 
 		[Header("IsGround settings")]
 		[SerializeField] private float _maxCastDistance;
@@ -44,6 +46,8 @@ namespace Scripts.Player
 		private Transform _camera;
 		private TargetLock _targetLock;
 		private InputController _inputController;
+		
+		private Coroutine _fallRoutine;
 
 		public bool CanMove => _canMove;
 		public bool Air => _inAir;
@@ -55,7 +59,6 @@ namespace Scripts.Player
 		public event Action<bool> PlaySteps;
 		public event Action<bool> OnSprint;
 		public event Action<bool> InAir;
-		public event Action OnLanding;
 		public event Action OnFall;
 		public event Action OnJump;
 
@@ -128,10 +131,10 @@ namespace Scripts.Player
 		{
 			if (!_inAir && !_inJump && _canJump && Time.timeScale != 0)
 			{
+				CalculateAirSpeed();
 				float heightTime = _jumpTime / 2;
 				_gravityForce = 2 * _jumpHeight / Mathf.Pow(heightTime, 2);
 				_startJumpVelocity = 2 * _jumpHeight / heightTime;
-				
 				_inJump = true;
 				OnJump?.Invoke();
 			}
@@ -141,22 +144,19 @@ namespace Scripts.Player
 		{
 			_ySpeed = _startJumpVelocity;
 		}
-		
-		private void JumpEnd()
-		{
-			if (_inAir)
-			{
-				OnFall?.Invoke();
-			}
-		}
 
 		private void Sprint(bool pressed)
 		{
-			if (_canSprint && !_inAir)
+			if (!pressed)
 			{
-				_isSprint = pressed ? true : false;
-				OnSprint?.Invoke(pressed);
+			    _isSprint = false;
 			}
+			else if (_canSprint && !_inAir)
+			{
+				_isSprint = true;
+			}
+			
+			OnSprint?.Invoke(_isSprint);
 		}
 
 		public bool CanLockedRotate()
@@ -179,8 +179,7 @@ namespace Scripts.Player
 			_canSprint = value;
 			if (!value)
 			{
-				OnSprint?.Invoke(false);
-				_isSprint = false;	
+				_isSprint = false;
 			}
 		}
 		
@@ -193,7 +192,6 @@ namespace Scripts.Player
 		{
 			if (!IsGrounded() && !_inAir)
 			{
-				CalculateAirSpeed();
 				_airDirection = _targetLock.Target ? GetInputDirection() : GetJumpDirection();
 				_inAir = true;
 				InAir?.Invoke(true);
@@ -201,21 +199,29 @@ namespace Scripts.Player
 				if (!_inJump)
 				{
 					_ySpeed = 0;
-					if (_canFall) OnFall?.Invoke();
+					CalculateAirSpeed();
 				}
+				
+				if (_canFall)
+				{
+					_fallRoutine = StartCoroutine(FallDelay());
+				} 
 			}
 
 			if (IsGrounded() && _inAir)
 			{
 				_inAir = false;
 				InAir?.Invoke(false);
-				if (Physics.gravity.y > _ySpeed)
-				{
-					OnLanding?.Invoke();
-					_ySpeed = Physics.gravity.y;
-				}
+
+				StopCoroutine(_fallRoutine);
 				StartCoroutine(JumpDelay());
 			}
+		}
+
+		private IEnumerator FallDelay()
+		{
+			yield return new WaitForSeconds(_fallDelay);
+			OnFall?.Invoke();
 		}
 
 		private IEnumerator JumpDelay()
@@ -236,7 +242,7 @@ namespace Scripts.Player
 			{
 			    _airSpeed = _airSpintSpeed;
 			}
-			else if (_tryMove || _canMove)
+			else if (_tryMove && _canMove)
 			{
 			    _airSpeed = _airRunSpeed;
 			}

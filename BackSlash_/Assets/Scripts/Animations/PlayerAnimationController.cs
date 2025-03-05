@@ -35,7 +35,6 @@ namespace Scripts.Animations
 			_movementController.OnLockMove += LockMove;
 			_movementController.OnFreeMove += FreeMove;
 			_movementController.OnSetMove += SetMove;
-			_movementController.OnLanding += Landing;
 			_movementController.OnSprint += Sprint;
 			_movementController.OnJump += Jump;
 			_movementController.InAir += InAir;
@@ -51,7 +50,6 @@ namespace Scripts.Animations
 			_movementController.OnLockMove -= LockMove;
 			_movementController.OnFreeMove -= FreeMove;
 			_movementController.OnSetMove -= SetMove;
-			_movementController.OnLanding -= Landing;
 			_movementController.OnSprint -= Sprint;
 			_movementController.OnJump -= Jump;
 			_movementController.InAir -= InAir;
@@ -103,7 +101,7 @@ namespace Scripts.Animations
 		{
 			_animator.SetInteger("Input Direction", CalculateDirection());
 			_animator.SetTrigger("Jump");
-			_animator.applyRootMotion = false;
+			//_animator.applyRootMotion = false; // FIXME 
 		}
 
 		public void Fall()
@@ -111,11 +109,6 @@ namespace Scripts.Animations
 			_fall = true;
 			_animator.SetFloat("Fall Speed", 0);
 			_animator.SetTrigger("Fall");
-		}
-		
-		private void Landing()
-		{
-			_animator.SetTrigger("Landing");
 		}
 		
 		private void InAir(bool inAir)
