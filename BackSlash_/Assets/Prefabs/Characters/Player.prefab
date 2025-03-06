@@ -2972,12 +2972,13 @@ MonoBehaviour:
   _airRunSpeed: 4
   _airSpintSpeed: 6
   _airDirectionMulti: 3
-  _fallDelay: 0.5
+  _fallDelay: 0.1
   _maxCastDistance: 0.85
   _sphereCastRadius: 0.25
   _hitboxLayer:
     serializedVersion: 2
     m_Bits: 55
+  _inJump: 0
 --- !u!114 &1177957657704111061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3112,6 +3113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcc22325213a92c4ea5eda96d4d23460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ikWeight: 0
   _animator: {fileID: 1259562901829629793}
   _layer:
     serializedVersion: 2

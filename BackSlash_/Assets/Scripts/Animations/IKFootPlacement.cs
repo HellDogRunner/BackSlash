@@ -58,7 +58,7 @@ public class IKFootPlacement : MonoBehaviour
 	
 	private void SetIkWeight()
 	{
-		float requiredWeight = _movement.Air ? 0 : 1;
+		float requiredWeight = _movement.Air? 0 : 1;
 		
 		ikWeight = Mathf.Lerp(ikWeight, requiredWeight, _weightSpeed * Time.deltaTime);
 		
@@ -114,7 +114,7 @@ public class IKFootPlacement : MonoBehaviour
 	
 	private void MovePelvisHeight()
 	{
-		if (lastPevisPositionY == 0)
+		if (lastPevisPositionY == 0 || _movement.Air || _movement.Jumping)
 		{
 			lastPevisPositionY = _animator.bodyPosition.y;	
 			return;
@@ -129,7 +129,7 @@ public class IKFootPlacement : MonoBehaviour
 	
 	private float GetPelvisOffset()
 	{
-		if (rightFootIkPosition == Vector3.zero || leftFootIkPosition == Vector3.zero || _movement.Air)
+		if (rightFootIkPosition == Vector3.zero || leftFootIkPosition == Vector3.zero)
 		{
 			return 0;
 		}

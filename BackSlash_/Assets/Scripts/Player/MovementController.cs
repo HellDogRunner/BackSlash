@@ -50,6 +50,7 @@ namespace Scripts.Player
 		private Coroutine _fallRoutine;
 
 		public bool CanMove => _canMove;
+		public bool Jumping => _inJump;
 		public bool Air => _inAir;
 		public Vector2 InputDirection => _inputDirection;
 
@@ -75,6 +76,11 @@ namespace Scripts.Player
 			_camera = Camera.main.transform;
 		}
 
+		private void Start()
+		{
+			CalculateJump();
+		}
+
 		private void OnEnable()
 		{
 			_inputController.OnSprintKeyPressed += Sprint;
@@ -94,6 +100,11 @@ namespace Scripts.Player
 			CheckLand();
 			MovePlayer();
 			InvokeSteps();
+			
+			if (_canFall && _inAir && _fallRoutine == null)
+			{
+				_fallRoutine = StartCoroutine(FallDelay(_fallDelay));
+			}
 		}
 
 		private void Move()
@@ -115,7 +126,15 @@ namespace Scripts.Player
 
 			if (_inAir)
 			{
-				_ySpeed -= _gravityForce * Time.deltaTime;
+				if (_ySpeed <= Physics.gravity.y)
+				{
+					_ySpeed = Physics.gravity.y;
+				} 
+				else
+				{
+					_ySpeed -= _gravityForce * Time.deltaTime;
+				}
+				
 				direction = _airDirection * _airSpeed + GetInputDirection() * _airDirectionMulti;
 			}
 			else
@@ -131,18 +150,17 @@ namespace Scripts.Player
 		{
 			if (!_inAir && !_inJump && _canJump && Time.timeScale != 0)
 			{
+				CalculateJump();
 				CalculateAirSpeed();
-				float heightTime = _jumpTime / 2;
-				_gravityForce = 2 * _jumpHeight / Mathf.Pow(heightTime, 2);
-				_startJumpVelocity = 2 * _jumpHeight / heightTime;
-				_inJump = true;
 				OnJump?.Invoke();
 			}
 		}
 		
 		private void JumpStart()
 		{
+			_inJump = true;
 			_ySpeed = _startJumpVelocity;
+			_fallRoutine = StartCoroutine(FallDelay(_jumpTime));
 		}
 
 		private void Sprint(bool pressed)
@@ -201,11 +219,6 @@ namespace Scripts.Player
 					_ySpeed = 0;
 					CalculateAirSpeed();
 				}
-				
-				if (_canFall)
-				{
-					_fallRoutine = StartCoroutine(FallDelay());
-				} 
 			}
 
 			if (IsGrounded() && _inAir)
@@ -214,13 +227,14 @@ namespace Scripts.Player
 				InAir?.Invoke(false);
 
 				StopCoroutine(_fallRoutine);
+				_fallRoutine = null;
 				StartCoroutine(JumpDelay());
 			}
 		}
 
-		private IEnumerator FallDelay()
+		private IEnumerator FallDelay(float delay)
 		{
-			yield return new WaitForSeconds(_fallDelay);
+			yield return new WaitForSeconds(delay);
 			OnFall?.Invoke();
 		}
 
@@ -261,6 +275,13 @@ namespace Scripts.Player
 		private Vector3 GetJumpDirection()
 		{
 			return _inputController.MoveDirection == Vector2.zero ? Vector2.zero : transform.forward.normalized;
+		}
+
+		private void CalculateJump()
+		{
+			float heightTime = _jumpTime / 2;
+			_gravityForce = 2 * _jumpHeight / Mathf.Pow(heightTime, 2);
+			_startJumpVelocity = 2 * _jumpHeight / heightTime;
 		}
 
 		private bool IsGrounded()
