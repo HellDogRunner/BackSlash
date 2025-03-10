@@ -418,7 +418,7 @@ namespace FMODUnity
                         FMOD.GUID guid;
                         eventDesc.getID(out guid);
 
-                        EditorEventRef eventRef = eventCache.EditorEvents.Find((x) => x.Path == path);
+                        EditorEventRef eventRef = eventCache.EditorEvents.Find((x) => string.Compare(x.Path, path, StringComparison.CurrentCultureIgnoreCase) == 0);
                         if (eventRef == null)
                         {
                             eventRef = ScriptableObject.CreateInstance<EditorEventRef>();
@@ -1051,9 +1051,13 @@ namespace FMODUnity
         private static void BuildTargetChanged()
         {
             RefreshBanks();
-            #if UNITY_ANDROID
+#if UNITY_ANDROID
+#if UNITY_2023_1_OR_NEWER
+            Settings.Instance.AndroidUseOBB = PlayerSettings.Android.splitApplicationBinary;
+#else
             Settings.Instance.AndroidUseOBB = PlayerSettings.Android.useAPKExpansionFiles;
-            #endif
+#endif //UNITY_2023_1_OR_NEWER
+#endif //UNITY_ANDROID
         }
 
         private static void OnCacheChange()

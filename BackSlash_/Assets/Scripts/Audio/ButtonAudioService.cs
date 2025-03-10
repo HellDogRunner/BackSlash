@@ -43,7 +43,7 @@ public class ButtonAudioService : MonoBehaviour
 	{
 		if (_soundOnHover)
 		{
-			_audioManager.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
+			_audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonHover);
 		}
 	}
 
@@ -51,7 +51,7 @@ public class ButtonAudioService : MonoBehaviour
 	{
 		if (_soundOnClick)
 		{
-			_audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
+			_audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClick);
 		}
 	}
 }

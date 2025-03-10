@@ -6,18 +6,9 @@ using FMOD.Studio;
 public class AudioController : MonoBehaviour
 {
     [Header("Volume")]
-
-    [Range(0f, 1f)]
-    public float masterVolume = 1;
-
-    [Range(0f, 1f)]
-    public float ambientVolume = 1;
-
-    [Range(0f, 1f)]
-    public float sfxVolume = 1;
-
-    [SerializeField] private bool _startWithMenuAmbience;
-    [SerializeField] private bool _startWithGameplayAmbience;
+    [Range(0f, 1f)] public float masterVolume = 1;
+    [Range(0f, 1f)] public float ambientVolume = 1;
+    [Range(0f, 1f)] public float sfxVolume = 1;
 
     private List<EventInstance> _eventInstances = new List<EventInstance>();
 
@@ -36,15 +27,7 @@ public class AudioController : MonoBehaviour
 
     private void Start()
     {
-        if (_startWithGameplayAmbience)
-        {
-            InitialazeAmbience(FMODEvents.instance.GameplayAmbience);
-            return;
-        }
-        if (_startWithMenuAmbience)
-        {
-            InitialazeAmbience(FMODEvents.instance.StartMenuAmbience);
-        }
+        InitialazeAmbience(FMODEvents.instance.LocationMusic);
     }
 
     private void InitialazeAmbience(EventReference abienceEventReference) 
@@ -60,11 +43,19 @@ public class AudioController : MonoBehaviour
         sfxBus.setVolume(sfxVolume);
     }
 
-    public void PlayGenericEvent(EventReference uiEvent) 
+    public void PlayGenericEvent(EventReference eventRef) 
     { 
-        if (!uiEvent.IsNull)
+        if (!eventRef.IsNull)
         {
-            RuntimeManager.PlayOneShot(uiEvent);
+            RuntimeManager.PlayOneShot(eventRef);
+        }  
+    }
+
+    public void PlayGenericEvent(EventReference eventRef, Vector3 point) 
+    { 
+        if (!eventRef.IsNull)
+        {
+            RuntimeManager.PlayOneShot(eventRef, point);
         }  
     }
 

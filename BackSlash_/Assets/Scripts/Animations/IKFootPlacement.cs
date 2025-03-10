@@ -1,3 +1,4 @@
+using System;
 using Scripts.Animations;
 using Scripts.Player;
 using UnityEngine;
@@ -8,6 +9,7 @@ public class IKFootPlacement : MonoBehaviour
 	private Vector3 rightFootPosition, leftFootPosition, rightFootIkPosition, leftFootIkPosition;
 	private float lastPevisPositionY, lastRightFootPositionY, lastLeftFootPositionY;
 	[Range(0, 1)] private float ikWeight;
+	private bool leftGrounded, rightGrounded;
 	
 	[SerializeField] private Animator _animator;
 	[SerializeField] private LayerMask _layer;
@@ -15,6 +17,7 @@ public class IKFootPlacement : MonoBehaviour
 	[Header("Settings")]
 	[SerializeField] private float _toGroundHeight;
 	[SerializeField] private float _raycastDistance;
+	[SerializeField] private float _footGroundedDistance;
 	[Space]
 	[SerializeField] private float _weightSpeed;
 	[SerializeField] private float _footSpeed;
@@ -27,6 +30,8 @@ public class IKFootPlacement : MonoBehaviour
 	
 	private MovementController _movement;
 	private PlayerAnimationController _playerAnimator;
+	
+	public event Action<Vector3> OnFeetGrounded;
 	
 	[Inject]
 	private void Construct(MovementController movement, PlayerAnimationController playerAnimator)
@@ -42,6 +47,9 @@ public class IKFootPlacement : MonoBehaviour
 		
 		FeetPositionSolver(rightFootPosition, ref rightFootIkPosition);
 		FeetPositionSolver(leftFootPosition, ref leftFootIkPosition);	
+		
+		GetFootGrounded(HumanBodyBones.LeftFoot, ref leftGrounded);
+		GetFootGrounded(HumanBodyBones.RightFoot, ref rightGrounded);
 	}
 	
 	private void OnAnimatorIK()
@@ -138,4 +146,22 @@ public class IKFootPlacement : MonoBehaviour
 		float correctOffset = _playerAnimator.GetMove() ? _movePelvisOffset : _stayPelvisOffset;
 		return Mathf.Max(offset, correctOffset);
 	}
+
+    private void GetFootGrounded(HumanBodyBones foot, ref bool footGrounded)
+    {	
+    	var feetPosition = _animator.GetBoneTransform(foot).position;
+    	
+    	Physics.Raycast(feetPosition, Vector3.down, out var hit, _toGroundHeight, _layer);
+    	
+    	if (footGrounded && hit.distance >= _footGroundedDistance)
+    	{
+    	    footGrounded = !footGrounded;
+    	}
+    	
+    	if (!footGrounded && hit.distance != 0 && hit.distance < _footGroundedDistance)
+    	{
+			footGrounded = true;
+			OnFeetGrounded?.Invoke(hit.point);
+		}
+    }
 }

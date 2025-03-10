@@ -27,11 +27,11 @@ public class BasicTab : MonoBehaviour
 
     protected void PlayHoverSound()
     {
-        _audioManager.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
+        _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonHover);
     }
 
     protected void  PlayClickSound()
     {
-        _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
+        _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonClick);
     }
 }

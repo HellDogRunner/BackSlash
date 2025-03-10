@@ -96,12 +96,12 @@ namespace RedMoonGames.Window
 
 		protected void PlayClickSound()
 		{
-			_audioController.PlayGenericEvent(FMODEvents.instance.UIButtonClickEvent);
+			_audioController.PlayGenericEvent(FMODEvents.instance.UIButtonClick);
 		}
 
 		protected void PlayHoverSound()
 		{
-			_audioController.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
+			_audioController.PlayGenericEvent(FMODEvents.instance.UIButtonHover);
 		}
 
 		protected void ChangeSliderValue(Slider slider, TMP_Text value, int multiplier)

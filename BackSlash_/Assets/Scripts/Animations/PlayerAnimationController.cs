@@ -101,7 +101,6 @@ namespace Scripts.Animations
 		{
 			_animator.SetInteger("Input Direction", CalculateDirection());
 			_animator.SetTrigger("Jump");
-			//_animator.applyRootMotion = false; // FIXME 
 		}
 
 		public void Fall()
@@ -114,7 +113,6 @@ namespace Scripts.Animations
 		private void InAir(bool inAir)
 		{
 			_animator.SetBool("InAir", inAir);
-			if (!inAir) _animator.applyRootMotion = true;
 		}
 		
 		public void Dodge()

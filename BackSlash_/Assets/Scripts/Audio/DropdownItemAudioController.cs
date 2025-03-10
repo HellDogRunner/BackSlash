@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-// Класс для воспроизведения звука в выпадающем списке
-// Пока хз как реализовать нормально
+// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+// пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 public class DropdownItemAudioController : MonoBehaviour
 {
@@ -28,6 +28,6 @@ public class DropdownItemAudioController : MonoBehaviour
     private void OnHover()
     {
         Debug.Log("245137");
-        _audioManager.PlayGenericEvent(FMODEvents.instance.UIHoverEvent);
+        _audioManager.PlayGenericEvent(FMODEvents.instance.UIButtonHover);
     }
 }
