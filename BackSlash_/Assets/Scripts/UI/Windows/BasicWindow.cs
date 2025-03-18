@@ -58,7 +58,7 @@ namespace RedMoonGames.Window
 			if (!_animator.Active())
 			{
 				_animator.ShowWindow(_thisHandler, _canvasGroup, delay);
-				PlayClickSound();
+				PlayOpenSound();
 			}
 		}
 		
@@ -75,7 +75,7 @@ namespace RedMoonGames.Window
 			else if (!_animator.Active())
 			{
 				_animator.HideWindow(_thisHandler, _canvasGroup);	
-				PlayClickSound();
+				PlayOpenSound();
 			}
 		}
 		
@@ -89,24 +89,24 @@ namespace RedMoonGames.Window
 		
 		protected void ReplaceWindow(IWindow window, WindowHandler handler)
 		{
-			PlayClickSound();
+			PlayOpenSound();
 			window.Close();
 			_windowService.TryOpenWindow(handler);
 		}
 
-		protected void PlayClickSound()
+		protected void PlayOpenSound()
 		{
-			_audioController.PlayGenericEvent(FMODEvents.instance.UIButtonClick);
+			_audioController.PlayGenericEvent(FMODEvents.instance.UIWindowOpen);
 		}
 
-		protected void PlayHoverSound()
+		protected void PlayTabSound()
 		{
-			_audioController.PlayGenericEvent(FMODEvents.instance.UIButtonHover);
+			_audioController.PlayGenericEvent(FMODEvents.instance.UITab);
 		}
 
 		protected void ChangeSliderValue(Slider slider, TMP_Text value, int multiplier)
 		{
-			PlayHoverSound();
+			_audioController.PlayGenericEvent(FMODEvents.instance.UIButtonHover);
 			value.text = (slider.value * multiplier).ToString();
 		}
 	}

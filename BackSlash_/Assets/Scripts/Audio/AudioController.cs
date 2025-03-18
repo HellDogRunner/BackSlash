@@ -11,6 +11,8 @@ public class AudioController : MonoBehaviour
     [Range(0f, 1f)] public float sfxVolume = 1;
 
     private List<EventInstance> _eventInstances = new List<EventInstance>();
+    
+    private Dictionary<EventInstance, Transform> _3dInstances = new Dictionary<EventInstance, Transform>();
 
     private EventInstance _ambientEventInstance;
 
@@ -41,13 +43,15 @@ public class AudioController : MonoBehaviour
         masterBus.setVolume(masterVolume);
         ambientBus.setVolume(ambientVolume);
         sfxBus.setVolume(sfxVolume);
+        
+        MoveSoundToPoint();
     }
 
     public void PlayGenericEvent(EventReference eventRef) 
     { 
         if (!eventRef.IsNull)
         {
-            RuntimeManager.PlayOneShot(eventRef);
+            RuntimeManager.PlayOneShot(eventRef);   
         }  
     }
 
@@ -59,11 +63,25 @@ public class AudioController : MonoBehaviour
         }  
     }
 
-    public EventInstance CreateEventInstance(EventReference eventReference) 
+    public EventInstance CreateEventInstance(EventReference eventReference, Transform transform = null) 
     {
         EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
         _eventInstances.Add(eventInstance);
+        
+        if (transform != null)
+        {
+            _3dInstances.Add(eventInstance, transform);
+        }
+        
         return eventInstance;
+    }
+
+    private void MoveSoundToPoint()
+    {
+        foreach (var pair in _3dInstances)
+        {
+            pair.Key.set3DAttributes(RuntimeUtils.To3DAttributes(pair.Value));
+        }
     }
 
     private void CleanUp()

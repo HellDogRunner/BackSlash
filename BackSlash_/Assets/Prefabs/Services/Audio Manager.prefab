@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   masterVolume: 0.5
   ambientVolume: 0
-  sfxVolume: 0.3
+  sfxVolume: 0.2
 --- !u!114 &3813896679666971353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,6 +140,13 @@ MonoBehaviour:
       Data3: -37468022
       Data4: -1767568221
     Path: event:/UI/WindowOpen
+  <UITab>k__BackingField:
+    Guid:
+      Data1: 1012291574
+      Data2: 1111673338
+      Data3: 65044130
+      Data4: 984909744
+    Path: event:/UI/SwitchTab
   <FootStep>k__BackingField:
     Guid:
       Data1: 294446373
@@ -147,20 +154,20 @@ MonoBehaviour:
       Data3: 687841723
       Data4: 443735274
     Path: event:/Movement/FootStep
-  <WeaponAttack>k__BackingField:
+  <Roll>k__BackingField:
     Guid:
-      Data1: -409754704
-      Data2: 1321810893
-      Data3: 1679298222
-      Data4: 1730651855
-    Path: event:/Weapon/Attack
-  <WeaponCombo>k__BackingField:
+      Data1: 1201226972
+      Data2: 1103444653
+      Data3: 995523232
+      Data4: 1109741574
+    Path: event:/Movement/Roll
+  <SwordSound>k__BackingField:
     Guid:
-      Data1: -1666679946
-      Data2: 1129281689
-      Data3: 1370341532
-      Data4: -1111955358
-    Path: event:/Weapon/Combo
+      Data1: 215708451
+      Data2: 1178034627
+      Data3: -1905693528
+      Data4: -710961957
+    Path: event:/Weapon/Sword
 --- !u!114 &1488909038264109471
 MonoBehaviour:
   m_ObjectHideFlags: 0

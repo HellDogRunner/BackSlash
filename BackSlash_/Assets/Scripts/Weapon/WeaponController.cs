@@ -23,6 +23,7 @@ namespace Scripts.Weapon
 		private EWeaponType _curentWeaponType;
 
 		public EWeaponType CurrentWeaponType => _curentWeaponType;
+		public Transform Weapon => _weaponPivot;
 
 		public event Action OnDrawWeapon;
 		public event Action OnSneathWeapon;

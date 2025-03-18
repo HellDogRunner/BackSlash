@@ -8,14 +8,15 @@ public class FMODEvents : MonoBehaviour
     [field: SerializeField] public EventReference UIButtonClick { get; private set; }
     [field: SerializeField] public EventReference UIButtonHover { get; private set; }
     [field: SerializeField] public EventReference UIWindowOpen { get; private set; }
+    [field: SerializeField] public EventReference UITab { get; private set; }
     [field: Space]
     [field: SerializeField] public EventReference FootStep { get; private set; }
+    [field: SerializeField] public EventReference Roll { get; private set; }
     [field: Space]
-    [field: SerializeField] public EventReference WeaponAttack { get; private set; }
-    [field: SerializeField] public EventReference WeaponCombo { get; private set; }
+    [field: SerializeField] public EventReference SwordSound { get; private set; }
+    //TODO remove weapon equipment ??
     // [field: SerializeField] public EventReference DrawSword { get; private set; }
     // [field: SerializeField] public EventReference SneathSword { get; private set; }
-    //TODO remove weapon equipment ??
     
     public static FMODEvents instance { get; private set; }
 

@@ -122,7 +122,7 @@ namespace RedMoonGames.Window
 
 			_index = index;
 
-			PlayHoverSound();
+			//PlayHoverSound();
 			ShowActiveTabButton();
 		}
 

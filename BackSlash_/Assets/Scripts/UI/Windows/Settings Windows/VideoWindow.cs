@@ -78,7 +78,7 @@ namespace RedMoonGames.Window
 		{
 			if (_currentTab != tab)
 			{
-				PlayClickSound();
+				PlayTabSound();
 
 				_displayAnimation.SwitchTab();
 				_graphicsAnimation.SwitchTab();

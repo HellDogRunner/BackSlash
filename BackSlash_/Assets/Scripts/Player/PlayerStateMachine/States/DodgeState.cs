@@ -16,6 +16,7 @@ namespace Scripts.Player
 			_player.Movement.SetCanFall(false);
 			_player.Movement.SetCanJump(false);
 			_player.Movement.SetCanSprint(false);
+			//_player.Sound.PlayRollSound();
 		}
 
 		public void Update()
@@ -23,7 +24,7 @@ namespace Scripts.Player
 			AirCheck();
 			if (!_isActive) _player.SetState(new NoneState(_player));
 			
-			// TODO Realize Doddge
+			// TODO Realize Dodge
 			// save frames etc.
 		}
 
