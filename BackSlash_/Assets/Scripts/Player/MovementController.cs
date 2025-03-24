@@ -102,7 +102,7 @@ namespace Scripts.Player
 			InvokeSteps();
 			
 			if (_canFall && _inAir && _fallRoutine == null)
-			{
+			{ 
 				_fallRoutine = StartCoroutine(FallDelay(_fallDelay));
 			}
 		}
@@ -226,7 +226,7 @@ namespace Scripts.Player
 				_inAir = false;
 				InAir?.Invoke(false);
 
-				StopCoroutine(_fallRoutine);
+				if (_fallRoutine != null) StopCoroutine(_fallRoutine);
 				_fallRoutine = null;
 				StartCoroutine(JumpDelay());
 			}
