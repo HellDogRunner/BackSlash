@@ -1,5 +1,6 @@
 using Scripts.Animations;
 using Scripts.Combo.Models;
+using Scripts.Entity;
 using Scripts.Player;
 using Scripts.Weapon;
 using System;
@@ -9,8 +10,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
 
+[RequireComponent(typeof(Entity))]
 public class ComboSystem : MonoBehaviour
 {
+	[SerializeField] private Entity _entity;
 	[SerializeField] private List<InputActionReference> _inputBuffer = new List<InputActionReference>();
 
 	private float _cancelDelay;
@@ -19,6 +22,8 @@ public class ComboSystem : MonoBehaviour
 	private Dictionary<InputActionReference, Action<InputAction.CallbackContext>> _callbackInputContexts = new Dictionary<InputActionReference, Action<InputAction.CallbackContext>>();
 	private Coroutine _currentAttackRoutine;
 	private Coroutine _attackInterval;
+
+	private List<AttackModel> _attacks; 
 
 	private ComboDatabase _comboData;
 	private WeaponController _weaponController;
@@ -30,6 +35,7 @@ public class ComboSystem : MonoBehaviour
 	private bool _canAttack = true;
 
 	public event Action<bool> IsAttacking;
+	public event Action<AttackModel> OnAttack;
 	public event Action OnAttackSound;
 	public event Action OnComboSound;
 	public event Action<ComboTypeModel, InputAction> OnNextAttackMatched;
@@ -54,6 +60,8 @@ public class ComboSystem : MonoBehaviour
 	{
 		_cancelDelay = _comboData.GetCancelDelay();
 
+		_entity.OnSetAttack += SetAttacks;
+
 		FillComboList();
 		TryGetNextAttack(null, 0);
 	}
@@ -72,6 +80,8 @@ public class ComboSystem : MonoBehaviour
 
 	private void OnDestroy()
 	{
+		_entity.OnSetAttack -= SetAttacks;
+	
 		var inputActions = _comboData.GetAllUsedActionReferences();
 		foreach (var inputAction in inputActions)
 		{
@@ -82,6 +92,11 @@ public class ComboSystem : MonoBehaviour
 			}
 		}
 		_callbackInputContexts.Clear();
+	}
+
+	private void SetAttacks(List<AttackModel> attacks)
+	{
+	    _attacks = attacks;
 	}
 
 	private void RegisterInput(InputActionReference attackInput)
@@ -156,6 +171,7 @@ public class ComboSystem : MonoBehaviour
 		IsAttacking?.Invoke(true);
 		_playerAnimationController.TriggerAnimationByName(combo.AnimationTrigger);
 		OnComboSound.Invoke();
+		OnAttack?.Invoke(_attacks[1]);
 
 		yield return new WaitForSeconds(combo.AfterComboInterval);
 
@@ -171,9 +187,10 @@ public class ComboSystem : MonoBehaviour
 
 		if (!input.MovementRalated)
 		{
+			OnAttack?.Invoke(_attacks[0]);
 			IsAttacking?.Invoke(true);
-			_playerAnimationController.TriggerAnimationByName(inputName);
 			OnAttackSound.Invoke();
+			_playerAnimationController.TriggerAnimationByName(inputName);
 		}
 		yield return new WaitForSeconds(input.Length);
 		IsAttacking?.Invoke(false);

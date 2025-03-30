@@ -1,18 +1,22 @@
 using System.Collections.Generic;
+using Scripts.Entity;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(Entity))]
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] private List<Transform> _patrolPoints;
+    [SerializeField] private Entity _entity;
     [SerializeField] private Transform _player;
+    [SerializeField] private List<Transform> _patrolPoints;
     [Space]
     [Header("Settings")]
     [SerializeField] private float _speed = 3.5f;
     [SerializeField] private float _meleeRange = 2f;
     [SerializeField] private float _rangedRange = 10f;
     [SerializeField] private float _detectionRadius = 10f;
-    [SerializeField] private float _meleeDamage = 5f;
+    [SerializeField] private int _meleeDamage = 5;
+    [SerializeField] private int _stabilityDamage = 15;
     [SerializeField] private int _currentPatrolIndex = 0;
     [SerializeField] private int _attacksForStagger = 3;
     [SerializeField] private float _staggerTimer = 0.3f;
@@ -22,11 +26,13 @@ public class EnemyController : MonoBehaviour
 
     private float _currentAttacksOnEnemy;
 
+    public List<AttackModel> Attacks { get; private set; }
     public float Speed => _speed;
     public float MeleeRange => _meleeRange;
     public float RangedRange => _rangedRange;
     public float DetectionRadius => _detectionRadius;
-    public float MeleeDamage => _meleeDamage;
+    public int MeleeDamage => _meleeDamage;
+    public int StabilityDamage => _stabilityDamage;
 
     public float StaggerTimer => _staggerTimer;
 
@@ -42,6 +48,8 @@ public class EnemyController : MonoBehaviour
         _healthController = GetComponent<HealthController>();
         _healthController.OnDeath += SwitchToDeathState;
         _healthController.OnDamageTaken += HandleHit;
+        
+        _entity.OnSetAttack += SetAttacks;
 
         NavAgent.speed = Speed;
 
@@ -61,6 +69,8 @@ public class EnemyController : MonoBehaviour
     {
         _healthController.OnDeath -= SwitchToDeathState;
         _healthController.OnDamageTaken -= HandleHit;
+        _entity.OnSetAttack -= SetAttacks;
+        
     }
 
     public void SetState(IEnemyState newState)
@@ -119,6 +129,11 @@ public class EnemyController : MonoBehaviour
     public void AdvancePatrolPoint()
     {
         _currentPatrolIndex = (_currentPatrolIndex + 1) % _patrolPoints.Count;
+    }
+
+    private void SetAttacks(List<AttackModel> attacks)
+    {
+        Attacks = attacks;
     }
 
     public void Disable()

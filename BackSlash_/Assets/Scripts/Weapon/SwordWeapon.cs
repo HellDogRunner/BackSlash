@@ -1,3 +1,4 @@
+using Scripts.Entity;
 using Scripts.Weapon;
 using Scripts.Weapon.Models;
 using UnityEngine;
@@ -8,6 +9,8 @@ public class SwordWeapon : MonoBehaviour
     [SerializeField] private ParticleSystem _swordTrails;
     [SerializeField] float _attackRange = 3f;
     [SerializeField] LayerMask _hitboxlayer;
+
+    private AttackModel _attack;
 
     private WeaponTypesDatabase _weaponTypesDatabase;
     private ComboSystem _comboSystem;
@@ -20,6 +23,7 @@ public class SwordWeapon : MonoBehaviour
         _comboSystem = comboSystem;
         _comboSystem.IsAttacking += AttackFlag;
         _comboSystem.IsAttacking += ShowParticles;
+        _comboSystem.OnAttack += SetCurrentAttack;
     }
 
     private void Attack(bool isAttaking)
@@ -30,14 +34,17 @@ public class SwordWeapon : MonoBehaviour
 
             foreach (Collider enemy in hitEnemies)
             {
-                var weaponType = _weaponTypesDatabase.GetWeaponTypeModel(EWeaponType.Melee);
-                var weaponDamage = weaponType.LightAttackDamage;
-                if (enemy.TryGetComponent(out HealthController health))
+                if (enemy.TryGetComponent(out Entity entity))
                 {
-                    health.TakeDamage(weaponDamage);
+                    entity.RegisterAttack(_attack);
                 }
             }
         }
+    }
+
+    private void SetCurrentAttack(AttackModel attack)
+    {
+        _attack = attack;
     }
 
     private void AttackFlag(bool isAttacking)
@@ -62,6 +69,7 @@ public class SwordWeapon : MonoBehaviour
     {
         _comboSystem.IsAttacking -= AttackFlag;
         _comboSystem.IsAttacking -= ShowParticles;
+        _comboSystem.OnAttack -= SetCurrentAttack;
     }
 
     private void OnDrawGizmosSelected()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,12 +21,14 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private float _fireRate = 25;
     [SerializeField] private float _bulletSpeed = 1000;
     [SerializeField] private float _bulletDrop = 0f;
-    [SerializeField] private float _damage = 10f;
+    [SerializeField] private int _damage = 10;
     [SerializeField] private float _inaccuracyRadius = 0f;
     [SerializeField] private float _accuracyPercent = 100f;
     [SerializeField] private float _missShotRadius = 0f;
     [SerializeField] private LayerMask _hitboxLayer;
-
+    
+    private string _attackName;
+    
     private float _accumulatedTime;
     private float _maxLifeTime = 3;
 
@@ -38,11 +41,13 @@ public class RaycastWeapon : MonoBehaviour
 
     public bool IsFiring => _isFiring;
     public float Damage => _damage;
+    
+    public event Action<string> OnHit;
 
     private Vector3 GetPosition(Bullet bullet)
     {
         Vector3 gravity = Vector3.down * _bulletDrop;
-        return (bullet.initialPosition) + (bullet.initialVelocity * bullet.time) + (0.5f * gravity * bullet.time * bullet.time);
+        return bullet.initialPosition + (bullet.initialVelocity * bullet.time) + (0.5f * gravity * bullet.time * bullet.time);
     }
 
     private Bullet CreateBullet(Vector3 position, Vector3 velocity)
@@ -57,8 +62,9 @@ public class RaycastWeapon : MonoBehaviour
         return bullet;
     }
 
-    public void StartFiring()
+    public void StartFiring(string attackName)
     {
+        _attackName = attackName;
         _isFiring = true;
         if (_accumulatedTime != 0f)
         {
@@ -141,7 +147,7 @@ public class RaycastWeapon : MonoBehaviour
 
             if (_hitInfo.collider.TryGetComponent(out HitBox hitbox))
             {
-                hitbox.OnRangedHit(_damage);
+                OnHit?.Invoke(_attackName);
             }     
         }
         else

@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class HealthController : MonoBehaviour
 {
-    [SerializeField] private float _health;
-    [SerializeField] private float _timeToDestroyLeft = 5f;
+    [field: SerializeField]public int Health { get; private set; }
+    [SerializeField] private float _timeToDestroyLeft;
     [SerializeField] private float _blinkIntensity;
     [SerializeField] private float _blinkDuration;
 
-    private float _blinkTimer;
     private SkinnedMeshRenderer _skinnedMeshRenderer;
-
     private Ragdoll _ragdoll;
-    private bool _isDead;
+    
+    private float _blinkTimer;
+    
+    private Coroutine _blink;
+    
+    public bool IsDead { get; private set; }
 
-    public float Health => _health;
-    public bool IsDead => _isDead;
-
-    public event Action<float> OnHealthChanged;
+    public event Action<int, int> OnHealthChanged;
     public event Action OnDamageTaken;
     public event Action OnDeath;
 
@@ -27,14 +27,6 @@ public class HealthController : MonoBehaviour
         _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         _ragdoll = GetComponent<Ragdoll>();
         SetupKinematics();
-    }
-
-    private void Update()
-    {
-        _blinkTimer -= Time.deltaTime;
-        float lerp = Mathf.Clamp01(_blinkTimer / _blinkDuration);
-        float intensity = (lerp * _blinkIntensity) + 1.0f;
-        _skinnedMeshRenderer.material.color = Color.white * intensity;
     }
 
     private void SetupKinematics()
@@ -46,27 +38,34 @@ public class HealthController : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void OnAwake(int health)
     {
-        if (!_isDead)
+        Health = health;
+    }
+
+    public void TakeDamage(int damage)
+    {
+       if (!IsDead)
         {
-            _blinkTimer = _blinkDuration;
+            if (_blink != null) StopCoroutine(_blink);
+            _blink = StartCoroutine(BlinkEntity());
+            
+            Health -= damage;
 
-            _health -= damage;
-
-            if (_health <= 0)
+            if (Health <= 0)
             {
                 Death();
-                _health = 0;
+                Health = 0;
             }
-            OnHealthChanged?.Invoke(_health);
+            
+            OnHealthChanged?.Invoke(Health + damage, Health);
             OnDamageTaken?.Invoke();
-        }
+        } 
     }
 
     private void Death()
     {
-        _isDead = true;
+        IsDead = true;
         if (_ragdoll)
         {
             _ragdoll.ActivateRagdoll();
@@ -79,6 +78,21 @@ public class HealthController : MonoBehaviour
         }
     }
 
+    private IEnumerator BlinkEntity()
+    {
+        _skinnedMeshRenderer.material.color = Color.white;
+        _blinkTimer = _blinkDuration;
+    
+        while (_blinkTimer > 0)
+        {
+            yield return null; 
+            _blinkTimer -= Time.deltaTime;
+            float lerp = Mathf.Clamp01(_blinkTimer / _blinkDuration);
+            float intensity = (lerp * _blinkIntensity) + 1.0f;
+            _skinnedMeshRenderer.material.color = Color.white * intensity;
+        }   
+    }
+    
     private IEnumerator DestroyObject()
     {
         yield return new WaitForSeconds(_timeToDestroyLeft);

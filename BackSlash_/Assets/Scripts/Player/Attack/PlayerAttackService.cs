@@ -62,7 +62,7 @@ namespace Scripts.Player.Attack
                     var enemyHealth = hit.transform.GetComponentInParent<HealthController>();
                     if (enemyHealth)
                     {
-                        enemyHealth.TakeDamage(damage);
+                        //enemyHealth.RegisterHit(damage);
                     }
                 }
             }

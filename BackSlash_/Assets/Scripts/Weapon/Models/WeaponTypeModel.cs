@@ -13,7 +13,9 @@ namespace Scripts.Weapon.Models
         public GameObject WeaponPrefab;
         [Header("Settings")]
         public int LightAttackDamage;
+        public int LightAttackStabilityDamage;
         public int HardAttackDamage;
+        public int HardAttackStabilityDamage;
         public float AttackDistance;
 
         public EWeaponType PrimaryKey => WeaponType;

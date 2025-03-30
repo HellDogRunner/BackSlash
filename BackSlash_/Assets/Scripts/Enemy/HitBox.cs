@@ -8,25 +8,14 @@ public class HitBox : MonoBehaviour
 
     private void Awake()
     {
-        _healthController = this.GetComponentInParent<HealthController>();
+        _healthController = GetComponentInParent<HealthController>();
         _healthController.OnDeath += EnableCollision;
-
-        _collider = this.GetComponent<Collider>();
+        _collider = GetComponent<Collider>();
     }
 
     private void OnDestroy()
     {
         _healthController.OnDeath -= EnableCollision;
-    }
-
-    public void OnRangedHit(float damage)
-    {
-        _healthController.TakeDamage(damage);
-    }
-
-    public void OnMeleeHit(float damage)
-    {
-        _healthController.TakeDamage(damage);
     }
 
     private void EnableCollision()

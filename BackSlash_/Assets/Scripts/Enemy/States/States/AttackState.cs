@@ -1,3 +1,4 @@
+using Scripts.Entity;
 using UnityEngine;
 
 public class AttackState : IEnemyState
@@ -20,6 +21,7 @@ public class AttackState : IEnemyState
     {
         _enemy.NavAgent.isStopped = true;
         _weapon = _enemy.GetComponentInChildren<RaycastWeapon>();
+        _weapon.OnHit += HitTarget;
     }
 
     public void Update()
@@ -91,7 +93,7 @@ public class AttackState : IEnemyState
     {
         if (!_isAttack)
         {
-            _weapon.StartFiring();
+            _weapon.StartFiring(_enemy.Attacks[1].Name);
             _isAttack = true;
         }
 
@@ -108,7 +110,7 @@ public class AttackState : IEnemyState
         {
             if (IsInRangeForMelee())
             {
-                DealDamageToTarget();
+                HitTarget();
             }
             _attackTimer = 0f;
         }
@@ -126,11 +128,25 @@ public class AttackState : IEnemyState
         _enemy.Animator.SetBool("Shoot", true);
     }
 
-    private void DealDamageToTarget()
+    private void HitTarget()
     {
-        if (_enemy.Target.TryGetComponent(out HealthController playerHealth))
+        if (_enemy.Target.TryGetComponent(out Entity entity))
         {
-            playerHealth.TakeDamage(_enemy.MeleeDamage);
+            entity.RegisterAttack(_enemy.Attacks[0]);
+        }
+    }
+
+    private void HitTarget(string attackName)
+    {
+        foreach (var attack in _enemy.Attacks)
+        {
+            if (attackName == attack.Name)
+            {
+                if (_enemy.Target.TryGetComponent(out Entity entity))
+                {
+                    entity.RegisterAttack(attack);
+                } 
+            }
         }
     }
 
@@ -138,5 +154,7 @@ public class AttackState : IEnemyState
     {
         _enemy.Animator.SetBool("Shoot", false);
         _enemy.Animator.SetBool("Punch", false);
+        
+        _weapon.OnHit -= HitTarget;
     }
 }
