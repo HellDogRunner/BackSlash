@@ -2941,7 +2941,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eae9cd87a912744ca58f0f4eafa4b5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _setup: {fileID: 11400000, guid: c68748059237f3b45a855ddbf8aad56a, type: 2}
+  <Setup>k__BackingField: {fileID: 11400000, guid: c68748059237f3b45a855ddbf8aad56a,
+    type: 2}
 --- !u!114 &9024747070242296249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2959,6 +2960,8 @@ MonoBehaviour:
     Current: 0
     TimeToRecovery: 0
     RecoveryInterval: 0
+    StaggerTime: 0
+    StunTime: 0
 --- !u!114 &8914757694585238798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3245,6 +3248,7 @@ MonoBehaviour:
   - {fileID: 1177957657704111061}
   - {fileID: 3388258529717852234}
   - {fileID: 810143376572726396}
+  - {fileID: 5679787925483834125}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}

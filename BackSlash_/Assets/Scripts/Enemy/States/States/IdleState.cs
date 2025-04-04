@@ -5,10 +5,10 @@ public class IdleState : IEnemyState
     private readonly EnemyController _enemy;
     private readonly float _detectionRadius;
 
-    public IdleState(EnemyController enemy, float detectionRadius)
+    public IdleState(EnemyController enemy)
     {
         _enemy = enemy;
-        _detectionRadius = detectionRadius;
+        _detectionRadius = _enemy.DetectionRadius;
     }
 
     public void Enter()

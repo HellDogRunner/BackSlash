@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class StaggerState : IEnemyState
+public class StunState : IEnemyState
 {
     private readonly EnemyController _enemy;
 
     private float _staggerCooldown;
     private float _getUpCooldown;
 
-    public StaggerState(EnemyController enemy)
+    public StunState(EnemyController enemy)
     {
         _enemy = enemy;
     }
@@ -15,12 +15,13 @@ public class StaggerState : IEnemyState
     public void Enter()
     {
         _enemy.Animator.SetBool("Stagger",true);
+        Debug.Log(_enemy.Stability.StunTime);
     }
 
     public void Update()
     {
         _staggerCooldown += Time.deltaTime;
-        if (_staggerCooldown >= _enemy.StaggerTimer)
+        if (_staggerCooldown >= _enemy.Stability.StunTime)
         {
             _enemy.Animator.SetBool("Stagger", false);
             _getUpCooldown += Time.deltaTime;
@@ -37,6 +38,6 @@ public class StaggerState : IEnemyState
     public void Exit()
     {
         _enemy.Animator.SetBool("Stagger", false);
+        _enemy.Entity.StunEnd();
     }
-
 }

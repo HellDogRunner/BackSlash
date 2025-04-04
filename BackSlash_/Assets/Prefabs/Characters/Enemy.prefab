@@ -2646,8 +2646,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8529050560978664490}
-  - component: {fileID: 3555233756705365744}
   - component: {fileID: 1927967190817776324}
+  - component: {fileID: 3555233756705365744}
   - component: {fileID: 8445257888598474172}
   - component: {fileID: 1707100181231832301}
   - component: {fileID: 3759006753693581023}
@@ -2684,30 +2684,6 @@ Transform:
   - {fileID: 5471160908460684228}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &3555233756705365744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5961693609402878055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 230a6081717beef47bbebedad54b20e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _entity: {fileID: 1927967190817776324}
-  _player: {fileID: 0}
-  _patrolPoints: []
-  _speed: 3.5
-  _meleeRange: 2
-  _rangedRange: 15
-  _detectionRadius: 10
-  _meleeDamage: 5
-  _stabilityDamage: 15
-  _currentPatrolIndex: 0
-  _attacksForStagger: 3
-  _staggerTimer: 3
 --- !u!114 &1927967190817776324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2720,7 +2696,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eae9cd87a912744ca58f0f4eafa4b5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _setup: {fileID: 11400000, guid: 412a2b39495e5f34484f62d15c997dcb, type: 2}
+  <Setup>k__BackingField: {fileID: 11400000, guid: 412a2b39495e5f34484f62d15c997dcb,
+    type: 2}
+--- !u!114 &3555233756705365744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5961693609402878055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 230a6081717beef47bbebedad54b20e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Entity>k__BackingField: {fileID: 1927967190817776324}
+  _patrolPoints: []
+  _speed: 3.5
+  _meleeRange: 2
+  _rangedRange: 15
+  _detectionRadius: 10
+  _currentPatrolIndex: 0
 --- !u!114 &8445257888598474172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2738,6 +2734,8 @@ MonoBehaviour:
     Current: 0
     TimeToRecovery: 0
     RecoveryInterval: 0
+    StaggerTime: 0
+    StunTime: 0
 --- !u!114 &1707100181231832301
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,6 +10,8 @@ namespace Scripts.Entity
         public int Current;
         public float TimeToRecovery;
         public float RecoveryInterval;
+        public float StaggerTime;
+        public float StunTime;
         public string PrimaryKey => "";
     }
 }

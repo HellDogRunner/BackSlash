@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Scripts.Entity;
 using UnityEngine;
 
 public class RaycastWeapon : MonoBehaviour
@@ -10,26 +11,23 @@ public class RaycastWeapon : MonoBehaviour
         public Vector3 initialPosition;
         public Vector3 initialVelocity;
         public TrailRenderer tracer;
+        public AttackModel attack;
     }
 
     [SerializeField] private ParticleSystem[] _muzzleFlash;
     [SerializeField] private ParticleSystem _hitEffect;
     [SerializeField] private Transform _raycastOrigin;
     [SerializeField] private TrailRenderer _tracerEffect;
+    
     [Header("BulletSettings")]
-
-    [SerializeField] private float _fireRate = 25;
+    //TODO replace shooting setting in database
     [SerializeField] private float _bulletSpeed = 1000;
     [SerializeField] private float _bulletDrop = 0f;
-    [SerializeField] private int _damage = 10;
     [SerializeField] private float _inaccuracyRadius = 0f;
     [SerializeField] private float _accuracyPercent = 100f;
     [SerializeField] private float _missShotRadius = 0f;
     [SerializeField] private LayerMask _hitboxLayer;
     
-    private string _attackName;
-    
-    private float _accumulatedTime;
     private float _maxLifeTime = 3;
 
     private List<Bullet> _bullets = new List<Bullet>();
@@ -40,9 +38,8 @@ public class RaycastWeapon : MonoBehaviour
     private bool _isFiring = false;
 
     public bool IsFiring => _isFiring;
-    public float Damage => _damage;
     
-    public event Action<string> OnHit;
+    public event Action<AttackModel> OnHit;
 
     private Vector3 GetPosition(Bullet bullet)
     {
@@ -50,7 +47,7 @@ public class RaycastWeapon : MonoBehaviour
         return bullet.initialPosition + (bullet.initialVelocity * bullet.time) + (0.5f * gravity * bullet.time * bullet.time);
     }
 
-    private Bullet CreateBullet(Vector3 position, Vector3 velocity)
+    private Bullet CreateBullet(Vector3 position, Vector3 velocity, AttackModel attack)
     {
         Bullet bullet = new Bullet();
 
@@ -59,46 +56,26 @@ public class RaycastWeapon : MonoBehaviour
         bullet.time = 0f;
         bullet.tracer = CreateTracer(bullet.initialPosition);
         bullet.tracer.AddPosition(position);
+        bullet.attack = attack;
         return bullet;
     }
-
-    public void StartFiring(string attackName)
+    
+    private Vector3 SetBulletAccuracy(Vector3 target)
     {
-        _attackName = attackName;
-        _isFiring = true;
-        if (_accumulatedTime != 0f)
+        target += new Vector3(0, 1, 0);
+    
+        var percent = UnityEngine.Random.Range(1, 100);
+                
+        if (_accuracyPercent >= percent)
         {
-            _accumulatedTime = 0f;
+            target += UnityEngine.Random.insideUnitSphere * _inaccuracyRadius;
         }
-    }
-    public void StopFiring()
-    {
-        _isFiring = false;
-    }
-
-    public void UpdateFiring(float deltaTime, Vector3 target)
-    {
-        if (_isFiring)
+        else
         {
-            target += new Vector3(0, 1, 0);
-            _accumulatedTime += deltaTime;
-            float fireInterval = 1f / _fireRate;
-            while (_accumulatedTime >= 0f)
-            {
-                var percent = UnityEngine.Random.Range(1, 100);
-                if (_accuracyPercent >= percent)
-                {
-                    target += UnityEngine.Random.insideUnitSphere * _inaccuracyRadius;
-                }
-                else
-                {
-                    target += UnityEngine.Random.insideUnitSphere * _missShotRadius;
-
-                }
-                FireBullet(target);
-                _accumulatedTime -= fireInterval;
-            }
+            target += UnityEngine.Random.insideUnitSphere * _missShotRadius;
         }
+        
+        return target;
     }
 
     public void UpdateBullets(float deltaTime)
@@ -147,7 +124,7 @@ public class RaycastWeapon : MonoBehaviour
 
             if (_hitInfo.collider.TryGetComponent(out HitBox hitbox))
             {
-                OnHit?.Invoke(_attackName);
+                OnHit?.Invoke(bullet.attack);
             }     
         }
         else
@@ -156,14 +133,17 @@ public class RaycastWeapon : MonoBehaviour
         }
     }
 
-    private void FireBullet(Vector3 target)
+    public void FireBullet(Vector3 target, AttackModel attack)
     {
+        target = SetBulletAccuracy(target);
+    
         foreach (var particle in _muzzleFlash)
         {
             particle.Emit(1);
         }
+        
         Vector3 velocity = (target - _raycastOrigin.position).normalized * _bulletSpeed;
-        var bullet = CreateBullet(_raycastOrigin.position, velocity);
+        var bullet = CreateBullet(_raycastOrigin.position, velocity, attack);
         _bullets.Add(bullet);
     }
 
@@ -171,5 +151,4 @@ public class RaycastWeapon : MonoBehaviour
     {
         return Instantiate(_tracerEffect, position, Quaternion.identity);
     }
-
 }

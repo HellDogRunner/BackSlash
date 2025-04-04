@@ -1,6 +1,4 @@
 using Scripts.Entity;
-using Scripts.Weapon;
-using Scripts.Weapon.Models;
 using UnityEngine;
 using Zenject;
 
@@ -12,14 +10,11 @@ public class SwordWeapon : MonoBehaviour
 
     private AttackModel _attack;
 
-    private WeaponTypesDatabase _weaponTypesDatabase;
     private ComboSystem _comboSystem;
-    private bool _isAttacking;
 
     [Inject]
-    private void Construct(WeaponTypesDatabase weaponTypesDatabase, ComboSystem comboSystem)
+    private void Construct(ComboSystem comboSystem)
     {
-        _weaponTypesDatabase = weaponTypesDatabase;
         _comboSystem = comboSystem;
         _comboSystem.IsAttacking += AttackFlag;
         _comboSystem.IsAttacking += ShowParticles;
@@ -37,6 +32,7 @@ public class SwordWeapon : MonoBehaviour
                 if (enemy.TryGetComponent(out Entity entity))
                 {
                     entity.RegisterAttack(_attack);
+                    return;
                 }
             }
         }
@@ -49,7 +45,6 @@ public class SwordWeapon : MonoBehaviour
 
     private void AttackFlag(bool isAttacking)
     {
-        _isAttacking = isAttacking;
         Attack(isAttacking);
     }
 

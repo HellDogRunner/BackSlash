@@ -10,6 +10,5 @@ namespace Scripts.Entity
         [field: SerializeField] public TData3 Stability { get; protected set; }
         [field: SerializeField] public List<TData1> Defense { get; protected set; } = new List<TData1>(6);
         [field: SerializeField] public List<TData2> Attack { get; protected set; } = new List<TData2>();
-        [field: SerializeField] public AnimatorController Animator { get; protected set; }
     }
 }

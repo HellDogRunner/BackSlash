@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Health>k__BackingField: 100
   <Stability>k__BackingField:
-    Max: 100
-    Current: 100
+    Max: 20
+    Current: 20
     TimeToRecovery: 5
     RecoveryInterval: 0.2
+    StaggerTime: 0.1
+    StunTime: 2
   <Defense>k__BackingField:
   - Name: Physical
     Reduction: 0
@@ -51,14 +53,22 @@ MonoBehaviour:
     Immunity: 0
   <Attack>k__BackingField:
   - Name: Melee
+    Type: 0
+    Ranged: 0
     Damage: 15
     StabilityDamage: 10
+    TimeAfter: 0.25
+    Cooldown: 1.5
+    LastUseTime: 0
     Effect: 3
     EffectValue: 25
   - Name: Shoot
+    Type: 1
+    Ranged: 1
     Damage: 5
     StabilityDamage: 5
+    TimeAfter: 0
+    Cooldown: 0
+    LastUseTime: 10.269276
     Effect: 0
     EffectValue: 0
-  <Animator>k__BackingField: {fileID: 9100000, guid: f890e7d2a82c7c3469dfe6fde5edd35e,
-    type: 2}

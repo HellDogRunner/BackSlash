@@ -9,13 +9,14 @@ namespace Scripts.Entity
     [RequireComponent(typeof(DefenseController))]
     public class Entity : MonoBehaviour
     {
-        [SerializeField] private EntityDatabase _setup;
+        [field: SerializeField] public EntityDatabase Setup { get; private set; }
         
         private HealthController _healthController;
         private StabilityController _stabilityController;
         private DefenseController _defenseController;
 
         public event Action<List<AttackModel>> OnSetAttack;
+        public event Action OnStun;
 
         private void Awake()
         {
@@ -23,14 +24,29 @@ namespace Scripts.Entity
             _stabilityController = GetComponent<StabilityController>();
             _defenseController = GetComponent<DefenseController>();
             
-            _healthController.OnAwake(_setup.Health);
-            _stabilityController.OnAwake(_setup.Stability);
-            _defenseController.OnAwake(_setup.Defense);
+            _healthController.OnAwake(Setup.Health);
+            _stabilityController.OnAwake(Setup.Stability);
+            _defenseController.OnAwake(Setup.Defense);
         }
 
+        void OnEnable()
+        {
+            _stabilityController.OnStun += Stunning;
+        }
+
+        void OnDisable()
+        {
+            _stabilityController.OnStun -= Stunning;
+        }
+        
         private void Start()
         {
-            OnSetAttack?.Invoke(_setup.Attack);
+            OnSetAttack?.Invoke(Setup.Attack);
+        }
+        
+        public void StunEnd()
+        {
+            _stabilityController.FillUp();
         }
         
         public void RegisterAttack(AttackModel attack)
@@ -40,5 +56,7 @@ namespace Scripts.Entity
             _stabilityController.Damage(attack.StabilityDamage);
             _healthController.TakeDamage(damage);
         }
+        
+        private void Stunning() => OnStun?.Invoke();
     }
 }

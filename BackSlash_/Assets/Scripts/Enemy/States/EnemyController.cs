@@ -1,13 +1,16 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Scripts.Entity;
 using UnityEngine;
 using UnityEngine.AI;
+using Zenject;
 
 [RequireComponent(typeof(Entity))]
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] private Entity _entity;
-    [SerializeField] private Transform _player;
+    [field: SerializeField] public Entity Entity { get; private set; }
+    
     [SerializeField] private List<Transform> _patrolPoints;
     [Space]
     [Header("Settings")]
@@ -15,46 +18,67 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float _meleeRange = 2f;
     [SerializeField] private float _rangedRange = 10f;
     [SerializeField] private float _detectionRadius = 10f;
-    [SerializeField] private int _meleeDamage = 5;
-    [SerializeField] private int _stabilityDamage = 15;
     [SerializeField] private int _currentPatrolIndex = 0;
-    [SerializeField] private int _attacksForStagger = 3;
-    [SerializeField] private float _staggerTimer = 0.3f;
 
     private IEnemyState _currentState;
     private HealthController _healthController;
+    private AttackModel _currentAttack;
 
-    private float _currentAttacksOnEnemy;
-
+    public Entity Player { get; private set; }
     public List<AttackModel> Attacks { get; private set; }
     public float Speed => _speed;
     public float MeleeRange => _meleeRange;
     public float RangedRange => _rangedRange;
     public float DetectionRadius => _detectionRadius;
-    public int MeleeDamage => _meleeDamage;
-    public int StabilityDamage => _stabilityDamage;
-
-    public float StaggerTimer => _staggerTimer;
+    
+    public List<AttackModel> Attack;
+    public StabilityModel Stability;
+    //FIXME
+    [HideInInspector] public EntityDatabase Setup;
 
     public NavMeshAgent NavAgent { get; private set; }
     public Animator Animator { get; private set; }
     public Transform Target { get; private set; }
+    
+    public event Action OnAttackCooldownOver;
+    public event Action OnRangeAttackReady;
+
+    [Inject]
+    private void Construct(Entity player)
+    {
+        Player = player;
+    }
 
     private void Awake()
     {
         NavAgent = GetComponent<NavMeshAgent>();
         Animator = GetComponent<Animator>();
-
         _healthController = GetComponent<HealthController>();
-        _healthController.OnDeath += SwitchToDeathState;
-        _healthController.OnDamageTaken += HandleHit;
-        
-        _entity.OnSetAttack += SetAttacks;
-
+    
         NavAgent.speed = Speed;
 
-        SetTarget(_player);
-        SetState(new IdleState(this, DetectionRadius));
+        Setup = Entity.Setup.GetData();
+
+        Stability = Entity.Setup.Stability;
+        Attack = Entity.Setup.Attack;
+        Target = Player.transform;
+        SetState(new IdleState(this));
+    }
+
+    void OnEnable()
+    {
+        _healthController.OnDeath += SwitchToDeathState;
+        
+        Entity.OnStun += SwitchToStunState;
+        Entity.OnSetAttack += SetAttacks;
+    }
+
+    void OnDisable()
+    {
+        _healthController.OnDeath -= SwitchToDeathState;
+        
+        Entity.OnStun -= SwitchToStunState;
+        Entity.OnSetAttack -= SetAttacks;
     }
 
     private void Update()
@@ -63,14 +87,8 @@ public class EnemyController : MonoBehaviour
         {
             _currentState.Update();
         }
-    }
-
-    private void OnDestroy()
-    {
-        _healthController.OnDeath -= SwitchToDeathState;
-        _healthController.OnDamageTaken -= HandleHit;
-        _entity.OnSetAttack -= SetAttacks;
         
+        CheckAttackStarted();
     }
 
     public void SetState(IEnemyState newState)
@@ -84,30 +102,34 @@ public class EnemyController : MonoBehaviour
         _currentState.Enter();
     }
 
+    private void CheckAttackStarted()
+    {
+        if (_currentAttack == null) return;
+    
+        var state = Animator.GetCurrentAnimatorStateInfo(0);
+
+        if (state.IsName(_currentAttack.Type.ToString()))
+        {
+            StartCoroutine(AttackCooldown(state.length + _currentAttack.TimeAfter));
+            _currentAttack = null;
+        }
+    }
+
     private void SwitchToDeathState()
     {
         SetState(new DeathState(this));
     }
 
-    public void SetTarget(Transform target)
+    private void SwitchToStunState()
     {
-        Target = target;
-    }
-
-    private void HandleHit()
-    {
-        _currentAttacksOnEnemy++;
-        if (_currentAttacksOnEnemy >= _attacksForStagger)
-        {
-            _currentAttacksOnEnemy = 0;
-            SetState(new StaggerState(this));
-        }
+        Debug.Log("stun");
+        SetState(new StunState(this));
     }
 
     // ���������� ��������� ����� ��� �������������� � �������� ������������ ����
     public Vector3 GetRandomPatrolPoint()
     {
-        Vector3 randomDirection = Random.insideUnitSphere * 10f;
+        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * 10f;
         randomDirection += transform.position;
         NavMeshHit hit;
         if (NavMesh.SamplePosition(randomDirection, out hit, 10f, 1))
@@ -134,6 +156,22 @@ public class EnemyController : MonoBehaviour
     private void SetAttacks(List<AttackModel> attacks)
     {
         Attacks = attacks;
+    }
+
+    public void SetCurrentAttack(AttackModel attack)
+    {
+        _currentAttack = attack;
+    }
+
+    private void OnReadyToRangeAttack()
+    {
+        OnRangeAttackReady?.Invoke();
+    }
+
+    private IEnumerator AttackCooldown(float time)
+    {
+        yield return new WaitForSeconds(time);
+        OnAttackCooldownOver?.Invoke();
     }
 
     public void Disable()

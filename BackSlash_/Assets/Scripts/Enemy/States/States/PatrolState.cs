@@ -56,7 +56,7 @@ public class PatrolState : IEnemyState
         _patrolTarget = _enemy.GetCurrentPatrolPoint();
         if (_patrolTarget == Vector3.zero) 
         {
-            _enemy.SetState(new IdleState(_enemy, _enemy.DetectionRadius));
+            _enemy.SetState(new IdleState(_enemy));
         }
     }
 
