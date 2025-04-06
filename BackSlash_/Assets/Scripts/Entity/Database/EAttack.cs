@@ -3,9 +3,10 @@ using System;
 namespace Scripts.Entity
 {
     [Serializable]
-    public enum EType : int
+    public enum EAttackType : int
     {
-        Punch = 0,
-        Shoot = 1
+        None = 0,
+        Punch = 1,
+        Shoot = 2
     }
 }

@@ -8,10 +8,12 @@ namespace Scripts.Entity
     public class AttackModel : IDatabaseModelPrimaryKey<string>
     {
         public string Name;
-        public EType Type;
+        public EAttackType Type;
         public bool Ranged; 
         public int Damage;
         public int StabilityDamage;
+        
+        [Header("Timings")]
         public float TimeAfter;
         public float Cooldown;
         public float LastUseTime;

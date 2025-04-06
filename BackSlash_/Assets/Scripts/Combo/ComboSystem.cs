@@ -60,7 +60,7 @@ public class ComboSystem : MonoBehaviour
 	{
 		_cancelDelay = _comboData.GetCancelDelay();
 
-		_entity.OnSetAttack += SetAttacks;
+		_entity.OnEnemySet += SetAttacks;
 
 		FillComboList();
 		TryGetNextAttack(null, 0);
@@ -80,7 +80,7 @@ public class ComboSystem : MonoBehaviour
 
 	private void OnDestroy()
 	{
-		_entity.OnSetAttack -= SetAttacks;
+		_entity.OnEnemySet -= SetAttacks;
 	
 		var inputActions = _comboData.GetAllUsedActionReferences();
 		foreach (var inputAction in inputActions)
@@ -101,7 +101,7 @@ public class ComboSystem : MonoBehaviour
 
 	private void RegisterInput(InputActionReference attackInput)
 	{
-		if (_weaponController.CurrentWeaponType != EWeaponType.None && Time.timeScale == 1 && _stateController.CanAttack())
+		if (_weaponController.CurrentWeaponType != EWeaponType.None && Time.timeScale != 0 && _stateController.CanAttack())
 		{
 			if (_attackInterval != null) StopCoroutine(_attackInterval);
 

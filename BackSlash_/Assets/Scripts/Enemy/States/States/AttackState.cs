@@ -7,9 +7,6 @@ public class AttackState : IEnemyState
     private readonly EnemyController _enemy;
 
     private Vector3 _offset;
-    private RaycastWeapon _weapon;
-
-    private List<AttackModel> _attacks;
     private AttackModel _currentAttack;
     
     private bool _isAttack;
@@ -21,20 +18,23 @@ public class AttackState : IEnemyState
 
     public void Enter()
     {
-        _weapon = _enemy.GetComponentInChildren<RaycastWeapon>();
-        _weapon.OnHit += HitTarget;
-        
         _enemy.NavAgent.isStopped = true;
-        _enemy.OnAttackCooldownOver += SetAttackReady;
-        _enemy.OnRangeAttackReady += StartRangedAttack;
         
-        _attacks = _enemy.Attack;
+        Subscribe();
+    }
+
+    private void Subscribe()
+    {
+        _enemy.OnAttackCooldownOver += SetAttackReady;
+    }
+
+    private void Unsubscribe()
+    {
+        _enemy.OnAttackCooldownOver -= SetAttackReady;
     }
 
     public void Update()
     {
-        _weapon.UpdateBullets(Time.deltaTime);
-    
         if (!IsPlayerInSight())
         {
             RotateTowardsTarget();
@@ -49,50 +49,40 @@ public class AttackState : IEnemyState
         if (IsInRange() && !_isAttack)
         {
             var attack = ChooseAttack(SortAttacks(GetAttackType()));
-            if (attack != null) StartAttack(attack);
+            if (attack != null) Attack(attack);
         }
     }
 
     private void SwitchToChaseState()
     {
-        _isAttack = false;
         _enemy.SetState(new ChaseState(_enemy));
     }
 
-    private void StartRangedAttack()
+    private void Attack(AttackModel attack)
     {
-        _weapon.FireBullet(_enemy.Target.position + _offset, _currentAttack);
-    }
-
-    private void StartAttack(AttackModel attack)
-    {
-        _currentAttack = new AttackModel();
-        _currentAttack = attack;
-        
-        _enemy.SetCurrentAttack(attack);
         _isAttack = true;
         
-        _enemy.Animator.SetTrigger(attack.Type.ToString());
-        
+        _currentAttack = attack;
         _currentAttack.LastUseTime = Time.time;
-    
-        if (!attack.Ranged)
-        {
-            HitTarget();
-        }
+        
+        _enemy.SetCurrentAttack(attack);
+        _enemy.Animator.SetTrigger(attack.Type.ToString());
+        _enemy.Entity.SetAttack(attack);
+        _enemy.Entity.SetTarget(_enemy.Target.position + _offset);
     }
 
-    private List<AttackModel> SortAttacks(EType type)
+    private List<AttackModel> SortAttacks(EAttackType type)
     {
         var attacks = new List<AttackModel>();
     
-        foreach (var attack in _attacks)
+        foreach (var attack in _enemy.Attack)
         {
             if (type == attack.Type && IsAttackReady(attack))
             {
                 attacks.Add(attack);
             }
         }
+        
         return attacks;
     }
     
@@ -106,11 +96,12 @@ public class AttackState : IEnemyState
 
         if (angle < fieldOfView / 2f && Vector3.Distance(_enemy.transform.position, _enemy.Target.position) <= viewDistance)
         {
-            if (!Physics.Raycast(_enemy.transform.position, directionToTarget, out RaycastHit hit, viewDistance))
+            if (!Physics.Raycast(_enemy.transform.position, directionToTarget, viewDistance))
             {
                 return true;
             }
         }
+        
         return false;
     }
 
@@ -119,20 +110,6 @@ public class AttackState : IEnemyState
         Vector3 directionToPlayer = (_enemy.Target.position - _enemy.transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
         _enemy.transform.rotation = Quaternion.Slerp(_enemy.transform.rotation, lookRotation, Time.deltaTime * 5f);
-    }
-    
-    private void HitTarget()
-    {
-        if (_enemy.Player == null) return;
-        
-        _enemy.Player.RegisterAttack(_currentAttack);
-    }
-
-    private void HitTarget(AttackModel attack)
-    {
-        if (_enemy.Player == null) return;
-    
-        _enemy.Player.RegisterAttack(attack);
     }
 
     private AttackModel ChooseAttack(List<AttackModel> attacks)
@@ -152,9 +129,9 @@ public class AttackState : IEnemyState
         return GetDistance() < _enemy.RangedRange;
     }
 
-    private EType GetAttackType()
+    private EAttackType GetAttackType()
     {
-        return GetDistance() <= _enemy.MeleeRange ? EType.Punch : EType.Shoot;
+        return GetDistance() <= _enemy.MeleeRange ? EAttackType.Punch : EAttackType.Shoot;
     }
 
     private float GetDistance()
@@ -166,8 +143,9 @@ public class AttackState : IEnemyState
 
     public void Exit()
     {
-        _weapon.OnHit -= HitTarget;
-        _enemy.OnAttackCooldownOver -= SetAttackReady;
-        _enemy.OnRangeAttackReady -= StartRangedAttack;
+        _enemy.Entity.EndAttack();
+        _isAttack = false;
+        
+        Unsubscribe();
     }
 }

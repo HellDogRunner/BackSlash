@@ -1,22 +1,30 @@
+using Scripts.Entity;
 using UnityEngine;
 
 public class HitBox : MonoBehaviour
 {
-    private HealthController _healthController;
-
+    private Entity _entity;
     private Collider _collider;
 
     private void Awake()
     {
-        _healthController = GetComponentInParent<HealthController>();
-        _healthController.OnDeath += EnableCollision;
         _collider = GetComponent<Collider>();
+        _entity = GetComponentInParent<Entity>();
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
-        _healthController.OnDeath -= EnableCollision;
+        _entity.OnDeath += EnableCollision;
     }
+
+    private void OnDisable()
+    {
+        _entity.OnDeath -= EnableCollision;
+    }
+
+    public void AttackTaken(AttackModel attack) => _entity.RegisterAttack(attack);
+
+    public GameObject GetGameObject() => _entity.gameObject;
 
     private void EnableCollision()
     {

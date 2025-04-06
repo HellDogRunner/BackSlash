@@ -10,9 +10,8 @@ using Zenject;
 public class EnemyController : MonoBehaviour
 {
     [field: SerializeField] public Entity Entity { get; private set; }
-    
     [SerializeField] private List<Transform> _patrolPoints;
-    [Space]
+
     [Header("Settings")]
     [SerializeField] private float _speed = 3.5f;
     [SerializeField] private float _meleeRange = 2f;
@@ -22,31 +21,29 @@ public class EnemyController : MonoBehaviour
 
     private IEnemyState _currentState;
     private HealthController _healthController;
+    private List<AttackModel> _attack;
+    private StabilityModel _stability;
     private AttackModel _currentAttack;
 
-    public Entity Player { get; private set; }
-    public List<AttackModel> Attacks { get; private set; }
+    public Entity PlayerEntity { get; private set; }
     public float Speed => _speed;
     public float MeleeRange => _meleeRange;
     public float RangedRange => _rangedRange;
     public float DetectionRadius => _detectionRadius;
     
-    public List<AttackModel> Attack;
-    public StabilityModel Stability;
-    //FIXME
-    [HideInInspector] public EntityDatabase Setup;
+    public List<AttackModel> Attack => _attack;
+    public StabilityModel Stability => _stability;
 
     public NavMeshAgent NavAgent { get; private set; }
     public Animator Animator { get; private set; }
     public Transform Target { get; private set; }
     
     public event Action OnAttackCooldownOver;
-    public event Action OnRangeAttackReady;
 
     [Inject]
     private void Construct(Entity player)
     {
-        Player = player;
+        PlayerEntity = player;
     }
 
     private void Awake()
@@ -55,30 +52,24 @@ public class EnemyController : MonoBehaviour
         Animator = GetComponent<Animator>();
         _healthController = GetComponent<HealthController>();
     
+        _attack = Entity.Setup.GetAttack();
+        _stability = Entity.Setup.GetStability();
+        
         NavAgent.speed = Speed;
-
-        Setup = Entity.Setup.GetData();
-
-        Stability = Entity.Setup.Stability;
-        Attack = Entity.Setup.Attack;
-        Target = Player.transform;
+        Target = PlayerEntity.transform;
         SetState(new IdleState(this));
     }
 
     void OnEnable()
     {
         _healthController.OnDeath += SwitchToDeathState;
-        
         Entity.OnStun += SwitchToStunState;
-        Entity.OnSetAttack += SetAttacks;
     }
 
     void OnDisable()
     {
         _healthController.OnDeath -= SwitchToDeathState;
-        
         Entity.OnStun -= SwitchToStunState;
-        Entity.OnSetAttack -= SetAttacks;
     }
 
     private void Update()
@@ -115,16 +106,9 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void SwitchToDeathState()
-    {
-        SetState(new DeathState(this));
-    }
+    private void SwitchToDeathState() => SetState(new DeathState(this));
 
-    private void SwitchToStunState()
-    {
-        Debug.Log("stun");
-        SetState(new StunState(this));
-    }
+    private void SwitchToStunState() => SetState(new StunState(this));
 
     // ���������� ��������� ����� ��� �������������� � �������� ������������ ����
     public Vector3 GetRandomPatrolPoint()
@@ -153,20 +137,10 @@ public class EnemyController : MonoBehaviour
         _currentPatrolIndex = (_currentPatrolIndex + 1) % _patrolPoints.Count;
     }
 
-    private void SetAttacks(List<AttackModel> attacks)
-    {
-        Attacks = attacks;
-    }
+    public void SetCurrentAttack(AttackModel attack) => _currentAttack = attack;
 
-    public void SetCurrentAttack(AttackModel attack)
-    {
-        _currentAttack = attack;
-    }
-
-    private void OnReadyToRangeAttack()
-    {
-        OnRangeAttackReady?.Invoke();
-    }
+    private void OnStartAttack() => Entity.StartAttack();
+    private void OnEndAttack() => Entity.EndAttack();
 
     private IEnumerator AttackCooldown(float time)
     {

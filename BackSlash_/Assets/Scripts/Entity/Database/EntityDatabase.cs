@@ -1,14 +1,75 @@
 using UnityEngine;
 using RedMoonGames.Basics;
+using System.Collections.Generic;
 
 namespace Scripts.Entity
 {
     [CreateAssetMenu(fileName = "Entity", menuName = "Scriptable Objects/Entity")]
     public class EntityDatabase : EntityScriptableDatabase<DefenseModel, AttackModel, StabilityModel>
     {
-        public EntityDatabase GetData()
+        public int GetHealth()
         {
-            return this;
+            return Health;
+        }
+        
+        public StabilityModel GetStability()
+        {
+            var stability = new StabilityModel();
+            
+            stability.Max = Stability.Max;
+            stability.Current = Stability.Current;
+            stability.TimeToRecovery = Stability.TimeToRecovery;
+            stability.RecoveryInterval = Stability.RecoveryInterval;
+            stability.StaggerTime = Stability.StaggerTime;
+            stability.StunTime = Stability.StunTime;
+            
+            return stability;
+        }
+        
+        public List<DefenseModel> GetDefense()
+        {
+            var defense = new List<DefenseModel>();
+            
+            foreach (var def in Defense)
+            {
+                var d = new DefenseModel();
+                
+                d.Name = def.Name;
+                d.SetType(def.Type);
+                d.Reduction = def.Reduction;
+                d.Accumulation = def.Accumulation;
+                d.Current = def.Current;
+                d.Immunity = def.Immunity;
+            
+                defense.Add(d);
+            }
+            
+            return defense;
+        }
+        
+        public List<AttackModel> GetAttack()
+        {
+            var attack = new List<AttackModel>();
+            
+            foreach (var atc in Attack)
+            {
+                var a = new AttackModel();
+                
+                a.Name = atc.Name;
+                a.Type = atc.Type;
+                a.Ranged = atc.Ranged;
+                a.Damage = atc.Damage;
+                a.StabilityDamage = atc.StabilityDamage;
+                a.TimeAfter = atc.TimeAfter;
+                a.Cooldown = atc.Cooldown;
+                a.LastUseTime = atc.LastUseTime;
+                a.Effect = atc.Effect;
+                a.EffectValue = atc.EffectValue;
+                
+                attack.Add(a);
+            }
+        
+            return attack;
         }
     
         public void SetMaxHealth(int value)

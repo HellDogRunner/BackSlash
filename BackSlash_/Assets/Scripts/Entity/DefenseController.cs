@@ -22,11 +22,9 @@ namespace Scripts.Entity
         private int ReducePhysicalDamage(int damage)
         {
             var physical = _resists.GetBy(model => model.Type == EEntity.Physical);
-            var reduction = physical.Reduction / 100;
+            float reduction = physical.Reduction / 100f;
             
-            damage -= damage * reduction;
-            
-            return damage;
+            return (int)(damage - damage * reduction);
         }
         
         private void AccumulateEffect(AttackModel attack)

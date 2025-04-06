@@ -15,33 +15,40 @@ namespace Scripts.Entity
         private StabilityController _stabilityController;
         private DefenseController _defenseController;
 
-        public event Action<List<AttackModel>> OnSetAttack;
+        public event Action<List<AttackModel>> OnEnemySet;
+        public event Action<AttackModel> OnSetAttack;
+        public event Action<Vector3> OnSetTarget;
+        public event Action OnStartAttack;
+        public event Action OnEndAttack;
         public event Action OnStun;
-
+        public event Action OnDeath;
+        
         private void Awake()
         {
             _healthController = GetComponent<HealthController>();
             _stabilityController = GetComponent<StabilityController>();
             _defenseController = GetComponent<DefenseController>();
             
-            _healthController.OnAwake(Setup.Health);
-            _stabilityController.OnAwake(Setup.Stability);
-            _defenseController.OnAwake(Setup.Defense);
+            _healthController.OnAwake(Setup.GetHealth());
+            _stabilityController.OnAwake(Setup.GetStability());
+            _defenseController.OnAwake(Setup.GetDefense());
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             _stabilityController.OnStun += Stunning;
+            _healthController.OnDeath += Death;
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             _stabilityController.OnStun -= Stunning;
+            _healthController.OnDeath -= Death;
         }
         
         private void Start()
         {
-            OnSetAttack?.Invoke(Setup.Attack);
+            OnEnemySet?.Invoke(Setup.GetAttack());
         }
         
         public void StunEnd()
@@ -53,10 +60,17 @@ namespace Scripts.Entity
         {
             var damage = _defenseController.CalculateDamage(attack);
             
+            Debug.Log(gameObject.name + " => " + damage + " damage taken.");
+            
             _stabilityController.Damage(attack.StabilityDamage);
             _healthController.TakeDamage(damage);
         }
         
+        public void SetAttack(AttackModel attack) => OnSetAttack?.Invoke(attack);
+        public void SetTarget(Vector3 target) => OnSetTarget?.Invoke(target);
+        public void EndAttack() => OnEndAttack?.Invoke();
+        public void StartAttack() => OnStartAttack?.Invoke();
         private void Stunning() => OnStun?.Invoke();
+        private void Death() => OnDeath?.Invoke();
     }
 }

@@ -38,10 +38,7 @@ public class HealthController : MonoBehaviour
         }
     }
 
-    public void OnAwake(int health)
-    {
-        Health = health;
-    }
+    public void OnAwake(int health) => Health = health;
 
     public void TakeDamage(int damage)
     {

@@ -45,8 +45,8 @@ GameObject:
   - component: {fileID: 7027965772093151246}
   - component: {fileID: 874166510249355357}
   - component: {fileID: 2203002426512146428}
-  - component: {fileID: -7519987432111359879}
   - component: {fileID: -4670322451337398836}
+  - component: {fileID: 6579704918902895991}
   m_Layer: 2
   m_Name: SM_Wep_Sword_01
   m_TagString: Sword
@@ -145,23 +145,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1472449844171204496, guid: a23329df95361794e8d1a14c7b4f51b1, type: 2}
---- !u!114 &-7519987432111359879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7117139524774637573}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31964c716c693054e8470cb2a512ada7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _swordTrails: {fileID: 5588963844572939809}
-  _attackRange: 2
-  _hitboxlayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &-4670322451337398836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,11 +158,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _components:
-  - {fileID: -7519987432111359879}
+  - {fileID: 0}
   _identifier: 
   _useSceneContext: 0
   _context: {fileID: 0}
   _bindType: 0
+--- !u!114 &6579704918902895991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7117139524774637573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cb8b4d31abfd4b428bf7c4152bf7af2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackType: 0
+  _swordTrails: {fileID: 5588963844572939809}
 --- !u!1 &7825498033305477054
 GameObject:
   m_ObjectHideFlags: 0

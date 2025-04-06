@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 343860a27835bf046a438a1f87dd9615, type: 3}
   m_Name: Default Enemy
   m_EditorClassIdentifier: 
-  <Health>k__BackingField: 100
-  <Stability>k__BackingField:
-    Max: 20
-    Current: 20
+  Health: 1000
+  Stability:
+    Max: 100
+    Current: 0
     TimeToRecovery: 5
     RecoveryInterval: 0.2
-    StaggerTime: 0.1
+    StaggerTime: 0.5
     StunTime: 2
-  <Defense>k__BackingField:
+  Defense:
   - Name: Physical
     Reduction: 0
     Accumulation: 0
@@ -51,24 +51,24 @@ MonoBehaviour:
     Accumulation: 0
     Current: 0
     Immunity: 0
-  <Attack>k__BackingField:
-  - Name: Melee
-    Type: 0
-    Ranged: 0
-    Damage: 15
-    StabilityDamage: 10
-    TimeAfter: 0.25
-    Cooldown: 1.5
-    LastUseTime: 0
-    Effect: 3
-    EffectValue: 25
-  - Name: Shoot
+  Attack:
+  - Name: Punch
     Type: 1
+    Ranged: 0
+    Damage: 70
+    StabilityDamage: 15
+    TimeAfter: 0.5
+    Cooldown: 1
+    LastUseTime: 0
+    Effect: 0
+    EffectValue: 0
+  - Name: Shoot
+    Type: 2
     Ranged: 1
-    Damage: 5
+    Damage: 50
     StabilityDamage: 5
     TimeAfter: 0
     Cooldown: 0
-    LastUseTime: 10.269276
+    LastUseTime: 0
     Effect: 0
     EffectValue: 0
