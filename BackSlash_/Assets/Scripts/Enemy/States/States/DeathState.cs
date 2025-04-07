@@ -11,7 +11,9 @@ public class DeathState : IEnemyState
 
     public void Enter()
     {
-        _enemy.Disable();
+        _enemy.Collider.enabled = false;
+        _enemy.NavAgent.enabled = false;
+        _enemy.Animator.enabled = false; 
     }
 
     public void Update()

@@ -48,7 +48,7 @@ public class AttackState : IEnemyState
         
         if (IsInRange() && !_isAttack)
         {
-            var attack = ChooseAttack(SortAttacks(GetAttackType()));
+            var attack = ChooseAttack(SortAttacks(GetRangedAttack()));
             if (attack != null) Attack(attack);
         }
     }
@@ -71,13 +71,13 @@ public class AttackState : IEnemyState
         _enemy.Entity.SetTarget(_enemy.Target.position + _offset);
     }
 
-    private List<AttackModel> SortAttacks(EAttackType type)
+    private List<AttackModel> SortAttacks(bool ranged)
     {
         var attacks = new List<AttackModel>();
     
         foreach (var attack in _enemy.Attack)
         {
-            if (type == attack.Type && IsAttackReady(attack))
+            if (ranged == attack.Ranged && IsAttackReady(attack))
             {
                 attacks.Add(attack);
             }
@@ -129,9 +129,9 @@ public class AttackState : IEnemyState
         return GetDistance() < _enemy.RangedRange;
     }
 
-    private EAttackType GetAttackType()
+    private bool GetRangedAttack()
     {
-        return GetDistance() <= _enemy.MeleeRange ? EAttackType.Punch : EAttackType.Shoot;
+        return GetDistance() <= _enemy.MeleeRange ? false : true;
     }
 
     private float GetDistance()

@@ -14,13 +14,12 @@ public class EnemyController : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float _speed = 3.5f;
-    [SerializeField] private float _meleeRange = 2f;
+    [SerializeField] private float _meleeRange = 10f;
     [SerializeField] private float _rangedRange = 10f;
     [SerializeField] private float _detectionRadius = 10f;
     [SerializeField] private int _currentPatrolIndex = 0;
 
     private IEnemyState _currentState;
-    private HealthController _healthController;
     private List<AttackModel> _attack;
     private StabilityModel _stability;
     private AttackModel _currentAttack;
@@ -37,6 +36,7 @@ public class EnemyController : MonoBehaviour
     public NavMeshAgent NavAgent { get; private set; }
     public Animator Animator { get; private set; }
     public Transform Target { get; private set; }
+    public CapsuleCollider Collider { get; private set; }
     
     public event Action OnAttackCooldownOver;
 
@@ -49,8 +49,8 @@ public class EnemyController : MonoBehaviour
     private void Awake()
     {
         NavAgent = GetComponent<NavMeshAgent>();
-        Animator = GetComponent<Animator>();
-        _healthController = GetComponent<HealthController>();
+        Animator = GetComponentInChildren<Animator>();
+        Collider = GetComponent<CapsuleCollider>();
     
         _attack = Entity.Setup.GetAttack();
         _stability = Entity.Setup.GetStability();
@@ -62,13 +62,13 @@ public class EnemyController : MonoBehaviour
 
     void OnEnable()
     {
-        _healthController.OnDeath += SwitchToDeathState;
+        Entity.OnDeath += SwitchToDeathState;
         Entity.OnStun += SwitchToStunState;
     }
 
     void OnDisable()
     {
-        _healthController.OnDeath -= SwitchToDeathState;
+        Entity.OnDeath -= SwitchToDeathState;
         Entity.OnStun -= SwitchToStunState;
     }
 
@@ -107,7 +107,6 @@ public class EnemyController : MonoBehaviour
     }
 
     private void SwitchToDeathState() => SetState(new DeathState(this));
-
     private void SwitchToStunState() => SetState(new StunState(this));
 
     // ���������� ��������� ����� ��� �������������� � �������� ������������ ����
@@ -146,11 +145,5 @@ public class EnemyController : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         OnAttackCooldownOver?.Invoke();
-    }
-
-    public void Disable()
-    {
-        NavAgent.enabled = false;
-        Animator.enabled = false; 
     }
 }

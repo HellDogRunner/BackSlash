@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 343860a27835bf046a438a1f87dd9615, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  Health: 1000
+  Health: 100
   Stability:
     Max: 100
     Current: 15
@@ -22,7 +22,7 @@ MonoBehaviour:
     StunTime: 1.5
   Defense:
   - Name: Physical
-    Reduction: 50
+    Reduction: 15
     Accumulation: 0
     Current: 0
     Immunity: 0
@@ -55,8 +55,8 @@ MonoBehaviour:
   - Name: Light
     Type: 1
     Ranged: 0
-    Damage: 15
-    StabilityDamage: 10
+    Damage: 10
+    StabilityDamage: 35
     TimeAfter: 0
     Cooldown: 0
     LastUseTime: 0

@@ -14,8 +14,7 @@ public class StunState : IEnemyState
 
     public void Enter()
     {
-        _enemy.Animator.SetBool("Stagger",true);
-        Debug.Log(_enemy.Stability.StunTime);
+        _enemy.Animator.SetBool("Stun",true);
     }
 
     public void Update()
@@ -23,7 +22,7 @@ public class StunState : IEnemyState
         _staggerCooldown += Time.deltaTime;
         if (_staggerCooldown >= _enemy.Stability.StunTime)
         {
-            _enemy.Animator.SetBool("Stagger", false);
+            _enemy.Animator.SetBool("Stun", false);
             _getUpCooldown += Time.deltaTime;
 
             if (_getUpCooldown >= 0.9f)
@@ -37,7 +36,7 @@ public class StunState : IEnemyState
 
     public void Exit()
     {
-        _enemy.Animator.SetBool("Stagger", false);
+        _enemy.Animator.SetBool("Stun", false);
         _enemy.Entity.StunEnd();
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 343860a27835bf046a438a1f87dd9615, type: 3}
   m_Name: Default Enemy
   m_EditorClassIdentifier: 
-  Health: 1000
+  Health: 100
   Stability:
     Max: 100
     Current: 0
@@ -55,7 +55,7 @@ MonoBehaviour:
   - Name: Punch
     Type: 1
     Ranged: 0
-    Damage: 70
+    Damage: 10
     StabilityDamage: 15
     TimeAfter: 0.5
     Cooldown: 1
@@ -65,7 +65,7 @@ MonoBehaviour:
   - Name: Shoot
     Type: 2
     Ranged: 1
-    Damage: 50
+    Damage: 5
     StabilityDamage: 5
     TimeAfter: 0
     Cooldown: 0

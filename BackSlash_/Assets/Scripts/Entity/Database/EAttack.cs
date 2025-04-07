@@ -7,6 +7,7 @@ namespace Scripts.Entity
     {
         None = 0,
         Punch = 1,
-        Shoot = 2
+        Shoot = 2,
+        StabbingAttack = 3
     }
 }
