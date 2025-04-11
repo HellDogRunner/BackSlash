@@ -17,6 +17,7 @@ namespace Scripts.Entity
 
         public event Action<List<AttackModel>> OnEnemySet;
         public event Action<AttackModel> OnSetAttack;
+        public event Action<AttackModel> OnHitTaken;
         public event Action<Vector3> OnSetTarget;
         public event Action OnStartAttack;
         public event Action OnEndAttack;
@@ -48,7 +49,7 @@ namespace Scripts.Entity
         
         private void Start()
         {
-            OnEnemySet?.Invoke(Setup.GetAttack());
+            OnEnemySet?.Invoke(Setup.GetAttacksList());
         }
         
         public void StunEnd()
@@ -56,11 +57,16 @@ namespace Scripts.Entity
             _stabilityController.FillUp();
         }
         
+        public void HitTaken(AttackModel attack)
+        {
+            OnHitTaken?.Invoke(attack);
+        }
+        
         public void RegisterAttack(AttackModel attack)
         {
             var damage = _defenseController.CalculateDamage(attack);
             
-            Debug.Log(gameObject.name + " => " + damage + " damage taken.");
+            //Debug.Log(gameObject.name + " => " + damage + " damage taken.");
             
             _stabilityController.Damage(attack.StabilityDamage);
             _healthController.TakeDamage(damage);

@@ -13,6 +13,7 @@ public class ChaseState : IEnemyState
 
     public void Enter()
     {
+        //Debug.Log("Chase state enter");
         _enemy.NavAgent.isStopped = false;
         _chaseTimer = 0f;
     }
@@ -45,6 +46,7 @@ public class ChaseState : IEnemyState
 
     public void Exit()
     {
+        _enemy.Animator.SetFloat("Speed", 0);
         // ���������� �������������
     }
 }

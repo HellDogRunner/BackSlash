@@ -22,7 +22,7 @@ public class HitBox : MonoBehaviour
         _entity.OnDeath -= EnableCollision;
     }
 
-    public void AttackTaken(AttackModel attack) => _entity.RegisterAttack(attack);
+    public void AttackTaken(AttackModel attack) => _entity.HitTaken(attack);
 
     public GameObject GetGameObject() => _entity.gameObject;
 

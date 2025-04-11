@@ -1,3 +1,6 @@
+using Scripts.Entity;
+using UnityEngine;
+
 namespace Scripts.Player
 {
 	public class DodgeState : BasicState, IPlayerState
@@ -37,5 +40,11 @@ namespace Scripts.Player
 		{
 			return !_player.Movement.Air;
 		}
+
+        public override void HitTaken(AttackModel attack)
+        {
+			Debug.Log("dodged" + attack.Type.ToString());
+        }
+		
 	}
 }

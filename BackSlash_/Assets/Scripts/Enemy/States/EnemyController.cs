@@ -13,6 +13,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private List<Transform> _patrolPoints;
 
     [Header("Settings")]
+    [SerializeField] private float _fieldOfView;
+    [SerializeField] private float _viewDistance;
     [SerializeField] private float _speed = 3.5f;
     [SerializeField] private float _meleeRange = 10f;
     [SerializeField] private float _rangedRange = 10f;
@@ -25,6 +27,8 @@ public class EnemyController : MonoBehaviour
     private AttackModel _currentAttack;
 
     public Entity PlayerEntity { get; private set; }
+    public float FieldOfView => _fieldOfView;
+    public float ViewDistance => _viewDistance;
     public float Speed => _speed;
     public float MeleeRange => _meleeRange;
     public float RangedRange => _rangedRange;
@@ -52,7 +56,7 @@ public class EnemyController : MonoBehaviour
         Animator = GetComponentInChildren<Animator>();
         Collider = GetComponent<CapsuleCollider>();
     
-        _attack = Entity.Setup.GetAttack();
+        _attack = Entity.Setup.GetAttacksList();
         _stability = Entity.Setup.GetStability();
         
         NavAgent.speed = Speed;
@@ -64,12 +68,14 @@ public class EnemyController : MonoBehaviour
     {
         Entity.OnDeath += SwitchToDeathState;
         Entity.OnStun += SwitchToStunState;
+        Entity.OnHitTaken += RegisterAttack;
     }
 
     void OnDisable()
     {
         Entity.OnDeath -= SwitchToDeathState;
         Entity.OnStun -= SwitchToStunState;
+        Entity.OnHitTaken -= RegisterAttack;
     }
 
     private void Update()
@@ -137,9 +143,8 @@ public class EnemyController : MonoBehaviour
     }
 
     public void SetCurrentAttack(AttackModel attack) => _currentAttack = attack;
-
-    private void OnStartAttack() => Entity.StartAttack();
-    private void OnEndAttack() => Entity.EndAttack();
+    
+    private void RegisterAttack(AttackModel attack) => Entity.RegisterAttack(attack);
 
     private IEnumerator AttackCooldown(float time)
     {

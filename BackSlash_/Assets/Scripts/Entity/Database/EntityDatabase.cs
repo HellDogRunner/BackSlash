@@ -47,31 +47,36 @@ namespace Scripts.Entity
             return defense;
         }
         
-        public List<AttackModel> GetAttack()
+        public List<AttackModel> GetAttacksList()
         {
             var attack = new List<AttackModel>();
             
             foreach (var atc in Attack)
             {
-                var a = new AttackModel();
-                
-                a.Name = atc.Name;
-                a.Type = atc.Type;
-                a.Ranged = atc.Ranged;
-                a.Damage = atc.Damage;
-                a.StabilityDamage = atc.StabilityDamage;
-                a.TimeAfter = atc.TimeAfter;
-                a.Cooldown = atc.Cooldown;
-                a.LastUseTime = atc.LastUseTime;
-                a.Effect = atc.Effect;
-                a.EffectValue = atc.EffectValue;
-                
-                attack.Add(a);
+                attack.Add(GetAttack(atc));
             }
         
             return attack;
         }
-    
+        
+        public AttackModel GetAttack(AttackModel attack)
+        {
+            var newAttack = new AttackModel();
+                
+            newAttack.Name = attack.Name;
+            newAttack.Type = attack.Type;
+            newAttack.Ranged = attack.Ranged;
+            newAttack.Damage = attack.Damage;
+            newAttack.StabilityDamage = attack.StabilityDamage;
+            newAttack.TimeAfter = attack.TimeAfter;
+            newAttack.Cooldown = attack.Cooldown;
+            newAttack.LastUseTime = attack.LastUseTime;
+            newAttack.Effect = attack.Effect;
+            newAttack.EffectValue = attack.EffectValue;
+            
+            return newAttack;
+        }
+        
         public void SetMaxHealth(int value)
         {
             Health = value;

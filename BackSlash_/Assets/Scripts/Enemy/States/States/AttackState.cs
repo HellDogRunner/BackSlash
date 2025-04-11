@@ -18,6 +18,7 @@ public class AttackState : IEnemyState
 
     public void Enter()
     {
+        //Debug.Log("Attack state enter");
         _enemy.NavAgent.isStopped = true;
         
         Subscribe();
@@ -40,7 +41,7 @@ public class AttackState : IEnemyState
             RotateTowardsTarget();
         }
     
-        if (!IsInRange())
+        if (!IsInRange() && !_isAttack)
         {
             SwitchToChaseState();
             return;
@@ -91,12 +92,9 @@ public class AttackState : IEnemyState
         Vector3 directionToTarget = (_enemy.Target.position - _enemy.transform.position).normalized;
         float angle = Vector3.Angle(_enemy.transform.forward, directionToTarget);
 
-        float fieldOfView = 45f;
-        float viewDistance = 10f;
-
-        if (angle < fieldOfView / 2f && Vector3.Distance(_enemy.transform.position, _enemy.Target.position) <= viewDistance)
+        if (angle < _enemy.FieldOfView / 2f && GetDistance() <= _enemy.ViewDistance)
         {
-            if (!Physics.Raycast(_enemy.transform.position, directionToTarget, viewDistance))
+            if (!Physics.Raycast(_enemy.transform.position, directionToTarget, _enemy.ViewDistance))
             {
                 return true;
             }
@@ -144,7 +142,6 @@ public class AttackState : IEnemyState
     public void Exit()
     {
         _enemy.Entity.EndAttack();
-        _isAttack = false;
         
         Unsubscribe();
     }

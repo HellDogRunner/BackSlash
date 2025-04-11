@@ -14,12 +14,6 @@ public class AnimatorRootMotion : MonoBehaviour
     }
     
     //TODO switch root motion depending on the condition
-    
-    private void Start()
-    {
-        _agent.updatePosition = false;
-        _agent.updateRotation = true;
-    }
 
     private void OnAnimatorMove()
     {
@@ -33,7 +27,6 @@ public class AnimatorRootMotion : MonoBehaviour
     {
         Vector3 rootPosition = _animator.rootPosition;
         rootPosition.y = _agent.nextPosition.y;
-        _agent.gameObject.transform.position = rootPosition;
         _agent.nextPosition = rootPosition;
     }
 }

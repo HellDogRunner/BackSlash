@@ -1,3 +1,5 @@
+using Scripts.Entity;
+
 namespace Scripts.Player
 {
 	public class BasicState
@@ -6,6 +8,11 @@ namespace Scripts.Player
 		protected bool _isActive;
 		
 		protected PlayerStateController _player;
+		
+		public virtual void HitTaken(AttackModel attack)
+		{
+		    _player.Entity.RegisterAttack(attack);
+		}
 		
 		public bool CanBeInterrupt()
 		{

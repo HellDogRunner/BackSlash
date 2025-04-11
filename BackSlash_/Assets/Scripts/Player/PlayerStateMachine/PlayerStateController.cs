@@ -1,5 +1,8 @@
+using System;
+using System.Collections;
 using RedMoonGames.Window;
 using Scripts.Animations;
+using Scripts.Entity;
 using Scripts.Player.camera;
 using UnityEngine;
 using Zenject;
@@ -8,8 +11,17 @@ namespace Scripts.Player
 {
 	public class PlayerStateController : MonoBehaviour
 	{
+		public EPlayerState State;
+		
+		[field: SerializeField] public float ParryTime { get; private set; }
+		[field: SerializeField] public float ParryInterval { get; private set; }
+		public EParry Parry;
+		public bool CanParry = true;
+		
+		private Entity.Entity _entity;
 		private TargetLock _targetLock;
 		private ComboSystem _comboSystem;
+		private IPlayerState _currentState;
 		private MovementController _movement;
 		private HUDController _hudController;
 		private InputController _inputController;
@@ -17,20 +29,21 @@ namespace Scripts.Player
 		private CameraController _cameraController;
 		private PlayerSoundController _soundController;
 
-		private IPlayerState _currentState;
-		
-		public EPlayerState State;
-		
+		public Coroutine ParryTimeRoutine;
+		public Coroutine ParryIntervalRoutine;
+
 		public PlayerAnimationController Animator => _animator;
 		public PlayerSoundController Sound => _soundController;
 		public CameraController Camera => _cameraController;
 		public MovementController Movement => _movement;
 		public ComboSystem ComboSystem => _comboSystem;
 		public HUDController HUD => _hudController;
+		public Entity.Entity Entity => _entity;
 		
-
+		public event Action OnCoroutineEnd;
+		
 		[Inject]
-		private void Construct(PlayerSoundController soundController, CameraController cameraController, HUDController hudController, InputController inputController, ComboSystem comboSystem, PlayerAnimationController animator, TargetLock targetLock, MovementController movement)
+		private void Construct(Entity.Entity entity, PlayerSoundController soundController, CameraController cameraController, HUDController hudController, InputController inputController, ComboSystem comboSystem, PlayerAnimationController animator, TargetLock targetLock, MovementController movement)
 		{
 			_cameraController = cameraController;
 			_soundController = soundController;
@@ -40,6 +53,7 @@ namespace Scripts.Player
 			_targetLock = targetLock;
 			_movement = movement;
 			_animator = animator;
+			_entity = entity;
 		}
 
 		private void OnEnable()
@@ -47,6 +61,8 @@ namespace Scripts.Player
 			_inputController.OnDodgeKeyPressed += Dodge;
 			_inputController.OnBlockPressed += Block;
 			_comboSystem.IsAttacking += Attack;
+			
+			_entity.OnHitTaken += HitTaken;
 		}
 
 		private void OnDisable()
@@ -54,6 +70,8 @@ namespace Scripts.Player
 			_inputController.OnDodgeKeyPressed -= Dodge;
 			_inputController.OnBlockPressed -= Block;
 			_comboSystem.IsAttacking -= Attack;
+			
+			_entity.OnHitTaken -= HitTaken;
 		}
 
 		private void Awake()
@@ -89,8 +107,13 @@ namespace Scripts.Player
 		
 		private void Block(bool input)
 		{
-			if (input) SetState(new BlockState(this));
-			else SetState(new NoneState(this));
+			if (input && State != EPlayerState.Block) SetState(new BlockState(this));
+			else if (!input && State == EPlayerState.Block) SetState(new NoneState(this));
+		}
+
+		private void HitTaken(AttackModel attack)
+		{
+			_currentState.HitTaken(attack);
 		}
 
 		public void SetBeInterrupt()
@@ -117,6 +140,40 @@ namespace Scripts.Player
 		public bool CanInteract()
 		{
 			return _targetLock.Target == null && _currentState.CanBeInterrupt();
+		}
+		
+		public void StartCoroutine(ref Coroutine coroutine, float time)
+		{
+			TryStopCoroutine(ref coroutine);
+			coroutine = StartCoroutine(Coroutine(time));
+		}
+
+        public void StartParryDelay()
+        {
+            TryStopCoroutine(ref ParryIntervalRoutine);
+			ParryIntervalRoutine = StartCoroutine(ParryDelay());
+        }
+
+        public void TryStopCoroutine(ref Coroutine coroutine)
+		{
+		    if (coroutine != null)
+		    {
+		    	StopCoroutine(coroutine);
+		    	coroutine = null;
+		    }
+		}
+		
+		private IEnumerator Coroutine(float time)
+		{
+			yield return new WaitForSeconds(time);
+			OnCoroutineEnd?.Invoke();
+		}
+		
+		private IEnumerator ParryDelay()
+		{
+			CanParry = false;
+		    yield return new WaitForSeconds(ParryInterval);
+		    CanParry = true;
 		}
 	}
 }
