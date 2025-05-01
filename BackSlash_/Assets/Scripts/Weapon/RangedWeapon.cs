@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Scripts.Entity;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RangedWeapon : MonoBehaviour
@@ -17,7 +17,7 @@ public class RangedWeapon : MonoBehaviour
     [SerializeField] private ParticleSystem _hitEffect;
     [SerializeField] private Transform _raycastOrigin;
     [SerializeField] private TrailRenderer _tracerEffect;
-    
+
     [Header("BulletSettings")]
     //TODO replace shooting setting in database
     [SerializeField] private float _bulletSpeed = 1000;
@@ -26,19 +26,19 @@ public class RangedWeapon : MonoBehaviour
     [SerializeField] private float _accuracyPercent = 100f;
     [SerializeField] private float _missShotRadius = 0f;
     [SerializeField] private LayerMask _hitboxLayer;
-    
+
     private float _maxLifeTime = 3;
 
     private List<Bullet> _bullets = new List<Bullet>();
 
     private Ray ray;
     private RaycastHit _hitInfo;
-    
+
     private Entity _entity;
     private AttackModel _attack;
     private Vector3 _target;
 
-    private void Awake() 
+    private void Awake()
     {
         _entity = GetComponentInParent<Entity>();
     }
@@ -55,7 +55,7 @@ public class RangedWeapon : MonoBehaviour
         _entity.OnSetAttack -= SetAttack;
         _entity.OnSetTarget -= SetTarget;
         _entity.OnStartAttack -= FireBullet;
-    }     
+    }
 
     private void Update()
     {
@@ -65,16 +65,16 @@ public class RangedWeapon : MonoBehaviour
             DestroyBullets();
         }
     }
-    
+
     private void SetAttack(AttackModel attack)
     {
         if (!attack.Ranged) return;
-        
+
         _attack = attack;
     }
-    
+
     private void SetTarget(Vector3 target) => _target = SetBulletAccuracy(target);
-    
+
     private Vector3 GetPosition(Bullet bullet)
     {
         Vector3 gravity = Vector3.down * _bulletDrop;
@@ -91,16 +91,16 @@ public class RangedWeapon : MonoBehaviour
         bullet.tracer = CreateTracer(bullet.initialPosition);
         bullet.tracer.AddPosition(position);
         bullet.attack = attack;
-        
+
         return bullet;
     }
-    
+
     private Vector3 SetBulletAccuracy(Vector3 target)
     {
         target += new Vector3(0, 1, 0);
-    
+
         var percent = Random.Range(1, 100);
-                
+
         if (_accuracyPercent >= percent)
         {
             target += Random.insideUnitSphere * _inaccuracyRadius;
@@ -109,13 +109,26 @@ public class RangedWeapon : MonoBehaviour
         {
             target += Random.insideUnitSphere * _missShotRadius;
         }
-        
+
         return target;
     }
 
     private void DestroyBullets()
     {
+        _bullets.ForEach(bullet =>
+        {
+            if (bullet.time >= _maxLifeTime)
+            {
+                Destroy(bullet.tracer.gameObject);
+            }
+        });
+
         _bullets.RemoveAll(bullet => bullet.time >= _maxLifeTime);
+    }
+
+    private void DestroyBullets(Bullet bullet)
+    {
+        Destroy(bullet.tracer.gameObject);
     }
 
     public void SimulateBullets(float deltaTime)
@@ -154,7 +167,8 @@ public class RangedWeapon : MonoBehaviour
             if (_hitInfo.collider.TryGetComponent(out HitBox hitbox))
             {
                 hitbox.AttackTaken(bullet.attack);
-            }     
+                DestroyBullets(bullet);
+            }
         }
         else
         {
@@ -165,12 +179,12 @@ public class RangedWeapon : MonoBehaviour
     private void FireBullet()
     {
         if (_attack == null) return;
-    
+
         foreach (var particle in _muzzleFlash)
         {
             particle.Emit(1);
         }
-        
+
         Vector3 velocity = (_target - _raycastOrigin.position).normalized * _bulletSpeed;
         var bullet = CreateBullet(_raycastOrigin.position, velocity, _attack);
         _attack = null;
