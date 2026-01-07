@@ -11,31 +11,25 @@ namespace Scripts.Player
 		private TargetLock _targetLock;
 		private ComboSystem _comboSystem;
 		private MovementController _movement;
-		private HUDController _hudController;
 		private InputController _inputController;
 		private PlayerAnimationController _animator;
 		private CameraController _cameraController;
-		private PlayerSoundController _soundController;
 
 		private IPlayerState _currentState;
 		
 		public EPlayerState State;
 		
 		public PlayerAnimationController Animator => _animator;
-		public PlayerSoundController Sound => _soundController;
 		public CameraController Camera => _cameraController;
 		public MovementController Movement => _movement;
 		public ComboSystem ComboSystem => _comboSystem;
-		public HUDController HUD => _hudController;
 		
 
 		[Inject]
-		private void Construct(PlayerSoundController soundController, CameraController cameraController, HUDController hudController, InputController inputController, ComboSystem comboSystem, PlayerAnimationController animator, TargetLock targetLock, MovementController movement)
+		private void Construct(CameraController cameraController, InputController inputController, ComboSystem comboSystem, PlayerAnimationController animator, TargetLock targetLock, MovementController movement)
 		{
 			_cameraController = cameraController;
-			_soundController = soundController;
 			_inputController = inputController;
-			_hudController = hudController;
 			_comboSystem = comboSystem;
 			_targetLock = targetLock;
 			_movement = movement;

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5696820ba289a49b7a33a30fcdfea0, type: 3}
+  m_Name: WorldGenSettings
+  m_EditorClassIdentifier: 
+  seed: 12345
+  chunkSize: 256
+  terrainHeight: 100
+  heightmapResolution: 257
+  alphamapResolution: 256
+  viewRadius: 2
+  pixelError: 5
+  basemapDistance: 1000
+  sandLayer: {fileID: 8574412962073106934, guid: 5476f8bdd751ffd448832c49396996ee,
+    type: 2}
+  baseFreq: 0.0025
+  warpFreq: 0.0015
+  warpAmp: 51
+  duneAmp: 90
+  detailAmp: 20
+  flatness: 0.443
