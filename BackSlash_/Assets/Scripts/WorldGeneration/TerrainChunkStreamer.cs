@@ -21,6 +21,14 @@ public class TerrainChunkStreamer : MonoBehaviour
     [Header("POI")]
     public POISettings poiSettings;
 
+    [Header("Junk")]
+    public JunkSettings junkSettings;
+
+    JunkPool junkPool;
+    JunkSystem junkSystem;
+    Transform junkPoolRoot;
+
+
     readonly Dictionary<Vector2Int, TerrainChunk> active = new();
 
     TerrainChunkPool pool;
@@ -62,6 +70,11 @@ public class TerrainChunkStreamer : MonoBehaviour
         poiPoolRoot = new GameObject("POI_PoolRoot").transform;
         poiPoolRoot.SetParent(transform, false);
         poiPool = new POIPool(poiPoolRoot);
+
+        junkPoolRoot = new GameObject("JUNK_PoolRoot").transform;
+        junkPoolRoot.SetParent(transform, false);
+        junkPool = new JunkPool(junkPoolRoot);
+
 
         RebuildServices();
 
@@ -132,8 +145,8 @@ public class TerrainChunkStreamer : MonoBehaviour
         // async heights
         yield return heightGen.ApplyAsync(chunk.Data, cc, rowsPerFrameHeights);
 
-        // ✅ spawn POI after heights (so slope/height are correct)
         poiSystem?.SpawnForChunk(cc, chunk.Terrain, chunk.Terrain.transform);
+        junkSystem?.SpawnForChunk(cc, chunk.Terrain, chunk.Terrain.transform);
 
         active[cc] = chunk;
     }
@@ -157,6 +170,12 @@ public class TerrainChunkStreamer : MonoBehaviour
             poiSystem = new POISystem(settings, poiSettings, poiPool, stamper);
         else
             poiSystem = null;
+
+        if (junkSettings != null)
+            junkSystem = new JunkSystem(settings, junkSettings, junkPool);
+        else
+            junkSystem = null;
+
     }
 
     void UpdateVisible(bool force)
@@ -182,6 +201,8 @@ public class TerrainChunkStreamer : MonoBehaviour
                 heightGen.Apply(chunk.Data, cc);
 
                 poiSystem?.SpawnForChunk(cc, chunk.Terrain, chunk.Terrain.transform);
+                junkSystem?.SpawnForChunk(cc, chunk.Terrain, chunk.Terrain.transform);
+
 
                 active[cc] = chunk;
             }
@@ -198,6 +219,7 @@ public class TerrainChunkStreamer : MonoBehaviour
         foreach (var cc in remove)
         {
             poiSystem?.DespawnForChunk(cc);
+            junkSystem?.DespawnForChunk(cc);
             pool.Release(active[cc].Terrain);
             active.Remove(cc);
         }
@@ -229,7 +251,7 @@ public class TerrainChunkStreamer : MonoBehaviour
 
         // Rebuild POIs because they depend on terrain shape
         poiSystem?.DespawnAll();
-
+        junkSystem?.DespawnAll();
         foreach (var kv in active)
         {
             painter.Apply(kv.Value.Data);
@@ -237,6 +259,7 @@ public class TerrainChunkStreamer : MonoBehaviour
             kv.Value.Terrain.Flush();
 
             poiSystem?.SpawnForChunk(kv.Key, kv.Value.Terrain, kv.Value.Terrain.transform);
+            junkSystem?.SpawnForChunk(kv.Key, kv.Value.Terrain, kv.Value.Terrain.transform);
         }
     }
 
