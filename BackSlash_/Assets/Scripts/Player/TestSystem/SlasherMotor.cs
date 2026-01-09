@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections;
 using UnityEngine;
 
@@ -45,22 +45,19 @@ namespace Scripts.Player
         [SerializeField] private float _slideDuration = 0.35f;
         [SerializeField] private float _slideFriction = 18f;
 
-        [Header("Ground Check (IMPORTANT)")]
-        [SerializeField] private float _sphereRadius = 0.24f;
-        [SerializeField] private float _castDistance = 0.45f;
+        [Header("Ground Check")]
+        [SerializeField] private float _sphereRadius = 0.25f;
+        [SerializeField] private float _castDistance = 0.5f;
         [SerializeField] private LayerMask _groundMask;
 
         public event Action Jumped;
+        public event Action Landed;   // вњ… NEW
         public event Action Dodged;
         public event Action Slid;
-        public float VerticalSpeed => _ySpeed;
-        public bool InAirState => !_grounded;
-
 
         public bool Grounded => _grounded;
-
-        /// <summary>Move in local space of character (x=strafe, y=forward). Good for 2D blend tree.</summary>
         public Vector2 LocalMove => _localMove;
+        public float VerticalSpeed => _ySpeed;
 
         private Transform _cam;
 
@@ -79,19 +76,22 @@ namespace Scripts.Player
 
         private float _lastGroundedTime = -999f;
         private float _lastJumpPressedTime = -999f;
+
         private float _nextDodgeAllowedTime = 0f;
 
-        private void Reset()
-        {
-            _cc = GetComponent<CharacterController>();
-        }
+        private Coroutine _dodgeRoutine;
+        private Coroutine _slideRoutine;
+
+        private bool _wasGrounded; // вњ… NEW
+
+        private void Reset() => _cc = GetComponent<CharacterController>();
 
         private void Awake()
         {
             if (_cc == null) _cc = GetComponent<CharacterController>();
             if (_input == null) _input = GetComponent<SlasherInput>();
-
             _cam = Camera.main != null ? Camera.main.transform : null;
+
             RecalcJump();
         }
 
@@ -115,50 +115,38 @@ namespace Scripts.Player
         {
             UpdateGrounded();
 
-            // jump buffer
+            // вњ… Land event (air -> ground)
+            if (!_wasGrounded && _grounded)
+                Landed?.Invoke();
+            _wasGrounded = _grounded;
+
             HandleJump();
 
-            // normal move unless in actions
             if (!_inDodge && !_inSlide)
                 ApplyMove();
 
             ApplyVertical();
-            RotateToCamera();
+            RotateToCameraForward();
             MoveCharacter();
 
-            ComputeLocalMoveForAnimator();
+            _localMove = _input != null ? _input.Move : Vector2.zero;
         }
 
         private void UpdateGrounded()
         {
-            // Most reliable combo:
-            // - CC.isGrounded catches some cases
-            // - SphereCast catches slopes/steps better when tuned
             bool ccGrounded = _cc.isGrounded;
 
             Vector3 origin = transform.position + _cc.center + Vector3.up * 0.1f;
             bool castGrounded = Physics.SphereCast(
-                origin,
-                _sphereRadius,
-                Vector3.down,
-                out _,
-                _castDistance,
-                _groundMask,
-                QueryTriggerInteraction.Ignore
-            );
+                origin, _sphereRadius, Vector3.down, out _,
+                _castDistance, _groundMask, QueryTriggerInteraction.Ignore);
 
             _grounded = ccGrounded || castGrounded;
 
-            if (_grounded)
-                _lastGroundedTime = Time.time;
-            Debug.Log($"Grounded={_grounded} cc={_cc.isGrounded}");
-
+            if (_grounded) _lastGroundedTime = Time.time;
         }
 
-        private void OnJumpPressed()
-        {
-            _lastJumpPressedTime = Time.time;
-        }
+        private void OnJumpPressed() => _lastJumpPressedTime = Time.time;
 
         private void HandleJump()
         {
@@ -175,10 +163,8 @@ namespace Scripts.Player
         private void DoJump()
         {
             RecalcJump();
-
             if (_ySpeed < 0f) _ySpeed = 0f;
             _ySpeed = _startJumpVelocity;
-
             Jumped?.Invoke();
         }
 
@@ -210,17 +196,16 @@ namespace Scripts.Player
             if (_grounded && _ySpeed < 0f)
                 _ySpeed = _groundSnapY;
 
-            // jump cut
             if (_input != null && !_input.JumpHeld && _ySpeed > 0f)
                 _ySpeed *= _jumpCutMultiplier;
 
-            float gravity = _gravityForce;
-            if (_ySpeed <= 0f) gravity *= _fallMultiplier;
+            float g = _gravityForce;
+            if (_ySpeed <= 0f) g *= _fallMultiplier;
 
-            _ySpeed -= gravity * Time.deltaTime;
+            _ySpeed -= g * Time.deltaTime;
         }
 
-        private void RotateToCamera()
+        private void RotateToCameraForward()
         {
             if (_cam == null) return;
 
@@ -245,8 +230,10 @@ namespace Scripts.Player
             if (_inDodge || _inSlide) return;
 
             Vector3 dir = GetActionDirection();
-            if (dir.sqrMagnitude < 0.0001f) dir = GetFacingDirection();
-            StartCoroutine(DodgeRoutine(dir));
+            if (dir.sqrMagnitude < 0.0001f) dir = transform.forward;
+
+            if (_dodgeRoutine != null) StopCoroutine(_dodgeRoutine);
+            _dodgeRoutine = StartCoroutine(DodgeRoutine(dir));
         }
 
         private void OnSlidePressed()
@@ -255,8 +242,10 @@ namespace Scripts.Player
             if (_inDodge || _inSlide) return;
 
             Vector3 dir = GetActionDirection();
-            if (dir.sqrMagnitude < 0.0001f) dir = GetFacingDirection();
-            StartCoroutine(SlideRoutine(dir));
+            if (dir.sqrMagnitude < 0.0001f) dir = transform.forward;
+
+            if (_slideRoutine != null) StopCoroutine(_slideRoutine);
+            _slideRoutine = StartCoroutine(SlideRoutine(dir));
         }
 
         private IEnumerator DodgeRoutine(Vector3 dir)
@@ -271,7 +260,6 @@ namespace Scripts.Player
             {
                 float k = 1f - (t / _dodgeDuration);
                 float speed = Mathf.Lerp(_dodgeSpeed * 0.6f, _dodgeSpeed, k);
-
                 _impulseVel = dir * speed;
 
                 t += Time.deltaTime;
@@ -280,6 +268,7 @@ namespace Scripts.Player
 
             _impulseVel = Vector3.zero;
             _inDodge = false;
+            _dodgeRoutine = null;
         }
 
         private IEnumerator SlideRoutine(Vector3 dir)
@@ -303,6 +292,7 @@ namespace Scripts.Player
 
             _impulseVel = Vector3.zero;
             _inSlide = false;
+            _slideRoutine = null;
         }
 
         private Vector3 GetMoveDirection()
@@ -319,62 +309,21 @@ namespace Scripts.Player
             return wish.sqrMagnitude > 0f ? wish.normalized : Vector3.zero;
         }
 
-        private Vector3 GetFacingDirection()
+        private Vector3 GetActionDirection()
         {
+            Vector3 d = GetMoveDirection();
+            if (d.sqrMagnitude > 0.0001f) return d;
+
             if (_cam == null) return transform.forward;
             Vector3 f = _cam.forward; f.y = 0f;
             return f.sqrMagnitude > 0f ? f.normalized : transform.forward;
         }
 
-        private Vector3 GetActionDirection()
-        {
-            Vector3 d = GetMoveDirection();
-            return d.sqrMagnitude > 0.0001f ? d : GetFacingDirection();
-        }
-
         private void RecalcJump()
         {
-            float heightTime = _jumpTime / 2f;
-            _gravityForce = 2f * _jumpHeight / (heightTime * heightTime);
-            _startJumpVelocity = 2f * _jumpHeight / heightTime;
+            float ht = _jumpTime / 2f;
+            _gravityForce = 2f * _jumpHeight / (ht * ht);
+            _startJumpVelocity = 2f * _jumpHeight / ht;
         }
-
-        private void ComputeLocalMoveForAnimator()
-        {
-            // Так как мы крутимся за камерой, local X/Y идеально подходит для strafe blend.
-            // Берём ИМЕННО input, чтобы анимации сразу реагировали, даже если скорость ещё догоняет.
-            if (_input == null)
-            {
-                _localMove = Vector2.zero;
-                return;
-            }
-
-            _localMove = _input.Move; // x=left/right, y=forward/back
-        }
-#if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
-        {
-            if (_cc == null) return;
-
-            // Начальная точка SphereCast
-            Vector3 origin = transform.position + _cc.center + Vector3.up * 0.1f;
-
-            // Конечная точка (куда кастим)
-            Vector3 end = origin + Vector3.down * _castDistance;
-
-            // Цвет в зависимости от grounded
-            Gizmos.color = Application.isPlaying && _grounded ? Color.green : Color.red;
-
-            // Верхняя сфера
-            Gizmos.DrawWireSphere(origin, _sphereRadius);
-
-            // Нижняя сфера (конец каста)
-            Gizmos.DrawWireSphere(end, _sphereRadius);
-
-            // Линия между ними (визуализация кастинга)
-            Gizmos.DrawLine(origin, end);
-        }
-#endif
-
     }
 }

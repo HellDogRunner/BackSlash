@@ -47,7 +47,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Sprint"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""648f3bfc-c011-4d8b-941f-01b855caa686"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -131,9 +131,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""3D Vector"",
+                    ""name"": ""2D Vector"",
                     ""id"": ""367c6c66-1885-47e3-b0f2-37aa0c6c5e43"",
-                    ""path"": ""3DVector"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

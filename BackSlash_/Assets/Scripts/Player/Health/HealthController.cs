@@ -1,8 +1,9 @@
+using Scripts.Combat;
 using System;
 using System.Collections;
 using UnityEngine;
 
-public class HealthController : MonoBehaviour
+public class HealthController : MonoBehaviour, IDamageable
 {
     [SerializeField] private float _health;
     [SerializeField] private float _timeToDestroyLeft = 5f;
@@ -83,5 +84,10 @@ public class HealthController : MonoBehaviour
     {
         yield return new WaitForSeconds(_timeToDestroyLeft);
         Destroy(gameObject);
+    }
+
+    public void TakeHit(int damage, Vector3 hitPoint, Vector3 attackerPos)
+    {
+        TakeDamage (damage);
     }
 }
